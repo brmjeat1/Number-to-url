@@ -3,49 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
     <title>لوحة تحكم الروابط | electrwni</title>
-    <meta name="description" content="منصة إدارة الروابط الذكية - تحكم كامل في روابطك من 1 إلى 10 بلمسة رقم احترافية.">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
-        :root { --ios-blue: #007AFF; --ios-bg: #F2F2F7; --gray: #8E8E93; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--ios-bg); margin: 0; padding: 10px; color: #000; -webkit-tap-highlight-color: transparent; }
+        :root { --ios-blue: #007AFF; --ios-bg: #F2F2F7; --gray: #8E8E93; --danger: #FF3B30; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--ios-bg); margin: 0; padding: 10px; color: #000; }
         .container { max-width: 500px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
         
-        /* الهوية البصرية للعنوان */
-        .admin-header { text-align: center; margin-bottom: 25px; }
-        .admin-header h1 { font-size: 22px; font-weight: 600; color: #1c1c1e; margin: 0; }
-        .admin-header p { font-size: 13px; color: var(--gray); margin-top: 5px; }
+        .admin-header { text-align: center; margin-bottom: 20px; }
+        .admin-header h1 { font-size: 22px; font-weight: 600; margin: 0; }
 
-        /* شريط السطر الواحد */
-        .compact-toolbar { display: flex; gap: 8px; background: #E9E9EB; padding: 8px; border-radius: 12px; margin-bottom: 20px; align-items: center; }
-        .tab-btn { flex: 1; padding: 10px 5px; border: none; background: #fff; border-radius: 8px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        /* شريط الإدخال */
+        .compact-toolbar { display: flex; gap: 8px; background: #E9E9EB; padding: 8px; border-radius: 12px; margin-bottom: 25px; }
+        .tab-btn { flex: 1; padding: 10px 5px; border: none; background: #fff; border-radius: 8px; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
         .save-btn { background: var(--ios-blue); color: white; font-weight: bold; padding: 10px 15px; border-radius: 8px; border: none; cursor: pointer; }
 
-        /* الأيقونات SVG */
-        .icon { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-
-        /* الشاشات المنبثقة Overlay */
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: flex-end; }
-        .sheet { width: 100%; max-width: 500px; background: var(--ios-bg); border-radius: 20px 20px 0 0; padding: 20px; box-sizing: border-box; animation: slideUp 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
-        /* لوحة الأرقام المتطورة */
-        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; justify-items: center; padding: 20px 0; }
-        .key { width: 65px; height: 65px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .key:active { background: #D1D1D6; }
-        .display-num { width: 100%; text-align: center; font-size: 36px; margin-bottom: 15px; min-height: 44px; color: #1c1c1e; font-weight: 500; }
-
         /* الجدول */
-        table { width: 100%; border-collapse: collapse; }
-        td { padding: 16px 8px; border-bottom: 1px solid #E5E5EA; font-size: 14px; text-align: center; }
-        .id-badge { background: #E9E9EB; padding: 4px 8px; border-radius: 6px; font-weight: 600; font-size: 12px; }
-        .delete-btn { color: #FF3B30; background: none; border: none; cursor: pointer; font-size: 13px; }
+        .section-title { font-size: 16px; font-weight: 600; margin: 20px 0 10px; color: #1c1c1e; border-right: 3px solid var(--ios-blue); padding-right: 10px; }
+        table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; }
+        th { background: #F9F9F9; padding: 12px 8px; font-size: 12px; color: var(--gray); text-align: center; border-bottom: 1px solid #EEE; }
+        td { padding: 14px 8px; border-bottom: 1px solid #F2F2F7; font-size: 13px; text-align: center; word-break: break-all; }
+        .id-badge { background: #E9E9EB; padding: 3px 7px; border-radius: 5px; font-weight: 600; font-size: 11px; }
 
-        .footer { text-align: center; font-size: 11px; color: var(--gray); margin-top: 30px; padding-top: 15px; }
+        /* التنبيهات الذكية */
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; }
+        .alert-box { width: 85%; max-width: 300px; background: #fff; border-radius: 18px; padding: 20px; text-align: center; animation: zoomIn 0.2s ease-out; }
+        .alert-title { font-weight: 600; font-size: 17px; margin-bottom: 10px; }
+        .alert-msg { font-size: 13px; color: #3a3a3c; margin-bottom: 20px; line-height: 1.4; }
+        .alert-btns { display: flex; gap: 10px; }
+        .btn-alert { flex: 1; padding: 12px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; font-size: 14px; }
+        .btn-replace { background: var(--ios-blue); color: #fff; }
+        .btn-cancel { background: #F2F2F7; color: #000; }
+
+        /* الأيقونات SVG */
+        .icon { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        @keyframes zoomIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
@@ -53,99 +44,154 @@
 <div class="container">
     <div class="admin-header">
         <h1>لوحة تحكم الروابط</h1>
-        <p>إدارة النطاق الذكي من 1 إلى 10</p>
     </div>
 
     <div class="compact-toolbar">
-        <button class="tab-btn" onclick="openSheet('numSheet')">
-            <svg class="icon"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
-            <span id="btnNum">المعرف</span>
-        </button>
-        <button class="tab-btn" onclick="openSheet('urlSheet')">
-            <svg class="icon"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-            <span id="btnUrl">الرابط</span>
-        </button>
-        <button class="tab-btn" onclick="openSheet('descSheet')">
-            <svg class="icon"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-            <span id="btnDesc">الوصف</span>
-        </button>
-        <button class="save-btn" onclick="addLink()">حفظ</button>
+        <button class="tab-btn" onclick="openSheet('numSheet')"><svg class="icon"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="3" x2="9" y2="21"></line></svg> <span id="btnNum">المعرف</span></button>
+        <button class="tab-btn" onclick="openSheet('urlSheet')"><svg class="icon"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> <span id="btnUrl">الرابط</span></button>
+        <button class="tab-btn" onclick="openSheet('descSheet')"><svg class="icon"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path></svg> <span id="btnDesc">الوصف</span></button>
+        <button class="save-btn" onclick="validateAndAdd()">حفظ</button>
     </div>
 
+    <div class="section-title">سجل الروابط</div>
     <table>
+        <thead>
+            <tr>
+                <th width="20%">رقم</th>
+                <th width="50%">رابط / وصف</th>
+                <th width="30%">إجراء</th>
+            </tr>
+        </thead>
         <tbody id="linksTable"></tbody>
     </table>
 
-    <div class="footer">صُمم بواسطة electrwni</div>
+    <div style="text-align:center; font-size:10px; color:#C7C7CC; margin-top:30px;">صُمم بواسطة electrwni</div>
 </div>
 
 <div id="numSheet" class="overlay" onclick="closeSheet(event)">
-    <div class="sheet" onclick="event.stopPropagation()">
-        <div class="display-num" id="keypadDisplay">---</div>
-        <div class="keypad">
-            <div class="key" onclick="pressKey('1')">1</div><div class="key" onclick="pressKey('2')">2</div><div class="key" onclick="pressKey('3')">3</div>
-            <div class="key" onclick="pressKey('4')">4</div><div class="key" onclick="pressKey('5')">5</div><div class="key" onclick="pressKey('6')">6</div>
-            <div class="key" onclick="pressKey('7')">7</div><div class="key" onclick="pressKey('8')">8</div><div class="key" onclick="pressKey('9')">9</div>
-            <div class="key" onclick="pressKey('0')">0</div><div class="key" style="background:none"></div>
-            <div class="key" onclick="pressKey('C')" style="font-size:14px; color:var(--gray); background:#fdfdfd">مسح</div>
-        </div>
-        <button class="save-btn" style="width:100%" onclick="confirmValue('num')">تأكيد المعرف</button>
+    <div class="alert-box" onclick="event.stopPropagation()" style="max-width:350px">
+        <input type="number" id="numInput" placeholder="أدخل الرقم" style="width:100%; padding:12px; border-radius:10px; border:1px solid #ddd; text-align:center; font-size:20px;">
+        <button class="save-btn" style="width:100%; margin-top:15px;" onclick="confirmInput('num')">تأكيد</button>
     </div>
 </div>
 
 <div id="urlSheet" class="overlay" onclick="closeSheet(event)">
-    <div class="sheet" onclick="event.stopPropagation()">
-        <input type="text" id="urlInput" style="width:100%; padding:15px; border-radius:12px; border:1px solid #ddd; margin-bottom:15px;" placeholder="https://">
-        <button class="save-btn" style="width:100%" onclick="confirmValue('url')">حفظ الرابط</button>
+    <div class="alert-box" onclick="event.stopPropagation()">
+        <input type="text" id="urlInput" placeholder="https://" style="width:100%; padding:12px; border-radius:10px; border:1px solid #ddd;">
+        <button class="save-btn" style="width:100%; margin-top:15px;" onclick="confirmInput('url')">حفظ الرابط</button>
     </div>
 </div>
 
 <div id="descSheet" class="overlay" onclick="closeSheet(event)">
-    <div class="sheet" onclick="event.stopPropagation()">
-        <input type="text" id="descInput" style="width:100%; padding:15px; border-radius:12px; border:1px solid #ddd; margin-bottom:15px;" placeholder="اسم الجهة أو الرابط">
-        <button class="save-btn" style="width:100%" onclick="confirmValue('desc')">حفظ الوصف</button>
+    <div class="alert-box" onclick="event.stopPropagation()">
+        <input type="text" id="descInput" placeholder="وصف المختصر" style="width:100%; padding:12px; border-radius:10px; border:1px solid #ddd;">
+        <button class="save-btn" style="width:100%; margin-top:15px;" onclick="confirmInput('desc')">حفظ الوصف</button>
+    </div>
+</div>
+
+<div id="conflictAlert" class="overlay">
+    <div class="alert-box">
+        <div class="alert-title" id="alertTitle">تنبيه تكرار</div>
+        <div class="alert-msg" id="alertMsg"></div>
+        <div class="alert-btns">
+            <button class="btn-alert btn-cancel" onclick="closeAlert()">إلغاء</button>
+            <button class="btn-alert btn-replace" id="confirmAction">استبدال</button>
+        </div>
     </div>
 </div>
 
 <script>
-    let currentData = { num: '', url: '', desc: '' };
+    let tempEntry = { code: '', url: '', desc: '' };
+
     function openSheet(id) { document.getElementById(id).style.display = 'flex'; }
     function closeSheet(e) { e.currentTarget.style.display = 'none'; }
-    function pressKey(k) {
-        if(k === 'C') currentData.num = '';
-        else currentData.num += k;
-        document.getElementById('keypadDisplay').innerText = currentData.num || '---';
-    }
-    function confirmValue(type) {
-        if(type === 'url') currentData.url = document.getElementById('urlInput').value;
-        if(type === 'desc') currentData.desc = document.getElementById('descInput').value;
+    function closeAlert() { document.getElementById('conflictAlert').style.display = 'none'; }
+
+    function confirmInput(type) {
+        if(type === 'num') {
+            tempEntry.code = document.getElementById('numInput').value;
+            document.getElementById('btnNum').innerText = tempEntry.code || 'المعرف';
+        }
+        if(type === 'url') {
+            tempEntry.url = document.getElementById('urlInput').value;
+            document.getElementById('btnUrl').innerText = 'تم الرابط';
+        }
+        if(type === 'desc') {
+            tempEntry.desc = document.getElementById('descInput').value;
+            document.getElementById('btnDesc').innerText = 'تم الوصف';
+        }
         document.querySelectorAll('.overlay').forEach(o => o.style.display = 'none');
     }
-    function addLink() {
-        if(!currentData.num || !currentData.url) return;
+
+    function validateAndAdd() {
+        if(!tempEntry.code || !tempEntry.url) return alert("الرجاء إدخال الرقم والرابط");
+        
         const links = JSON.parse(localStorage.getItem('electrwni_data')) || [];
-        links.push({code: currentData.num, url: currentData.url, desc: currentData.desc});
+        
+        // فحص تكرار الرقم
+        const duplicateCodeIndex = links.findIndex(l => l.code === tempEntry.code);
+        if(duplicateCodeIndex !== -1) {
+            showAlert("الرقم تم إدخاله مسبقاً", `المعرف #${tempEntry.code} موجود بالفعل. هل تريد استبدال الرابط القديم بالجديد؟`, () => replaceLink(duplicateCodeIndex));
+            return;
+        }
+
+        // فحص تكرار الرابط
+        const duplicateUrl = links.find(l => l.url === tempEntry.url);
+        if(duplicateUrl) {
+            showAlert("رابط مكرر", `لقد اكتشفنا إدخال المدير لنفس الرابط ورقمه #${duplicateUrl.code}. هل تريد استبداله بالبيانات الجديدة؟`, () => {
+                const idx = links.findIndex(l => l.url === tempEntry.url);
+                replaceLink(idx);
+            });
+            return;
+        }
+
+        addFinal(links);
+    }
+
+    function showAlert(title, msg, action) {
+        document.getElementById('alertTitle').innerText = title;
+        document.getElementById('alertMsg').innerText = msg;
+        document.getElementById('conflictAlert').style.display = 'flex';
+        document.getElementById('confirmAction').onclick = action;
+    }
+
+    function replaceLink(index) {
+        let links = JSON.parse(localStorage.getItem('electrwni_data')) || [];
+        links[index] = {...tempEntry};
         localStorage.setItem('electrwni_data', JSON.stringify(links));
         location.reload();
     }
+
+    function addFinal(links) {
+        links.push({...tempEntry});
+        localStorage.setItem('electrwni_data', JSON.stringify(links));
+        location.reload();
+    }
+
     function loadLinks() {
         const links = JSON.parse(localStorage.getItem('electrwni_data')) || [];
-        document.getElementById('linksTable').innerHTML = links.map((item, index) => `
+        const tableBody = document.getElementById('linksTable');
+        tableBody.innerHTML = links.map((item, index) => `
             <tr>
-                <td width="20%"><span class="id-badge">${item.code}</span></td>
-                <td style="font-weight:500; text-align:right">${item.desc || 'رابط بدون وصف'}</td>
-                <td width="20%"><button class="delete-btn" onclick="deleteLink(${index})">حذف</button></td>
+                <td><span class="id-badge">${item.code}</span></td>
+                <td style="text-align:right">
+                    <div style="font-weight:600">${item.desc || 'بدون وصف'}</div>
+                    <div style="font-size:10px; color:var(--ios-blue); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:150px;">${item.url}</div>
+                </td>
+                <td><button onclick="deleteLink(${index})" style="color:var(--danger); border:none; background:none; font-size:12px; cursor:pointer;">حذف</button></td>
             </tr>
         `).join('');
     }
+
     function deleteLink(i) {
-        if(confirm('حذف؟')) {
+        if(confirm('هل تريد حذف هذا الرابط نهائياً؟')) {
             const links = JSON.parse(localStorage.getItem('electrwni_data')) || [];
             links.splice(i, 1);
             localStorage.setItem('electrwni_data', JSON.stringify(links));
             loadLinks();
         }
     }
+
     window.onload = loadLinks;
 </script>
 </body>
