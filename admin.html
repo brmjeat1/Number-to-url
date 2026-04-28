@@ -1,3 +1,80 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدير الروابط | electrwni</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root { --primary-color: #2563eb; --text-dark: #334155; --bg-light: #f8fafc; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-light); margin: 0; padding: 15px; color: var(--text-dark); }
+        .container { max-width: 1000px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        
+        h1 { font-size: 28px; color: #94a3b8; text-align: center; margin-bottom: 30px; font-weight: 400; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px; }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 20px; font-size: 14px; }
+
+        /* منطقة الإدخال المطورة */
+        .input-group { display: flex; flex-wrap: wrap; gap: 0; background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 30px; }
+        input { padding: 12px; border: 1px solid #e2e8f0; font-size: 14px; outline: none; flex: 1; min-width: 120px; }
+        #newCode { width: 70px; flex: none; text-align: center; border-radius: 0 6px 6px 0; }
+        #newDesc { border-right: none; border-left: none; }
+        .add-btn { background: var(--primary-color); color: #fff; border: none; padding: 12px 25px; border-radius: 6px 0 0 6px; cursor: pointer; font-weight: 600; }
+
+        /* الجدول المطور */
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th { padding: 12px; color: var(--text-dark); font-size: 14px; border: 1px solid #e2e8f0; background: #f8fafc; }
+        td { padding: 12px; text-align: center; border: 1px solid #e2e8f0; font-size: 13px; vertical-align: middle; }
+        
+        /* اختصار الرابط */
+        .url-cell { max-width: 180px; position: relative; }
+        .url-truncated { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #2563eb; cursor: pointer; display: block; direction: ltr; }
+        .url-expanded { display: none; margin-top: 10px; word-break: break-all; background: #fdfdfd; padding: 8px; border: 1px dashed #cbd5e1; border-radius: 4px; font-size: 11px; }
+        .action-links { display: flex; gap: 10px; justify-content: center; margin-top: 5px; }
+        .action-links a { color: #64748b; text-decoration: none; font-size: 11px; font-weight: bold; }
+        .action-links a:hover { color: var(--primary-color); }
+
+        .stats-select { padding: 5px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 12px; width: 100%; }
+        .pdf-btn { background: #fff; border: 1px solid #cbd5e1; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; width: 100%; margin-bottom: 5px; }
+        .btn-delete { color: #ef4444; background: none; border: none; cursor: pointer; font-size: 11px; text-decoration: underline; }
+
+        .footer-credit { text-align: center; margin-top: 40px; color: #94a3b8; font-size: 12px; line-height: 1.6; border-top: 1px solid #eee; padding-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>مدير الروابط</h1>
+    <p class="subtitle">أضف البيانات لتوجيه المستخدمين بدقة:</p>
+    
+    <div class="input-group">
+        <button class="add-btn" onclick="addLink()">أضف</button>
+        <input type="text" id="newDesc" placeholder="الوصف (مثلاً: سناب، واتساب)">
+        <input type="url" id="newUrl" placeholder="رابط URL">
+        <input type="number" id="newCode" placeholder="الرقم">
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 8%;">الرقم</th>
+                    <th style="width: 25%;">الرابط</th>
+                    <th style="width: 20%;">الوصف</th>
+                    <th style="width: 20%;">الإحصائيات</th>
+                    <th style="width: 27%;">تعديلات (تنزيل PDF)</th>
+                </tr>
+            </thead>
+            <tbody id="linksTable"></tbody>
+        </table>
+    </div>
+
+    <div class="footer-credit">
+        حقوق الطبع محفوظة لـ electrwni و brmjeat1<br>
+        للتواصل instagram: electrwni | x: electrwni
+    </div>
+</div>
+
 <script>
     function loadLinks() {
         const links = JSON.parse(localStorage.getItem('myLinksData')) || [];
@@ -20,20 +97,68 @@
                     </td>
                     <td style="color:#64748b;">${item.desc || '-'}</td>
                     <td>
-                        <select class="stats-select" id="stats-${index}" style="width:100%; padding:5px; border-radius:4px; border:1px solid #ddd;">
-                            <option value="يومي">تقرير: اليوم</option>
-                            <option value="أسبوعي">تقرير: الأسبوع</option>
-                            <option value="شهري">تقرير: الشهر</option>
-                            <option value="سنوي">تقرير: السنة</option>
-                            <option value="شامل">كل الوقت</option>
+                        <select class="stats-select" id="stats-${index}">
+                            <option value="اليوم">لهذا اليوم</option>
+                            <option value="الأسبوع">لهذا الأسبوع</option>
+                            <option value="الشهر">لهذا الشهر</option>
+                            <option value="العام">لهذا العام</option>
+                            <option value="كل الوقت">كل الوقت</option>
                         </select>
                     </td>
                     <td>
-                        <button class="pdf-btn" onclick="downloadPDF(${index})" style="background:#fff; border:1px solid #ccc; padding:5px 10px; border-radius:4px; cursor:pointer; font-size:12px;">تنزيل PDF</button>
-                        <button class="btn-delete" onclick="deleteLink(${index})" style="color:red; background:none; border:none; cursor:pointer; font-size:11px; display:block; margin:5px auto; text-decoration:underline;">حذف</button>
+                        <button class="pdf-btn" onclick="downloadPDF(${index})">تنزيل التقرير</button>
+                        <button class="btn-delete" onclick="deleteLink(${index})">حذف السجل</button>
                     </td>
                 </tr>`;
         });
     }
-    // بقية الدوال (addLink, toggleUrl, deleteLink) تبقى كما هي
+
+    function addLink() {
+        const code = document.getElementById('newCode').value;
+        const url = document.getElementById('newUrl').value;
+        const desc = document.getElementById('newDesc').value;
+        if (code && url) {
+            const links = JSON.parse(localStorage.getItem('myLinksData')) || [];
+            links.push({ code, url, desc });
+            localStorage.setItem('myLinksData', JSON.stringify(links));
+            document.getElementById('newCode').value = '';
+            document.getElementById('newUrl').value = '';
+            document.getElementById('newDesc').value = '';
+            loadLinks();
+        }
+    }
+
+    function toggleUrl(index) {
+        const el = document.getElementById(`expanded-${index}`);
+        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function deleteLink(index) {
+        if(confirm('هل تريد حذف هذا السجل نهائياً؟')) {
+            const links = JSON.parse(localStorage.getItem('myLinksData')) || [];
+            links.splice(index, 1);
+            localStorage.setItem('myLinksData', JSON.stringify(links));
+            loadLinks();
+        }
+    }
+
+    function downloadPDF(index) {
+        const links = JSON.parse(localStorage.getItem('myLinksData'));
+        const item = links[index];
+        const period = document.getElementById(`stats-${index}`).value;
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        doc.text(`Report: ${period}`, 105, 20, null, null, "center");
+        doc.text(`Code: ${item.code}`, 20, 40);
+        doc.text(`Description: ${item.desc || 'N/A'}`, 20, 50);
+        doc.text(`Status: Active`, 20, 60);
+        doc.text(`By: Electrwni & brmjeat1`, 105, 280, null, null, "center");
+        doc.save(`Report_${item.code}.pdf`);
+    }
+
+    window.onload = loadLinks;
 </script>
+
+</body>
+</html>
