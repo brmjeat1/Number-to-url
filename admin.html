@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدير الروابط | electrwni</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root { --primary: #2563eb; --slate: #64748b; --border: #e2e8f0; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f8fafc; margin: 0; padding: 15px; color: #334155; }
+        .container { max-width: 1000px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        h1 { font-size: 26px; color: #94a3b8; text-align: center; margin-bottom: 25px; font-weight: 400; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+        .input-group { display: flex; flex-wrap: wrap; gap: 0; background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 30px; }
+        input { padding: 12px; border: 1px solid var(--border); font-size: 14px; outline: none; flex: 1; min-width: 100px; }
+        #newCode { width: 70px; flex: none; text-align: center; border-radius: 0 6px 6px 0; }
+        #newDesc { border-right: none; border-left: none; }
+        .add-btn { background: var(--primary); color: #fff; border: none; padding: 12px 25px; border-radius: 6px 0 0 6px; cursor: pointer; font-weight: 600; }
+        .table-container { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; min-width: 700px; }
+        th { padding: 12px; background: #f8fafc; border: 1px solid var(--border); font-size: 13px; color: var(--slate); }
+        td { padding: 12px; border: 1px solid var(--border); font-size: 13px; text-align: center; vertical-align: middle; }
+        .url-box { text-align: left; direction: ltr; }
+        .url-short { color: var(--primary); cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; text-decoration: underline; }
+        .url-details { display: none; margin-top: 8px; padding: 8px; background: #fff; border: 1px dashed #cbd5e1; border-radius: 4px; word-wrap: break-word; font-size: 11px; }
+        .stats-select { width: 100%; padding: 6px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 12px; }
+        .pdf-btn { width: 100%; background: #fff; border: 1px solid #ccc; padding: 6px; border-radius: 4px; cursor: pointer; font-size: 11px; margin-bottom: 5px; }
+        .btn-delete { color: #ef4444; cursor: pointer; font-size: 11px; background: none; border: none; text-decoration: underline; }
+        .footer { text-align: center; margin-top: 40px; color: #94a3b8; font-size: 12px; border-top: 1px solid #eee; padding-top: 20px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>مدير الروابط</h1>
+    <div class="input-group">
+        <button class="add-btn" onclick="addLink()">أضف</button>
+        <input type="text" id="newDesc" placeholder="الوصف">
+        <input type="url" id="newUrl" placeholder="رابط URL">
+        <input type="number" id="newCode" placeholder="الرقم">
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 8%;">رقم</th>
+                    <th style="width: 32%;">رابط</th>
+                    <th style="width: 18%;">وصف</th>
+                    <th style="width: 20%;">إحصائيات</th>
+                    <th style="width: 22%;">تعديلات</th>
+                </tr>
+            </thead>
+            <tbody id="linksTable"></tbody>
+        </table>
+    </div>
+    <div class="footer">حقوق الطبع محفوظة لـ electrwni و brmjeat1</div>
+</div>
+<script>
+    function loadLinks() {
+        const links = JSON.parse(localStorage.getItem('electrwni_data')) || [];
+        const tableBody = document.getElementById('linksTable');
+        tableBody.innerHTML = '';
+        links.forEach((item, index) => {
+            tableBody.innerHTML += `<tr><td><strong>${item.code}</strong></td><td class="url-box"><span class="url-short" onclick="toggleUrl(${index})">${item.url}</span><div id="extra-${index}" class="url-details">${item.url}<br><a href="${item.url}" target="_blank" style="color:blue;">انتقال</a></div></td><td style="color:#64748b;">${item.desc || '-'}</td><td><select class="stats-select" id="stats-${index}"><option value="اليوم">اليوم</option><option value="كل الوقت">كل الوقت</option></select></td><td><button class="pdf-btn" onclick="downloadPDF(${index})">تنزيل PDF</button><button class="btn-delete" onclick="deleteLink(${index})">حذف</button></td></tr>`;
+        });
+    }
+    function addLink() {
+        const code = document.getElementById('newCode').value;
+        const url = document.getElementById('newUrl').value;
+        const desc = document.getElementById('newDesc').value;
+        if (code && url) {
+            const links = JSON.parse(localStorage.getItem('electrwni_data')) || [];
+            links.push({ code, url, desc });
+            localStorage.setItem('electrwni_data', JSON.stringify(links));
+            location.reload();
+        }
+    }
+    function toggleUrl(index) {
+        const el = document.getElementById(`extra-${index}`);
+        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    }
+    function deleteLink(index) {
+        if(confirm('حذف؟')) {
+            const links = JSON.parse(localStorage.getItem('electrwni_data')) || [];
+            links.splice(index, 1);
+            localStorage.setItem('electrwni_data', JSON.stringify(links));
+            loadLinks();
+        }
+    }
+    function downloadPDF(index) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.text("Report", 105, 20, null, null, "center");
+        doc.save("Report.pdf");
+    }
+    window.onload = loadLinks;
+</script>
+</body>
+</html>
