@@ -3,196 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Electrwni - نظام إدارة الروابط</title>
+    <title>Electrwni - تحويل الروابط</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
-
-        :root {
-            --primary-blue: #0056D2;
-            --light-blue: #D6E8FF;
-            --background-gray: #F0F4F8;
-            --text-dark: #333;
-            --text-light: #fff;
-            --accent-blue: #007bff;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
         body {
             font-family: 'Cairo', sans-serif;
-            background-color: var(--background-gray);
+            background: linear-gradient(135deg, #00224d, #0056D2);
+            height: 100vh;
             display: flex;
             justify-content: center;
-            padding: 20px;
-        }
-
-        .main-container {
-            width: 100%;
-            max-width: 900px;
-            background-color: var(--text-light);
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            overflow: hidden;
-            position: relative;
-        }
-
-        /* رأس الصفحة */
-        .header {
-            background-color: var(--primary-blue);
-            color: var(--text-light);
-            padding: 20px 30px;
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-        }
-
-        .logo-text { font-size: 1.5rem; font-weight: 700; }
-
-        /* جسم المحتوى */
-        .content-body { padding: 40px; }
-
-        .card {
-            background-color: var(--text-light);
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 25px;
-            border: 1px solid #eee;
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .card-icon { width: 30px; height: 30px; margin-left: 10px; }
-
-        .card-title-text { font-size: 1.1rem; color: var(--primary-blue); }
-
-        /* منطقة الإدخال */
-        .input-form-group {
-            background-color: var(--light-blue);
-            padding: 15px;
-            border-radius: 8px;
-            display: flex;
-            gap: 15px;
-        }
-
-        .input-field {
-            padding: 12px;
-            border: 1px solid #ccd1d9;
-            border-radius: 5px;
-            font-family: 'Cairo', sans-serif;
-        }
-
-        #input-number { width: 80px; }
-        #input-link { flex-grow: 1; }
-
-        .btn-add {
-            background-color: var(--accent-blue);
+            margin: 0;
             color: white;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 5px;
-            font-weight: 700;
-            cursor: pointer;
         }
-
-        /* عرض الإحصائيات */
-        .stats-display-area {
-            min-height: 100px;
-            padding: 10px;
-        }
-
-        .link-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .footer {
-            background-color: #f8f9fa;
-            padding: 20px;
+        .container {
             text-align: center;
-            font-size: 0.8rem;
-            color: #666;
-            border-top: 1px solid #eaeaea;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 90%;
+            max-width: 400px;
+        }
+        input {
+            width: 100%;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border: none;
+            font-size: 1.5rem;
+            text-align: center;
+            font-family: 'Cairo';
+        }
+        button {
+            background: #FFC107;
+            color: #00224d;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
         }
     </style>
 </head>
 <body>
-    <div class="main-container">
-        <header class="header">
-            <div class="logo-area"><span class="logo-text">Electrwni</span></div>
-            <h1 style="font-size: 0.9rem;">نظام إدارة التوجيه الرقمي لروابط منصة إلكتروني</h1>
-        </header>
-
-        <div class="content-body">
-            <section class="card">
-                <div class="card-header">
-                    <img src="https://img.icons8.com/fluency/48/checked-user-male.png" class="card-icon">
-                    <h2 class="card-title-text">أدخل الروابط</h2>
-                </div>
-                <div class="input-form-group">
-                    <input type="number" id="input-number" placeholder="الرقم" class="input-field">
-                    <input type="url" id="input-link" placeholder="الرابط" class="input-field">
-                    <button class="btn-add">أضف</button>
-                </div>
-            </section>
-
-            <section class="card">
-                <div class="card-header">
-                    <img src="https://img.icons8.com/fluency/48/bar-chart.png" class="card-icon">
-                    <h2 class="card-title-text">إحصاءات الروابط</h2>
-                </div>
-                <div id="stats-area" class="stats-display-area">
-                    <p style="text-align:center; color:#999;">جاري تحميل البيانات...</p>
-                </div>
-            </section>
-        </div>
-
-        <footer class="footer">
-            <p>تم تطوير المحرك البرمجي بواسطة Electrwni، الكويت</p>
-            <p>Built with High-Performance Architecture, by electrwni, kuwait</p>
-        </footer>
+    <div class="container">
+        <h2>منصة إلكتروني</h2>
+        <p>أدخل الرقم للانتقال للرابط المخصص</p>
+        <input type="number" id="linkNumber" placeholder="000">
+        <button onclick="redirect()">انطلق الآن</button>
     </div>
 
     <script>
-        // منطق إدارة البيانات
-        let linksData = JSON.parse(localStorage.getItem('electrwni_links')) || [];
+        function redirect() {
+            const num = document.getElementById('linkNumber').value;
+            // جلب الروابط التي خزنتها أنت في صفحة admin
+            const links = JSON.parse(localStorage.getItem('electrwni_links')) || [];
+            
+            // البحث عن الرابط
+            const target = links.find(item => item.id == num);
 
-        function renderLinks() {
-            const container = document.getElementById('stats-area');
-            if (linksData.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#999;">لا توجد روابط مضافة.</p>';
-                return;
-            }
-            container.innerHTML = linksData.map(item => `
-                <div class="link-item">
-                    <span><strong>#${item.id}</strong> - <a href="${item.url}" target="_blank">${item.url}</a></span>
-                    <span style="color: green;">نشط</span>
-                </div>
-            `).join('');
-        }
-
-        document.querySelector('.btn-add').onclick = function() {
-            const id = document.getElementById('input-number').value;
-            const url = document.getElementById('input-link').value;
-
-            if (id && url) {
-                linksData.push({ id, url });
-                localStorage.setItem('electrwni_links', JSON.stringify(linksData));
-                renderLinks();
-                document.getElementById('input-number').value = '';
-                document.getElementById('input-link').value = '';
+            if (target) {
+                window.location.href = target.url;
             } else {
-                alert("يرجى ملء كافة الخانات");
+                alert("عذراً، هذا الرقم غير مسجل حالياً.");
             }
-        };
-
-        // تشغيل العرض الأولي
-        renderLinks();
+        }
     </script>
 </body>
 </html>
