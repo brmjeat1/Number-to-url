@@ -3,49 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مستعرض التطبيقات | تحويل ذكي</title>
+    <title>Electrwni - نظام إدارة الروابط</title>
+    <link rel="stylesheet" href="style.css">
     <style>
-        :root { --primary: #2563eb; --bg: #f8fafc; }
-        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background-color: var(--bg); margin: 0; }
-        .card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; }
-        input { padding: 15px; font-size: 20px; border: 2px solid #e2e8f0; border-radius: 8px; text-align: center; width: 250px; outline: none; transition: border-color 0.3s; }
-        input:focus { border-color: var(--primary); }
-        button { margin-top: 20px; padding: 15px 40px; font-size: 18px; background-color: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; }
-        button:hover { background-color: #1d4ed8; }
-        .logo { font-size: 50px; margin-bottom: 10px; }
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
     </style>
 </head>
 <body>
+    <div class="main-container">
+        <header class="header">
+            <div class="logo-area">
+                <span class="logo-text">Electrwni</span>
+            </div>
+            <h1 class="header-title">نظام إدارة التوجيه الرقمي لروابط منصة إلكتروني</h1>
+        </header>
 
-    <div class="card">
-        <div class="logo">🚀</div>
-        <h2>مستعرض الروابط الذكي</h2>
-        <p>أدخل الرقم المخصص للانتقال فوراً</p>
-        <input type="number" id="codeNumber" placeholder="أدخل الرقم هنا..." autofocus>
-        <br>
-        <button onclick="redirect()">انطلق الآن</button>
+        <div class="content-body">
+            <section class="card input-card">
+                <div class="card-header">
+                    <img src="https://img.icons8.com/fluency/48/checked-user-male.png" alt="icon-check" class="card-icon">
+                    <h2 class="card-title-text">أدخل الروابط</h2>
+                </div>
+                <div class="input-form-group">
+                    <div class="input-wrapper">
+                        <input type="number" id="input-number" placeholder="الرقم" class="input-field num-input">
+                        <input type="url" id="input-link" placeholder="الرابط" class="input-field link-input">
+                    </div>
+                    <button class="btn btn-add">أضف</button>
+                </div>
+            </section>
+
+            <section class="card stats-card">
+                <div class="card-header">
+                    <img src="https://img.icons8.com/fluency/48/bar-chart.png" alt="icon-stats" class="card-icon">
+                    <h2 class="card-title-text">إحصاءات الروابط</h2>
+                </div>
+                <div class="stats-display-area">
+                    <p class="placeholder-text">الإحصائيات ستظهر هنا...</p>
+                </div>
+            </section>
+        </div>
+
+        <footer class="footer">
+            <p>تم تطوير المحرك البرمجي بواسطة Electrwni، الكويت، بنية بمعمارية عالية الأداء.</p>
+            <p>Built with High-Performance Architecture, by electrwni, kuwait</p>
+        </footer>
     </div>
-
-    <script>
-        function redirect() {
-            var num = document.getElementById("codeNumber").value;
-            // جلب الروابط من ذاكرة النظام التي تديرها من لوحة التحكم
-            const links = JSON.parse(localStorage.getItem('myLinks')) || {};
-
-            if (links[num]) {
-                window.location.href = links[num];
-            } else {
-                alert("عذراً، هذا الرقم غير مخصص لأي رابط حالياً!");
-            }
-        }
-        
-        // ميزة إضافية: التحويل عند الضغط على Enter
-        document.getElementById("codeNumber").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                redirect();
-            }
-        });
-    </script>
-
 </body>
 </html>
