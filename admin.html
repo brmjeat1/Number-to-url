@@ -9,20 +9,82 @@
         :root { --primary-color: #2563eb; --text-dark: #334155; --bg-light: #f8fafc; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-light); margin: 0; padding: 20px; color: var(--text-dark); }
         .container { max-width: 900px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        
         h1 { font-size: 32px; color: #94a3b8; text-align: center; margin-bottom: 40px; font-weight: 400; border-bottom: 1px solid #e2e8f0; padding-bottom: 20px; }
-        p.subtitle { text-align: center; color: #94a3b8; margin-bottom: 30px; }
-
-        /* منطقة الإدخال الموحدة */
-        .input-group { display: flex; align-items: center; gap: 0; background: #f1f5f9; padding: 20px; border-radius: 4px; margin-bottom: 40px; }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 30px; }
+        .input-group { display: flex; align-items: center; gap: 0; background: #f1f5f9; padding: 20px; border-radius: 4px; margin-bottom: 40px; direction: ltr; }
         input { padding: 12px; border: 1px solid #e2e8f0; font-size: 16px; outline: none; }
-        #newCode { width: 80px; border-radius: 0 4px 4px 0; text-align: center; }
+        #newCode { width: 80px; border-radius: 0; text-align: center; }
         #newUrl { flex-grow: 1; border-right: none; border-left: none; }
         .add-btn { background: var(--primary-color); color: #fff; border: none; padding: 12px 35px; border-radius: 4px 0 0 4px; cursor: pointer; font-weight: 600; font-size: 16px; }
-
-        /* الجدول */
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th { padding: 15px; color: var(--text-dark); font-size: 15px; border: 1px solid #e2e8f0; background: #fff; }
         td { padding: 15px; text-align: center; border: 1px solid #e2e8f0; font-size: 14px; color: #64748b; }
-        
-        .stats-select { padding: 6px; border-radius: 4px; border: 1
+        .stats-select { padding: 6px; border-radius: 4px; border: 1px solid #cbd5e1; }
+        .pdf-btn { background: #fff; border: 1px solid #cbd5e1; padding: 5px 12px; border-radius: 4px; cursor: pointer; }
+        .footer-credit { text-align: center; margin-top: 50px; color: #94a3b8; font-size: 14px; line-height: 1.8; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>مدير الروابط</h1>
+    <p class="subtitle">أضف الروابط التي تريد توجيه المستخدمين إليها:</p>
+    <div class="input-group">
+        <button class="add-btn" onclick="addLink()">أضف</button>
+        <input type="url" id="newUrl" placeholder="رابط URL">
+        <input type="number" id="newCode" placeholder="الرقم">
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 10%;">الرقم</th>
+                <th style="width: 50%;">الرابط</th>
+                <th style="width: 25%;">الإحصائيات</th>
+                <th style="width: 15%;">تنزيل pdf</th>
+            </tr>
+        </thead>
+        <tbody id="linksTable"></tbody>
+    </table>
+    <div class="footer-credit">برمجة إلكتروني للمتابعة على انستقرام ومنصة x :<br>Electrwni</div>
+</div>
+<script>
+    function loadLinks() {
+        const links = JSON.parse(localStorage.getItem('myLinks')) || {};
+        const tableBody = document.getElementById('linksTable');
+        tableBody.innerHTML = '';
+        Object.keys(links).forEach(code => {
+            tableBody.innerHTML += `<tr><td>${code}</td><td style="text-align:left; direction:ltr;">${links[code]}</td><td><select class="stats-select" id="stats-${code}"><option value="لهذا اليوم">لهذا اليوم</option><option value="لهذا الأسبوع">لهذا الأسبوع</option><option value="لهذا الشهر">لهذا الشهر</option></select></td><td><button class="pdf-btn" onclick="downloadPDF('${code}')">تحميل</button><br><button onclick="deleteLink('${code}')" style="margin-top:5px; color:red; border:none; background:none; cursor:pointer; font-size:11px;">حذف</button></td></tr>`;
+        });
+    }
+    function addLink() {
+        const code = document.getElementById('newCode').value;
+        const url = document.getElementById('newUrl').value;
+        if (code && url) {
+            const links = JSON.parse(localStorage.getItem('myLinks')) || {};
+            links[code] = url;
+            localStorage.setItem('myLinks', JSON.stringify(links));
+            document.getElementById('newCode').value = '';
+            document.getElementById('newUrl').value = '';
+            loadLinks();
+        }
+    }
+    function deleteLink(code) {
+        if(confirm('حذف؟')) {
+            const links = JSON.parse(localStorage.getItem('myLinks')) || {};
+            delete links[code];
+            localStorage.setItem('myLinks', JSON.stringify(links));
+            loadLinks();
+        }
+    }
+    function downloadPDF(code) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const period = document.getElementById('stats-' + code).value;
+        doc.text(`Report: ${period}`, 105, 20, null, null, "center");
+        doc.text(`Link Code: ${code}`, 20, 40);
+        doc.text(`Generated by: Electrwni`, 20, 280);
+        doc.save(`Report_${code}.pdf`);
+    }
+    window.onload = loadLinks;
+</script>
+</body>
+</html>
