@@ -3,38 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مستعرض التطبيقات - تحويل</title>
+    <title>مستعرض التطبيقات | تحويل ذكي</title>
     <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background-color: #f4f4f9; }
-        input { padding: 10px; font-size: 18px; border: 1px solid #ccc; border-radius: 5px; text-align: center; width: 200px; }
-        button { margin-top: 15px; padding: 10px 25px; font-size: 18px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
-        button:hover { background-color: #0056b3; }
+        :root { --primary: #2563eb; --bg: #f8fafc; }
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background-color: var(--bg); margin: 0; }
+        .card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; }
+        input { padding: 15px; font-size: 20px; border: 2px solid #e2e8f0; border-radius: 8px; text-align: center; width: 250px; outline: none; transition: border-color 0.3s; }
+        input:focus { border-color: var(--primary); }
+        button { margin-top: 20px; padding: 15px 40px; font-size: 18px; background-color: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; }
+        button:hover { background-color: #1d4ed8; }
+        .logo { font-size: 50px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
-    <h3>أدخل الرقم للانتقال</h3>
-    <input type="number" id="codeNumber" placeholder="أدخل الرقم هنا...">
-    <button onclick="redirect()">تحويل</button>
+    <div class="card">
+        <div class="logo">🚀</div>
+        <h2>مستعرض الروابط الذكي</h2>
+        <p>أدخل الرقم المخصص للانتقال فوراً</p>
+        <input type="number" id="codeNumber" placeholder="أدخل الرقم هنا..." autofocus>
+        <br>
+        <button onclick="redirect()">انطلق الآن</button>
+    </div>
 
     <script>
         function redirect() {
             var num = document.getElementById("codeNumber").value;
+            // جلب الروابط من ذاكرة النظام التي تديرها من لوحة التحكم
+            const links = JSON.parse(localStorage.getItem('myLinks')) || {};
 
-            // قائمة الأرقام والروابط (عدل عليها كما تشاء)
-            if (num == "1") {
-                window.location.href = "https://www.google.com";
-            } 
-            else if (num == "2") {
-                window.location.href = "https://www.apple.com";
-            } 
-            else if (num == "3") {
-                window.location.href = "https://www.github.com";
-            }
-            else {
-                alert("عذراً، هذا الرقم غير مسجل!");
+            if (links[num]) {
+                window.location.href = links[num];
+            } else {
+                alert("عذراً، هذا الرقم غير مخصص لأي رابط حالياً!");
             }
         }
+        
+        // ميزة إضافية: التحويل عند الضغط على Enter
+        document.getElementById("codeNumber").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                redirect();
+            }
+        });
     </script>
 
 </body>
