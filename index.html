@@ -1,56 +1,135 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-  .typewriter-container {
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* الهيدر الأزرق */
+  .header {
+    background-color: #002db3;
+    color: white;
+    width: 100%;
+    padding: 20px 0;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 30px;
+  }
+
+  /* منطقة "رقم روابطك" مع الأنيميشن */
+  .links-number-section {
     display: flex;
     align-items: center;
-    font-family: sans-serif;
-    font-weight: bold;
-    font-size: 24px;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 800;
+    margin: 20px 0;
     color: #333;
   }
 
-  .text-wrapper {
-    border-left: 3px solid white; /* الخط الأولي */
+  .typewriter {
+    margin-right: 10px;
     white-space: nowrap;
     overflow: hidden;
-    margin-right: 10px;
+    border-left: 3px solid white; /* الكيبورد */
     animation: 
-      typing 3.5s steps(30, end) infinite,
-      cursor-color 3.5s step-end infinite;
+      typing 4s steps(40) infinite,
+      cursor-logic 4s step-end infinite;
   }
 
   @keyframes typing {
-    0%, 100% { width: 0; }
-    50%, 70% { width: 100%; }
+    0%, 10% { width: 0; }
+    45%, 55% { width: 100%; }
+    90%, 100% { width: 0; }
   }
 
-  @keyframes cursor-color {
-    0%, 49% { border-left-color: white; } /* عند الفتح من اليمين */
-    50%, 100% { border-left-color: yellow; } /* عند الإغلاق من الشمال */
+  @keyframes cursor-logic {
+    0%, 45% { border-left-color: #ffffff; } /* أبيض عند الفتح يميناً */
+    46%, 100% { border-left-color: #ffeb3b; } /* أصفر عند الإغلاق شمالاً */
   }
 
-  /* عباراتك المدمجة */
-  .text-wrapper::after {
-    content: "صدارة رقمية بلا منافس";
-    animation: change-text 14s infinite;
+  /* تبديل النصوص */
+  .typewriter::before {
+    content: "";
+    animation: phrases 16s infinite;
   }
 
-  @keyframes change-text {
-    0%, 25% { content: "خطواتك تسبق منافسيك"; }
-    26%, 50% { content: "حساباتك برقم واحد"; }
-    51%, 75% { content: "بساطة سرعة وصول"; }
-    76%, 100% { content: "صدارة رقمية بلا منافس"; }
+  @keyframes phrases {
+    0%, 20% { content: "صدارة رقمية بلا منافس"; }
+    21%, 40% { content: "حساباتك برقم واحد"; }
+    41%, 60% { content: "بساطة سرعة وصول"; }
+    61%, 80% { content: "خطواتك تسبق منافسيك"; }
+    81%, 100% { content: "رقم يختصر مسافاتك"; }
+  }
+
+  /* المربع الأصفر الثابت (طلبك السابق) */
+  .yellow-box {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ffeb3b;
+    padding: 15px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    font-weight: bold;
+    font-size: 20px;
+    color: #002db3;
+    z-index: 1000;
+  }
+
+  /* حقل الإدخال */
+  .input-field {
+    width: 80%;
+    max-width: 350px;
+    padding: 15px;
+    border: 2px solid #002db3;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+
+  /* الزر الأزرق */
+  .btn-move {
+    width: 80%;
+    max-width: 350px;
+    background-color: #002db3;
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
   }
 </style>
 </head>
 <body>
 
-<div class="typewriter-container">
-  <span>رقم روابطك: </span>
-  <div class="text-wrapper"></div>
-</div>
+  <div class="header">توجيه الأرقام إلى روابط لمنصة إلكتروني</div>
+
+  <input type="text" class="input-field" placeholder="أدخل الرقم هنا...">
+  <button class="btn-move">انتقل الآن</button>
+
+  <div class="links-number-section">
+    <span>رقم روابطك: </span>
+    <div class="typewriter"></div>
+  </div>
+
+  <div class="yellow-box">
+    رقم روابطك
+  </div>
 
 </body>
 </html>
