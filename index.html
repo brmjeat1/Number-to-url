@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>رقم روابطك - العلامة التجارية</title>
+    <title>رقم روابطك - التصميم المطور</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
@@ -11,14 +11,13 @@
             --accent: #FCF300; 
             --sky: #1E96FC; 
             --box-yellow: #FFF041;
-            --glass: rgba(255, 255, 255, 0.1);
+            --deep-blue: #030014;
         }
 
         body { 
             margin: 0; 
             font-family: 'Segoe UI', Tahoma, sans-serif; 
-            /* الخلفية المطلوبة */
-            background-color: #030014;
+            background-color: var(--deep-blue);
             background-image: 
                 radial-gradient(at 15% 20%, #012f7b 0px, transparent 60%), 
                 radial-gradient(at 85% 25%, #0056d6 0px, transparent 55%), 
@@ -29,77 +28,71 @@
             min-height: 100vh; 
             align-items: center; 
             justify-content: center;
-            color: white;
         }
 
-        /* المستطيل الزجاجي الأساسي */
-        .glass-container {
-            background: var(--glass);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 25px;
-            padding: 30px;
-            max-width: 450px;
-            width: 90%;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        /* حاوية المحتوى البيضاء - مصغرة بظل */
+        .white-container {
+            background: #ffffff; /* بياض غامق غير شفاف */
+            border-radius: 20px;
+            padding: 15px 20px; /* تقليل الجوانب وفوق وتحت */
+            max-width: 380px; /* تقليل العرض قليلاً */
+            width: 85%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); /* ظل عميق لإبراز الحاوية */
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: 20px 0;
+            text-align: center;
         }
 
-        .header-text { font-size: 1.2rem; font-weight: 500; margin-bottom: 20px; color: #fff; }
-        .highlight-text { color: var(--sky); font-weight: bold; }
+        .header-text { font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; color: var(--deep-blue); }
+        .highlight-text { color: var(--primary); }
 
-        .input-group { width: 100%; margin-bottom: 25px; }
+        .input-group { width: 100%; margin-bottom: 20px; }
         input { 
-            width: 100%; padding: 15px; font-size: 1.2rem; 
-            border: 1px solid rgba(255, 255, 255, 0.3); 
-            border-radius: 12px; text-align: center; 
-            background: rgba(255, 255, 255, 0.05);
-            color: white; outline: none; box-sizing: border-box;
+            width: 100%; padding: 12px; font-size: 1.1rem; 
+            border: 2px solid #eee; 
+            border-radius: 10px; text-align: center; 
+            background: #f9f9f9;
+            color: #333; outline: none; box-sizing: border-box;
         }
-        input::placeholder { color: rgba(255, 255, 255, 0.5); }
 
         .btn-go { 
-            width: 100%; padding: 15px; background: var(--primary); 
-            color: #fff; border: none; border-radius: 12px; 
-            font-size: 1.2rem; font-weight: bold; margin-top: 15px; 
-            cursor: pointer; transition: 0.3s;
+            width: 100%; padding: 12px; background: var(--primary); 
+            color: #fff; border: none; border-radius: 10px; 
+            font-size: 1.1rem; font-weight: bold; margin-top: 10px; 
+            cursor: pointer;
         }
-        .btn-go:hover { background: #051ea3; transform: translateY(-2px); }
 
         .qr-section { 
-            padding: 15px; background: white; border-radius: 15px; 
-            margin-bottom: 25px; display: inline-block;
+            padding: 10px; border: 1px solid #f0f0f0; border-radius: 12px; 
+            margin-bottom: 20px;
         }
-        .qr-section p { font-size: 0.9rem; color: #333; font-weight: bold; margin: 0 0 8px 0; }
-        #qr-code-img { width: 120px; height: 120px; }
+        .qr-section p { font-size: 0.8rem; color: #666; font-weight: bold; margin: 0 0 5px 0; }
+        #qr-code-img { width: 100px; height: 100px; }
 
-        .social-links { display: flex; gap: 15px; margin-bottom: 25px; }
+        .social-links { display: flex; gap: 12px; margin-bottom: 20px; }
         .social-icon { 
-            background: rgba(255, 255, 255, 0.1); width: 44px; height: 44px; 
+            background: #f0f4ff; width: 38px; height: 38px; 
             border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-            text-decoration: none; color: var(--accent); border: 1px solid rgba(255, 255, 255, 0.2); 
+            text-decoration: none; color: var(--primary); border: 1px solid #d0d7f0; 
         }
 
-        .order-link { color: var(--sky); text-decoration: none; font-weight: bold; margin-bottom: 30px; display: block; }
+        .order-link { color: var(--primary); text-decoration: none; font-weight: bold; font-size: 0.95rem; margin-bottom: 25px; }
 
-        /* منطقة "رقم روابطك" الزجاجية */
+        /* منطقة "رقم روابطك" */
         .info-box-wrapper {
             display: flex; align-items: center; justify-content: center;
-            direction: ltr; transform: scale(0.9);
+            direction: ltr; transform: scale(0.8); /* تصغير القسم السفلي ليتناسب مع الحاوية */
         }
         .yellow-part {
             background: var(--box-yellow); color: var(--primary); font-weight: bold;
-            padding: 12px 20px; border-radius: 15px; font-size: 1.3rem;
-            z-index: 2; box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+            padding: 10px 15px; border-radius: 12px; font-size: 1.2rem;
+            z-index: 2;
         }
         .blue-part {
-            background: rgba(59, 130, 246, 0.8); color: #ffffff; padding: 12px 22px;
-            border-radius: 15px 0 0 15px; margin-right: -10px; font-size: 1.1rem;
-            min-width: 260px; display: flex; align-items: center; justify-content: flex-start; direction: rtl;
+            background: var(--primary); color: #ffffff; padding: 10px 18px;
+            border-radius: 12px 0 0 12px; margin-right: -8px; font-size: 1rem;
+            min-width: 240px; display: flex; align-items: center; justify-content: flex-start; direction: rtl;
         }
 
         .dynamic-text { 
@@ -115,14 +108,14 @@
         }
 
         .footer { 
-            margin-top: auto; padding: 20px; font-size: 0.8rem; 
-            color: rgba(255, 255, 255, 0.5); text-align: center; width: 100%; 
+            margin-top: 20px; padding: 10px; font-size: 0.75rem; 
+            color: rgba(255, 255, 255, 0.6); text-align: center;
         }
     </style>
 </head>
 <body>
 
-    <div class="glass-container">
+    <div class="white-container">
         <div class="header-text">توجيه <span class="highlight-text">الأرقام إلى روابط</span></div>
 
         <div class="input-group">
