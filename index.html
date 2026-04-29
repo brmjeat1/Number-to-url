@@ -1,0 +1,79 @@
+Index
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electrwni - تحويل الروابط</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #00224d, #0056D2);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            color: white;
+        }
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 90%;
+            max-width: 400px;
+        }
+        input {
+            width: 100%;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border: none;
+            font-size: 1.5rem;
+            text-align: center;
+            font-family: 'Cairo';
+        }
+        button {
+            background: #FFC107;
+            color: #00224d;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>منصة إلكتروني</h2>
+        <p>أدخل الرقم للانتقال للرابط المخصص</p>
+        <input type="number" id="linkNumber" placeholder="000">
+        <button onclick="redirect()">انطلق الآن</button>
+    </div>
+
+    <script>
+        function redirect() {
+            const num = document.getElementById('linkNumber').value;
+            // جلب الروابط التي خزنتها أنت في صفحة admin
+            const links = JSON.parse(localStorage.getItem('electrwni_links')) || [];
+            
+            // البحث عن الرابط
+            const target = links.find(item => item.id == num);
+
+            if (target) {
+                window.location.href = target.url;
+            } else {
+                alert("عذراً، هذا الرقم غير مسجل حالياً.");
+            }
+        }
+    </script>
+</body>
+</html>
