@@ -6,7 +6,7 @@
     <title>التوجيه الرقمي لروابط منصة إلكتروني</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #072AC8; --accent: #FCF300; --sky: #1E96FC; --light-blue: #A2D6F9; }
+        :root { --primary: #072AC8; --accent: #FCF300; --sky: #1E96FC; --light-blue: #A2D6F9; --box-blue: #3B82F6; --box-yellow: #FFF041; }
         body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background: #fff; display: flex; flex-direction: column; min-height: 100vh; align-items: center; text-align: center; }
         
         .header-box { background: var(--primary); width: 100%; min-height: 60px; display: flex; align-items: center; justify-content: center; padding: 10px 0; }
@@ -14,80 +14,51 @@
         .highlight-text { color: var(--light-blue); font-size: 1.4rem; font-weight: bold; margin: 0 5px; }
         .yellow-line { background: var(--accent); width: 100%; height: 3px; }
 
-        .container { padding: 30px 20px; flex: 1; max-width: 450px; width: 90%; }
+        .container { padding: 20px; flex: 1; max-width: 450px; width: 90%; }
 
-        /* محاكاة تصميم الصورة المرفقة بدقة */
-        .info-box-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 25px auto;
-            filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.1));
-            direction: ltr; /* لضمان ترتيب الأجزاء كما في الصورة */
-        }
-
-        .yellow-part {
-            background: #FFF041;
-            color: #072AC8;
-            font-weight: bold;
-            padding: 12px 18px;
-            border-radius: 15px;
-            font-size: 1.2rem;
-            z-index: 2;
-            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
-        }
-
-        .blue-part {
-            background: #3B82F6;
-            color: #ffffff;
-            padding: 12px 25px;
-            border-radius: 15px 0 0 15px;
-            margin-right: -10px;
-            font-size: 1.1rem;
-            min-width: 200px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            direction: rtl;
-        }
-
-        /* تأثير الحركة الميكانيكي */
-        .dynamic-text {
-            white-space: nowrap;
-            overflow: hidden;
-            display: inline-block;
-            animation: typing 4s steps(30) infinite;
-        }
-
-        @keyframes typing {
-            0%, 10% { width: 0; }
-            45%, 55% { width: 100%; }
-            90%, 100% { width: 0; }
-        }
-
+        /* أزرار الإدخال والانتقال */
         .input-group { margin-top: 10px; }
         input { width: 100%; padding: 15px; font-size: 1.2rem; border: 2px solid var(--primary); border-radius: 12px; text-align: center; outline: none; box-sizing: border-box; }
-        .btn-go { width: 100%; padding: 15px; background: var(--primary); color: #fff; border: none; border-radius: 12px; font-size: 1.2rem; font-weight: bold; margin-top: 15px; cursor: pointer; }
+        .btn-go { width: 100%; padding: 15px; background: var(--primary); color: #fff; border: none; border-radius: 12px; font-size: 1.2rem; font-weight: bold; margin-top: 12px; cursor: pointer; }
         
-        .order-link { display: block; margin-top: 20px; color: var(--primary); text-decoration: none; font-weight: bold; font-size: 0.9rem; }
+        /* الباركود تحت "انتقل الآن" */
+        .qr-section { margin-top: 25px; padding: 12px; border: 1px solid #eee; border-radius: 15px; display: inline-block; }
+        .qr-section p { font-size: 0.9rem; color: #333; font-weight: bold; margin-bottom: 5px; }
+        .qr-section img { width: 110px; height: 110px; } /* حجم أقل بقليل */
 
-        /* تلوين الشعارات المحدث */
-        .social-links { display: flex; justify-content: center; gap: 15px; margin-top: 30px; }
+        /* شبكات التواصل تحت الباركود */
+        .social-links { display: flex; justify-content: center; gap: 12px; margin-top: 20px; }
         .social-icon { 
-            background: #072AC8; 
-            width: 48px; height: 48px; 
-            border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; 
-            text-decoration: none; 
-            color: #FCF300; 
-            border: 3px solid #1E96FC;
+            background: var(--primary); width: 42px; height: 42px; /* حجم أقل بقليل */
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            text-decoration: none; color: var(--accent); border: 2px solid var(--sky); 
         }
-        .social-icon svg { width: 22px; height: 22px; fill: #FCF300; }
+        .social-icon svg { width: 18px; height: 18px; fill: var(--accent); }
 
-        .qr-section { margin-top: 30px; padding: 15px; border: 1px solid #eee; border-radius: 15px; display: inline-block; }
-        .qr-section p { font-size: 0.95rem; color: #333; font-weight: bold; margin-bottom: 8px; }
+        /* اطلب ترقيم روابطك الآن */
+        .order-link { display: block; margin-top: 25px; color: var(--primary); text-decoration: none; font-weight: bold; font-size: 1rem; }
 
-        .footer { background: #fafafa; width: 100%; padding: 20px; color: var(--sky); font-size: 0.8rem; border-top: 1px solid #eee; }
+        /* مستطيل "رقم روابطك" المطور بحجم أصغر ونص أكبر */
+        .info-box-wrapper {
+            display: flex; align-items: center; justify-content: center;
+            margin: 20px auto; filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.1));
+            direction: ltr; transform: scale(0.9); /* تصغير حجم المربع ككل */
+        }
+        .yellow-part {
+            background: var(--box-yellow); color: var(--primary); font-weight: bold;
+            padding: 10px 15px; border-radius: 12px; font-size: 1.4rem; /* نص أكبر */
+            z-index: 2; box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+        }
+        .blue-part {
+            background: var(--box-blue); color: #ffffff; padding: 10px 20px;
+            border-radius: 12px 0 0 12px; margin-right: -8px; font-size: 1.2rem; /* نص أكبر */
+            min-width: 180px; display: flex; align-items: center; justify-content: center; direction: rtl;
+        }
+
+        .dynamic-text { white-space: nowrap; overflow: hidden; display: inline-block; animation: typing 4s steps(30) infinite; }
+        @keyframes typing { 0%, 10% { width: 0; } 45%, 55% { width: 100%; } 90%, 100% { width: 0; } }
+
+        .footer { background: #fafafa; width: 100%; padding: 20px; color: var(--sky); font-size: 0.8rem; border-top: 1px solid #eee; margin-top: auto; }
     </style>
 </head>
 <body>
@@ -99,21 +70,15 @@
 
     <div class="container">
         
-        <div class="info-box-wrapper">
-            <div class="blue-part">
-                <span class="dynamic-text" id="typing-text">حقق وصول أسرع لبيتك الرقمي ..</span>
-            </div>
-            <div class="yellow-part">رقم روابطك</div>
-        </div>
-
         <div class="input-group">
             <input type="number" id="linkId" placeholder="أدخل الرقم هنا...">
             <button class="btn-go" onclick="redirect()">انتقل الآن</button>
         </div>
 
-        <a href="https://ig.me/m/electrwni?text=السلام%20عليكم%20،%20استفسار%20عن%20منصة%20ترقيم%20الروابط" target="_blank" class="order-link">
-            أطلب ترقيم روابطك الآن <i class="fa-brands fa-instagram"></i>
-        </a>
+        <div class="qr-section">
+            <p>باركود الموقع</p>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=110x110&data=https://electrwni.com&color=072ac8" alt="QR Code">
+        </div>
 
         <div class="social-links">
             <a href="https://x.com/electrwni?s=21" target="_blank" class="social-icon">
@@ -123,10 +88,17 @@
             <a href="https://t.me/electrwni" target="_blank" class="social-icon"><i class="fa-brands fa-telegram"></i></a>
         </div>
 
-        <div class="qr-section">
-            <p>باركود الموقع</p>
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://electrwni.com&color=072ac8" alt="QR Code">
+        <a href="https://ig.me/m/electrwni?text=السلام%20عليكم%20،%20استفسار%20عن%20منصة%20ترقيم%20الروابط" target="_blank" class="order-link">
+            أطلب ترقيم روابطك الآن <i class="fa-brands fa-instagram"></i>
+        </a>
+
+        <div class="info-box-wrapper">
+            <div class="blue-part">
+                <span class="dynamic-text" id="typing-text">حقق وصول أسرع لبيتك الرقمي ..</span>
+            </div>
+            <div class="yellow-part">رقم روابطك</div>
         </div>
+
     </div>
 
     <div class="footer">
@@ -135,18 +107,10 @@
     </div>
 
     <script>
-        const phrases = [
-            "حقق وصول أسرع لبيتك الرقمي ..",
-            "امتلك بايو احترافي الآن ..",
-            "أوصل جمهورك لمستودع روابطك ..",
-            "سوق لدعاياتك بلمحة بصر .."
-        ];
+        const phrases = ["حقق وصول أسرع لبيتك الرقمي ..", "امتلك بايو احترافي الآن ..", "أوصل جمهورك لمستودع روابطك ..", "سوق لدعاياتك بلمحة بصر .."];
         let i = 0;
         const typingEl = document.getElementById('typing-text');
-        function updateText() {
-            i = (i + 1) % phrases.length;
-            typingEl.innerText = phrases[i];
-        }
+        function updateText() { i = (i + 1) % phrases.length; typingEl.innerText = phrases[i]; }
         setInterval(updateText, 4000);
 
         function redirect() {
