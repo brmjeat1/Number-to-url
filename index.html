@@ -6,45 +6,60 @@
     <title>التوجيه الرقمي لروابط منصة إلكتروني</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #072AC8; --accent: #FCF300; --sky: #1E96FC; }
+        :root { --primary: #072AC8; --accent: #FCF300; --sky: #1E96FC; --light-blue: #A2D6F9; }
         body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background: #fff; display: flex; flex-direction: column; min-height: 100vh; align-items: center; text-align: center; }
         
-        .header-box { background: var(--primary); width: 100%; height: 44px; }
+        /* المستطيل الرئيسي العلوي المحدث */
+        .header-box { 
+            background: var(--primary); 
+            width: 100%; 
+            min-height: 60px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            padding: 10px 0;
+        }
+        .header-text { 
+            color: #ffffff; 
+            font-size: 1.1rem; 
+            font-weight: 500;
+        }
+        .highlight-text { 
+            color: var(--light-blue); 
+            font-size: 1.4rem; 
+            font-weight: bold; 
+            margin: 0 5px;
+        }
         .yellow-line { background: var(--accent); width: 100%; height: 3px; }
 
-        .container { padding: 40px 20px; flex: 1; max-width: 450px; width: 90%; }
-        h1 { font-size: 1.5rem; color: #222; margin-bottom: 25px; }
+        .container { padding: 30px 20px; flex: 1; max-width: 450px; width: 90%; }
 
-        /* مستطيل التوجيه المطور */
+        /* مستطيل التوجيه المنقسم */
         .info-box {
             display: flex;
             align-items: center;
             justify-content: center;
             background: #ffffff;
             border: 2px solid var(--primary);
-            border-radius: 50px; /* حواف دائرية */
-            padding: 10px 20px;
-            margin: 20px auto;
+            border-radius: 50px;
+            padding: 8px 15px;
+            margin: 25px auto;
             max-width: 380px;
             overflow: hidden;
         }
-
         .static-part {
             background: var(--accent);
             color: var(--primary);
             font-weight: bold;
-            padding: 5px 12px;
+            padding: 5px 15px;
             border-radius: 25px;
             white-space: nowrap;
             margin-left: 10px;
         }
-
-        /* تأثير الحركة (كتابة ومسح) */
         .dynamic-part {
             font-weight: bold;
             color: var(--sky);
             white-space: nowrap;
-            border-left: 2px solid var(--sky); /* مؤشر الكتابة */
             overflow: hidden;
             display: inline-block;
             animation: typing 4s steps(30) infinite;
@@ -56,36 +71,42 @@
             90%, 100% { width: 0; }
         }
 
-        .input-group { margin-top: 20px; }
+        .input-group { margin-top: 10px; }
         input { width: 100%; padding: 15px; font-size: 1.2rem; border: 2px solid var(--primary); border-radius: 12px; text-align: center; outline: none; box-sizing: border-box; }
         .btn-go { width: 100%; padding: 15px; background: var(--primary); color: #fff; border: none; border-radius: 12px; font-size: 1.2rem; font-weight: bold; margin-top: 15px; cursor: pointer; }
         
-        .order-link { display: block; margin-top: 20px; color: var(--primary); text-decoration: none; font-weight: bold; font-size: 0.95rem; }
+        .order-link { display: block; margin-top: 20px; color: var(--primary); text-decoration: none; font-weight: bold; font-size: 0.9rem; }
 
-        .social-links { display: flex; justify-content: center; gap: 15px; margin-top: 40px; }
+        /* وسائل التواصل بالألوان المحددة */
+        .social-links { display: flex; justify-content: center; gap: 15px; margin-top: 30px; }
         .social-icon { 
-            background: var(--sky); 
-            width: 45px; height: 45px; 
+            background: var(--primary); /* الدائرة 072AC8 */
+            width: 48px; height: 48px; 
             border-radius: 50%; 
             display: flex; align-items: center; justify-content: center; 
-            text-decoration: none; color: var(--accent); font-size: 1.2rem; 
-            border: 2px solid var(--primary); 
+            text-decoration: none; 
+            color: var(--accent); /* الأيقونات FCF300 */
+            font-size: 1.3rem; 
+            border: 3px solid var(--sky); /* حدود الدائرة 1E96FC */
         }
 
-        .qr-section { margin-top: 40px; padding: 15px; border: 1px solid #eee; border-radius: 15px; display: inline-block; }
-        .qr-section p { font-size: 0.9rem; color: #333; font-weight: bold; margin-bottom: 8px; }
+        .qr-section { margin-top: 30px; padding: 15px; border: 1px solid #eee; border-radius: 15px; display: inline-block; }
+        .qr-section p { font-size: 0.95rem; color: #333; font-weight: bold; margin-bottom: 8px; }
 
         .footer { background: #fafafa; width: 100%; padding: 20px; color: var(--sky); font-size: 0.8rem; border-top: 1px solid #eee; }
     </style>
 </head>
 <body>
 
-    <div class="header-box"></div>
+    <div class="header-box">
+        <div class="header-text">
+            توجيه <span class="highlight-text">الأرقام إلى روابط</span> لمنصة إلكتروني
+        </div>
+    </div>
     <div class="yellow-line"></div>
 
     <div class="container">
-        <h1>التوجيه الرقمي لروابط منصة إلكتروني</h1>
-
+        
         <div class="info-box">
             <span class="static-part">رقم روابطك :</span>
             <span class="dynamic-part" id="typing-text">امتلك بايو احترافي</span>
@@ -107,7 +128,7 @@
         </div>
 
         <div class="qr-section">
-            <p>رابط الموقع</p>
+            <p>باركود الموقع</p>
             <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://electrwni.com&color=072ac8" alt="QR Code">
         </div>
     </div>
@@ -126,13 +147,10 @@
         ];
         let i = 0;
         const typingEl = document.getElementById('typing-text');
-
         function updateText() {
             i = (i + 1) % phrases.length;
             typingEl.innerText = phrases[i];
         }
-
-        // تغيير النص بالتزامن مع نهاية دورة الأنيميشن
         setInterval(updateText, 4000);
 
         function redirect() {
