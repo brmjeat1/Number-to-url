@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>رقم روابطك - التصميم المطور</title>
+    <title>رقم روابطك - النسخة النهائية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
@@ -18,81 +18,79 @@
             margin: 0; 
             font-family: 'Segoe UI', Tahoma, sans-serif; 
             background-color: var(--deep-blue);
+            /* توسيع الخلفية لتشمل الجوانب بالكامل */
             background-image: 
-                radial-gradient(at 15% 20%, #012f7b 0px, transparent 60%), 
-                radial-gradient(at 85% 25%, #0056d6 0px, transparent 55%), 
-                radial-gradient(at 50% 85%, #52d6fc 0px, transparent 50%);
+                radial-gradient(at 10% 20%, #012f7b 0px, transparent 70%), 
+                radial-gradient(at 90% 25%, #0056d6 0px, transparent 65%), 
+                radial-gradient(at 50% 90%, #52d6fc 0px, transparent 60%);
             background-attachment: fixed;
             display: flex; 
             flex-direction: column; 
             min-height: 100vh; 
             align-items: center; 
-            justify-content: center;
+            justify-content: flex-start; /* لترك مساحة جانبية مريحة */
+            padding: 40px 0;
         }
 
-        /* حاوية المحتوى البيضاء - مصغرة بظل */
+        /* الحاوية البيضاء - المستطيل المركزي */
         .white-container {
-            background: #ffffff; /* بياض غامق غير شفاف */
-            border-radius: 20px;
-            padding: 15px 20px; /* تقليل الجوانب وفوق وتحت */
-            max-width: 380px; /* تقليل العرض قليلاً */
-            width: 85%;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); /* ظل عميق لإبراز الحاوية */
+            background: #ffffff;
+            border-radius: 25px;
+            padding: 25px 30px;
+            max-width: 400px;
+            width: 88%; /* يترك مسافة جانبية كما طلبت */
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
+            z-index: 5;
         }
 
-        .header-text { font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; color: var(--deep-blue); }
-        .highlight-text { color: var(--primary); }
+        .header-text { font-size: 1.2rem; font-weight: bold; margin-bottom: 20px; color: var(--primary); }
 
         .input-group { width: 100%; margin-bottom: 20px; }
         input { 
-            width: 100%; padding: 12px; font-size: 1.1rem; 
-            border: 2px solid #eee; 
-            border-radius: 10px; text-align: center; 
-            background: #f9f9f9;
-            color: #333; outline: none; box-sizing: border-box;
+            width: 100%; padding: 15px; font-size: 1.1rem; 
+            border: 2px solid #eee; border-radius: 12px; 
+            text-align: center; background: #fdfdfd;
+            outline: none; box-sizing: border-box;
         }
 
         .btn-go { 
-            width: 100%; padding: 12px; background: var(--primary); 
-            color: #fff; border: none; border-radius: 10px; 
-            font-size: 1.1rem; font-weight: bold; margin-top: 10px; 
-            cursor: pointer;
+            width: 100%; padding: 15px; background: var(--primary); 
+            color: #fff; border: none; border-radius: 12px; 
+            font-size: 1.2rem; font-weight: bold; cursor: pointer;
         }
 
         .qr-section { 
-            padding: 10px; border: 1px solid #f0f0f0; border-radius: 12px; 
-            margin-bottom: 20px;
+            padding: 12px; background: white; border: 1px solid #f0f0f0; 
+            border-radius: 15px; margin: 20px 0;
         }
-        .qr-section p { font-size: 0.8rem; color: #666; font-weight: bold; margin: 0 0 5px 0; }
-        #qr-code-img { width: 100px; height: 100px; }
+        #qr-code-img { width: 110px; height: 110px; }
 
-        .social-links { display: flex; gap: 12px; margin-bottom: 20px; }
+        .social-links { display: flex; gap: 15px; margin-bottom: 20px; }
         .social-icon { 
-            background: #f0f4ff; width: 38px; height: 38px; 
+            background: #f0f4ff; width: 42px; height: 42px; 
             border-radius: 50%; display: flex; align-items: center; justify-content: center; 
             text-decoration: none; color: var(--primary); border: 1px solid #d0d7f0; 
         }
 
-        .order-link { color: var(--primary); text-decoration: none; font-weight: bold; font-size: 0.95rem; margin-bottom: 25px; }
+        .order-link { color: var(--primary); text-decoration: none; font-weight: bold; margin-bottom: 25px; }
 
-        /* منطقة "رقم روابطك" */
+        /* منطقة الترقيم الملونة */
         .info-box-wrapper {
             display: flex; align-items: center; justify-content: center;
-            direction: ltr; transform: scale(0.8); /* تصغير القسم السفلي ليتناسب مع الحاوية */
+            direction: ltr; transform: scale(0.85); width: 100%;
         }
         .yellow-part {
             background: var(--box-yellow); color: var(--primary); font-weight: bold;
-            padding: 10px 15px; border-radius: 12px; font-size: 1.2rem;
-            z-index: 2;
+            padding: 12px 18px; border-radius: 15px; font-size: 1.3rem; z-index: 2;
         }
         .blue-part {
-            background: var(--primary); color: #ffffff; padding: 10px 18px;
-            border-radius: 12px 0 0 12px; margin-right: -8px; font-size: 1rem;
-            min-width: 240px; display: flex; align-items: center; justify-content: flex-start; direction: rtl;
+            background: var(--primary); color: #ffffff; padding: 12px 20px;
+            border-radius: 15px 0 0 15px; margin-right: -10px; font-size: 1.1rem;
+            min-width: 250px; display: flex; align-items: center; justify-content: flex-start; direction: rtl;
         }
 
         .dynamic-text { 
@@ -107,16 +105,22 @@
             46%, 100% { border-left-color: var(--box-yellow); }
         }
 
+        /* الفوتر مع النص المسترجع */
         .footer { 
-            margin-top: 20px; padding: 10px; font-size: 0.75rem; 
-            color: rgba(255, 255, 255, 0.6); text-align: center;
+            margin-top: 30px; 
+            padding: 20px; 
+            font-size: 0.85rem; 
+            color: rgba(255, 255, 255, 0.8); 
+            text-align: center;
+            line-height: 1.8;
+            max-width: 500px;
         }
     </style>
 </head>
 <body>
 
     <div class="white-container">
-        <div class="header-text">توجيه <span class="highlight-text">الأرقام إلى روابط</span></div>
+        <div class="header-text">توجيه الأرقام إلى روابط</div>
 
         <div class="input-group">
             <input type="number" id="linkId" placeholder="أدخل الرقم هنا...">
@@ -124,8 +128,8 @@
         </div>
 
         <div class="qr-section">
-            <p>باركود الموقع</p>
-            <img id="qr-code-img" src="" alt="الباركود">
+            <p style="color:#666; font-size: 0.8rem; font-weight: bold; margin-top: 0;">باركود الموقع</p>
+            <img id="qr-code-img" src="" alt="QR">
         </div>
 
         <div class="social-links">
@@ -145,8 +149,8 @@
     </div>
 
     <div class="footer">
-        Electrwni, Kuwait © 2026<br>
-        High-Performance Architecture
+        تم تطوير المحرك البرمجي بواسطة Electrwni,، الكويت، 2026، بنية بمعمارية عالية الأداء،<br>
+        Built with High-Performance Architecture, by electrwni, kuwait
     </div>
 
     <script>
