@@ -1,79 +1,61 @@
-Index
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Electrwni - تحويل الروابط</title>
+    <title>التوجيه الرقمي لروابط منصة إلكتروني</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
         body {
-            font-family: 'Cairo', sans-serif;
-            background: linear-gradient(135deg, #00224d, #0056D2);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0;
-            color: white;
+            margin: 0; padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff;
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh;
         }
-        .container {
-            text-align: center;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 40px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            width: 90%;
-            max-width: 400px;
+
+        /* الهوية البصرية العلوية */
+        .header-rect { background-color: #072AC8; width: 100%; height: 44px; }
+        .yellow-divider { background-color: #FCF300; width: 100%; height: 3px; }
+
+        .content {
+            margin-top: 60px; text-align: center;
+            width: 90%; max-width: 400px; flex-grow: 1;
         }
-        input {
-            width: 100%;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 10px;
-            border: none;
-            font-size: 1.5rem;
-            text-align: center;
-            font-family: 'Cairo';
+
+        h1 { font-size: 1.3rem; color: #333; margin-bottom: 30px; }
+
+        /* حقل الإدخال */
+        .input-field {
+            width: 100%; padding: 15px; font-size: 18px;
+            border: 2px solid #072AC8; border-radius: 12px;
+            outline: none; text-align: center; box-sizing: border-box;
         }
-        button {
-            background: #FFC107;
-            color: #00224d;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 10px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            cursor: pointer;
-            width: 100%;
+
+        /* زر الانتقال */
+        .btn-go {
+            margin-top: 20px; width: 100%; padding: 15px;
+            background-color: #072AC8; color: white;
+            border: none; border-radius: 12px;
+            font-size: 18px; font-weight: bold; cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-go:active { transform: scale(0.98); background-color: #051d8c; }
+
+        /* التوقيع السفلي */
+        .footer-signature {
+            padding: 20px; text-align: center;
+            color: #1E96FC; font-size: 0.85rem;
+            line-height: 1.6; border-top: 1px solid #f0f0f0;
+            width: 100%; background: #fafafa;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>منصة إلكتروني</h2>
-        <p>أدخل الرقم للانتقال للرابط المخصص</p>
-        <input type="number" id="linkNumber" placeholder="000">
-        <button onclick="redirect()">انطلق الآن</button>
-    </div>
 
-    <script>
-        function redirect() {
-            const num = document.getElementById('linkNumber').value;
-            // جلب الروابط التي خزنتها أنت في صفحة admin
-            const links = JSON.parse(localStorage.getItem('electrwni_links')) || [];
-            
-            // البحث عن الرابط
-            const target = links.find(item => item.id == num);
+    <div class="header-rect"></div>
+    <div class="yellow-divider"></div>
 
-            if (target) {
-                window.location.href = target.url;
-            } else {
-                alert("عذراً، هذا الرقم غير مسجل حالياً.");
-            }
-        }
-    </script>
-</body>
-</html>
+    <div class="content">
+        <h1>التوجيه الرقمي لروابط منصة إلكتروني</h1>
+        
+        <input type="number" id="linkId"
