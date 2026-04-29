@@ -9,56 +9,50 @@
         :root { --primary: #072AC8; --accent: #FCF300; --sky: #1E96FC; --light-blue: #A2D6F9; }
         body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background: #fff; display: flex; flex-direction: column; min-height: 100vh; align-items: center; text-align: center; }
         
-        /* المستطيل الرئيسي العلوي المحدث */
-        .header-box { 
-            background: var(--primary); 
-            width: 100%; 
-            min-height: 60px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            padding: 10px 0;
-        }
-        .header-text { 
-            color: #ffffff; 
-            font-size: 1.1rem; 
-            font-weight: 500;
-        }
-        .highlight-text { 
-            color: var(--light-blue); 
-            font-size: 1.4rem; 
-            font-weight: bold; 
-            margin: 0 5px;
-        }
+        .header-box { background: var(--primary); width: 100%; min-height: 60px; display: flex; align-items: center; justify-content: center; padding: 10px 0; }
+        .header-text { color: #ffffff; font-size: 1.1rem; font-weight: 500; }
+        .highlight-text { color: var(--light-blue); font-size: 1.4rem; font-weight: bold; margin: 0 5px; }
         .yellow-line { background: var(--accent); width: 100%; height: 3px; }
 
         .container { padding: 30px 20px; flex: 1; max-width: 450px; width: 90%; }
 
-        /* مستطيل التوجيه المنقسم */
-        .info-box {
+        /* محاكاة تصميم الصورة المرفقة بدقة */
+        .info-box-wrapper {
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #ffffff;
-            border: 2px solid var(--primary);
-            border-radius: 50px;
-            padding: 8px 15px;
             margin: 25px auto;
-            max-width: 380px;
-            overflow: hidden;
+            filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.1));
+            direction: ltr; /* لضمان ترتيب الأجزاء كما في الصورة */
         }
-        .static-part {
-            background: var(--accent);
-            color: var(--primary);
+
+        .yellow-part {
+            background: #FFF041;
+            color: #072AC8;
             font-weight: bold;
-            padding: 5px 15px;
-            border-radius: 25px;
-            white-space: nowrap;
-            margin-left: 10px;
+            padding: 12px 18px;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            z-index: 2;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
         }
-        .dynamic-part {
-            font-weight: bold;
-            color: var(--sky);
+
+        .blue-part {
+            background: #3B82F6;
+            color: #ffffff;
+            padding: 12px 25px;
+            border-radius: 15px 0 0 15px;
+            margin-right: -10px;
+            font-size: 1.1rem;
+            min-width: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            direction: rtl;
+        }
+
+        /* تأثير الحركة الميكانيكي */
+        .dynamic-text {
             white-space: nowrap;
             overflow: hidden;
             display: inline-block;
@@ -77,18 +71,18 @@
         
         .order-link { display: block; margin-top: 20px; color: var(--primary); text-decoration: none; font-weight: bold; font-size: 0.9rem; }
 
-        /* وسائل التواصل بالألوان المحددة */
+        /* تلوين الشعارات المحدث */
         .social-links { display: flex; justify-content: center; gap: 15px; margin-top: 30px; }
         .social-icon { 
-            background: var(--primary); /* الدائرة 072AC8 */
+            background: #072AC8; 
             width: 48px; height: 48px; 
             border-radius: 50%; 
             display: flex; align-items: center; justify-content: center; 
             text-decoration: none; 
-            color: var(--accent); /* الأيقونات FCF300 */
-            font-size: 1.3rem; 
-            border: 3px solid var(--sky); /* حدود الدائرة 1E96FC */
+            color: #FCF300; 
+            border: 3px solid #1E96FC;
         }
+        .social-icon svg { width: 22px; height: 22px; fill: #FCF300; }
 
         .qr-section { margin-top: 30px; padding: 15px; border: 1px solid #eee; border-radius: 15px; display: inline-block; }
         .qr-section p { font-size: 0.95rem; color: #333; font-weight: bold; margin-bottom: 8px; }
@@ -99,17 +93,17 @@
 <body>
 
     <div class="header-box">
-        <div class="header-text">
-            توجيه <span class="highlight-text">الأرقام إلى روابط</span> لمنصة إلكتروني
-        </div>
+        <div class="header-text">توجيه <span class="highlight-text">الأرقام إلى روابط</span> لمنصة إلكتروني</div>
     </div>
     <div class="yellow-line"></div>
 
     <div class="container">
         
-        <div class="info-box">
-            <span class="static-part">رقم روابطك :</span>
-            <span class="dynamic-part" id="typing-text">امتلك بايو احترافي</span>
+        <div class="info-box-wrapper">
+            <div class="blue-part">
+                <span class="dynamic-text" id="typing-text">حقق وصول أسرع لبيتك الرقمي ..</span>
+            </div>
+            <div class="yellow-part">رقم روابطك</div>
         </div>
 
         <div class="input-group">
@@ -122,7 +116,9 @@
         </a>
 
         <div class="social-links">
-            <a href="https://x.com/electrwni?s=21" target="_blank" class="social-icon"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="https://x.com/electrwni?s=21" target="_blank" class="social-icon">
+                <svg viewBox="0 0 24 24"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932 6.064-6.932zm-1.292 19.494h2.039L6.486 3.24H4.298l13.311 17.407z"/></svg>
+            </a>
             <a href="https://www.instagram.com/electrwni?igsh=MWphNXkxMmNhdHloOA%3D%3D&utm_source=qr" target="_blank" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
             <a href="https://t.me/electrwni" target="_blank" class="social-icon"><i class="fa-brands fa-telegram"></i></a>
         </div>
@@ -140,10 +136,10 @@
 
     <script>
         const phrases = [
-            "امتلك بايو احترافي",
-            "أوصل جمهورك لمستودع روابطك",
-            "حقق وصول أسرع لبيتك الرقمي",
-            "سوق لدعاياتك بلمحة بصر"
+            "حقق وصول أسرع لبيتك الرقمي ..",
+            "امتلك بايو احترافي الآن ..",
+            "أوصل جمهورك لمستودع روابطك ..",
+            "سوق لدعاياتك بلمحة بصر .."
         ];
         let i = 0;
         const typingEl = document.getElementById('typing-text');
