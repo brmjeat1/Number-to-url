@@ -4,93 +4,123 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        /* التنسيق العام */
         body {
-            background-color: #1a1a1a; /* لون الخلفية المعتمد */
+            background-color: #1a1a1a;
             margin: 0;
-            padding: 20px;
+            padding: 20px 0; /* مسافة من الأعلى والأسفل لظهور الخلفية */
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-sizing: border-box;
         }
 
+        /* زر سلسلة المواقع العلوي */
+        .top-nav {
+            align-self: flex-end;
+            margin-left: 5%;
+            margin-bottom: 20px;
+        }
+        .nav-btn {
+            background: #2a2a2a;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            border: 1px solid #444;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* العنوان العلوي */
         .header-title {
             color: #ffffff;
-            font-size: 24px;
-            margin-bottom: 20px;
+            font-size: 22px;
+            margin-bottom: 30px;
             text-align: center;
+            line-height: 1.6;
+            width: 90%;
         }
 
-        .highlight-text {
-            font-size: 32px; /* تكبير الحجم بين العاكفين */
+        /* تكبير ما بين العاكفين */
+        .highlight {
+            font-size: 28px; /* حجم أكبر كما طلبت */
+            color: #4CAF50;
             font-weight: bold;
-            color: #4CAF50; /* لون مميز للتركيز */
+            display: inline-block;
+            margin: 0 5px;
         }
 
-        .main-container {
+        /* المربع الأبيض المطور */
+        .main-card {
             background-color: #ffffff;
-            width: 92%; /* إظهاره يميناً وشمالاً بشكل متوازن */
-            min-height: 450px; /* طول مقارب للون الأخضر */
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); /* ظل منبثق */
-            padding: 40px 20px; /* زيادة المساحة فوق وتحت */
+            width: 85%; /* إظهار الخلفية يميناً ويساراً بشكل أوضح */
+            max-width: 500px;
+            min-height: 400px; /* طول متناسق مع العناصر الخضراء */
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6); /* ظل منبثق قوي */
+            padding: 60px 20px; /* مساحة أكبر فوق وتحت داخل المربع */
             display: flex;
             flex-direction: column;
             align-items: center;
-            position: relative;
-            margin-bottom: 40px;
+            justify-content: flex-start;
+            gap: 40px;
+            box-sizing: border-box;
+            margin-bottom: 40px; /* مساحة لظهور الخلفية تحت المربع */
         }
 
-        .x-logo {
-            margin-top: 20px;
-            text-decoration: none;
+        .content-text {
+            color: #333;
+            font-size: 18px;
+            font-weight: 500;
         }
 
-        .x-logo svg {
-            width: 30px;
-            height: 30px;
-            fill: #000000; /* لون أيقونة X */
-            transition: transform 0.3s;
+        /* شعار X */
+        .x-link svg {
+            width: 35px;
+            height: 35px;
+            fill: #000;
+            transition: transform 0.2s;
         }
-
-        .x-logo:hover svg {
+        .x-link:hover svg {
             transform: scale(1.1);
         }
 
-        .footer-signature {
+        /* التوقيع في الأسفل */
+        .footer-sig {
             color: #ffffff;
-            font-size: 12px;
+            font-size: 11px;
             text-align: center;
+            width: 90%;
             margin-top: auto;
-            padding: 20px;
-            line-height: 1.6;
-        }
-
-        /* تنسيق الروابط */
-        a {
-            color: inherit;
-            text-decoration: none;
+            padding-bottom: 10px;
+            line-height: 1.5;
+            opacity: 0.9;
         }
     </style>
 </head>
 <body>
 
-    <div class="header-title">
-        توجيه <span class="highlight-text">"الأرقام إلى روابط"</span> لمنصة إلكتروني
+    <div class="top-nav">
+        <div class="nav-btn">سلسلة مواقع <span>&lsaquo;</span></div>
     </div>
 
-    <div class="main-container">
-        <p>ارجع لطلب الصفحة الان</p>
+    <div class="header-title">
+        توجيه <span class="highlight">"الأرقام إلى روابط"</span> لمنصة إلكتروني
+    </div>
 
-        <a href="https://x.com/your_profile" class="x-logo" target="_blank">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
-            </svg>
+    <div class="main-card">
+        <div class="content-text">ارجع لطلب الصفحة الان</div>
+        
+        <a href="https://x.com/your_profile" class="x-link" target="_blank">
+            <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
         </a>
     </div>
 
-    <div class="footer-signature">
+    <div class="footer-sig">
         تم تطوير المحرك البرمجي بواسطة Electrwni,، الكويت، بنية بمعمارية عالية الأداء، Built with High-Performance Architecture, by electrwni, kuwait
     </div>
 
