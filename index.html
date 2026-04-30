@@ -3,165 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>رقم روابطك - النسخة المطورة</title>
+    <title>توجيه الأرقام - منصة إلكتروني</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { 
-            --primary: #072AC8; 
-            --accent: #FCF300; 
-            --sky: #1E96FC; 
-            --box-yellow: #FFF041;
-        }
-
+        :root { --primary: #072AC8; --accent: #FCF300; --box-yellow: #FFF041; --dark-blue: #051ea3; }
         body { 
-            margin: 0; 
-            font-family: 'Segoe UI', Tahoma, sans-serif; 
-            /* الخلفية الجديدة المطلوبة */
+            margin: 0; font-family: 'Segoe UI', sans-serif; 
             background-image: linear-gradient(0deg, rgba(3, 121, 241,0.5) 0%, rgba(3, 121, 241,0.5) 9%,transparent 9%, transparent 16%,rgba(11, 75, 199,0.5) 16%, rgba(11, 75, 199,0.5) 49%,rgba(9, 86, 209,0.5) 49%, rgba(9, 86, 209,0.5) 100%),linear-gradient(135deg, rgb(3, 121, 241) 0%, rgb(3, 121, 241) 31%,rgb(13, 63, 188) 31%, rgb(13, 63, 188) 37%,transparent 37%, transparent 56%,rgb(9, 86, 209) 56%, rgb(9, 86, 209) 100%),linear-gradient(90deg, rgb(255,255,255),rgb(255,255,255));
-            background-attachment: fixed;
-            display: flex; 
-            flex-direction: column; 
-            min-height: 100vh; 
-            align-items: center; 
-            justify-content: center;
-            padding: 20px 0;
+            background-attachment: fixed; display: flex; flex-direction: column; min-height: 100vh; align-items: center; justify-content: center; padding: 20px 0;
         }
-
-        /* المربع الأبيض - تم تضييقه قليلاً */
-        .white-container {
-            background: #ffffff;
-            border-radius: 25px;
-            padding: 20px 25px;
-            max-width: 360px; /* تضييق من اليمين واليسار لرؤية الخلفية */
-            width: 85%;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-
-        .header-text { font-size: 1.1rem; font-weight: bold; margin-bottom: 20px; color: var(--primary); }
-
-        .input-group { width: 100%; margin-bottom: 15px; }
-        input { 
-            width: 100%; padding: 14px; font-size: 1rem; 
-            border: 2px solid #eee; border-radius: 12px; 
-            text-align: center; outline: none; box-sizing: border-box;
-        }
-
-        .btn-go { 
-            width: 100%; padding: 14px; background: var(--primary); 
-            color: #fff; border: none; border-radius: 12px; 
-            font-size: 1.1rem; font-weight: bold; cursor: pointer;
-        }
-
-        .qr-section { margin: 15px 0; padding: 10px; border: 1px solid #f5f5f5; border-radius: 15px; }
+        .main-title { color: white; font-size: 1.2rem; font-weight: bold; margin-bottom: 25px; text-align: center; padding: 0 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .white-container { background: #ffffff; border-radius: 25px; padding: 25px; max-width: 360px; width: 85%; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); display: flex; flex-direction: column; align-items: center; }
+        input { width: 100%; padding: 14px; font-size: 1rem; border: 2px solid #eee; border-radius: 12px; text-align: center; outline: none; margin-bottom: 10px; box-sizing: border-box; }
+        .btn-go { width: 100%; padding: 14px; background: var(--primary); color: #fff; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; }
+        .qr-section { margin: 15px 0; padding: 10px; border: 1px solid #f5f5f5; border-radius: 15px; text-align: center; }
         #qr-code-img { width: 100px; height: 100px; }
-
-        .social-links { display: flex; gap: 12px; margin-bottom: 15px; }
-        .social-icon { 
-            background: #f8faff; width: 40px; height: 40px; 
-            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-            text-decoration: none; color: var(--primary); border: 1px solid #eef2ff; 
-        }
-
-        .order-link { color: var(--primary); text-decoration: none; font-weight: bold; font-size: 0.9rem; margin-bottom: 20px; }
-
-        /* منطقة رقم روابطك - جمل ثابتة يمين ليسار */
-        .info-box-wrapper {
-            display: flex; align-items: center; justify-content: center;
-            direction: ltr; transform: scale(0.85); width: 100%;
-        }
-        .yellow-part {
-            background: var(--box-yellow); color: var(--primary); font-weight: bold;
-            padding: 10px 15px; border-radius: 12px; font-size: 1.2rem; z-index: 2;
-        }
-        .blue-part {
-            background: var(--primary); color: #ffffff; padding: 10px 18px;
-            border-radius: 12px 0 0 12px; margin-right: -8px; font-size: 0.95rem;
-            min-width: 230px; display: flex; align-items: center; justify-content: flex-start; direction: rtl;
-        }
-
-        .dynamic-text { 
-            white-space: nowrap; overflow: hidden; display: inline-block; 
-            border-left: 3px solid white;
-            /* توقيت الأنيميشن لضمان ثبات البدء من اليمين */
-            animation: typing 4s steps(30) infinite, cursor-logic 4s step-end infinite;
-        }
-
+        .social-links { display: flex; gap: 15px; margin-bottom: 15px; background: var(--dark-blue); padding: 10px 20px; border-radius: 30px; }
+        .social-icon { background: var(--accent); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; color: white; font-size: 1.1rem; }
+        .info-box-wrapper { display: flex; align-items: center; justify-content: center; direction: ltr; transform: scale(0.85); width: 100%; }
+        .yellow-part { background: var(--box-yellow); color: var(--primary); font-weight: bold; padding: 10px 15px; border-radius: 12px; font-size: 1.2rem; z-index: 2; }
+        .blue-part { background: var(--primary); color: #ffffff; padding: 10px 18px; border-radius: 12px 0 0 12px; margin-right: -8px; min-width: 230px; display: flex; align-items: center; justify-content: flex-start; direction: rtl; }
+        .dynamic-text { white-space: nowrap; overflow: hidden; display: inline-block; border-left: 3px solid white; animation: typing 8s steps(30) infinite, cursor-logic 8s step-end infinite; }
         @keyframes typing { 0%, 10% { width: 0; } 45%, 55% { width: 100%; } 90%, 100% { width: 0; } }
         @keyframes cursor-logic { 0%, 45% { border-left-color: #ffffff; } 46%, 100% { border-left-color: var(--box-yellow); } }
-
-        /* الفوتر المدمج */
-        .footer { 
-            margin-top: 25px; 
-            padding: 10px 20px; 
-            font-size: 0.8rem; 
-            color: #444; 
-            text-align: center;
-            line-height: 1.5;
-            background: rgba(255,255,255,0.6);
-            border-radius: 10px;
-            width: 90%;
-            max-width: 500px;
-        }
+        .footer { margin-top: 25px; padding: 15px; font-size: 0.8rem; color: #444; text-align: center; line-height: 1.5; background: rgba(255,255,255,0.6); border-radius: 10px; width: 90%; max-width: 500px; }
     </style>
 </head>
 <body>
-
+    <div class="main-title">صفحة توجيه الأرقام إلى روابط لمنصة إلكتروني</div>
     <div class="white-container">
-        <div class="header-text">توجيه الأرقام إلى روابط</div>
-
-        <div class="input-group">
-            <input type="number" id="linkId" placeholder="أدخل الرقم هنا...">
-            <button class="btn-go" onclick="redirect()">انتقل الآن</button>
-        </div>
-
+        <input type="number" id="linkId" placeholder="أدخل الرقم هنا...">
+        <button class="btn-go" onclick="redirect()">انتقل الآن</button>
         <div class="qr-section">
-            <p style="color:#888; font-size: 0.75rem; margin: 0 0 5px 0;">باركود الموقع</p>
+            <p style="color:#888; font-size: 0.75rem; margin:0 0 5px 0;">باركود الموقع</p>
             <img id="qr-code-img" src="" alt="QR">
         </div>
-
         <div class="social-links">
-            <a href="#" class="social-icon"><i class="fa-brands fa-x-twitter"></i></a>
-            <a href="#" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
-            <a href="#" class="social-icon"><i class="fa-brands fa-telegram"></i></a>
+            <a href="https://x.com/electrwni" target="_blank" class="social-icon"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="https://instagram.com/electrwni" target="_blank" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://t.me/electrwni" target="_blank" class="social-icon"><i class="fa-brands fa-telegram"></i></a>
         </div>
-
-        <a href="#" class="order-link">أطلب ترقيم روابطك الآن <i class="fa-brands fa-instagram"></i></a>
-
         <div class="info-box-wrapper">
-            <div class="blue-part">
-                <span class="dynamic-text" id="typing-text">حساباتك برقم واحد ..</span>
-            </div>
+            <div class="blue-part"><span class="dynamic-text" id="typing-text">حساباتك برقم واحد ..</span></div>
             <div class="yellow-part">رقم روابطك</div>
         </div>
     </div>
-
     <div class="footer">
         تم تطوير المحرك البرمجي بواسطة Electrwni,، الكويت، بنية بمعمارية عالية الأداء. Built with High-Performance Architecture, by electrwni, kuwait, 2026.
     </div>
-
     <script>
+        // الحل البرمجي لعدم التنقل: جلب الرابط الحالي ديناميكياً
         window.onload = function() {
+            const currentPath = window.location.href.split('?')[0]; // جلب الرابط بدون متغيرات زائفة
             const qrImg = document.getElementById('qr-code-img');
-            qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(window.location.href)}&color=072ac8`;
+            qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(currentPath)}&color=072ac8&cacheBust=${Date.now()}`;
         };
 
-        const phrases = [
-            "حساباتك برقم واحد ..",
-            "خطواتك تسبق منافسيك ..",
-            "بساطة سرعة وصول ..",
-            "رقم يختصر مسافاتك .."
-        ];
-        
+        const phrases = ["حساباتك برقم واحد ..", "خطواتك تسبق منافسيك ..", "بساطة سرعة وصول ..", "رقم يختصر مسافاتك .."];
         let i = 0;
-        const typingEl = document.getElementById('typing-text');
         setInterval(() => {
             i = (i + 1) % phrases.length;
-            typingEl.innerText = phrases[i];
-        }, 4000);
+            document.getElementById('typing-text').innerText = phrases[i];
+        }, 8000);
 
         function redirect() {
             const val = document.getElementById('linkId').value;
