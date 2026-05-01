@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>التوجيه الرقمي لروابط منصة إلكتروني</title>
-    <meta name="description" content="منصة إلكتروني لتوجيه الأرقام إلى روابط وتوفير بايو احترافي وبنية عالية الأداء.">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --primary: #072AC8; --accent: #FCF300; --sky: #1E96FC; --light-blue: #A2D6F9; --box-blue: #3B82F6; --box-yellow: #FFF041; }
@@ -21,7 +20,7 @@
         #qr-code-img { width: 115px; height: 115px; }
         .social-links { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; }
         .social-icon { background: var(--primary); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; color: var(--accent); border: 2px solid var(--sky); }
-        .social-icon svg, .social-icon i { width: 20px; height: 20px; fill: var(--accent); color: var(--accent); }
+        .social-icon i, .social-icon svg { width: 20px; height: 20px; fill: var(--accent); color: var(--accent); }
         .order-link { display: block; margin-bottom: 20px; color: var(--primary); text-decoration: none; font-weight: bold; font-size: 1.05rem; }
         .info-box-wrapper { display: flex; align-items: center; justify-content: center; margin-bottom: 10px; filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.1)); direction: ltr; transform: scale(0.85); }
         .yellow-part { background: var(--box-yellow); color: var(--primary); font-weight: bold; padding: 10px 18px; border-radius: 15px; font-size: 1.45rem; z-index: 2; }
@@ -58,8 +57,8 @@
         <a href="https://ig.me/m/electrwni" target="_blank" class="order-link">أطلب ترقيم روابطك الآن <i class="fa-brands fa-instagram"></i></a>
 
         <div class="info-box-wrapper">
-            <div class="blue-part"><span id="typing-text">حقق وصول أسرع لبيتك الرقمي ..</span></div>
-            <div class="yellow-part">رقم روابطك</div>
+            <div class="blue-part"><span id="typing-text">زد إنتاجية محتواك ..</span></div>
+            <div class="yellow-part">خدمة الروابط</div>
         </div>
     </div>
 
@@ -73,7 +72,7 @@
             document.getElementById('qr-code-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(currentUrl)}&color=072ac8`;
         };
 
-        const phrases = ["حقق وصول أسرع لبيتك الرقمي ..", "أعمالك أسهل للوصول ..", "سوق لدعاياتك بلمحة بصر .."];
+        const phrases = ["زد إنتاجية محتواك ..", "لطلب الخدمة واصلنا ..", "اضف ببايو انستقرام ..", "أفضل مستودع لروابطك  .."," روابطك بلمشة رقم ..", " رقم دعاياتك وانطلق ..", "منتج رقمي عربي ١٠٠٪؜ .."];
         let i = 0;
         setInterval(() => {
             i = (i + 1) % phrases.length;
