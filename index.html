@@ -1,289 +1,47 @@
+<!-- الصقه في ملف index.html بالكامل -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>إدارة الأصول الرقمية | Terminal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electrwni | تحويل الأرقام إلى روابط</title>
+    <!-- الصق هنا روابط CSS الخاصة بك أو التنسيقات القديمة -->
     <style>
-        :root { 
-            --ios-blue: #0071e3; 
-            --ios-dark: #1d1d1f; 
-            --ios-gray: #86868b; 
-            --ios-bg: #f5f5f7; 
-            --status-green: #34c759;
-            --danger: #ff3b30;
-        }
-
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; 
-            background-color: var(--ios-bg); 
-            margin: 0; 
-            padding: env(safe-area-inset-top) 15px; 
-            color: var(--ios-dark);
-            -webkit-font-smoothing: antialiased;
-        }
-
-        .app-container { max-width: 480px; margin: 0 auto; }
-
-        /* الهيكل العلوي: الهيبة الرسمية */
-        .header-section { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 25px 5px; 
-        }
-        .brand-identity { display: flex; align-items: center; gap: 10px; }
-        .logo-text { font-weight: 700; font-size: 22px; letter-spacing: -0.5px; }
-        .version-tag { 
-            background: var(--ios-dark); 
-            color: #fff; 
-            font-size: 9px; 
-            padding: 2px 6px; 
-            border-radius: 4px; 
-            font-weight: 600;
-        }
-        .system-pulse { 
-            display: flex; 
-            align-items: center; 
-            gap: 6px; 
-            font-size: 11px; 
-            font-weight: 500;
-            color: var(--ios-gray);
-        }
-        .dot { width: 7px; height: 7px; background: var(--status-green); border-radius: 50%; box-shadow: 0 0 8px var(--status-green); }
-
-        /* شريط العمليات: المعايير الفاعلة */
-        .control-bar { 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr) auto;
-            gap: 8px; 
-            background: rgba(255,255,255,0.7); 
-            backdrop-filter: blur(20px); 
-            padding: 8px; 
-            border-radius: 16px; 
-            margin-bottom: 30px;
-            border: 1px solid rgba(209, 209, 214, 0.5);
-        }
-        .action-node { 
-            background: #fff; 
-            border: none; 
-            border-radius: 10px; 
-            padding: 12px 5px; 
-            font-size: 10px; 
-            font-weight: 600; 
-            color: var(--ios-dark);
-            cursor: pointer;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        .btn-commit { 
-            background: var(--ios-blue); 
-            color: #fff; 
-            padding: 12px 18px; 
-            font-size: 12px;
-        }
-
-        /* سجل الإجراءات المفتوح والمغلق */
-        .section-header { 
-            font-size: 13px; 
-            font-weight: 600; 
-            color: var(--ios-gray); 
-            margin: 0 5px 12px;
-            text-transform: uppercase;
-        }
-        .archive-stack { display: flex; flex-direction: column; gap: 10px; }
-        .record-card { 
-            background: #fff; 
-            border-radius: 14px; 
-            border: 1px solid rgba(209, 209, 214, 0.4);
-            overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .record-summary { 
-            padding: 16px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            cursor: pointer;
-        }
-        .id-token { font-family: "SF Mono", monospace; font-weight: 700; color: var(--ios-blue); font-size: 15px; }
-        .desc-label { flex: 1; margin-right: 15px; font-weight: 500; font-size: 14px; text-align: right; }
-        .chevron { width: 10px; height: 10px; border-left: 2px solid #c7c7cc; border-bottom: 2px solid #c7c7cc; transform: rotate(-45deg); transition: 0.3s; }
-        .chevron.open { transform: rotate(135deg); margin-top: 5px; }
-
-        .record-details { 
-            display: none; 
-            padding: 16px; 
-            background: #fafafa; 
-            border-top: 1px solid #f2f2f7; 
-            animation: fadeIn 0.3s ease;
-        }
-        .path-title { font-size: 10px; color: var(--ios-gray); margin-bottom: 5px; }
-        .path-url { font-size: 12px; color: var(--ios-blue); word-break: break-all; font-family: monospace; }
-        .btn-terminate { 
-            margin-top: 15px; 
-            background: none; 
-            border: none; 
-            color: var(--danger); 
-            font-size: 12px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            padding: 0;
-        }
-
-        /* المبرمج: الهيبة المهنية */
-        .footer-branding { 
-            text-align: center; 
-            margin-top: 50px; 
-            padding-bottom: 30px;
-        }
-        .dev-seal { font-size: 11px; color: var(--ios-gray); letter-spacing: 0.3px; }
-        .dev-seal strong { color: var(--ios-dark); }
-        .arch-tag { font-size: 9px; color: #c7c7cc; margin-top: 4px; text-transform: uppercase; }
-
-        /* التنبيهات */
-        .overlay { 
-            display: none; 
-            position: fixed; 
-            inset: 0; 
-            background: rgba(0,0,0,0.3); 
-            backdrop-filter: blur(15px); 
-            z-index: 9999; 
-            justify-content: center; 
-            align-items: center; 
-        }
-        .modal { 
-            background: #fff; 
-            width: 85%; 
-            max-width: 300px; 
-            border-radius: 20px; 
-            padding: 25px; 
-            text-align: center; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-        .modal input { 
-            width: 100%; 
-            padding: 14px; 
-            border-radius: 12px; 
-            border: 1px solid #d2d2d7; 
-            font-size: 16px; 
-            margin-top: 15px; 
-            outline: none; 
-            box-sizing: border-box;
-            text-align: center;
-        }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* كود التنسيق الذي يجعل شكل الموقع كما في صورتك */
+        body { font-family: sans-serif; text-align: center; background: #f0f0f0; }
+        .card { background: white; border-radius: 20px; padding: 20px; margin: 20px auto; max-width: 350px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .btn-main { background: #0047ff; color: white; padding: 15px; border-radius: 10px; width: 100%; border: none; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <header class="header-section">
-        <div class="brand-identity">
-            <span class="logo-text">electrwni</span>
-            <span class="version-tag">CONSOLE 2.1</span>
-        </div>
-        <div class="system-pulse">
-            <div class="dot"></div> خادم نشط
-        </div>
-    </header>
-
-    <nav class="control-bar">
-        <button class="action-node" onclick="openInput('num')">ترميز</button>
-        <button class="action-node" onclick="openInput('url')">مسار</button>
-        <button class="action-node" onclick="openInput('desc')">بيان</button>
-        <button class="action-node btn-commit" onclick="deploy()">نشر</button>
-    </nav>
-
-    <h2 class="section-header">قاعدة بيانات الارتباطات</h2>
+<div class="card">
+    <input type="text" id="linkId" placeholder="أدخل الرقم هنا..." style="width:90%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ccc;">
+    <button class="btn-main" onclick="redirect()">انتقل الآن</button>
     
-    <div id="archiveStack" class="archive-stack">
-        </div>
-
-    <footer class="footer-branding">
-        <div class="dev-seal">تم هندسة المحرك بواسطة <strong>brmjeat1 Engineering</strong></div>
-        <div class="arch-tag">High Performance System Architecture</div>
-    </footer>
-</div>
-
-<div id="modalOverlay" class="overlay" onclick="closeInput(event)">
-    <div class="modal" onclick="event.stopPropagation()">
-        <div id="modalTitle" style="font-weight: 600; font-size: 17px;"></div>
-        <input type="text" id="fieldInput" placeholder="أدخل البيانات هنا">
-        <button class="action-node btn-commit" style="width: 100%; margin-top: 15px;" onclick="saveField()">تأكيد</button>
+    <div style="margin-top:20px;">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://electrwni.com" alt="QR Code">
+        <p style="font-size:12px; color:#666;">باركود الموقع</p>
     </div>
 </div>
 
+<footer style="font-size: 11px; color: #0071e3; margin-top: 50px;">
+    تم تطوير المحرك البرمجي بواسطة Electrwni، الكويت<br>
+    بنية بمعمارية عالية الأداء
+</footer>
+
 <script>
-    let session = { code: '', url: '', desc: '' };
-    let activeField = '';
-
-    function openInput(f) {
-        activeField = f;
-        const labels = { num: 'ترميز الوجهة الرقمي', url: 'بروتوكول عنوان المسار', desc: 'توصيف بيانات التعريف' };
-        document.getElementById('modalTitle').innerText = labels[f];
-        document.getElementById('fieldInput').value = session[f];
-        document.getElementById('modalOverlay').style.display = 'flex';
-    }
-
-    function closeInput(e) { document.getElementById('modalOverlay').style.display = 'none'; }
-
-    function saveField() {
-        session[activeField] = document.getElementById('fieldInput').value;
-        closeInput();
-    }
-
-    function deploy() {
-        if(!session.code || !session.url) return alert("خطأ: المعايير غير مكتملة");
-        const data = JSON.parse(localStorage.getItem('electrwni_data')) || [];
-        data.push({...session});
-        localStorage.setItem('electrwni_data', JSON.stringify(data));
-        location.reload();
-    }
-
-    function renderArchive() {
-        const data = JSON.parse(localStorage.getItem('electrwni_data')) || [];
-        const stack = document.getElementById('archiveStack');
-        stack.innerHTML = data.map((item, i) => `
-            <div class="record-card">
-                <div class="record-summary" onclick="toggleRecord(${i})">
-                    <span class="id-token">#${item.code}</span>
-                    <span class="desc-label">${item.desc || 'سجل غير معرف'}</span>
-                    <div class="chevron" id="chevron-${i}"></div>
-                </div>
-                <div class="record-details" id="details-${i}">
-                    <div class="path-title">مسار الارتباط المعتمد</div>
-                    <div class="path-url">${item.url}</div>
-                    <button class="btn-terminate" onclick="terminate(${i})">إبطال السجل (حذف)</button>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    function toggleRecord(i) {
-        const d = document.getElementById(`details-${i}`);
-        const c = document.getElementById(`chevron-${i}`);
-        const isOpen = d.style.display === 'block';
+    function redirect() {
+        const val = document.getElementById('linkId').value;
+        const links = JSON.parse(localStorage.getItem('electrwni_data')) || [];
+        const target = links.find(l => l.code === val);
         
-        document.querySelectorAll('.record-details').forEach(el => el.style.display = 'none');
-        document.querySelectorAll('.chevron').forEach(el => el.classList.remove('open'));
-
-        if (!isOpen) {
-            d.style.display = 'block';
-            c.classList.add('open');
+        if (target) {
+            window.location.href = target.url;
+        } else {
+            alert("يرجى إدخال رقم صحيح؛ هذا الرقم غير مسجل حالياً.");
         }
     }
-
-    function terminate(i) {
-        if(confirm('تأكيد إبطال السجل نهائياً؟')) {
-            const data = JSON.parse(localStorage.getItem('electrwni_data')) || [];
-            data.splice(i, 1);
-            localStorage.setItem('electrwni_data', JSON.stringify(data));
-            renderArchive();
-        }
-    }
-
-    window.onload = renderArchive;
 </script>
 </body>
 </html>
