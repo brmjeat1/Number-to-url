@@ -3,102 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم إلكتروني | Admin Secure</title>
+    <title>لوحة التحكم VIP | إلكتروني</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
-        :root { --primary: #0056D2; --bg: #f8fafc; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
-        body { background-color: var(--bg); display: flex; justify-content: center; padding: 20px; }
-        
-        /* واجهة القفل */
-        #login-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--primary); display: flex; justify-content: center; align-items: center; z-index: 1000;
+        :root {
+            --primary: #072AC8;
+            --accent: #FCF300;
+            --sky: #1E96FC;
+            --bg-color: #f4f7f6;
+            --white: #ffffff;
         }
-        .login-box { background: white; padding: 30px; border-radius: 15px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            margin: 0;
+            background: linear-gradient(180deg, #A2D6F9 0%, #072AC8 100%);
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container { width: 95%; max-width: 600px; padding: 20px 0; }
+
+        header { text-align: center; color: white; margin-bottom: 25px; }
+
+        /* نظام الأقسام المنسدلة */
+        .section-box {
+            background: var(--white);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .section-header {
+            background: var(--white);
+            padding: 18px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+            transition: 0.3s;
+        }
+
+        .section-header h2 { font-size: 1.1rem; margin: 0; color: var(--primary); }
+        .section-header i { transition: 0.3s; color: #ccc; }
+
+        .section-content { padding: 20px; display: none; }
+        .section-box.active .section-content { display: block; }
+        .section-box.active .section-header i { transform: rotate(180deg); color: var(--primary); }
+
+        /* تنسيق المدخلات والمربعات */
+        .input-card {
+            background: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .label-title { display: block; font-weight: bold; margin-bottom: 10px; font-size: 0.9rem; color: #555; }
         
-        /* واجهة الإدارة */
-        .main-container { width: 100%; max-width: 800px; background: white; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); overflow: hidden; display: none; }
-        header { background: #00224d; color: white; padding: 25px; text-align: center; border-bottom: 5px solid #ffcc00; }
-        .content { padding: 30px; }
-        .section-box { text-align: center; margin-bottom: 25px; }
-        .input-group { background: #f1f5f9; padding: 20px; border-radius: 15px; display: flex; gap: 10px; }
-        input { padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; }
-        .btn-add { background: var(--primary); color: white; border: none; padding: 0 30px; border-radius: 10px; cursor: pointer; font-weight: bold; }
-        .link-card { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #eee; }
-        .btn-delete { background: #ef4444; color: white; border: none; padding: 5px 15px; border-radius: 6px; cursor: pointer; }
+        .grid-inputs { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; }
+        
+        input, select {
+            width: 100%; padding: 12px; border: 1px solid #ddd;
+            border-radius: 8px; box-sizing: border-box; font-family: inherit;
+        }
+
+        .btn-action {
+            background: var(--primary); color: white; border: none;
+            padding: 12px; border-radius: 8px; width: 100%;
+            margin-top: 10px; font-weight: bold; cursor: pointer;
+        }
+
+        .vip-divider {
+            text-align: center; color: var(--accent); font-weight: bold;
+            margin: 20px 0; position: relative;
+        }
+
+        .vip-divider::before, .vip-divider::after {
+            content: ""; position: absolute; top: 50%; width: 30%;
+            height: 1px; background: rgba(255,255,255,0.3);
+        }
+        .vip-divider::before { right: 0; }
+        .vip-divider::after { left: 0; }
+
+        footer { text-align: center; color: white; font-size: 0.8rem; margin-top: 20px; padding-bottom: 20px; }
     </style>
 </head>
 <body>
 
-    <div id="login-screen">
-        <div class="login-box">
-            <h2 style="margin-bottom: 15px;">دخول المسؤول</h2>
-            <input type="password" id="passInput" placeholder="أدخل كلمة المرور" style="width: 100%; margin-bottom: 15px;">
-            <button class="btn-add" style="height: 45px; width: 100%;" onclick="checkPass()">دخول</button>
+<div class="container">
+    <header>
+        <h1 style="font-size: 1.5rem;">لوحة التحكم VIP</h1>
+    </header>
+
+    <!-- القسم الأول: الروابط (مفتوح تلقائياً) -->
+    <div class="section-box active">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>القسم الأول: الروابط والأرقام</h2>
+            <i class="fas fa-chevron-down"></i>
         </div>
-    </div>
-
-    <div class="main-container" id="admin-panel">
-        <header><h1>لوحة إدارة الروابط | Electrwni</h1></header>
-        <div class="content">
-            <div class="section-box">
-                <img src="https://img.icons8.com/fluency/96/todo-list.png" style="width: 60px;">
-                <h2 style="color: var(--primary);">إدارة الروابط</h2>
-            </div>
-            <div class="input-group">
-                <input type="number" id="inID" placeholder="الرقم" style="width: 80px;">
-                <input type="url" id="inURL" placeholder="الرابط المستهدف" style="flex-grow: 1;">
-                <button class="btn-add" onclick="saveLink()">حفظ</button>
-            </div>
-            <div id="list" style="margin-top: 30px;"></div>
-        </div>
-    </div>
-
-    <script>
-        // كلمة المرور الافتراضية (يمكنك تغييرها من هنا)
-        const MASTER_PASS = "1234"; 
-
-        function checkPass() {
-            const val = document.getElementById('passInput').value;
-            if(val === MASTER_PASS) {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('admin-panel').style.display = 'block';
-                render();
-            } else {
-                alert("كلمة المرور غير صحيحة!");
-            }
-        }
-
-        let db = JSON.parse(localStorage.getItem('electrwni_links')) || [];
-
-        function render() {
-            const list = document.getElementById('list');
-            list.innerHTML = db.map((item, index) => `
-                <div class="link-card">
-                    <span><strong>#${item.id}</strong> - ${item.url}</span>
-                    <button class="btn-delete" onclick="remove(${index})">حذف</button>
+        <div class="section-content">
+            <div class="input-card">
+                <span class="label-title">إضافة / تعديل الروابط</span>
+                <div class="grid-inputs">
+                    <input type="number" placeholder="رقم">
+                    <input type="url" placeholder="الرابط">
                 </div>
-            `).join('');
-        }
+                <button class="btn-action">حفظ التغييرات</button>
+            </div>
+            
+            <div class="input-card">
+                <span class="label-title">إدارة الأرقام</span>
+                <select>
+                    <option>الأرقام المستخدمة</option>
+                    <option>حذف رقم</option>
+                    <option>تغيير رقم</option>
+                </select>
+            </div>
+        </div>
+    </div>
 
-        function saveLink() {
-            const id = document.getElementById('inID').value;
-            const url = document.getElementById('inURL').value;
-            if(id && url) {
-                db.push({id, url});
-                localStorage.setItem('electrwni_links', JSON.stringify(db));
-                render();
-                document.getElementById('inID').value = '';
-                document.getElementById('inURL').value = '';
-            }
-        }
+    <div class="vip-divider">————- اقسام VIP ————-</div>
 
-        function remove(idx) {
-            db.splice(idx, 1);
-            localStorage.setItem('electrwni_links', JSON.stringify(db));
-            render();
+    <!-- القسم الثاني: الإحصاءات -->
+    <div class="section-box">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>القسم الثاني: الإحصاءات</h2>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="section-content">
+            <div class="input-card">
+                <span class="label-title">عرض الزيارات حسب:</span>
+                <select>
+                    <option>اليوم</option>
+                    <option>الأسبوع</option>
+                    <option>الشهر</option>
+                    <option>٦ أشهر</option>
+                    <option>السنة</option>
+                    <option>كل الوقت</option>
+                </select>
+            </div>
+            
+            <div class="input-card">
+                <span class="label-title">تنزيل التقارير:</span>
+                <div style="display: flex; gap: 5px; flex-direction: column;">
+                    <select>
+                        <option>تنزيل حسب الوقت (اليوم، الأسبوع...)</option>
+                        <option>تنزيل حسب الأكثر استخداماً</option>
+                    </select>
+                    <button class="btn-action" style="background: #28a745;">تنزيل الآن <i class="fas fa-download"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- القسم الثالث: زوار الموقع -->
+    <div class="section-box">
+        <div class="section-header" onclick="toggleSection(this)">
+            <h2>القسم الثالث: زوار الموقع</h2>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="section-content" style="text-align: center; color: #888;">
+            <p><i class="fas fa-clock"></i> قيد التطوير.. متاح لاحقاً</p>
+        </div>
+    </div>
+
+    <footer>
+        Electrwni High-Performance Architecture © 2026
+    </footer>
+</div>
+
+<script>
+    function toggleSection(header) {
+        const currentBox = header.parentElement;
+        const isActive = currentBox.classList.contains('active');
+        
+        // إغلاق جميع الأقسام (اختياري، إذا أردت فتح قسم واحد فقط في كل مرة)
+        // document.querySelectorAll('.section-box').forEach(box => box.classList.remove('active'));
+        
+        if (!isActive) {
+            currentBox.classList.add('active');
+        } else {
+            currentBox.classList.remove('active');
         }
-    </script>
+    }
+</script>
+
 </body>
 </html>
