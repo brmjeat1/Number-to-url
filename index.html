@@ -4,11 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        /* التنسيق العام */
         body {
             background-color: #1a1a1a;
             margin: 0;
-            padding: 20px 0; /* مسافة من الأعلى والأسفل لظهور الخلفية */
+            padding: 20px 0;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -17,103 +16,99 @@
             box-sizing: border-box;
         }
 
-        /* زر سلسلة المواقع العلوي */
-        .top-nav {
-            align-self: flex-end;
-            margin-left: 5%;
-            margin-bottom: 20px;
-        }
-        .nav-btn {
-            background: #2a2a2a;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            border: 1px solid #444;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        /* العنوان العلوي */
         .header-title {
             color: #ffffff;
             font-size: 22px;
             margin-bottom: 30px;
             text-align: center;
-            line-height: 1.6;
             width: 90%;
         }
 
-        /* تكبير ما بين العاكفين */
         .highlight {
-            font-size: 28px; /* حجم أكبر كما طلبت */
+            font-size: 28px;
             color: #4CAF50;
             font-weight: bold;
-            display: inline-block;
-            margin: 0 5px;
         }
 
-        /* المربع الأبيض المطور */
+        /* المربع الأبيض التفاعلي */
         .main-card {
             background-color: #ffffff;
-            width: 85%; /* إظهار الخلفية يميناً ويساراً بشكل أوضح */
-            max-width: 500px;
-            min-height: 400px; /* طول متناسق مع العناصر الخضراء */
+            width: 88%;
+            max-width: 450px;
             border-radius: 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6); /* ظل منبثق قوي */
-            padding: 60px 20px; /* مساحة أكبر فوق وتحت داخل المربع */
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            padding: 40px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            gap: 40px;
-            box-sizing: border-box;
-            margin-bottom: 40px; /* مساحة لظهور الخلفية تحت المربع */
+            gap: 20px;
         }
 
-        .content-text {
-            color: #333;
+        /* مربع إدخال الأرقام */
+        .input-field {
+            width: 80%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            font-size: 20px;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .input-field:focus {
+            border-color: #4CAF50;
+        }
+
+        /* زر اذهب الآن */
+        .action-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 40px;
+            border: none;
+            border-radius: 10px;
             font-size: 18px;
-            font-weight: 500;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .action-btn:hover {
+            background-color: #45a049;
         }
 
         /* شعار X */
         .x-link svg {
-            width: 35px;
-            height: 35px;
+            width: 30px;
+            height: 30px;
             fill: #000;
-            transition: transform 0.2s;
-        }
-        .x-link:hover svg {
-            transform: scale(1.1);
+            margin-top: 10px;
         }
 
-        /* التوقيع في الأسفل */
+        /* التوقيع */
         .footer-sig {
             color: #ffffff;
             font-size: 11px;
             text-align: center;
             width: 90%;
             margin-top: auto;
-            padding-bottom: 10px;
+            padding: 20px 0;
             line-height: 1.5;
-            opacity: 0.9;
         }
     </style>
 </head>
 <body>
-
-    <div class="top-nav">
-        <div class="nav-btn">سلسلة مواقع <span>&lsaquo;</span></div>
-    </div>
 
     <div class="header-title">
         توجيه <span class="highlight">"الأرقام إلى روابط"</span> لمنصة إلكتروني
     </div>
 
     <div class="main-card">
-        <div class="content-text">ارجع لطلب الصفحة الان</div>
+        <div style="color: #666; font-size: 14px;">أدخل الرقم بالأسفل</div>
+        
+        <input type="number" class="input-field" placeholder="000" id="numInput">
+        
+        <button class="action-btn" onclick="goToLink()">اذهب الآن</button>
         
         <a href="https://x.com/your_profile" class="x-link" target="_blank">
             <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
@@ -124,5 +119,16 @@
         تم تطوير المحرك البرمجي بواسطة Electrwni,، الكويت، بنية بمعمارية عالية الأداء، Built with High-Performance Architecture, by electrwni, kuwait
     </div>
 
+    <script>
+        function goToLink() {
+            const num = document.getElementById('numInput').value;
+            if(num) {
+                // هنا تضع منطق الروابط الخاص بك
+                alert('سيتم توجيهك للرقم: ' + num);
+            } else {
+                alert('يرجى إدخال رقم أولاً');
+            }
+        }
+    </script>
 </body>
 </html>
