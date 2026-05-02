@@ -1,150 +1,48 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إلكتروني | لوحة الأداء العالي</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #072AC8; --accent: #FCF300; --sky: #1E96FC;
-            --bg: #F0F4F8; --white: #ffffff;
-        }
-
-        body {
-            font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg);
-            display: flex; justify-content: center; color: #1E293B;
-        }
-
-        .container { width: 95%; max-width: 650px; padding: 20px 0; }
-
-        /* مؤشرات الأداء السريعة (Quick KPIs) */
-        .kpi-row {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px;
-        }
-        .kpi-card {
-            background: var(--white); padding: 15px; border-radius: 18px;
-            text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            border-bottom: 3px solid var(--primary);
-        }
-        .kpi-card span { display: block; font-size: 0.8rem; color: #64748B; margin-bottom: 5px; }
-        .kpi-card strong { font-size: 1.4rem; color: var(--primary); }
-
-        /* الأقسام المنسدلة */
-        .section { background: var(--white); border-radius: 22px; margin-bottom: 15px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        .section-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .section-header h2 { font-size: 1rem; margin: 0; color: var(--primary); display: flex; align-items: center; gap: 10px; }
-        .section-content { padding: 0 20px 20px; display: none; }
-        .section.active .section-content { display: block; }
-        .section.active .fa-chevron-down { transform: rotate(180deg); color: var(--primary); }
-
-        /* الروابط والأرقام (سرد تفاعلي) */
-        .input-box { background: #f8fafc; padding: 15px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #e2e8f0; }
-        .grid-fields { display: grid; grid-template-columns: 1fr 2.5fr; gap: 10px; }
-        input { padding: 12px; border: 1px solid #ddd; border-radius: 10px; width: 100%; box-sizing: border-box; }
-        
-        .numbers-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px; margin-top: 15px; }
-        .num-item { background: #f1f5f9; padding: 12px; border-radius: 12px; text-align: center; font-weight: 700; cursor: pointer; transition: 0.2s; }
-        .num-item:hover { background: var(--accent); transform: scale(1.05); }
-
-        /* الإحصائيات (خريطة الحرارة) */
-        .heatmap-placeholder { height: 120px; background: linear-gradient(90deg, #f1f5f9 20%, #1E96FC 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
-
-        .btn-save { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 12px; width: 100%; margin-top: 10px; font-weight: bold; cursor: pointer; }
-
-        /* Modal */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(3px); z-index: 100; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 30px; border-radius: 25px; width: 85%; max-width: 350px; text-align: center; }
-        
-        footer { text-align: center; font-size: 0.8rem; color: #94a3b8; margin: 20px 0; }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <!-- مؤشرات الأداء السريعة -->
-    <div class="kpi-row">
-        <div class="kpi-card"><span>إجمالي الروابط</span><strong>124</strong></div>
-        <div class="kpi-card"><span>زيارات اليوم</span><strong>+1.2k</strong></div>
-    </div>
-
-    <!-- القسم 1: الروابط (مفتوح) -->
-    <div class="section active">
-        <div class="section-header" onclick="toggleSec(this)">
-            <h2><i class="fas fa-link"></i> إدارة الروابط والأرقام</h2>
-            <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="section-content">
-            <div class="input-box">
-                <div class="grid-fields">
-                    <input type="number" id="n" placeholder="الرقم">
-                    <input type="url" id="u" placeholder="الرابط">
-                </div>
-                <button class="btn-save" onclick="add()">موافق (حفظ/استبدال)</button>
-            </div>
-            <p style="font-size: 0.85rem; font-weight: bold;">الأرقام المربوطة حالياً:</p>
-            <div class="numbers-list" id="list">
-                <div class="num-item" onclick="openControl('101')">101</div>
-                <div class="num-item" onclick="openControl('102')">102</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- القسم 2: الإحصائيات (خريطة الحرارة) -->
-    <div class="section">
-        <div class="section-header" onclick="toggleSec(this)">
-            <h2><i class="fas fa-fire"></i> إحصائيات خريطة الحرارة</h2>
-            <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="section-content">
-            <div class="heatmap-placeholder">تحليل ذروة النشاط اليومي</div>
-            <p style="font-size: 0.8rem; color: #64748B; text-align: center; margin-top: 10px;">يوضح التدرج أوقات ذروة ضغط الروابط</p>
-        </div>
-    </div>
-
-    <!-- القسم 3: زوار الموقع (قيد التطوير) -->
-    <div class="section">
-        <div class="section-header" onclick="toggleSec(this)">
-            <h2><i class="fas fa-users"></i> زوار الموقع</h2>
-            <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="section-content" style="text-align: center; padding: 40px 0; color: #cbd5e1;">
-            <i class="fas fa-tools fa-2x"></i>
-            <p>هذا القسم متاح في المرحلة القادمة</p>
-        </div>
-    </div>
-
-    <footer>بني بمعمارية عالية الأداء | Electrwni 2026</footer>
-</div>
-
-<!-- نظام التحكم المنبثق -->
-<div class="modal" id="mdl" onclick="closeControl()">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <h3 id="activeNum" style="color: var(--primary);">#101</h3>
-        <button class="btn-save" style="background: var(--sky);">مشاهدة</button>
-        <button class="btn-save">تعديل</button>
-        <button class="btn-save" style="background: #EF4444;">حذف</button>
-    </div>
-</div>
+<!-- أضف مكتبات Firebase في نهاية الـ Body قبل الـ Script -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
 <script>
-    function toggleSec(h) { h.parentElement.classList.toggle('active'); }
-    function openControl(n) { 
-        document.getElementById('activeNum').innerText = '#' + n;
-        document.getElementById('mdl').style.display = 'flex'; 
-    }
-    function closeControl() { document.getElementById('mdl').style.display = 'none'; }
+    // إعدادات قاعدة البيانات (تحتاج وضع بياناتك من Firebase Console لاحقاً)
+    const firebaseConfig = {
+        databaseURL: "https://your-project-id.firebaseio.com"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
     function add() {
         let n = document.getElementById('n').value;
-        if(n) {
+        let u = document.getElementById('u').value;
+        
+        if(n && u) {
+            // حفظ الرقم والرابط في السحابة فوراً
+            db.ref('links/' + n).set(u).then(() => {
+                alert("تم التحديث العالمي للرقم: " + n);
+                location.reload();
+            });
+        }
+    }
+
+    // جلب وعرض الأرقام من السحابة
+    db.ref('links').on('value', (snapshot) => {
+        const links = snapshot.val() || {};
+        let list = document.getElementById('list');
+        list.innerHTML = '';
+        Object.keys(links).forEach(num => {
             let item = document.createElement('div');
             item.className = 'num-item';
-            item.innerText = n;
-            item.onclick = () => openControl(n);
-            document.getElementById('list').appendChild(item);
+            item.innerText = num;
+            item.onclick = () => openControl(num, links[num]);
+            list.appendChild(item);
+        });
+        document.querySelector('.kpi-card strong').innerText = Object.keys(links).length;
+    });
+
+    function deleteLink() {
+        if(window.currentActive) {
+            db.ref('links/' + window.currentActive).remove().then(() => {
+                closeControl();
+            });
         }
     }
 </script>
-
-</body>
-</html>
