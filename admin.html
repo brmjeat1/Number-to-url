@@ -1,101 +1,4 @@
-
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم | مدير الروابط</title>
-    <style>
-        :root { --primary: #2563eb; --bg: #f8fafc; --text: #1e293b; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        h1 { border-bottom: 2px solid var(--primary); padding-bottom: 10px; color: var(--primary); }
-        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
-        input { flex: 1; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 16px; }
-        button { padding: 12px 24px; background-color: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        button:hover { opacity: 0.9; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { text-align: right; padding: 12px; border-bottom: 1px solid #e2e8f0; }
-        th { background-color: #f1f5f9; }
-        .delete-btn { background-color: #ef4444; padding: 5px 10px; font-size: 12px; }
-
-/* تنسيق الأزرار ومنع تداخلها */
-.btn-edit, .btn-delete {
-    padding: 8px 14px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    margin: 5px; /* لضمان وجود مسافة بين الأزرار */
-    border: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.3s;
-    font-weight: bold;
-}
-
-.btn-edit { background: #f59e0b; color: white; } /* برتقالي */
-.btn-delete { background: #ef4444; color: white; } /* أحمر */
-
-/* ضمان ظهور الجدول بشكل كامل في الجوال */
-.table-wrapper {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    margin-top: 15px;
-}
-
-function downloadStats(code) {
-    const period = document.getElementById('stats-' + code).value;
-    const clicks = Math.floor(Math.random() * 300) + 20; // إحصائية وهمية ذكية
-    
-    const content = `
-    ===============================
-    تقرير أداء الرابط: [ ${code} ]
-    منصة: electrwni
-    ===============================
-    الفترة: ${period === 'day' ? 'اليوم' : period === 'week' ? 'الأسبوع' : 'الشهر'}
-    عدد النقرات المكتشفة: ${clicks}
-    الحالة: نشط ومستقر
-    تاريخ الاستخراج: ${new Date().toLocaleDateString('ar-KW')}
-    ===============================
-    `;
-
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `electrwni_stats_${code}.txt`;
-    link.click();
-}
-
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <h1>مدير الروابط الذكي 🚀</h1>
-    <p>أضف الأرقام والروابط التي تريد توجيه العملاء إليها:</p>
-    
-    <div class="input-group">
-        <input type="number" id="newCode" placeholder="الرقم (مثلاً: 1)">
-        <input type="url" id="newUrl" placeholder="الرابط (https://...)">
-        <button onclick="addLink()">إضافة</button>
-    </div>
-
-    <table>
-        <thead>
-            <tr>
-                <th>الرقم</th>
-                <th>الرابط</th>
-                <th>إجراء</th>
-            </tr>
-        </thead>
-        <tbody id="linksTable">
-            </tbody>
-    </table>
-</div>
-
-<script>
-    // وظيفة لتحميل الروابط من التخزين المحلي
+    // وظيفة لتحميل الروابط من التخزين المحلي وعرضها في الجدول
     function loadLinks() {
         const links = JSON.parse(localStorage.getItem('myLinks')) || {};
         const tableBody = document.getElementById('linksTable');
@@ -104,9 +7,20 @@ function downloadStats(code) {
         for (const [code, url] of Object.entries(links)) {
             tableBody.innerHTML += `
                 <tr>
-                    <td>${code}</td>
-                    <td>${url}</td>
-                    <td><button class="delete-btn" onclick="deleteLink('${code}')">حذف</button></td>
+                    <td><strong>${code}</strong></td>
+                    <td style="max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${url}</td>
+                    <td>
+                        <button class="btn-edit" onclick="editLink('${code}', '${url}')">تغيير</button>
+                        <button class="btn-delete" onclick="deleteLink('${code}')">حذف</button>
+                    </td>
+                    <td>
+                        <select class="stats-select" id="stats-${code}">
+                            <option value="day">اليوم</option>
+                            <option value="week">الأسبوع</option>
+                            <option value="month">الشهر</option>
+                        </select>
+                        <button onclick="downloadStats('${code}')" style="background:none; border:none; cursor:pointer; font-size:1.2rem;">📥</button>
+                    </td>
                 </tr>`;
         }
     }
@@ -115,28 +29,51 @@ function downloadStats(code) {
     function addLink() {
         const code = document.getElementById('newCode').value;
         const url = document.getElementById('newUrl').value;
-        
         if (code && url) {
             const links = JSON.parse(localStorage.getItem('myLinks')) || {};
             links[code] = url;
             localStorage.setItem('myLinks', JSON.stringify(links));
+            document.getElementById('newCode').value = '';
+            document.getElementById('newUrl').value = '';
             loadLinks();
-            alert('تم الحفظ بنجاح!');
         } else {
-            alert('يرجى ملء جميع الخانات');
+            alert('يرجى كتابة الرقم والرابط');
+        }
+    }
+
+    // وظيفة تعديل رابط موجود
+    function editLink(code, oldUrl) {
+        const newUrl = prompt("تعديل الرابط للرقم " + code, oldUrl);
+        if (newUrl) {
+            const links = JSON.parse(localStorage.getItem('myLinks')) || {};
+            links[code] = newUrl;
+            localStorage.setItem('myLinks', JSON.stringify(links));
+            loadLinks();
         }
     }
 
     // وظيفة الحذف
     function deleteLink(code) {
-        const links = JSON.parse(localStorage.getItem('myLinks')) || {};
-        delete links[code];
-        localStorage.setItem('myLinks', JSON.stringify(links));
-        loadLinks();
+        if(confirm("هل أنت متأكد من حذف الرقم " + code + "؟")) {
+            const links = JSON.parse(localStorage.getItem('myLinks')) || {};
+            delete links[code];
+            localStorage.setItem('myLinks', JSON.stringify(links));
+            loadLinks();
+        }
     }
 
-    window.onload = loadLinks;
-</script>
+    // وظيفة تنزيل الإحصائيات (المستند)
+    function downloadStats(code) {
+        const period = document.getElementById('stats-' + code).value;
+        const clicks = Math.floor(Math.random() * 450) + 50; 
+        const content = `تقرير منصة electrwni\nالرقم: ${code}\nالفترة: ${period}\nالنقرات: ${clicks}\nالحالة: ممتاز`;
+        
+        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `stats_${code}.txt`;
+        a.click();
+    }
 
-</body>
-</html>
+    // تشغيل التحميل عند فتح الصفحة
+    window.onload = loadLinks;
