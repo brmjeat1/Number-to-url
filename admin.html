@@ -6,8 +6,8 @@
     <title>لوحة التحكم | Electrwni</title>
     <style>
         :root { --apple-blue: #0071e3; --bg-gray: #f0f2f5; }
-        body { font-family: -apple-system, sans-serif; background-color: var(--bg-gray); margin: 0; padding: 10px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 400px; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        body { font-family: -apple-system, sans-serif; background-color: var(--bg-gray); margin: 0; padding: 10px; display: flex; justify-content: center; overflow-x: hidden; }
+        .container { width: 100%; max-width: 400px; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding-bottom: 20px; }
         
         .header { padding: 20px; text-align: center; border-bottom: 1px solid #eee; }
         .header h2 { margin: 0; font-size: 18px; color: #1c1e21; }
@@ -22,29 +22,29 @@
         
         .content { padding: 15px; background: #f8f9fa; }
 
-        /* تنسيق المدخلات */
-        input { 
-            width: 100%; 
-            padding: 12px; 
-            margin-bottom: 10px; 
-            border: 1px solid #e9edef; 
-            border-radius: 10px; 
-            box-sizing: border-box; 
-            font-size: 16px; /* حجم 16 يمنع الزووم التلقائي في الآيفون */
-            outline: none; 
-            -webkit-appearance: none;
-        }
+        /* المدخلات */
+        input { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #e9edef; border-radius: 10px; box-sizing: border-box; font-size: 16px; outline: none; background: #fff; }
+        input:readonly { background-color: #fff; cursor: default; }
 
-        .btn-blue { width: 100%; background: var(--apple-blue); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; }
+        /* لوحة مفاتيح الموقع (الأزرق والأبيض) */
+        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; direction: ltr; }
+        .num-btn { 
+            background: #fff; border: 1px solid #e9edef; padding: 15px; border-radius: 12px; 
+            font-size: 20px; font-weight: bold; color: var(--apple-blue); cursor: pointer; 
+            text-align: center; transition: 0.1s; -webkit-tap-highlight-color: transparent;
+        }
+        .num-btn:active { background: var(--apple-blue); color: #fff; }
+        .btn-clear { color: #ff3b30; }
+        
+        .btn-blue { width: 100%; background: var(--apple-blue); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
 
         table { width: 100%; border-collapse: collapse; table-layout: fixed; margin-top: 5px; }
         th { font-size: 11px; color: #8696a0; padding-bottom: 8px; text-align: right; border-bottom: 1px solid #eee; }
-        td { padding: 12px 4px; font-size: 13px; border-bottom: 1px solid #f5f6f6; word-wrap: break-word; vertical-align: middle; }
-        
+        td { padding: 12px 4px; font-size: 13px; border-bottom: 1px solid #f5f6f6; word-wrap: break-word; }
         .col-views { text-align: center; font-weight: bold; color: var(--apple-blue); }
         .action-row { display: flex; gap: 8px; margin-top: 5px; }
-        .btn-edit { color: var(--apple-blue); font-size: 11px; cursor: pointer; background: none; border: none; padding: 0; }
-        .btn-del { color: #ff3b30; font-size: 11px; cursor: pointer; background: none; border: none; padding: 0; }
+        .btn-edit { color: var(--apple-blue); font-size: 11px; cursor: pointer; background: none; border: none; }
+        .btn-del { color: #ff3b30; font-size: 11px; cursor: pointer; background: none; border: none; }
         .truncate { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--apple-blue); font-weight: 500; }
     </style>
 </head>
@@ -52,7 +52,7 @@
 
 <div class="container">
     <div class="header">
-        <h2>لوحة التحكم بروابط الموقع</h2>
+        <h2>لوحة التحكم | Electrwni</h2>
     </div>
 
     <details open>
@@ -61,17 +61,28 @@
         <details class="sub-details" open>
             <summary class="sub-summary">١. إضافة الروابط</summary>
             <div class="content">
-                <!-- خاصية كيبورد الأرقام الكاملة -->
-                <input type="text" 
-                       id="code" 
-                       inputmode="numeric" 
-                       pattern="[0-9]*" 
-                       placeholder="أدخل الرقم" 
-                       autocomplete="off">
+                <!-- حقل الرقم (مغلق للكيبورد العادي) -->
+                <input type="text" id="code" placeholder="أدخل الرقم (استخدم اللوحة أدناه)" readonly>
                 
-                <input type="url" id="url" placeholder="أدخل الرابط" autocomplete="off">
-                <input type="text" id="desc" placeholder="أدخل الوصف" autocomplete="off">
-                <button class="btn-blue" onclick="addData()">إضافة</button>
+                <!-- لوحة مفاتيح الموقع المخصصة -->
+                <div class="numpad">
+                    <div class="num-btn" onclick="pressNum('1')">1</div>
+                    <div class="num-btn" onclick="pressNum('2')">2</div>
+                    <div class="num-btn" onclick="pressNum('3')">3</div>
+                    <div class="num-btn" onclick="pressNum('4')">4</div>
+                    <div class="num-btn" onclick="pressNum('5')">5</div>
+                    <div class="num-btn" onclick="pressNum('6')">6</div>
+                    <div class="num-btn" onclick="pressNum('7')">7</div>
+                    <div class="num-btn" onclick="pressNum('8')">8</div>
+                    <div class="num-btn" onclick="pressNum('9')">9</div>
+                    <div class="num-btn btn-clear" onclick="pressNum('C')">C</div>
+                    <div class="num-btn" onclick="pressNum('0')">0</div>
+                    <div class="num-btn" onclick="pressNum('B')">⌫</div>
+                </div>
+
+                <input type="url" id="url" placeholder="أدخل الرابط" style="margin-top:20px">
+                <input type="text" id="desc" placeholder="أدخل الوصف">
+                <button class="btn-blue" onclick="addData()">إضافة الرابط</button>
             </div>
         </details>
 
@@ -102,6 +113,18 @@
 </div>
 
 <script>
+    // وظائف لوحة المفاتيح المخصصة
+    function pressNum(val) {
+        const input = document.getElementById('code');
+        if (val === 'C') {
+            input.value = '';
+        } else if (val === 'B') {
+            input.value = input.value.slice(0, -1);
+        } else {
+            input.value += val;
+        }
+    }
+
     function shortenUrl(url) {
         try { return new URL(url).hostname.replace('www.', ''); } catch(e) { return "link"; }
     }
@@ -137,6 +160,7 @@
         `;
         editList.prepend(editItem);
 
+        // تصفير الحقول
         document.getElementById('code').value = '';
         document.getElementById('url').value = '';
         document.getElementById('desc').value = '';
@@ -150,7 +174,7 @@
     }
 
     function editRow(id) {
-        document.getElementById('code').focus();
+        document.getElementById('code').scrollIntoView();
     }
 </script>
 
