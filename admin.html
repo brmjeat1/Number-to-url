@@ -3,124 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مدير الروابط الذكي | electrwni</title>
+    <title>لوحة التحكم | Electrwni</title>
     <style>
-        :root { --primary: #2563eb; --bg: #f8fafc; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg); margin: 0; padding: 10px; }
-        .container { max-width: 900px; margin: 20px auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        h1 { color: var(--primary); text-align: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
-        
-        /* التنسيق الجديد للسطر الواحد */
-        .input-group { 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            background: #f1f5f9; 
-            padding: 15px; 
-            border-radius: 10px;
-            flex-wrap: nowrap; /* لضمان بقائهم في سطر واحد */
+        :root {
+            --whatsapp-green: #25D366;
+            --bg-gray: #f0f2f5;
+            --text-main: #111b21;
+            --border-light: #e9edef;
         }
-        
-        #newCode { width: 80px; flex-shrink: 0; } /* مربع الرقم صغير يميناً */
-        #newUrl { flex-grow: 2; } /* مربع الرابط يأخذ المساحة الأكبر */
-        .add-btn { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; flex-shrink: 0; }
-        
-        input { padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 16px; outline: none; }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1); }
 
-        .table-wrapper { overflow-x: auto; margin-top: 30px; }
-        table { width: 100%; border-collapse: collapse; background: white; }
-        th, td { padding: 15px; text-align: center; border-bottom: 1px solid #edf2f7; }
-        th { background: #f8fafc; color: #64748b; }
-        .btn-delete { background: #ef4444; color: white; border: none; padding: 6px 15px; border-radius: 6px; cursor: pointer; }
-        .stats-select { padding: 6px; border-radius: 5px; border: 1px solid #ddd; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-gray);
+            margin: 0;
+            padding: 20px;
+            color: var(--text-main);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(11,20,26,0.08);
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 20px;
+            color: #41525d;
+            margin-bottom: 25px;
+        }
+
+        /* هندسة حقول الإدخال الجديدة */
+        .input-box {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .row-2 {
+            display: grid;
+            grid-template-columns: 1fr 2fr auto;
+            gap: 10px;
+        }
+
+        input {
+            padding: 12px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            background: #f8f9fa;
+        }
+
+        input:focus { border-color: var(--whatsapp-green); }
+
+        .btn-add {
+            background-color: var(--whatsapp-green);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* الجدول المبسط (رقم، رابط، وصف، مشاهدات) */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+
+        th {
+            text-align: right;
+            font-size: 12px;
+            color: #667781;
+            padding: 10px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        td {
+            padding: 15px 10px;
+            font-size: 14px;
+            border-bottom: 1px solid #f5f6f6;
+        }
+
+        .col-num { width: 10%; color: #8696a0; }
+        .col-link { width: 20%; color: #008069; font-weight: 500; }
+        .col-desc { width: 55%; color: var(--text-main); }
+        .col-views { width: 15%; text-align: center; color: #54656f; font-size: 12px; }
+
+        .truncate {
+            display: inline-block;
+            max-width: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>🚀 مدير الروابط الذكي</h1>
-    
-    <div class="input-group">
-        <input type="number" id="newCode" placeholder="الرقم">
-        <input type="url" id="newUrl" placeholder="الصق الرابط هنا (https://...)">
-        <button class="add-btn" onclick="addLink()">أضف</button>
+    <h2>لوحة التحكم بروابط الموقع</h2>
+
+    <div class="input-form">
+        <div class="input-box">
+            <input type="number" id="code" placeholder="الرقم">
+            <input type="text" id="desc" placeholder="الوصف (اكتب وصف الرابط هنا)">
+        </div>
+        <div class="row-2">
+            <input type="text" id="url" placeholder="الرابط (URL)">
+            <button class="btn-add" onclick="addData()">إضافة</button>
+        </div>
     </div>
 
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th>الرقم</th>
-                    <th>الرابط</th>
-                    <th>إحصائيات</th>
-                    <th>إجراء</th>
-                </tr>
-            </thead>
-            <tbody id="linksTable"></tbody>
-        </table>
-    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>رقم</th>
+                <th>رابط</th>
+                <th>وصف</th>
+                <th style="text-align: center;">مشاهدات</th>
+            </tr>
+        </thead>
+        <tbody id="dataTable">
+            <!-- البيانات ستظهر هنا -->
+        </tbody>
+    </table>
 </div>
 
 <script>
-    function loadLinks() {
-        const links = JSON.parse(localStorage.getItem('myLinks')) || {};
-        const tableBody = document.getElementById('linksTable');
-        tableBody.innerHTML = '';
+    // وظيفة تلخيص الرابط (Extract Domain)
+    function shortenUrl(url) {
+        try {
+            let domain = new URL(url).hostname;
+            return domain.replace('www.', '');
+        } catch(e) {
+            return "link";
+        }
+    }
+
+    function addData() {
+        const code = document.getElementById('code').value;
+        const url = document.getElementById('url').value;
+        const desc = document.getElementById('desc').value;
         
-        for (const [code, url] of Object.entries(links)) {
-            tableBody.innerHTML += `
-                <tr>
-                    <td><strong>${code}</strong></td>
-                    <td style="max-width:300px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${url}</td>
-                    <td>
-                        <select class="stats-select" id="stats-${code}">
-                            <option value="day">اليوم</option>
-                            <option value="week">الأسبوع</option>
-                            <option value="month">الشهر</option>
-                        </select>
-                        <button onclick="downloadStats('${code}')" style="background:none; border:none; cursor:pointer; font-size:1.2rem;">📥</button>
-                    </td>
-                    <td><button class="btn-delete" onclick="deleteLink('${code}')">حذف</button></td>
-                </tr>`;
-        }
-    }
+        if(!code || !url) return;
 
-    function addLink() {
-        const code = document.getElementById('newCode').value;
-        const url = document.getElementById('newUrl').value;
-        if (code && url) {
-            const links = JSON.parse(localStorage.getItem('myLinks')) || {};
-            links[code] = url;
-            localStorage.setItem('myLinks', JSON.stringify(links));
-            document.getElementById('newCode').value = '';
-            document.getElementById('newUrl').value = '';
-            loadLinks();
-        } else {
-            alert('يرجى تعبئة الرقم والرابط');
-        }
-    }
+        const table = document.getElementById('dataTable');
+        const row = table.insertRow(0);
 
-    function deleteLink(code) {
-        if(confirm('هل تريد حذف الرقم ' + code + '؟')) {
-            const links = JSON.parse(localStorage.getItem('myLinks')) || {};
-            delete links[code];
-            localStorage.setItem('myLinks', JSON.stringify(links));
-            loadLinks();
-        }
-    }
+        row.innerHTML = `
+            <td class="col-num">${code}</td>
+            <td class="col-link"><span class="truncate">${shortenUrl(url)}</span></td>
+            <td class="col-desc">${desc || 'بدون وصف'}</td>
+            <td class="col-views">0</td>
+        `;
 
-    function downloadStats(code) {
-        const period = document.getElementById('stats-' + code).value;
-        const content = `تقرير electrwni\nالرقم: ${code}\nالفترة: ${period}\nالنقرات: ${Math.floor(Math.random()*200)+10}`;
-        const blob = new Blob([content], {type: 'text/plain;charset=utf-8'});
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `stats_${code}.txt`;
-        a.click();
+        // تصفير الحقول
+        document.getElementById('code').value = '';
+        document.getElementById('url').value = '';
+        document.getElementById('desc').value = '';
     }
-
-    window.onload = loadLinks;
 </script>
 
 </body>
