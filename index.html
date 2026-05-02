@@ -3,190 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>التوجيه الرقمي لروابط منصة إلكتروني</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>electrwni | مستعرض الروابط</title>
     <style>
-        :root { --primary: #072AC8; --accent: #FCF300; --sky: #1E96FC; --light-blue: #A2D6F9; --box-blue: #3B82F6; --box-yellow: #FFF041; }
-        
-        body { 
-            margin: 0; 
-            font-family: 'Segoe UI', Tahoma, sans-serif; 
-            display: flex; 
-            flex-direction: column; 
-            min-height: 100vh; 
-            align-items: center; 
-            /* الخلفية المطلوبة */
-            background-image: radial-gradient(circle at top right, rgb(0,3,125) 0%, rgb(0,3,125) 48%, rgb(7,31,149) 48%, rgb(7,31,149) 53%, rgb(230,255,0) 53%, rgb(230,255,0) 56%, rgb(34,30,252) 56%, rgb(34,30,252) 69%, rgb(6,14,216) 69%, rgb(6,14,216) 100%);
-            background-attachment: fixed;
-            justify-content: space-between;
+        :root {
+            --primary-bg: #007bff;
+            --neon-glow: 0 0 15px #00e5ff, 0 0 30px #00e5ff;
         }
 
-        /* النافذة البيضاء المنبثقة (85% على الجوال، بحد أقصى 450px) */
-        .white-wrapper {
-            background: #ffffff;
-            width: 85%;
-            max-width: 450px;
-            margin: 40px auto;
-            border-radius: 24px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--primary-bg);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* الإطار المنقط المحيط بالصفحة */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 15px; bottom: 15px; left: 15px; right: 15px;
+            border: 3px dashed rgba(255, 255, 255, 0.6);
+            pointer-events: none;
+            border-radius: 15px;
+        }
+
+        .container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 30px 20px;
+            width: 90%;
+            max-width: 400px;
+            gap: 25px;
+            z-index: 1;
+        }
+
+        /* تنسيق أيقونات التواصل */
+        .social-icons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .icon {
+            width: 65px; height: 65px;
+            border-radius: 15px;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 10px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+            text-decoration: none;
+            overflow: hidden;
+        }
+
+        .icon:hover { transform: translateY(-5px); }
+
+        .icon img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* صندوق الإدخال */
+        .input-box { width: 100%; }
+
+        input {
+            width: 100%;
+            padding: 22px;
+            font-size: 20px;
+            background: white;
+            border: none;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: var(--neon-glow);
+            color: #333;
             box-sizing: border-box;
-        }
-        
-        .header-box { background: var(--primary); width: 100%; min-height: 60px; display: flex; align-items: center; justify-content: center; padding: 10px 0; }
-        .header-text { color: #ffffff; font-size: 1.1rem; font-weight: 500; }
-        .highlight-text { color: var(--light-blue); font-size: 1.4rem; font-weight: bold; margin: 0 5px; }
-        .yellow-line { background: var(--accent); width: 100%; height: 3px; }
-
-        .input-group { margin-top: 10px; width: 100%; }
-        input { width: 100%; padding: 15px; font-size: 1.2rem; border: 2px solid var(--primary); border-radius: 12px; text-align: center; outline: none; box-sizing: border-box; }
-        .btn-go { width: 100%; padding: 15px; background: var(--primary); color: #fff; border: none; border-radius: 12px; font-size: 1.2rem; font-weight: bold; margin-top: 15px; cursor: pointer; margin-bottom: 20px; }
-        
-        .qr-section { padding: 12px; border: 1px solid #eee; border-radius: 15px; display: inline-block; margin-bottom: 20px; }
-        .qr-section p { font-size: 0.9rem; color: #333; font-weight: bold; margin-bottom: 8px; }
-        #qr-code-img { width: 115px; height: 115px; }
-
-        .social-links { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; }
-        .social-icon { 
-            background: var(--primary); width: 44px; height: 44px; 
-            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-            text-decoration: none; color: var(--accent); border: 2px solid var(--sky); 
-        }
-        .social-icon svg { width: 20px; height: 20px; fill: var(--accent); }
-
-        .order-link { display: block; margin-bottom: 20px; color: var(--primary); text-decoration: none; font-weight: bold; font-size: 1.05rem; }
-
-        .info-box-wrapper {
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 10px; filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.1));
-            direction: ltr; transform: scale(0.85);
-        }
-        .yellow-part {
-            background: var(--box-yellow); color: var(--primary); font-weight: bold;
-            padding: 10px 18px; border-radius: 15px; font-size: 1.45rem;
-            z-index: 2; box-shadow: -2px 0 5px rgba(0,0,0,0.1);
-        }
-        .blue-part {
-            background: var(--box-blue); color: #ffffff; padding: 10px 22px;
-            border-radius: 15px 0 0 15px; margin-right: -10px; font-size: 1.25rem;
-            min-width: 200px; display: flex; align-items: center; justify-content: center; direction: rtl;
+            font-weight: bold;
         }
 
-        .dynamic-text { white-space: nowrap; overflow: hidden; display: inline-block; animation: typing 4s steps(30) infinite; }
-        @keyframes typing { 0%, 10% { width: 0; } 45%, 55% { width: 100%; } 90%, 100% { width: 0; } }
-
-        .footer { 
-            background: #fafafa; 
-            width: 100%; 
-            padding: 25px 15px; 
-            color: var(--sky); 
-            font-size: 0.85rem; 
-            font-weight: bold; 
-            border-top: 1px solid #eee; 
-            text-align: center; 
-            line-height: 1.6;
-            box-sizing: border-box;
-            margin-top: auto;
+        /* زر التحويل */
+        .go-btn {
+            background-color: #00d9ff;
+            color: white;
+            border: 2px dashed white;
+            padding: 18px 60px;
+            font-size: 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
         }
-    </style>
 
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>التوجيه الرقمي لروابط منصة إلكتروني</title>
+        .go-btn:hover { box-shadow: var(--neon-glow); transform: scale(1.05); }
 
-    <meta name="description" content="منصة إلكتروني لتوجيه الأرقام إلى روابط وتوفير بايو احترافي وبنية عالية الأداء.">
-    <meta name="keywords" content="إلكتروني, توجيه الروابط, الكويت, بايو احترافي, مستودع الروابط">
-    <link rel="canonical" href="https://electrwni.com">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        /* باقي أكواد التصميم */
+        .footer-logo { font-size: 18px; opacity: 0.8; margin-top: 10px; }
     </style>
 </head>
 <body>
-    </body>
-</html>
 
-</head>
-<body>
-
-    <div class="header-box">
-        <div class="header-text">توجيه <span class="highlight-text">الأرقام إلى روابط</span> لمنصة إلكتروني</div>
-    </div>
-    <div class="yellow-line"></div>
-
-    <div class="white-wrapper">
-        <div class="input-group">
-            <input type="number" id="linkId" placeholder="أدخل الرقم هنا...">
-            <button class="btn-go" onclick="redirect()">انتقل الآن</button>
-        </div>
-
-        <div class="qr-section">
-            <p>باركود الموقع</p>
-            <img id="qr-code-img" src="" alt="الباركود التلقائي">
-        </div>
-
-        <div class="social-links">
-            <a href="https://x.com/electrwni?s=21" target="_blank" class="social-icon">
-                <svg viewBox="0 0 24 24"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932 6.064-6.932zm-1.292 19.494h2.039L6.486 3.24H4.298l13.311 17.407z"/></svg>
-            </a>
-            <a href="https://www.instagram.com/electrwni?igsh=MWphNXkxMmNhdHloOA%3D%3D&utm_source=qr" target="_blank" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
-            <a href="https://t.me/electrwni" target="_blank" class="social-icon"><i class="fa-brands fa-telegram"></i></a>
-        </div>
-
-        <a href="https://ig.me/m/electrwni?text=السلام%20عليكم%20،%20استفسار%20عن%20منصة%20ترقيم%20الروابط" target="_blank" class="order-link">
-            أطلب ترقيم روابطك الآن <i class="fa-brands fa-instagram"></i>
+<div class="container">
+    <div class="social-icons">
+        <a href="https://www.instagram.com/electrwni" target="_blank" class="icon">
+            <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram">
         </a>
-
-        <div class="info-box-wrapper">
-            <div class="blue-part">
-                <span class="dynamic-text" id="typing-text">حقق وصول أسرع لبيتك الرقمي ..</span>
-            </div>
-            <div class="yellow-part">رقم روابطك</div>
-        </div>
+        <a href="https://x.com/electrwni" target="_blank" class="icon">
+            <img src="https://cdn-icons-png.flaticon.com/512/5969/5969020.png" alt="X">
+        </a>
+        <a href="https://t.me/electrwni" target="_blank" class="icon">
+            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram">
+        </a>
     </div>
 
-    <div class="footer">
-        تم تطوير المحرك البرمجي بواسطة Electrwni، الكويت<br>
-        بنية بمعمارية عالية الأداء<br>
-        Built with High-Performance Architecture, by electrwni, kuwait
+    <div class="input-box">
+        <input type="number" id="codeNumber" placeholder="أدخل رقم التحويل" autofocus>
     </div>
 
-    <script>
-        window.onload = function() {
-            const currentUrl = window.location.href;
-            const qrImg = document.getElementById('qr-code-img');
-            qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(currentUrl)}&color=072ac8`;
-        };
+    <button class="go-btn" onclick="redirect()">أذهب</button>
 
-        const phrases = ["حقق وصول أسرع"أعمالك أسهل للوصول ..", "سوق لدعاياتك بلمحة بصر .."];
-        let i = 0;
-        const typingEl = document.getElementById('typing-text');
-        function updateText() { i = (i + 1) % phrases.length; typingEl.innerText = phrases[i]; }
-        setInterval(updateText, 4000);
+    <div class="footer-logo">@electrwni</div>
+</div>
 
-        function redirect() {
-            const val = document.getElementById('linkId').value;
-            if(val) window.location.href = "https://electrwni.com/" + val;
-            else alert("يرجى إدخال الرقم");
+<script>
+    function redirect() {
+        var num = document.getElementById("codeNumber").value;
+        const links = JSON.parse(localStorage.getItem('myLinks')) || {};
+
+        if (links[num]) {
+            window.location.href = links[num];
+        } else {
+            alert("عذراً، هذا الرقم غير مسجل!");
         }
-    </script>
-</body>
+    }
 
-        let i = 0;
-        const typingEl = document.getElementById('typing-text');
-        function updateText() { i = (i + 1) % phrases.length; typingEl.innerText = phrases[i]; }
-        setInterval(updateText, 4000);
+    // دعم زر Enter
+    document.getElementById("codeNumber").addEventListener("keypress", function(event) {
+        if (event.key === "Enter") { redirect(); }
+    });
+</script>
 
-        function redirect() {
-            const val = document.getElementById('linkId').value;
-            if(val) window.location.href = "https://electrwni.com/" + val;
-            else alert("يرجى إدخال الرقم");
-        }
-    </script>
 </body>
+</html>
