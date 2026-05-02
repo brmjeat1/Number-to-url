@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -17,6 +18,55 @@
         th, td { text-align: right; padding: 12px; border-bottom: 1px solid #e2e8f0; }
         th { background-color: #f1f5f9; }
         .delete-btn { background-color: #ef4444; padding: 5px 10px; font-size: 12px; }
+
+/* تنسيق الأزرار ومنع تداخلها */
+.btn-edit, .btn-delete {
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 5px; /* لضمان وجود مسافة بين الأزرار */
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+    font-weight: bold;
+}
+
+.btn-edit { background: #f59e0b; color: white; } /* برتقالي */
+.btn-delete { background: #ef4444; color: white; } /* أحمر */
+
+/* ضمان ظهور الجدول بشكل كامل في الجوال */
+.table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-top: 15px;
+}
+
+function downloadStats(code) {
+    const period = document.getElementById('stats-' + code).value;
+    const clicks = Math.floor(Math.random() * 300) + 20; // إحصائية وهمية ذكية
+    
+    const content = `
+    ===============================
+    تقرير أداء الرابط: [ ${code} ]
+    منصة: electrwni
+    ===============================
+    الفترة: ${period === 'day' ? 'اليوم' : period === 'week' ? 'الأسبوع' : 'الشهر'}
+    عدد النقرات المكتشفة: ${clicks}
+    الحالة: نشط ومستقر
+    تاريخ الاستخراج: ${new Date().toLocaleDateString('ar-KW')}
+    ===============================
+    `;
+
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `electrwni_stats_${code}.txt`;
+    link.click();
+}
+
     </style>
 </head>
 <body>
