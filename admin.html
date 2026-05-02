@@ -2,108 +2,71 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>لوحة التحكم | Electrwni</title>
     <style>
-        :root {
-            --whatsapp-green: #25D366;
-            --bg-gray: #f0f2f5;
-            --text-main: #111b21;
-            --border-light: #e9edef;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-gray);
+            font-family: -apple-system, sans-serif;
+            background-color: #f0f2f5;
             margin: 0;
-            padding: 20px;
-            color: var(--text-main);
+            padding: 10px;
+            display: flex;
+            justify-content: center;
         }
 
         .container {
-            max-width: 600px;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 400px; /* ضمان التمركز في المنتصف تماماً */
             background: #fff;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(11,20,26,0.08);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-sizing: border-box;
         }
 
-        h2 {
-            text-align: center;
-            font-size: 20px;
-            color: #41525d;
-            margin-bottom: 25px;
-        }
+        h2 { text-align: center; font-size: 18px; color: #1c1e21; margin-bottom: 20px; }
 
-        /* هندسة حقول الإدخال الجديدة */
-        .input-box {
-            display: grid;
-            grid-template-columns: 80px 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .row-2 {
-            display: grid;
-            grid-template-columns: 1fr 2fr auto;
-            gap: 10px;
-        }
-
+        /* تحديث مستطيلات الإدخال */
+        .input-form { display: flex; flex-direction: column; gap: 10px; }
+        
         input {
+            width: 100%;
             padding: 12px;
-            border: 1px solid var(--border-light);
-            border-radius: 8px;
+            border: 1px solid #e9edef;
+            border-radius: 10px;
             font-size: 14px;
-            outline: none;
+            box-sizing: border-box;
             background: #f8f9fa;
         }
 
-        input:focus { border-color: var(--whatsapp-green); }
-
         .btn-add {
-            background-color: var(--whatsapp-green);
-            color: white;
+            width: 100%;
+            background-color: #0071e3; /* أزرق */
+            color: white; /* خط أبيض */
             border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
+            padding: 12px;
+            border-radius: 10px;
             font-weight: bold;
             cursor: pointer;
         }
 
-        /* الجدول المبسط (رقم، رابط، وصف، مشاهدات) */
+        /* الجدول المتمركز */
         table {
             width: 100%;
+            margin-top: 25px;
             border-collapse: collapse;
-            margin-top: 30px;
+            table-layout: fixed; /* منع التمدد يميناً وشمالاً */
         }
 
-        th {
-            text-align: right;
-            font-size: 12px;
-            color: #667781;
-            padding: 10px;
-            border-bottom: 1px solid var(--border-light);
-        }
+        th { font-size: 11px; color: #667781; padding-bottom: 10px; border-bottom: 1px solid #e9edef; text-align: right; }
+        td { padding: 12px 5px; font-size: 13px; border-bottom: 1px solid #f5f6f6; word-wrap: break-word; }
 
-        td {
-            padding: 15px 10px;
-            font-size: 14px;
-            border-bottom: 1px solid #f5f6f6;
-        }
+        .col-num { width: 15%; color: #8696a0; }
+        .col-link { width: 25%; color: #0071e3; font-weight: 500; }
+        .col-desc { width: 40%; color: #111b21; }
+        .col-views { width: 20%; text-align: center; font-weight: bold; color: #25D366; }
 
-        .col-num { width: 10%; color: #8696a0; }
-        .col-link { width: 20%; color: #008069; font-weight: 500; }
-        .col-desc { width: 55%; color: var(--text-main); }
-        .col-views { width: 15%; text-align: center; color: #54656f; font-size: 12px; }
-
-        .truncate {
-            display: inline-block;
-            max-width: 80px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
+        .truncate { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     </style>
 </head>
 <body>
@@ -112,40 +75,33 @@
     <h2>لوحة التحكم بروابط الموقع</h2>
 
     <div class="input-form">
-        <div class="input-box">
-            <input type="number" id="code" placeholder="الرقم">
-            <input type="text" id="desc" placeholder="الوصف (اكتب وصف الرابط هنا)">
-        </div>
-        <div class="row-2">
-            <input type="text" id="url" placeholder="الرابط (URL)">
-            <button class="btn-add" onclick="addData()">إضافة</button>
-        </div>
+        <input type="number" id="code" placeholder="أدخل الرقم">
+        <input type="text" id="url" placeholder="أدخل الرابط">
+        <input type="text" id="desc" placeholder="أدخل الوصف">
+        <button class="btn-add" onclick="addData()">إضافة</button>
     </div>
 
     <table>
         <thead>
             <tr>
-                <th>رقم</th>
-                <th>رابط</th>
-                <th>وصف</th>
-                <th style="text-align: center;">مشاهدات</th>
+                <th style="width:15%">رقم</th>
+                <th style="width:25%">رابط</th>
+                <th style="width:40%">وصف</th>
+                <th style="width:20%; text-align:center;">مشاهدة</th>
             </tr>
         </thead>
         <tbody id="dataTable">
-            <!-- البيانات ستظهر هنا -->
+            <!-- البيانات تظهر هنا -->
         </tbody>
     </table>
 </div>
 
 <script>
-    // وظيفة تلخيص الرابط (Extract Domain)
     function shortenUrl(url) {
         try {
             let domain = new URL(url).hostname;
             return domain.replace('www.', '');
-        } catch(e) {
-            return "link";
-        }
+        } catch(e) { return "link"; }
     }
 
     function addData() {
@@ -161,11 +117,10 @@
         row.innerHTML = `
             <td class="col-num">${code}</td>
             <td class="col-link"><span class="truncate">${shortenUrl(url)}</span></td>
-            <td class="col-desc">${desc || 'بدون وصف'}</td>
+            <td class="col-desc">${desc || '-'}</td>
             <td class="col-views">0</td>
         `;
 
-        // تصفير الحقول
         document.getElementById('code').value = '';
         document.getElementById('url').value = '';
         document.getElementById('desc').value = '';
