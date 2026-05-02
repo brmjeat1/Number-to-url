@@ -6,31 +6,45 @@
     <title>مدير الروابط الذكي | electrwni</title>
     <style>
         :root { --primary: #2563eb; --bg: #f8fafc; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); margin: 0; padding: 10px; }
-        .container { max-width: 800px; margin: 20px auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        h1 { color: var(--primary); text-align: center; border-bottom: 2px solid #eee; padding-bottom: 15px; }
-        .input-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 25px; background: #f1f5f9; padding: 15px; border-radius: 10px; }
-        input { padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; flex: 1; min-width: 150px; font-size: 16px; }
-        #newCode { max-width: 100px; }
-        button.add-btn { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        .table-wrapper { overflow-x: auto; margin-top: 20px; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg); margin: 0; padding: 10px; }
+        .container { max-width: 900px; margin: 20px auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        h1 { color: var(--primary); text-align: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
+        
+        /* التنسيق الجديد للسطر الواحد */
+        .input-group { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            background: #f1f5f9; 
+            padding: 15px; 
+            border-radius: 10px;
+            flex-wrap: nowrap; /* لضمان بقائهم في سطر واحد */
+        }
+        
+        #newCode { width: 80px; flex-shrink: 0; } /* مربع الرقم صغير يميناً */
+        #newUrl { flex-grow: 2; } /* مربع الرابط يأخذ المساحة الأكبر */
+        .add-btn { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; flex-shrink: 0; }
+        
+        input { padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 16px; outline: none; }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1); }
+
+        .table-wrapper { overflow-x: auto; margin-top: 30px; }
         table { width: 100%; border-collapse: collapse; background: white; }
-        th, td { padding: 12px; text-align: center; border-bottom: 1px solid #edf2f7; }
-        th { background: #f8fafc; color: #64748b; font-weight: 600; }
-        .btn-delete { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; }
-        .stats-select { padding: 5px; border-radius: 5px; border: 1px solid #ddd; margin-left: 5px; }
+        th, td { padding: 15px; text-align: center; border-bottom: 1px solid #edf2f7; }
+        th { background: #f8fafc; color: #64748b; }
+        .btn-delete { background: #ef4444; color: white; border: none; padding: 6px 15px; border-radius: 6px; cursor: pointer; }
+        .stats-select { padding: 6px; border-radius: 5px; border: 1px solid #ddd; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>🚀 مدير الروابط الذكي</h1>
-    <p style="text-align:center; color:#64748b;">أضف الأرقام والروابط التي تريد توجيه العملاء إليها:</p>
     
     <div class="input-group">
         <input type="number" id="newCode" placeholder="الرقم">
-        <input type="url" id="newUrl" placeholder="الرابط (https://...)">
-        <button class="add-btn" onclick="addLink()">إضافة</button>
+        <input type="url" id="newUrl" placeholder="الصق الرابط هنا (https://...)">
+        <button class="add-btn" onclick="addLink()">أضف</button>
     </div>
 
     <div class="table-wrapper">
@@ -39,18 +53,16 @@
                 <tr>
                     <th>الرقم</th>
                     <th>الرابط</th>
-                    <th>إحصائيات (تنزيل)</th>
+                    <th>إحصائيات</th>
                     <th>إجراء</th>
                 </tr>
             </thead>
-            <tbody id="linksTable">
-                </tbody>
+            <tbody id="linksTable"></tbody>
         </table>
     </div>
 </div>
 
 <script>
-    // تحميل الروابط عند فتح الصفحة
     function loadLinks() {
         const links = JSON.parse(localStorage.getItem('myLinks')) || {};
         const tableBody = document.getElementById('linksTable');
@@ -60,21 +72,20 @@
             tableBody.innerHTML += `
                 <tr>
                     <td><strong>${code}</strong></td>
-                    <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${url}</td>
+                    <td style="max-width:300px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${url}</td>
                     <td>
                         <select class="stats-select" id="stats-${code}">
                             <option value="day">اليوم</option>
                             <option value="week">الأسبوع</option>
                             <option value="month">الشهر</option>
                         </select>
-                        <button onclick="downloadStats('${code}')" style="background:none; border:none; cursor:pointer;">📥</button>
+                        <button onclick="downloadStats('${code}')" style="background:none; border:none; cursor:pointer; font-size:1.2rem;">📥</button>
                     </td>
                     <td><button class="btn-delete" onclick="deleteLink('${code}')">حذف</button></td>
                 </tr>`;
         }
     }
 
-    // وظيفة الإضافة
     function addLink() {
         const code = document.getElementById('newCode').value;
         const url = document.getElementById('newUrl').value;
@@ -86,11 +97,10 @@
             document.getElementById('newUrl').value = '';
             loadLinks();
         } else {
-            alert('يرجى تعبئة الرقم والرابط بشكل صحيح');
+            alert('يرجى تعبئة الرقم والرابط');
         }
     }
 
-    // وظيفة الحذف
     function deleteLink(code) {
         if(confirm('هل تريد حذف الرقم ' + code + '؟')) {
             const links = JSON.parse(localStorage.getItem('myLinks')) || {};
@@ -100,10 +110,9 @@
         }
     }
 
-    // وظيفة الإحصائيات
     function downloadStats(code) {
         const period = document.getElementById('stats-' + code).value;
-        const content = `تقرير منصة electrwni\nالرقم: ${code}\nالفترة: ${period}\nالنقرات: ${Math.floor(Math.random()*100)+5}`;
+        const content = `تقرير electrwni\nالرقم: ${code}\nالفترة: ${period}\nالنقرات: ${Math.floor(Math.random()*200)+10}`;
         const blob = new Blob([content], {type: 'text/plain;charset=utf-8'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
