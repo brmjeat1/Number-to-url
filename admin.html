@@ -5,115 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>لوحة التحكم | Electrwni</title>
     <style>
-        :root {
-            --apple-blue: #0071e3;
-            --bg-gray: #f0f2f5;
-        }
+        :root { --apple-blue: #0071e3; --bg-gray: #f0f2f5; }
+        body { font-family: -apple-system, sans-serif; background-color: var(--bg-gray); margin: 0; padding: 10px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 400px; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        
+        /* الهيدر */
+        .header { padding: 20px; text-align: center; border-bottom: 1px solid #eee; }
+        .header h2 { margin: 0; font-size: 18px; color: #1c1e21; }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--bg-gray);
-            margin: 0;
-            padding: 10px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 400px;
-            background: #fff;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        /* تنسيق الأقسام المنسدلة */
-        details {
-            border-bottom: 1px solid #e9edef;
-        }
-
-        summary {
-            padding: 15px;
-            font-weight: bold;
-            font-size: 16px;
-            color: #1c1e21;
-            cursor: pointer;
-            list-style: none;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #fff;
-        }
-
-        summary::after { content: '▾'; color: var(--apple-blue); }
+        /* الأقسام المنسدلة */
+        details { border-bottom: 1px solid #e9edef; }
+        summary { padding: 15px; font-weight: bold; font-size: 15px; color: #1c1e21; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; background: #fff; }
+        summary::after { content: '▾'; color: var(--apple-blue); font-size: 12px; }
         details[open] summary::after { content: '▴'; }
+        .content { padding: 15px; background: #f8f9fa; }
 
-        .content {
-            padding: 15px;
-            background: #f8f9fa;
-        }
-
-        /* حقول الإدخال والأزرار */
-        input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 10px;
-            border: 1px solid #e9edef;
-            border-radius: 10px;
-            box-sizing: border-box;
-            font-size: 14px;
-        }
-
-        .btn-blue {
-            width: 100%;
-            background: var(--apple-blue);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-bottom: 5px;
-        }
-
-        .btn-delete {
-            background: #ff3b30;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            cursor: pointer;
-        }
+        /* المدخلات */
+        input { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #e9edef; border-radius: 10px; box-sizing: border-box; font-size: 14px; outline: none; }
+        .btn-blue { width: 100%; background: var(--apple-blue); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; }
 
         /* الجدول المتمركز */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed;
-        }
-
-        th { font-size: 11px; color: #667781; padding-bottom: 8px; text-align: right; }
-        td { padding: 10px 4px; font-size: 12px; border-bottom: 1px solid #eee; word-wrap: break-word; }
-
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; margin-top: 10px; }
+        th { font-size: 11px; color: #8696a0; padding-bottom: 8px; text-align: right; border-bottom: 1px solid #eee; }
+        td { padding: 12px 4px; font-size: 13px; border-bottom: 1px solid #f5f6f6; word-wrap: break-word; vertical-align: middle; }
+        
         .col-views { text-align: center; font-weight: bold; color: var(--apple-blue); }
+        .btn-action { background: none; border: none; color: #ff3b30; font-size: 11px; cursor: pointer; padding: 0; margin-top: 4px; display: block; }
+        .truncate { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--apple-blue); font-weight: 500; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div style="padding: 20px; text-align: center; background: #fff;">
-        <h2 style="margin:0; font-size: 18px;">لوحة التحكم بروابط الموقع</h2>
+    <div class="header">
+        <h2>لوحة التحكم بروابط الموقع</h2>
     </div>
 
     <!-- القسم الأول: الروابط -->
     <details open>
         <summary>الروابط</summary>
         <div class="content">
-            <input type="number" id="code" placeholder="الرقم">
-            <input type="text" id="url" placeholder="الرابط">
-            <input type="text" id="desc" placeholder="الوصف">
+            <input type="number" id="code" placeholder="أدخل الرقم">
+            <input type="text" id="url" placeholder="أدخل الرابط">
+            <input type="text" id="desc" placeholder="أدخل الوصف">
             <button class="btn-blue" onclick="addData()">إضافة رابط</button>
         </div>
     </details>
@@ -122,18 +56,18 @@
     <details>
         <summary>الإحصائيات</summary>
         <div class="content">
-            <p style="font-size: 12px; color: #667781; margin-bottom: 10px;">سجل الأكثر مشاهدة:</p>
+            <p style="font-size: 12px; color: #8696a0; margin-bottom: 10px;">سجل الأكثر مشاهدة:</p>
             <table>
                 <thead>
                     <tr>
                         <th style="width:15%">رقم</th>
                         <th style="width:25%">رابط</th>
                         <th style="width:40%">وصف</th>
-                        <th style="width:20%">مشاهدات</th>
+                        <th style="width:20%; text-align:center;">مشاهدة</th>
                     </tr>
                 </thead>
                 <tbody id="dataTable">
-                    <!-- البيانات هنا -->
+                    <!-- تظهر البيانات هنا -->
                 </tbody>
             </table>
         </div>
@@ -141,15 +75,19 @@
 </div>
 
 <script>
+    // تلخيص الرابط للكلمة الأساسية
     function shortenUrl(url) {
-        try { return new URL(url).hostname.replace('www.', ''); } 
-        catch(e) { return "link"; }
+        try {
+            let domain = new URL(url).hostname;
+            return domain.replace('www.', '');
+        } catch(e) { return "link"; }
     }
 
     function addData() {
         const code = document.getElementById('code').value;
         const url = document.getElementById('url').value;
         const desc = document.getElementById('desc').value;
+        
         if(!code || !url) return;
 
         const table = document.getElementById('dataTable');
@@ -157,15 +95,24 @@
 
         row.innerHTML = `
             <td>${code}</td>
-            <td><span style="display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${shortenUrl(url)}</span></td>
-            <td>${desc || '-'} <button class="btn-delete" onclick="this.parentElement.parentElement.remove()" style="display:block; margin-top:5px;">حذف</button></td>
+            <td><span class="truncate">${shortenUrl(url)}</span></td>
+            <td>
+                ${desc || '-'}
+                <button class="btn-action" onclick="deleteRow(this)">حذف</button>
+            </td>
             <td class="col-views">0</td>
         `;
 
-        // تصفير الحقول
+        // تصفير الحقول للسرعة
         document.getElementById('code').value = '';
         document.getElementById('url').value = '';
         document.getElementById('desc').value = '';
+    }
+
+    function deleteRow(btn) {
+        if(confirm('هل تريد حذف هذا الرابط؟')) {
+            btn.parentElement.parentElement.remove();
+        }
     }
 </script>
 
