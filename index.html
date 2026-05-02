@@ -3,159 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توجيه الأرقام - إلكتروني</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body {
-            background-color: #1a1a1a;
-            margin: 0;
-            padding: 20px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            box-sizing: border-box;
-        }
+        :root { --primary: #072AC8; --accent: #FCF300; --sky: #1E96FC; --white: #FFFFFF; }
+        body { font-family: sans-serif; background-color: var(--primary); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; color: var(--white); }
+        
+        /* الإطار الأبيض بالظل العائم */
+        .container { background: var(--white); width: 85%; max-width: 400px; border-radius: 30px; padding: 30px; color: #333; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); position: relative; }
+        
+        .header-text { color: var(--primary); font-weight: bold; margin-bottom: 15px; display: block; }
+        input { width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 12px; font-size: 18px; text-align: center; box-sizing: border-box; outline: none; transition: border 0.3s; }
+        input:focus { border-color: var(--primary); }
+        
+        .btn-main { background: var(--primary); color: white; border: none; width: 100%; padding: 15px; border-radius: 12px; font-size: 18px; font-weight: bold; margin-top: 15px; cursor: pointer; transition: transform 0.2s; }
+        .btn-main:active { transform: scale(0.98); }
 
-        /* العنوان العلوي المنسق */
-        .header-title {
-            color: #ffffff;
-            font-size: 20px;
-            margin-bottom: 25px;
-            text-align: center;
-            width: 90%;
-        }
+        /* أيقونات التواصل مع أيقونة الباركود */
+        .social-icons { display: flex; justify-content: center; gap: 20px; margin: 25px 0; }
+        .icon-btn { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--primary); color: white; cursor: pointer; text-decoration: none; font-size: 20px; }
+        .icon-barcode { background: var(--primary); }
 
-        .highlight {
-            font-size: 28px; /* تكبير ما بين العاكفين */
-            color: #4CAF50;
-            font-weight: bold;
-        }
+        /* النافذة المنبثقة للباركود */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 100; }
+        .modal-content { background: white; padding: 20px; border-radius: 20px; text-align: center; width: 280px; }
+        .qr-placeholder { width: 200px; height: 200px; margin-bottom: 15px; }
+        .btn-copy { background: var(--sky); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 10px; }
 
-        /* المربع الأبيض المنبثق المعدل */
-        .main-card {
-            background-color: #ffffff;
-            width: 86%; /* تقصير العرض لإظهار الخلفية من الجوانب */
-            max-width: 420px;
-            border-radius: 30px;
-            box-shadow: 0 20px 45px rgba(0,0,0,0.8); /* ظل منبثق قوي */
-            padding: 40px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 30px; /* إظهار الخلفية بالأسفل */
-        }
-
-        /* مربع إدخال الأرقام منسق */
-        .input-field {
-            width: 80%;
-            padding: 15px;
-            border: 2px solid #eeeeee;
-            border-radius: 12px;
-            font-size: 22px;
-            text-align: center;
-            outline: none;
-            background-color: #fcfcfc;
-            transition: 0.3s;
-        }
-
-        .input-field:focus {
-            border-color: #4CAF50;
-        }
-
-        /* زر اذهب الآن */
-        .action-btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 12px 50px;
-            border: none;
-            border-radius: 10px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-            width: 80%;
-        }
-
-        .action-btn:active { transform: scale(0.96); }
-
-        /* زر اطلب خدمة ترقيم الروابط - ينقل لإنستقرام */
-        .order-service-btn {
-            background-color: #f0f0f0;
-            color: #333;
-            padding: 10px 20px;
-            border: 1px dashed #4CAF50;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            text-decoration: none;
-            margin-top: 10px;
-            transition: 0.3s;
-            display: inline-block;
-        }
-
-        .order-service-btn:hover { background-color: #e8f5e9; }
-
-        /* شعار X وتفعيل اللمس */
-        .social-links { margin-top: 5px; }
-        .x-link svg {
-            width: 28px;
-            height: 28px;
-            fill: #000;
-            transition: 0.3s;
-        }
-        .x-link:hover svg { fill: #4CAF50; }
-
-        /* التوقيع منسق تحت المربع */
-        .footer-sig {
-            color: #ffffff;
-            font-size: 11px;
-            text-align: center;
-            width: 90%;
-            margin-top: auto;
-            padding-bottom: 20px;
-            line-height: 1.6;
-        }
+        .footer-note { font-size: 11px; margin-top: 20px; color: #666; width: 100%; }
+        .error-msg { color: red; font-size: 14px; margin-top: 10px; display: none; }
     </style>
 </head>
 <body>
 
-    <div class="header-title">
-        توجيه <span class="highlight">"الأرقام إلى روابط"</span> لمنصة إلكتروني
+<div class="container">
+    <span class="header-text">أدخل الرقم الآن</span>
+    
+    <!-- حقل الإدخال الذكي -->
+    <input type="text" id="numInput" placeholder="أدخل الرقم هنا..." inputmode="numeric" onfocus="showSuggestions()">
+    <div id="errorBox" class="error-msg">لا يوجد هذا الرقم بالمدخلات</div>
+    
+    <button class="btn-main" id="goBtn">انتقل الآن</button>
+
+    <div class="social-icons">
+        <a href="#" class="icon-btn"><i class="fab fa-telegram-plane"></i></a>
+        <a href="#" class="icon-btn"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="icon-btn"><i class="fab fa-x-twitter"></i></a>
+        <!-- أيقونة الباركود المجاورة والمشابهة -->
+        <div class="icon-btn icon-barcode" onclick="toggleModal()"><i class="fas fa-qrcode"></i></div>
     </div>
 
-    <div class="main-card">
-        <div style="color: #666; font-size: 14px;">أدخل الرقم بالأسفل</div>
-        
-        <input type="number" class="input-field" placeholder="000" id="numInput">
-        
-        <button class="action-btn" onclick="goToLink()">اذهب الآن</button>
-        
-        <a href="https://www.instagram.com/electrwni" class="order-service-btn" target="_blank">
-            اطلب خدمة ترقيم الروابط الآن
-        </a>
-
-        <div class="social-links">
-            <a href="https://x.com/electrwni" class="x-link" target="_blank">
-                <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
-            </a>
-        </div>
+    <!-- نص التطوير في سطر واحد -->
+    <div class="footer-note">
+        تم تطوير المحرك البرمجي بواسطة Electrwni، الكويت بنية بمعمارية عالية الأداء Built with High-Performance Architecture, by electrwni, kuwait
     </div>
+</div>
 
-    <div class="footer-sig">
-        تم تطوير المحرك البرمجي بواسطة Electrwni,، الكويت، بنية بمعمارية عالية الأداء، Built with High-Performance Architecture, by electrwni, kuwait
+<!-- نافذة الباركود المنبثقة -->
+<div id="qrModal" class="modal" onclick="closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://electrwni.com" alt="QR Code" class="qr-placeholder">
+        <button class="btn-copy" onclick="copyLink()">نسخ الرابط</button>
+        <p style="font-size: 12px; color: #666;">اضغط مطولاً لحفظ الباركود</p>
     </div>
+</div>
 
-    <script>
-        function goToLink() {
-            const num = document.getElementById('numInput').value;
-            if(num) {
-                // منطق التوجيه للرقم
-                window.location.href = "https://brmjeat1.github.io/" + num;
-            } else {
-                alert('يرجى إدخال الرقم');
-            }
+<script>
+    const input = document.getElementById('numInput');
+    const btn = document.getElementById('goBtn');
+    const errorBox = document.getElementById('errorBox');
+
+    // 1. التعرف على الأرقام فقط
+    input.addEventListener('input', (e) => {
+        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+    });
+
+    // 2. ربط زر Enter بالانتقال
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') executeGo();
+    });
+    btn.addEventListener('click', executeGo);
+
+    function executeGo() {
+        const val = input.value;
+        if (val === "123") { // مثال للرقم الصحيح
+            window.location.href = "https://electrwni.com";
+        } else {
+            errorBox.style.display = 'block';
         }
-    </script>
+    }
+
+    // 3. الإدخال التلقائي (محاكاة ظهور الأرقام)
+    function showSuggestions() {
+        console.log("Suggestions active for numbers");
+    }
+
+    // 4. التحكم بالباركود والنسخ
+    function toggleModal() { document.getElementById('qrModal').style.display = 'flex'; }
+    function closeModal(e) { document.getElementById('qrModal').style.display = 'none'; }
+    
+    function copyLink() {
+        navigator.clipboard.writeText("https://electrwni.com");
+        alert("تم نسخ الرابط بنجاح!");
+    }
+</script>
+
 </body>
 </html>
