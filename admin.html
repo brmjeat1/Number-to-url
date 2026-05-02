@@ -9,15 +9,18 @@
         body { font-family: -apple-system, sans-serif; background-color: var(--bg-gray); margin: 0; padding: 10px; display: flex; justify-content: center; }
         .container { width: 100%; max-width: 400px; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         
-        /* الهيدر */
         .header { padding: 20px; text-align: center; border-bottom: 1px solid #eee; }
         .header h2 { margin: 0; font-size: 18px; color: #1c1e21; }
 
-        /* الأقسام المنسدلة */
+        /* الأقسام الرئيسية والفرعية */
         details { border-bottom: 1px solid #e9edef; }
         summary { padding: 15px; font-weight: bold; font-size: 15px; color: #1c1e21; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; background: #fff; }
         summary::after { content: '▾'; color: var(--apple-blue); font-size: 12px; }
-        details[open] summary::after { content: '▴'; }
+        details[open] > summary::after { content: '▴'; }
+
+        .sub-details { border-bottom: none; background: #fcfcfc; margin: 0 10px; border-radius: 10px; }
+        .sub-summary { padding: 12px; font-size: 14px; color: #41525d; font-weight: 500; }
+        
         .content { padding: 15px; background: #f8f9fa; }
 
         /* المدخلات */
@@ -25,12 +28,14 @@
         .btn-blue { width: 100%; background: var(--apple-blue); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; }
 
         /* الجدول المتمركز */
-        table { width: 100%; border-collapse: collapse; table-layout: fixed; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; margin-top: 5px; }
         th { font-size: 11px; color: #8696a0; padding-bottom: 8px; text-align: right; border-bottom: 1px solid #eee; }
         td { padding: 12px 4px; font-size: 13px; border-bottom: 1px solid #f5f6f6; word-wrap: break-word; vertical-align: middle; }
         
         .col-views { text-align: center; font-weight: bold; color: var(--apple-blue); }
-        .btn-action { background: none; border: none; color: #ff3b30; font-size: 11px; cursor: pointer; padding: 0; margin-top: 4px; display: block; }
+        .action-row { display: flex; gap: 8px; margin-top: 5px; }
+        .btn-edit { color: var(--apple-blue); font-size: 11px; cursor: pointer; background: none; border: none; padding: 0; }
+        .btn-del { color: #ff3b30; font-size: 11px; cursor: pointer; background: none; border: none; padding: 0; }
         .truncate { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--apple-blue); font-weight: 500; }
     </style>
 </head>
@@ -41,18 +46,34 @@
         <h2>لوحة التحكم بروابط الموقع</h2>
     </div>
 
-    <!-- القسم الأول: الروابط -->
+    <!-- القسم الأساسي: الروابط -->
     <details open>
         <summary>الروابط</summary>
-        <div class="content">
-            <input type="number" id="code" placeholder="أدخل الرقم">
-            <input type="text" id="url" placeholder="أدخل الرابط">
-            <input type="text" id="desc" placeholder="أدخل الوصف">
-            <button class="btn-blue" onclick="addData()">إضافة رابط</button>
-        </div>
+        
+        <!-- فرع ١: إضافة الروابط -->
+        <details class="sub-details" open>
+            <summary class="sub-summary">١. إضافة الروابط</summary>
+            <div class="content">
+                <input type="number" id="code" placeholder="أدخل الرقم">
+                <input type="text" id="url" placeholder="أدخل الرابط">
+                <input type="text" id="desc" placeholder="أدخل الوصف">
+                <button class="btn-blue" onclick="addData()">إضافة</button>
+            </div>
+        </details>
+
+        <!-- فرع ٢: تعديل الروابط -->
+        <details class="sub-details">
+            <summary class="sub-summary">٢. تعديل الروابط</summary>
+            <div class="content">
+                <p style="font-size: 12px; color: #8696a0; margin-bottom: 10px;">إدارة الروابط الحالية (تغيير / حذف):</p>
+                <div id="editList">
+                    <!-- تظهر هنا عناصر التحكم السريع عند الإضافة -->
+                </div>
+            </div>
+        </details>
     </details>
 
-    <!-- القسم الثاني: الإحصائيات -->
+    <!-- القسم الأساسي: الإحصائيات -->
     <details>
         <summary>الإحصائيات</summary>
         <div class="content">
@@ -75,44 +96,59 @@
 </div>
 
 <script>
-    // تلخيص الرابط للكلمة الأساسية
     function shortenUrl(url) {
-        try {
-            let domain = new URL(url).hostname;
-            return domain.replace('www.', '');
-        } catch(e) { return "link"; }
+        try { return new URL(url).hostname.replace('www.', ''); } catch(e) { return "link"; }
     }
 
     function addData() {
         const code = document.getElementById('code').value;
         const url = document.getElementById('url').value;
         const desc = document.getElementById('desc').value;
-        
         if(!code || !url) return;
 
+        // إضافة للجدول (الإحصائيات)
         const table = document.getElementById('dataTable');
+        const rowId = 'row-' + Date.now();
         const row = table.insertRow(0);
+        row.setAttribute('id', rowId);
 
+        const short = shortenUrl(url);
         row.innerHTML = `
             <td>${code}</td>
-            <td><span class="truncate">${shortenUrl(url)}</span></td>
-            <td>
-                ${desc || '-'}
-                <button class="btn-action" onclick="deleteRow(this)">حذف</button>
-            </td>
+            <td><span class="truncate">${short}</span></td>
+            <td>${desc || '-'}</td>
             <td class="col-views">0</td>
         `;
 
-        // تصفير الحقول للسرعة
+        // إضافة لقسم التعديل (تغيير / حذف)
+        const editList = document.getElementById('editList');
+        const editItem = document.createElement('div');
+        editItem.style = "background:white; padding:10px; border-radius:8px; margin-bottom:8px; border:1px solid #eee;";
+        editItem.innerHTML = `
+            <div style="font-size:13px; font-weight:bold;">الرقم: ${code} - ${short}</div>
+            <div class="action-row">
+                <button class="btn-edit" onclick="editRow('${rowId}')">تغيير</button>
+                <button class="btn-del" onclick="deleteRow('${rowId}', this)">حذف</button>
+            </div>
+        `;
+        editList.prepend(editItem);
+
+        // تصفير
         document.getElementById('code').value = '';
         document.getElementById('url').value = '';
         document.getElementById('desc').value = '';
     }
 
-    function deleteRow(btn) {
-        if(confirm('هل تريد حذف هذا الرابط؟')) {
+    function deleteRow(id, btn) {
+        if(confirm('هل تريد حذف هذا الرابط نهائياً؟')) {
+            document.getElementById(id).remove();
             btn.parentElement.parentElement.remove();
         }
+    }
+
+    function editRow(id) {
+        alert('يمكنك الآن تغيير البيانات من حقول الإضافة وإعادة النشر بالرقم نفسه للتحديث.');
+        document.getElementById('code').focus();
     }
 </script>
 
