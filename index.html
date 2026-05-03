@@ -2,180 +2,145 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>لوحة التحكم | Electrwni</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>electrwni | مستعرض الروابط</title>
     <style>
-        :root { --apple-blue: #0071e3; --bg-gray: #f0f2f5; }
-        body { font-family: -apple-system, sans-serif; background-color: var(--bg-gray); margin: 0; padding: 10px; display: flex; justify-content: center; overflow-x: hidden; }
-        .container { width: 100%; max-width: 400px; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding-bottom: 20px; }
-        
-        .header { padding: 20px; text-align: center; border-bottom: 1px solid #eee; }
-        .header h2 { margin: 0; font-size: 18px; color: #1c1e21; }
-
-        details { border-bottom: 1px solid #e9edef; }
-        summary { padding: 15px; font-weight: bold; font-size: 15px; color: #1c1e21; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; background: #fff; }
-        summary::after { content: '▾'; color: var(--apple-blue); font-size: 12px; }
-        details[open] > summary::after { content: '▴'; }
-
-        .sub-details { border-bottom: none; background: #fcfcfc; margin: 0 10px; border-radius: 10px; }
-        .sub-summary { padding: 12px; font-size: 14px; color: #41525d; font-weight: 500; }
-        
-        .content { padding: 15px; background: #f8f9fa; }
-
-        /* المدخلات */
-        input { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #e9edef; border-radius: 10px; box-sizing: border-box; font-size: 16px; outline: none; background: #fff; }
-        input:readonly { background-color: #fff; cursor: default; }
-
-        /* لوحة مفاتيح الموقع (الأزرق والأبيض) */
-        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; direction: ltr; }
-        .num-btn { 
-            background: #fff; border: 1px solid #e9edef; padding: 15px; border-radius: 12px; 
-            font-size: 20px; font-weight: bold; color: var(--apple-blue); cursor: pointer; 
-            text-align: center; transition: 0.1s; -webkit-tap-highlight-color: transparent;
+        :root {
+            --primary-bg: #007bff;
+            --neon-glow: 0 0 15px #00e5ff, 0 0 30px #00e5ff;
         }
-        .num-btn:active { background: var(--apple-blue); color: #fff; }
-        .btn-clear { color: #ff3b30; }
-        
-        .btn-blue { width: 100%; background: var(--apple-blue); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
 
-        table { width: 100%; border-collapse: collapse; table-layout: fixed; margin-top: 5px; }
-        th { font-size: 11px; color: #8696a0; padding-bottom: 8px; text-align: right; border-bottom: 1px solid #eee; }
-        td { padding: 12px 4px; font-size: 13px; border-bottom: 1px solid #f5f6f6; word-wrap: break-word; }
-        .col-views { text-align: center; font-weight: bold; color: var(--apple-blue); }
-        .action-row { display: flex; gap: 8px; margin-top: 5px; }
-        .btn-edit { color: var(--apple-blue); font-size: 11px; cursor: pointer; background: none; border: none; }
-        .btn-del { color: #ff3b30; font-size: 11px; cursor: pointer; background: none; border: none; }
-        .truncate { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--apple-blue); font-weight: 500; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--primary-bg);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* الإطار المنقط المحيط بالصفحة */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 15px; bottom: 15px; left: 15px; right: 15px;
+            border: 3px dashed rgba(255, 255, 255, 0.6);
+            pointer-events: none;
+            border-radius: 15px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 90%;
+            max-width: 400px;
+            gap: 25px;
+            z-index: 1;
+        }
+
+        /* تنسيق أيقونات التواصل */
+        .social-icons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .icon {
+            width: 65px; height: 65px;
+            border-radius: 15px;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 10px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+            text-decoration: none;
+            overflow: hidden;
+        }
+
+        .icon:hover { transform: translateY(-5px); }
+
+        .icon img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* صندوق الإدخال */
+        .input-box { width: 100%; }
+
+        input {
+            width: 100%;
+            padding: 22px;
+            font-size: 20px;
+            background: white;
+            border: none;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: var(--neon-glow);
+            color: #333;
+            box-sizing: border-box;
+            font-weight: bold;
+        }
+
+        /* زر التحويل */
+        .go-btn {
+            background-color: #00d9ff;
+            color: white;
+            border: 2px dashed white;
+            padding: 18px 60px;
+            font-size: 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .go-btn:hover { box-shadow: var(--neon-glow); transform: scale(1.05); }
+
+        .footer-logo { font-size: 18px; opacity: 0.8; margin-top: 10px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header">
-        <h2>لوحة التحكم | Electrwni</h2>
+    <div class="social-icons">
+        <a href="https://www.instagram.com/electrwni" target="_blank" class="icon">
+            <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram">
+        </a>
+        <a href="https://x.com/electrwni" target="_blank" class="icon">
+            <img src="https://cdn-icons-png.flaticon.com/512/5969/5969020.png" alt="X">
+        </a>
+        <a href="https://t.me/electrwni" target="_blank" class="icon">
+            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram">
+        </a>
     </div>
 
-    <details open>
-        <summary>الروابط</summary>
-        
-        <details class="sub-details" open>
-            <summary class="sub-summary">١. إضافة الروابط</summary>
-            <div class="content">
-                <!-- حقل الرقم (مغلق للكيبورد العادي) -->
-                <input type="text" id="code" placeholder="أدخل الرقم (استخدم اللوحة أدناه)" readonly>
-                
-                <!-- لوحة مفاتيح الموقع المخصصة -->
-                <div class="numpad">
-                    <div class="num-btn" onclick="pressNum('1')">1</div>
-                    <div class="num-btn" onclick="pressNum('2')">2</div>
-                    <div class="num-btn" onclick="pressNum('3')">3</div>
-                    <div class="num-btn" onclick="pressNum('4')">4</div>
-                    <div class="num-btn" onclick="pressNum('5')">5</div>
-                    <div class="num-btn" onclick="pressNum('6')">6</div>
-                    <div class="num-btn" onclick="pressNum('7')">7</div>
-                    <div class="num-btn" onclick="pressNum('8')">8</div>
-                    <div class="num-btn" onclick="pressNum('9')">9</div>
-                    <div class="num-btn btn-clear" onclick="pressNum('C')">C</div>
-                    <div class="num-btn" onclick="pressNum('0')">0</div>
-                    <div class="num-btn" onclick="pressNum('B')">⌫</div>
-                </div>
+    <div class="input-box">
+        <input type="number" id="codeNumber" placeholder="أدخل رقم التحويل" autofocus>
+    </div>
 
-                <input type="url" id="url" placeholder="أدخل الرابط" style="margin-top:20px">
-                <input type="text" id="desc" placeholder="أدخل الوصف">
-                <button class="btn-blue" onclick="addData()">إضافة الرابط</button>
-            </div>
-        </details>
+    <button class="go-btn" onclick="redirect()">أذهب</button>
 
-        <details class="sub-details">
-            <summary class="sub-summary">٢. تعديل الروابط</summary>
-            <div class="content">
-                <div id="editList"></div>
-            </div>
-        </details>
-    </details>
-
-    <details>
-        <summary>الإحصائيات</summary>
-        <div class="content">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width:15%">رقم</th>
-                        <th style="width:25%">رابط</th>
-                        <th style="width:40%">وصف</th>
-                        <th style="width:20%; text-align:center;">مشاهدة</th>
-                    </tr>
-                </thead>
-                <tbody id="dataTable"></tbody>
-            </table>
-        </div>
-    </details>
+    <div class="footer-logo">@electrwni</div>
 </div>
 
 <script>
-    // وظائف لوحة المفاتيح المخصصة
-    function pressNum(val) {
-        const input = document.getElementById('code');
-        if (val === 'C') {
-            input.value = '';
-        } else if (val === 'B') {
-            input.value = input.value.slice(0, -1);
+    function redirect() {
+        var num = document.getElementById("codeNumber").value;
+        const links = JSON.parse(localStorage.getItem('myLinks')) || {};
+
+        if (links[num]) {
+            window.location.href = links[num];
         } else {
-            input.value += val;
+            alert("عذراً، هذا الرقم غير مسجل!");
         }
     }
 
-    function shortenUrl(url) {
-        try { return new URL(url).hostname.replace('www.', ''); } catch(e) { return "link"; }
-    }
-
-    function addData() {
-        const code = document.getElementById('code').value;
-        const url = document.getElementById('url').value;
-        const desc = document.getElementById('desc').value;
-        if(!code || !url) return;
-
-        const table = document.getElementById('dataTable');
-        const rowId = 'row-' + Date.now();
-        const row = table.insertRow(0);
-        row.setAttribute('id', rowId);
-
-        const short = shortenUrl(url);
-        row.innerHTML = `
-            <td>${code}</td>
-            <td><span class="truncate">${short}</span></td>
-            <td>${desc || '-'}</td>
-            <td class="col-views">0</td>
-        `;
-
-        const editList = document.getElementById('editList');
-        const editItem = document.createElement('div');
-        editItem.style = "background:white; padding:10px; border-radius:8px; margin-bottom:8px; border:1px solid #eee;";
-        editItem.innerHTML = `
-            <div style="font-size:13px; font-weight:bold;">الرقم: ${code} - ${short}</div>
-            <div class="action-row">
-                <button class="btn-edit" onclick="editRow('${rowId}')">تغيير</button>
-                <button class="btn-del" onclick="deleteRow('${rowId}', this)">حذف</button>
-            </div>
-        `;
-        editList.prepend(editItem);
-
-        // تصفير الحقول
-        document.getElementById('code').value = '';
-        document.getElementById('url').value = '';
-        document.getElementById('desc').value = '';
-    }
-
-    function deleteRow(id, btn) {
-        if(confirm('حذف نهائي؟')) {
-            document.getElementById(id).remove();
-            btn.parentElement.parentElement.remove();
-        }
-    }
-
-    function editRow(id) {
-        document.getElementById('code').scrollIntoView();
-    }
+    // دعم زر Enter
+    document.getElementById("codeNumber").addEventListener("keypress", function(event) {
+        if (event.key === "Enter") { redirect(); }
+    });
 </script>
 
 </body>
