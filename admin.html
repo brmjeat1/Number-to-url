@@ -1,140 +1,59 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>لوحة التحكم الاحترافية | Electrwni</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root { --apple-blue: #0071e3; --bg-gray: #f0f2f5; --red-pdf: #e63946; }
-        body { font-family: -apple-system, sans-serif; background-color: var(--bg-gray); margin: 0; padding: 10px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 400px; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); position: relative; }
-        .header { padding: 20px; text-align: center; border-bottom: 1px solid #eee; }
-        
-        /* زر PDF الأحمر المحدث */
-        .pdf-btn { background: var(--red-pdf); color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
-        .pdf-btn:hover { background: #c1121f; transform: scale(1.05); }
+<!-- التعديلات المطلوبة على الهيكل والتنسيق -->
+<style>
+    /* 1. ضبط السقف ليكون مكتملاً */
+    .header-ceiling {
+        width: 100%;
+        height: 20px;
+        background-color: #f1c40f; /* اللون الأصفر الخاص بك */
+    }
 
-        details { border-bottom: 1px solid #e9edef; }
-        summary { padding: 15px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: #fff; }
-        .content { padding: 15px; background: #f8f9fa; }
+    /* 2. خدمة الروابط: يمين + زوايا حادة مائلة */
+    .links-service {
+        display: flex;
+        justify-content: flex-end; /* محاذاة لليمين */
+        transform: skew(-15deg); /* جعلها مائلة وحادة */
+        border-radius: 0px; /* إلغاء الشكل الدائري */
+        background-color: #f1c40f;
+        padding: 10px 20px;
+        margin-bottom: 20px;
+    }
 
-        /* الكيبورد والمدخلات */
-        input { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #e9edef; border-radius: 10px; font-size: 16px; outline: none; }
-        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; direction: ltr; }
-        .num-btn { background: #fff; border: 1px solid #ddd; padding: 12px; border-radius: 10px; font-size: 18px; font-weight: bold; color: var(--apple-blue); cursor: pointer; text-align: center; }
-        .btn-blue { width: 100%; background: var(--apple-blue); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; margin-top: 10px; cursor: pointer; }
+    /* 3. حل تداخل المربع الأصفر مع الأزرق */
+    .box-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0px; /* ضمان عدم التداخل */
+    }
+    .blue-box {
+        background-color: #2980b9;
+        padding: 20px;
+        z-index: 1;
+    }
+    .yellow-box {
+        background-color: #f1c40f;
+        margin-top: 0; /* إلغاء التداخل العلوي */
+        z-index: 2;
+    }
 
-        /* الإحصائيات */
-        .toolbar { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #fff; }
-        select { padding: 5px; border-radius: 5px; border: 1px solid #ddd; font-size: 12px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { font-size: 11px; color: #8696a0; text-align: right; border-bottom: 1px solid #eee; padding: 8px; }
-        td { padding: 10px 5px; font-size: 13px; border-bottom: 1px solid #f5f6f6; }
-        .redirect-link { color: var(--apple-blue); text-decoration: none; font-weight: bold; }
+    /* 4. مربع التوقيع في ذيل الصفحة */
+    .footer-signature {
+        background-color: inherit; /* نفس لون الصفحة */
+        color: #ffffff; /* خط أبيض */
+        font-weight: bold; /* خط عريض */
+        text-align: center;
+        padding: 15px;
+        border-top: 1px solid rgba(255,255,255,0.1);
+    }
+</style>
 
-        /* مودال التعديل المعتم */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: white; padding: 20px; border-radius: 15px; width: 80%; text-align: center; }
-    </style>
-</head>
-<body>
+<div class="header-ceiling"></div>
 
-<div class="container">
-    <div class="header"><h2>لوحة التحكم | Electrwni</h2></div>
-
-    <details open>
-        <summary>إضافة الروابط</summary>
-        <div class="content">
-            <input type="text" id="code" placeholder="أدخل الرقم" readonly>
-            <div class="numpad">
-                <div class="num-btn" onclick="pressNum('1')">1</div><div class="num-btn" onclick="pressNum('2')">2</div><div class="num-btn" onclick="pressNum('3')">3</div>
-                <div class="num-btn" onclick="pressNum('4')">4</div><div class="num-btn" onclick="pressNum('5')">5</div><div class="num-btn" onclick="pressNum('6')">6</div>
-                <div class="num-btn" onclick="pressNum('7')">7</div><div class="num-btn" onclick="pressNum('8')">8</div><div class="num-btn" onclick="pressNum('9')">9</div>
-                <div class="num-btn" style="color:red" onclick="pressNum('C')">C</div><div class="num-btn" onclick="pressNum('0')">0</div><div class="num-btn" onclick="pressNum('B')">⌫</div>
-            </div>
-            <input type="url" id="url" placeholder="الرابط المستهدف" style="margin-top:15px">
-            <input type="text" id="desc" placeholder="وصف الرابط">
-            <button class="btn-blue" onclick="addData()">حفظ الرابط</button>
-        </div>
-    </details>
-
-    <details>
-        <summary>الإحصائيات والتقارير</summary>
-        <div class="toolbar">
-            <select id="filter"><option>الكل</option><option>اليوم</option><option>الأسبوع</option></select>
-            <button class="pdf-btn" onclick="downloadPDF()"><i class="fas fa-file-pdf"></i> PDF</button>
-        </div>
-        <div class="content">
-            <table id="linksTable">
-                <thead><tr><th>رقم</th><th>الرابط</th><th>مشاهدة</th></tr></thead>
-                <tbody id="dataTable"></tbody>
-            </table>
-        </div>
-    </details>
+<div class="box-container">
+    <div class="blue-box">...</div>
+    <div class="links-service">خدمة الروابط</div>
+    <div class="yellow-box">...</div>
 </div>
 
-<div id="editModal" class="modal-overlay">
-    <div class="modal-content">
-        <h3>تعديل الرابط</h3>
-        <input type="text" id="modalCode" placeholder="الرقم الجديد">
-        <input type="url" id="modalUrl" placeholder="الرابط الجديد">
-        <button class="btn-blue" onclick="saveEdit()">تحديث</button>
-        <button onclick="closeModal()" style="margin-top:10px; border:none; background:none; color:red;">إلغاء</button>
-    </div>
-</div>
-
-<script>
-    let activeRowId = null;
-
-    function pressNum(v) {
-        const i = document.getElementById('code');
-        if(v==='C') i.value=''; else if(v==='B') i.value=i.value.slice(0,-1); else i.value+=v;
-    }
-
-    function addData() {
-        const code = document.getElementById('code').value;
-        const url = document.getElementById('url').value;
-        if(!code || !url) return alert("أكمل البيانات");
-
-        const table = document.getElementById('dataTable');
-        const rowId = 'r-' + Date.now();
-        const row = table.insertRow(0);
-        row.id = rowId;
-        
-        // تفعيل الإحالة للرابط فور الضغط
-        row.innerHTML = `
-            <td>${code}</td>
-            <td><a href="https://electrwni.com/${code}" target="_blank" class="redirect-link">${code}#</a></td>
-            <td style="text-align:center">0</td>
-            <td><i class="fas fa-edit" onclick="openModal('${rowId}','${code}','${url}')"></i> 
-                <i class="fas fa-trash" style="color:red; margin-right:10px" onclick="deleteRow('${rowId}')"></i></td>
-        `;
-        alert("تمت الإضافة بنجاح");
-    }
-
-    function deleteRow(id) {
-        if(confirm("موافق: نعم أم لا؟")) document.getElementById(id).remove();
-    }
-
-    function openModal(id, c, u) {
-        activeRowId = id;
-        document.getElementById('modalCode').value = c;
-        document.getElementById('modalUrl').value = u;
-        document.getElementById('editModal').style.display = 'flex';
-    }
-
-    function closeModal() { document.getElementById('editModal').style.display = 'none'; }
-
-    function downloadPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        doc.text("تقرير روابط منصة إلكتروني", 10, 10);
-        doc.autoTable({ html: '#linksTable', startY: 20 });
-        doc.save('Electrwni_Report.pdf');
-    }
-</script>
-</body>
-</html>
+<footer class="footer-signature">
+    تم التطوير بواسطة Electrwni
+</footer>
