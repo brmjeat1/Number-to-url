@@ -2,173 +2,250 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إلكتروني | لوحة التحكم</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- SEO Optimization -->
+    <title>لوحة تحكم Electrwni | إدارة الروابط الذكية</title>
+    <meta name="description" content="لوحة تحكم متقدمة لإدارة تحويل الأرقام إلى روابط، تتبع الإحصائيات، وتخصيص البايو الشخصي لـ Electrwni.">
+    
     <style>
         :root {
-            --bg-color: #000;
-            --card-bg: #1c1c1e;
-            --accent-color: #0a84ff;
-            --text-color: #ffffff;
+            --primary-blue: #0071e3;
+            --bg-body: #f5f5f7;
+            --glass: rgba(255, 255, 255, 0.9);
+            --danger: #ff3b30;
+            --success: #34c759;
         }
+
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-body);
             margin: 0;
             padding: 20px;
+            display: flex;
+            justify-content: center;
         }
-        .admin-container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .card {
-            background: var(--card-bg);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
-        .stat-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        .btn-action {
+
+        .admin-wrapper {
             width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: none;
-            background: var(--accent-color);
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
+            max-width: 500px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.3);
         }
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 8px;
-            border: 1px solid #333;
-            background: #2c2c2e;
-            color: white;
-            box-sizing: border-box;
+
+        h1 { font-size: 20px; text-align: center; color: #1d1d1f; margin-bottom: 25px; }
+
+        /* الأقسام المنسدلة المتقدمة */
+        details { background: #fff; border-radius: 14px; margin-bottom: 12px; border: 1px solid #e5e5e7; overflow: hidden; }
+        summary { padding: 16px; font-weight: 600; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+        summary::after { content: '＋'; color: var(--primary-blue); transition: 0.3s; }
+        details[open] summary::after { content: '－'; transform: rotate(90deg); }
+
+        .content { padding: 15px; border-top: 1px solid #f2f2f2; }
+
+        /* حقول الإدخال */
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 13px; color: #86868b; margin-bottom: 5px; margin-right: 5px; }
+        input, select, textarea { 
+            width: 100%; padding: 14px; border: 1.5px solid #d2d2d7; border-radius: 12px; 
+            font-size: 16px; outline: none; transition: 0.2s; box-sizing: border-box;
         }
-        /* لوحة المفاتيح الرقمية للحماية */
-        .numpad {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 20px;
+        input:focus { border-color: var(--primary-blue); background: #fff; }
+
+        /* كيبورد الأرقام الإنجليزي المدمج */
+        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; direction: ltr; }
+        .num-btn { 
+            background: #fff; border: 1px solid #d2d2d7; padding: 15px; border-radius: 10px; 
+            font-size: 18px; font-weight: 600; color: var(--primary-blue); cursor: pointer; text-align: center;
         }
-        .num-btn {
-            background: #2c2c2e;
-            padding: 20px;
-            border-radius: 50%;
-            text-align: center;
-            cursor: pointer;
-            font-size: 1.2rem;
+        .num-btn:active { background: var(--primary-blue); color: #fff; }
+
+        /* أزرار اختصار الروابط */
+        .suffix-group { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+        .suffix-btn { 
+            background: #f5f5f7; border: 1px solid #d2d2d7; padding: 6px 12px; 
+            border-radius: 8px; font-size: 12px; cursor: pointer; 
         }
+
+        .btn-main { 
+            width: 100%; background: var(--primary-blue); color: white; border: none; 
+            padding: 16px; border-radius: 12px; font-weight: bold; font-size: 16px; 
+            cursor: pointer; margin-top: 15px; transition: 0.3s;
+        }
+        .btn-main:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* نظام التنبيه الذكي */
+        #alertBox { 
+            display: none; padding: 15px; background: #fff2f2; border: 1px solid var(--danger); 
+            border-radius: 12px; margin-bottom: 15px; font-size: 14px; color: var(--danger);
+        }
+        .alert-actions { margin-top: 10px; display: flex; gap: 10px; }
+        .alert-btn { font-size: 12px; padding: 5px 10px; border-radius: 6px; cursor: pointer; border: 1px solid var(--danger); background: none; color: var(--danger); }
+
+        /* قسم الإحصائيات */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .stat-card { background: #f5f5f7; padding: 12px; border-radius: 10px; text-align: center; }
+        .stat-val { display: block; font-size: 18px; font-weight: bold; color: var(--primary-blue); }
     </style>
 </head>
 <body>
 
-<div class="admin-container" id="adminApp">
-    <!-- قسم الحماية -->
-    <div id="lockScreen" class="card">
-        <h2 style="text-align: center;">رمز الدخول</h2>
-        <input type="password" id="pinDisplay" readonly style="text-align: center; font-size: 1.5rem;">
-        <div class="numpad">
-            <div class="num-btn" onclick="addPin('1')">1</div>
-            <div class="num-btn" onclick="addPin('2')">2</div>
-            <div class="num-btn" onclick="addPin('3')">3</div>
-            <div class="num-btn" onclick="addPin('4')">4</div>
-            <div class="num-btn" onclick="addPin('5')">5</div>
-            <div class="num-btn" onclick="addPin('6')">6</div>
-            <div class="num-btn" onclick="addPin('7')">7</div>
-            <div class="num-btn" onclick="addPin('8')">8</div>
-            <div class="num-btn" onclick="addPin('9')">9</div>
-            <div></div>
-            <div class="num-btn" onclick="addPin('0')">0</div>
-            <div class="num-btn" onclick="clearPin()" style="color: #ff453a;">C</div>
+<div class="admin-wrapper">
+    <h1>لوحة تحكم Electrwni</h1>
+
+    <!-- صندوق التنبيهات -->
+    <div id="alertBox">
+        <span id="alertMsg">هذا الرقم مستخدم مسبقاً!</span>
+        <div class="alert-actions">
+            <button class="alert-btn" onclick="viewExisting()">رؤية الرابط</button>
+            <button class="alert-btn" onclick="closeAlert()">تجاهل</button>
         </div>
     </div>
 
-    <!-- لوحة التحكم الرئيسية (مخفية افتراضياً) -->
-    <div id="mainDashboard" style="display: none;">
-        <div class="header">
-            <h1>إلكتروني | الآدمن</h1>
-        </div>
-
-        <div class="stat-grid">
-            <div class="card">
-                <small>إجمالي الروابط</small>
-                <div id="totalLinks" style="font-size: 1.5rem; font-weight: bold;">0</div>
+    <!-- قسم الروابط -->
+    <details open>
+        <summary>قسم الروابط (إضافة وتعديل)</summary>
+        <div class="content">
+            <div class="input-group">
+                <label>الرقم التعريفي (الإنجليزية فقط)</label>
+                <input type="text" id="linkNumber" placeholder="مثلاً: 105" readonly>
+                <div class="numpad">
+                    <div class="num-btn" onclick="tapNum('1')">1</div>
+                    <div class="num-btn" onclick="tapNum('2')">2</div>
+                    <div class="num-btn" onclick="tapNum('3')">3</div>
+                    <div class="num-btn" onclick="tapNum('4')">4</div>
+                    <div class="num-btn" onclick="tapNum('5')">5</div>
+                    <div class="num-btn" onclick="tapNum('6')">6</div>
+                    <div class="num-btn" onclick="tapNum('7')">7</div>
+                    <div class="num-btn" onclick="tapNum('8')">8</div>
+                    <div class="num-btn" onclick="tapNum('9')">9</div>
+                    <div class="num-btn" style="color:red" onclick="tapNum('C')">C</div>
+                    <div class="num-btn" onclick="tapNum('0')">0</div>
+                    <div class="num-btn" onclick="tapNum('B')">⌫</div>
+                </div>
             </div>
-            <div class="card">
-                <small>عدد الزيارات</small>
-                <div id="totalClicks" style="font-size: 1.5rem; font-weight: bold;">0</div>
+
+            <div class="input-group">
+                <label>الرابط الموجه إليه</label>
+                <input type="text" id="linkUrl" placeholder="https://example.com">
+                <div class="suffix-group">
+                    <button class="suffix-btn" onclick="addSuffix('.com')">.com</button>
+                    <button class="suffix-btn" onclick="addSuffix('.net')">.net</button>
+                    <button class="suffix-btn" onclick="addSuffix('.io')">.io</button>
+                    <button class="suffix-btn" onclick="addSuffix('.me')">.me</button>
+                    <button class="suffix-btn" onclick="addSuffix('.info')">.info</button>
+                </div>
+            </div>
+
+            <button class="btn-main" onclick="processLink()">أضف الآن</button>
+        </div>
+    </details>
+
+    <!-- قسم الإحصائيات -->
+    <details>
+        <summary>قسم الإحصائيات (الفلتر الزمني)</summary>
+        <div class="content">
+            <select id="timeFilter" onchange="updateStats()">
+                <optgroup label="مثل هذا">
+                    <option value="today">هذا اليوم</option>
+                    <option value="week">هذا الأسبوع</option>
+                    <option value="month">هذا الشهر</option>
+                </optgroup>
+                <optgroup label="قبل">
+                    <option value="prev-week">قبل أسبوع</option>
+                    <option value="prev-month">قبل شهر</option>
+                    <option value="prev-year">قبل سنة</option>
+                </optgroup>
+                <option value="all">كل الوقت</option>
+            </select>
+            
+            <div class="stats-grid" style="margin-top:15px;">
+                <div class="stat-card">
+                    <span class="stat-val" id="clicks">0</span>
+                    <label>نقرة</label>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-val" id="activeLinks">0</span>
+                    <label>رابط نشط</label>
+                </div>
             </div>
         </div>
+    </details>
 
-        <div class="card">
-            <h3>إضافة رابط جديد</h3>
-            <input type="text" id="linkTitle" placeholder="عنوان الرابط (مثلاً: واتساب)">
-            <input type="url" id="linkUrl" placeholder="https://example.com">
-            <button class="btn-action" onclick="addNewLink()">حفظ الرابط</button>
+    <!-- قسم الشكل والهوية -->
+    <details>
+        <summary>قسم الشكل (الهوية والـ CSS)</summary>
+        <div class="content">
+            <label>لون الخلفية الأساسي</label>
+            <input type="color" id="bgColor" value="#f5f5f7" onchange="applyColor()">
+            <label style="margin-top:10px;">مساحة CSS المخصصة</label>
+            <textarea id="customCss" rows="4" placeholder="body { background: linear-gradient(...); }"></textarea>
+            <button class="btn-main" style="background:#1d1d1f" onclick="applyCustomStyle()">حفظ التنسيق</button>
         </div>
+    </details>
 
-        <div id="linksList">
-            <!-- الروابط المضافة تظهر هنا -->
-        </div>
-    </div>
 </div>
 
 <script>
-    let currentPin = "";
-    const correctPin = "1234"; // يمكنك تغييره لاحقاً
+    // قاعدة بيانات وهمية للتجربة
+    let linksDB = { "101": "https://google.com" };
 
-    function addPin(num) {
-        if (currentPin.length < 4) {
-            currentPin += num;
-            document.getElementById('pinDisplay').value = "*".repeat(currentPin.length);
-            if (currentPin === correctPin) {
-                unlock();
-            }
-        }
+    // وظائف الكيبورد
+    function tapNum(v) {
+        const input = document.getElementById('linkNumber');
+        if(v === 'C') input.value = '';
+        else if(v === 'B') input.value = input.value.slice(0, -1);
+        else input.value += v;
+        closeAlert();
     }
 
-    function clearPin() {
-        currentPin = "";
-        document.getElementById('pinDisplay').value = "";
+    // إضافة اللواحق
+    function addSuffix(s) {
+        const urlInput = document.getElementById('linkUrl');
+        urlInput.value += s;
     }
 
-    function unlock() {
-        document.getElementById('lockScreen').style.display = 'none';
-        document.getElementById('mainDashboard').style.display = 'block';
-        loadLinks();
-    }
-
-    function addNewLink() {
-        const title = document.getElementById('linkTitle').value;
+    // معالجة الرابط والتحقق من التكرار
+    function processLink() {
+        const num = document.getElementById('linkNumber').value;
         const url = document.getElementById('linkUrl').value;
-        if(title && url) {
-            // هنا يتم الربط مع الـ Database أو LocalStorage
-            alert('تم حفظ الرابط بنجاح');
-            document.getElementById('linkTitle').value = '';
-            document.getElementById('linkUrl').value = '';
+
+        if(!num || !url) return alert("يرجى إكمال البيانات");
+
+        if(linksDB[num]) {
+            document.getElementById('alertMsg').innerText = `تنبيه: الرقم ${num} مستخدم مسبقاً لهذا الرابط!`;
+            document.getElementById('alertBox').style.display = 'block';
+        } else {
+            linksDB[num] = url;
+            alert("تمت الإضافة بنجاح!");
+            updateStatsCount();
         }
     }
 
-    function loadLinks() {
-        // وظيفة جلب البيانات وعرضها في السجل
-        console.log("جارِ تحميل البيانات...");
+    function viewExisting() {
+        const num = document.getElementById('linkNumber').value;
+        document.getElementById('linkUrl').value = linksDB[num];
+        closeAlert();
     }
+
+    function closeAlert() { document.getElementById('alertBox').style.display = 'none'; }
+
+    function updateStatsCount() {
+        document.getElementById('activeLinks').innerText = Object.keys(linksDB).length;
+    }
+
+    function applyCustomStyle() {
+        const css = document.getElementById('customCss').value;
+        const styleTag = document.createElement('style');
+        styleTag.innerHTML = css;
+        document.head.appendChild(styleTag);
+        alert("تم تطبيق التنسيق البرمجي");
+    }
+
+    updateStatsCount();
 </script>
 
 </body>
