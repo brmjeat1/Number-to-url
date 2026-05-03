@@ -6,8 +6,11 @@
     <title>electrwni | مستعرض الروابط</title>
     <style>
         :root {
-            --primary-bg: #007bff;
-            --neon-glow: 0 0 15px #00e5ff, 0 0 30px #00e5ff;
+            --primary-bg: #0b0f19; /* خلفية داكنة لإبراز التوهج */
+            --neon-glow: 0 0 15px #00e5ff;
+            --ig-color: #e1306c;
+            --x-color: #000000;
+            --tg-color: #0088cc;
         }
 
         body {
@@ -23,12 +26,11 @@
             position: relative;
         }
 
-        /* الإطار المنقط المحيط بالصفحة */
         body::before {
             content: '';
             position: absolute;
             top: 15px; bottom: 15px; left: 15px; right: 15px;
-            border: 3px dashed rgba(255, 255, 255, 0.6);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
             pointer-events: none;
             border-radius: 15px;
         }
@@ -39,90 +41,133 @@
             align-items: center;
             width: 90%;
             max-width: 400px;
-            gap: 25px;
+            gap: 35px;
             z-index: 1;
         }
-
-        /* تنسيق أيقونات التواصل */
-        .social-icons {
-            display: flex;
-            gap: 20px;
-        }
-
-        .icon {
-            width: 65px; height: 65px;
-            border-radius: 15px;
-            background-color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 6px 10px rgba(0,0,0,0.2);
-            transition: transform 0.3s;
-            text-decoration: none;
-            overflow: hidden;
-        }
-
-        .icon:hover { transform: translateY(-5px); }
-
-        .icon img { width: 100%; height: 100%; object-fit: cover; }
 
         /* صندوق الإدخال */
         .input-box { width: 100%; }
 
         input {
             width: 100%;
-            padding: 22px;
+            padding: 20px;
             font-size: 20px;
-            background: white;
-            border: none;
-            border-radius: 10px;
+            background: #1a1f2c;
+            border: 2px solid #00e5ff;
+            border-radius: 12px;
             text-align: center;
-            box-shadow: var(--neon-glow);
-            color: #333;
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+            color: white;
             box-sizing: border-box;
-            font-weight: bold;
+            outline: none;
         }
 
         /* زر التحويل */
         .go-btn {
-            background-color: #00d9ff;
-            color: white;
-            border: 2px dashed white;
-            padding: 18px 60px;
-            font-size: 24px;
+            background-color: transparent;
+            color: #00e5ff;
+            border: 2px solid #00e5ff;
+            padding: 15px 70px;
+            font-size: 22px;
             border-radius: 10px;
             cursor: pointer;
             font-weight: bold;
             transition: all 0.3s;
         }
 
-        .go-btn:hover { box-shadow: var(--neon-glow); transform: scale(1.05); }
+        .go-btn:hover { background: #00e5ff; color: #000; box-shadow: var(--neon-glow); }
 
-        .footer-logo { font-size: 18px; opacity: 0.8; margin-top: 10px; }
+        /* قسم أيقونات التواصل في الأسفل */
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .icon-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid transparent;
+            background: #161b22;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        /* نصوص المعرف تحت الأيقونة */
+        .username {
+            font-size: 12px;
+            color: white;
+            margin-top: 8px;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s;
+        }
+
+        /* تأثيرات الألوان عند اللمس/الحوم */
+        .icon-wrapper:hover .username { opacity: 1; transform: translateY(0); }
+        .icon-wrapper:hover .icon { transform: scale(1.1); }
+
+        /* Instagram */
+        .ig-link .icon { border-color: var(--ig-color); box-shadow: 0 0 10px var(--ig-color); }
+        .ig-link:hover .icon { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
+
+        /* X */
+        .x-link .icon { border-color: #fff; box-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        .x-link:hover .icon { background: #000; }
+
+        /* Telegram */
+        .tg-link .icon { border-color: var(--tg-color); box-shadow: 0 0 10px var(--tg-color); }
+        .tg-link:hover .icon { background: var(--tg-color); }
+
+        .icon img { width: 30px; height: 30px; filter: brightness(10); transition: 0.3s; }
+        .icon-wrapper:hover img { filter: brightness(1) grayscale(0); }
+
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="social-icons">
-        <a href="https://www.instagram.com/electrwni" target="_blank" class="icon">
-            <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram">
-        </a>
-        <a href="https://x.com/electrwni" target="_blank" class="icon">
-            <img src="https://cdn-icons-png.flaticon.com/512/5969/5969020.png" alt="X">
-        </a>
-        <a href="https://t.me/electrwni" target="_blank" class="icon">
-            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram">
-        </a>
-    </div>
-
     <div class="input-box">
         <input type="number" id="codeNumber" placeholder="أدخل رقم التحويل" autofocus>
     </div>
 
     <button class="go-btn" onclick="redirect()">أذهب</button>
 
-    <div class="footer-logo">@electrwni</div>
+    <!-- روابط التواصل في الأسفل بتصميم متوهج -->
+    <div class="social-icons">
+        <a href="https://www.instagram.com/electrwni" target="_blank" class="icon-wrapper ig-link">
+            <div class="icon">
+                <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram">
+            </div>
+            <span class="username">@electrwni</span>
+        </a>
+        
+        <a href="https://x.com/electrwni" target="_blank" class="icon-wrapper x-link">
+            <div class="icon">
+                <img src="https://cdn-icons-png.flaticon.com/512/5969/5969020.png" alt="X">
+            </div>
+            <span class="username">@electrwni</span>
+        </a>
+
+        <a href="https://t.me/electrwni" target="_blank" class="icon-wrapper tg-link">
+            <div class="icon">
+                <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram">
+            </div>
+            <span class="username">@electrwni</span>
+        </a>
+    </div>
 </div>
 
 <script>
@@ -137,7 +182,6 @@
         }
     }
 
-    // دعم زر Enter
     document.getElementById("codeNumber").addEventListener("keypress", function(event) {
         if (event.key === "Enter") { redirect(); }
     });
