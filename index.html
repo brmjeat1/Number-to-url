@@ -1,124 +1,59 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>التوجيه الرقمي لروابط منصة إلكتروني</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root { 
-            --primary: #072AC8; 
-            --accent: #FCF300; 
-            --sky: #1E96FC; 
-            --light-blue: #A2D6F9; 
-            --dark-blue-box: #003399;
-            --bright-blue-box: #2563EB;
-            --yellow-btn: #FFEB3B;
-        }
-        
-        body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; display: flex; flex-direction: column; min-height: 100vh; align-items: center; background-image: radial-gradient(circle at top right, rgb(0,3,125) 0%, rgb(0,3,125) 48%, rgb(7,31,149) 48%, rgb(7,31,149) 53%, rgb(230,255,0) 53%, rgb(230,255,0) 56%, rgb(34,30,252) 56%, rgb(34,30,252) 69%, rgb(6,14,216) 69%, rgb(6,14,216) 100%); background-attachment: fixed; justify-content: space-between; }
-        .header-box { background: var(--primary); width: 100%; min-height: 60px; display: flex; align-items: center; justify-content: center; padding: 10px 0; }
-        .header-text { color: #ffffff; font-size: 1.1rem; font-weight: 500; }
-        .highlight-text { color: var(--light-blue); font-size: 1.4rem; font-weight: bold; margin: 0 5px; }
-        .yellow-line { background: var(--accent); width: 100%; height: 3px; }
-        .white-wrapper { background: #ffffff; width: 85%; max-width: 450px; margin: 40px auto; border-radius: 24px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); display: flex; flex-direction: column; align-items: center; padding: 30px 20px; box-sizing: border-box; }
-        
-        /* مربع الإدخال المدعوم بالكيبورد الإنجليزي الرقمي */
-        input { width: 100%; padding: 15px; font-size: 1.2rem; border: 2px solid var(--primary); border-radius: 12px; text-align: center; outline: none; box-sizing: border-box; margin-bottom: 15px; }
-        
-        .btn-go { width: 100%; padding: 15px; background: var(--primary); color: #fff; border: none; border-radius: 12px; font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: transform 0.1s; }
-        .qr-section { padding: 12px; border: 1px solid #eee; border-radius: 15px; display: inline-block; margin: 20px 0; text-align: center; }
-        #qr-code-img { width: 100px; height: 100px; }
+<!-- التعديلات المطلوبة على الهيكل والتنسيق -->
+<style>
+    /* 1. ضبط السقف ليكون مكتملاً */
+    .header-ceiling {
+        width: 100%;
+        height: 20px;
+        background-color: #f1c40f; /* اللون الأصفر الخاص بك */
+    }
 
-        .social-links { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; }
-        .social-icon { background: var(--primary); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; color: var(--accent); border: 2px solid var(--sky); }
-        .social-icon i, .social-icon svg { width: 20px; height: 20px; fill: var(--accent); color: var(--accent); }
+    /* 2. خدمة الروابط: يمين + زوايا حادة مائلة */
+    .links-service {
+        display: flex;
+        justify-content: flex-end; /* محاذاة لليمين */
+        transform: skew(-15deg); /* جعلها مائلة وحادة */
+        border-radius: 0px; /* إلغاء الشكل الدائري */
+        background-color: #f1c40f;
+        padding: 10px 20px;
+        margin-bottom: 20px;
+    }
 
-        .info-stack { width: 100%; display: flex; flex-direction: column; align-items: flex-end; margin-top: 10px; }
-        .service-title { background: var(--dark-blue-box); color: #fff; font-weight: bold; padding: 8px 20px; border-radius: 5px 25px 5px 5px; font-size: 1.3rem; margin-bottom: -5px; z-index: 3; align-self: flex-end; clip-path: polygon(15% 0, 100% 0, 100% 100%, 0% 100%); }
-        .phrases-box { background: var(--bright-blue-box); color: #ffffff; width: 100%; padding: 15px; text-align: center; font-size: 1.2rem; font-weight: bold; z-index: 2; position: relative; min-height: 60px; display: flex; align-items: center; justify-content: center; overflow: hidden; box-sizing: border-box; }
+    /* 3. حل تداخل المربع الأصفر مع الأزرق */
+    .box-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0px; /* ضمان عدم التداخل */
+    }
+    .blue-box {
+        background-color: #2980b9;
+        padding: 20px;
+        z-index: 1;
+    }
+    .yellow-box {
+        background-color: #f1c40f;
+        margin-top: 0; /* إلغاء التداخل العلوي */
+        z-index: 2;
+    }
 
-        .tracking-out-contract {
-            -webkit-animation: tracking-out-contract 0.7s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
-            animation: tracking-out-contract 0.7s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
-        }
+    /* 4. مربع التوقيع في ذيل الصفحة */
+    .footer-signature {
+        background-color: inherit; /* نفس لون الصفحة */
+        color: #ffffff; /* خط أبيض */
+        font-weight: bold; /* خط عريض */
+        text-align: center;
+        padding: 15px;
+        border-top: 1px solid rgba(255,255,255,0.1);
+    }
+</style>
 
-        @-webkit-keyframes tracking-out-contract {
-            0% { opacity: 1; }
-            50% { opacity: 1; }
-            100% { letter-spacing: -0.5em; opacity: 0; }
-        }
-        @keyframes tracking-out-contract {
-            0% { opacity: 1; }
-            50% { opacity: 1; }
-            100% { letter-spacing: -0.5em; opacity: 0; }
-        }
+<div class="header-ceiling"></div>
 
-        .order-button-new { background: var(--accent); color: var(--primary); width: 80%; padding: 10px; text-align: center; font-weight: bold; font-size: 1.1rem; text-decoration: none; align-self: flex-start; margin-top: -5px; z-index: 3; clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%); }
-        .footer { background: #ffffff; width: 100%; padding: 20px; color: var(--primary); font-size: 0.85rem; font-weight: bold; border-top: 1px solid #eee; text-align: center; line-height: 1.6; margin-top: auto; }
-    </style>
-</head>
-<body>
+<div class="box-container">
+    <div class="blue-box">...</div>
+    <div class="links-service">خدمة الروابط</div>
+    <div class="yellow-box">...</div>
+</div>
 
-    <div class="header-box">
-        <div class="header-text">توجيه <span class="highlight-text">الأرقام إلى روابط</span> لمنصة إلكتروني</div>
-    </div>
-    <div class="yellow-line"></div>
-
-    <div class="white-wrapper">
-        <!-- تم تحديث هذا السطر لضبط الكيبورد -->
-        <input type="tel" id="linkId" inputmode="numeric" pattern="[0-9]*" placeholder="أدخل الرقم هنا...">
-        
-        <button class="btn-go" onclick="redirect()">انتقل الآن</button>
-
-        <div class="qr-section">
-            <img id="qr-code-img" src="" alt="QR">
-        </div>
-
-        <div class="social-links">
-            <a href="https://x.com/electrwni" target="_blank" class="social-icon">
-                <svg viewBox="0 0 24 24"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932 6.064-6.932zm-1.292 19.494h2.039L6.486 3.24H4.298l13.311 17.407z"/></svg>
-            </a>
-            <a href="https://www.instagram.com/electrwni" target="_blank" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
-            <a href="https://t.me/electrwni" target="_blank" class="social-icon"><i class="fa-brands fa-telegram"></i></a>
-        </div>
-
-        <div class="info-stack">
-            <div class="service-title">خدمة الروابط:</div>
-            <div class="phrases-box">
-                <span id="typing-text">زد إنتاجية محتواك ..</span>
-            </div>
-            <a href="https://ig.me/m/electrwni" target="_blank" class="order-button-new">اضغط هنا لطلب الخدمة</a>
-        </div>
-    </div>
-
-    <div class="footer">
-        تم تطوير المحرك البرمجي بواسطة Electrwni، الكويت بنية بمعمارية عالية الأداء Built with High-Performance Architecture, by electrwni, kuwait
-    </div>
-
-    <script>
-        window.onload = function() {
-            document.getElementById('qr-code-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(window.location.href)}&color=072ac8`;
-        };
-
-        const phrases = ["زد إنتاجية محتواك ..", "لطلب الخدمة واصلنا ..", "اضف ببايو انستقرام ..", "أفضل مستودع لروابطك  .."," روابطك بلمسة رقم ..", " رقم دعاياتك وانطلق ..", "منتج رقمي عربي ١٠٠٪؜ .."];
-        let i = 0;
-        const textElement = document.getElementById('typing-text');
-
-        setInterval(() => {
-            textElement.classList.add('tracking-out-contract');
-            setTimeout(() => {
-                i = (i + 1) % phrases.length;
-                textElement.innerText = phrases[i];
-                textElement.classList.remove('tracking-out-contract');
-            }, 700);
-        }, 4000);
-
-        function redirect() {
-            const val = document.getElementById('linkId').value;
-            if(val) window.location.href = "https://electrwni.com/" + val;
-            else alert("يرجى إدخال الرقم");
-        }
-    </script>
-</body>
-</html>
+<footer class="footer-signature">
+    تم التطوير بواسطة Electrwni
+</footer>
