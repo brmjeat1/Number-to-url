@@ -25,7 +25,7 @@
             position: relative;
         }
 
-        /* الإطار المنقط - تم تعديل المسافة العلوية لتتساوى مع السفلية */
+        /* 1. إنزال الخط المتعرج العلوي قليلاً ليتساوى مع السفلي */
         body::before {
             content: '';
             position: absolute;
@@ -45,7 +45,6 @@
             z-index: 1;
         }
 
-        /* صندوق الإدخال متوهج بالسماوي */
         input {
             width: 100%;
             padding: 22px;
@@ -61,12 +60,6 @@
             outline: none;
         }
 
-        /* تخصيص مظهر الكيبورد ليدعم الثيم الأبيض في الأنظمة المتوافقة */
-        input:focus {
-            background-color: #ffffff;
-            color: var(--primary-bg);
-        }
-
         .go-btn {
             background-color: #00d9ff;
             color: white;
@@ -79,18 +72,6 @@
             transition: all 0.3s;
         }
 
-        /* رسالة التنبيه السماوية */
-        #touch-hint {
-            color: var(--sky-blue);
-            font-size: 14px;
-            font-weight: bold;
-            height: 20px;
-            opacity: 0;
-            transition: opacity 0.5s;
-            margin-bottom: -10px;
-        }
-
-        /* أيقونات التواصل */
         .social-icons {
             display: flex;
             gap: 20px;
@@ -133,7 +114,17 @@
             transition: 0.3s;
         }
 
-        /* الحالة النشطة - تبقى ثابتة عند التفعيل */
+        /* 3. العبارة تظهر أسفل عبارة @electrwni */
+        #touch-hint {
+            color: var(--sky-blue);
+            font-size: 14px;
+            font-weight: bold;
+            height: 20px;
+            opacity: 0;
+            transition: opacity 0.5s;
+            margin-top: 10px; /* المسافة بين المعرف والرسالة */
+        }
+
         .active .username { visibility: visible; opacity: 1; }
         .active.ig-link .icon { background: var(--ig-gradient); border-color: transparent; }
         .active.x-link .icon { background: #000; border-color: #444; }
@@ -145,14 +136,12 @@
 
 <div class="container">
     <div class="input-box" style="width:100%">
-        <!-- تم إضافة inputmode لإظهار كيبورد الأرقام -->
-        <input type="number" id="codeNumber" placeholder="أدخل رقم التحويل" inputmode="numeric" autofocus>
+        <!-- 2. جعل كيبورد الأرقام إنجليزي عبر pattern و tel -->
+        <input type="tel" id="codeNumber" placeholder="أدخل رقم التحويل" 
+               pattern="[0-9]*" inputmode="numeric" autocomplete="off" autofocus>
     </div>
 
     <button class="go-btn" onclick="redirect()">أذهب</button>
-
-    <!-- مكان ظهور رسالة التنبيه -->
-    <div id="touch-hint">ألمس مرة ثانية للذهاب للحساب</div>
 
     <div class="social-icons">
         <div class="icon-wrapper ig-link" onclick="handleSocialClick(this, 'https://www.instagram.com/electrwni')">
@@ -176,6 +165,9 @@
             <span class="username">electrwni@</span>
         </div>
     </div>
+
+    <!-- مكان الرسالة المحدث أسفل أيقونات التواصل والمعرفات -->
+    <div id="touch-hint">ألمس مرة ثانية للذهاب للحساب</div>
 </div>
 
 <script>
@@ -187,7 +179,7 @@
         if (element.classList.contains('active')) {
             window.open(url, '_blank');
         } else {
-            // تفعيل العنصر
+            // تفعيل العنصر الحالي (فقط إذا لم يكن مفعلاً مسبقاً)
             element.classList.add('active');
             
             // إظهار الرسالة
