@@ -4,254 +4,179 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>لوحة التحكم | Electrwni</title>
-    <!-- مكتبات توليد PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <style>
-        :root { --apple-blue: #0071e3; --bg-gray: #f0f2f5; --apple-red: #ff3b30; }
-        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--bg-gray); margin: 0; padding: 10px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 450px; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        :root { --apple-blue: #0071e3; --bg-gray: #f0f2f5; }
+        body { font-family: -apple-system, sans-serif; background-color: var(--bg-gray); margin: 0; padding: 10px; display: flex; justify-content: center; overflow-x: hidden; }
+        .container { width: 100%; max-width: 400px; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding-bottom: 20px; }
         
+        .header { padding: 20px; text-align: center; border-bottom: 1px solid #eee; }
+        .header h2 { margin: 0; font-size: 18px; color: #1c1e21; }
+
         details { border-bottom: 1px solid #e9edef; }
-        summary { padding: 15px; font-weight: bold; font-size: 16px; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; background: #fff; }
-        summary::after { content: '▾'; color: var(--apple-blue); }
-        details[open] summary::after { content: '▴'; }
+        summary { padding: 15px; font-weight: bold; font-size: 15px; color: #1c1e21; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; background: #fff; }
+        summary::after { content: '▾'; color: var(--apple-blue); font-size: 12px; }
+        details[open] > summary::after { content: '▴'; }
 
+        .sub-details { border-bottom: none; background: #fcfcfc; margin: 0 10px; border-radius: 10px; }
+        .sub-summary { padding: 12px; font-size: 14px; color: #41525d; font-weight: 500; }
+        
         .content { padding: 15px; background: #f8f9fa; }
-        .input-group { position: relative; margin-bottom: 10px; }
-        input { width: 100%; padding: 12px; border: 1px solid #e9edef; border-radius: 10px; box-sizing: border-box; font-size: 14px; }
-        
-        /* اقتراح الروابط */
-        .url-suggestion { position: absolute; right: 12px; top: 12px; color: #a1a1a6; pointer-events: none; white-space: nowrap; overflow: hidden; }
 
-        .btn-blue { width: 100%; background: var(--apple-blue); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; }
-        
-        /* الفلاتر */
-        .filter-options { display: flex; flex-wrap: wrap; gap: 5px; margin: 10px 0; }
-        .filter-chip { font-size: 11px; padding: 6px 10px; border: 1px solid #ddd; border-radius: 20px; cursor: pointer; background: white; }
-        .filter-chip.active { background: #333; color: white; border-color: #333; }
-        .custom-range { display: none; padding: 10px; background: #eee; border-radius: 10px; margin-top: 5px; }
+        /* المدخلات */
+        input { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #e9edef; border-radius: 10px; box-sizing: border-box; font-size: 16px; outline: none; background: #fff; }
+        input:readonly { background-color: #fff; cursor: default; }
 
-        /* الجداول */
-        table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
-        th { color: #667781; text-align: right; padding: 8px 4px; border-bottom: 1px solid #eee; }
-        td { padding: 10px 4px; border-bottom: 1px solid #f0f0f0; }
-        .btn-pdf { background: #000; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; cursor: pointer; float: left; }
+        /* لوحة مفاتيح الموقع (الأزرق والأبيض) */
+        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; direction: ltr; }
+        .num-btn { 
+            background: #fff; border: 1px solid #e9edef; padding: 15px; border-radius: 12px; 
+            font-size: 20px; font-weight: bold; color: var(--apple-blue); cursor: pointer; 
+            text-align: center; transition: 0.1s; -webkit-tap-highlight-color: transparent;
+        }
+        .num-btn:active { background: var(--apple-blue); color: #fff; }
+        .btn-clear { color: #ff3b30; }
+        
+        .btn-blue { width: 100%; background: var(--apple-blue); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
+
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; margin-top: 5px; }
+        th { font-size: 11px; color: #8696a0; padding-bottom: 8px; text-align: right; border-bottom: 1px solid #eee; }
+        td { padding: 12px 4px; font-size: 13px; border-bottom: 1px solid #f5f6f6; word-wrap: break-word; }
+        .col-views { text-align: center; font-weight: bold; color: var(--apple-blue); }
+        .action-row { display: flex; gap: 8px; margin-top: 5px; }
+        .btn-edit { color: var(--apple-blue); font-size: 11px; cursor: pointer; background: none; border: none; }
+        .btn-del { color: #ff3b30; font-size: 11px; cursor: pointer; background: none; border: none; }
+        .truncate { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--apple-blue); font-weight: 500; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div style="padding: 20px; text-align: center;">
-        <h2 style="margin:0; font-size: 18px;">Electrwni Dashboard</h2>
+    <div class="header">
+        <h2>لوحة التحكم | Electrwni</h2>
     </div>
 
-    <!-- ١. الروابط -->
     <details open>
         <summary>الروابط</summary>
-        <div class="content">
-            <details open>
-                <summary style="font-size: 14px; padding: 10px 0;">إضافة رابط</summary>
-                <div style="padding: 10px 0;">
-                    <input type="text" id="code" placeholder="الرقم" oninput="convertToArabicNumbers(this)">
-                    <div class="input-group">
-                        <input type="text" id="url" placeholder="الرابط" oninput="suggestCom(this)" onkeydown="handleUrlKey(event)">
-                        <div id="suggestion" class="url-suggestion"></div>
-                    </div>
-                    <input type="text" id="desc" placeholder="الوصف">
-                    <button class="btn-blue" id="submitBtn" onclick="handleData()">إضافة الآن</button>
+        
+        <details class="sub-details" open>
+            <summary class="sub-summary">١. إضافة الروابط</summary>
+            <div class="content">
+                <!-- حقل الرقم (مغلق للكيبورد العادي) -->
+                <input type="text" id="code" placeholder="أدخل الرقم (استخدم اللوحة أدناه)" readonly>
+                
+                <!-- لوحة مفاتيح الموقع المخصصة -->
+                <div class="numpad">
+                    <div class="num-btn" onclick="pressNum('1')">1</div>
+                    <div class="num-btn" onclick="pressNum('2')">2</div>
+                    <div class="num-btn" onclick="pressNum('3')">3</div>
+                    <div class="num-btn" onclick="pressNum('4')">4</div>
+                    <div class="num-btn" onclick="pressNum('5')">5</div>
+                    <div class="num-btn" onclick="pressNum('6')">6</div>
+                    <div class="num-btn" onclick="pressNum('7')">7</div>
+                    <div class="num-btn" onclick="pressNum('8')">8</div>
+                    <div class="num-btn" onclick="pressNum('9')">9</div>
+                    <div class="num-btn btn-clear" onclick="pressNum('C')">C</div>
+                    <div class="num-btn" onclick="pressNum('0')">0</div>
+                    <div class="num-btn" onclick="pressNum('B')">⌫</div>
                 </div>
-            </details>
-            
-            <details>
-                <summary style="font-size: 14px; padding: 10px 0;">تعديل الروابط</summary>
-                <div id="editList" style="padding: 10px 0; font-size: 13px; color: #666;">
-                    اختر رابطاً من السجل أدناه لتعديله.
-                </div>
-            </details>
-        </div>
+
+                <input type="url" id="url" placeholder="أدخل الرابط" style="margin-top:20px">
+                <input type="text" id="desc" placeholder="أدخل الوصف">
+                <button class="btn-blue" onclick="addData()">إضافة الرابط</button>
+            </div>
+        </details>
+
+        <details class="sub-details">
+            <summary class="sub-summary">٢. تعديل الروابط</summary>
+            <div class="content">
+                <div id="editList"></div>
+            </div>
+        </details>
     </details>
 
-    <!-- ٢. السجل -->
     <details>
-        <summary>سجل المدخلات</summary>
+        <summary>الإحصائيات</summary>
         <div class="content">
             <table>
                 <thead>
                     <tr>
-                        <th style="width:15%">الرقم</th>
-                        <th style="width:40%">الرابط</th>
-                        <th style="width:25%">الوصف</th>
-                        <th style="width:20%">تحكم</th>
+                        <th style="width:15%">رقم</th>
+                        <th style="width:25%">رابط</th>
+                        <th style="width:40%">وصف</th>
+                        <th style="width:20%; text-align:center;">مشاهدة</th>
                     </tr>
                 </thead>
-                <tbody id="logTable"></tbody>
-            </table>
-        </div>
-    </details>
-
-    <!-- ٣. الإحصائيات -->
-    <details>
-        <summary>الإحصائيات</summary>
-        <div class="content">
-            <button class="btn-pdf" onclick="exportPDF()">تنزيل PDF 🖨️</button>
-            <div style="clear:both"></div>
-            
-            <div class="filter-options">
-                <div class="filter-chip" onclick="setPeriod('اليوم', this)">اليوم</div>
-                <div class="filter-chip active" onclick="setPeriod('الأسبوع', this)">الأسبوع</div>
-                <div class="filter-chip" onclick="setPeriod('الشهر', this)">الشهر</div>
-                <div class="filter-chip" onclick="showCustom(this)">التخصيص</div>
-            </div>
-
-            <div id="customDate" class="custom-range">
-                <input type="date" id="dateFrom" min="2026-01-01">
-                <input type="date" id="dateTo">
-                <button class="btn-blue" style="margin-top:5px" onclick="applyCustomDate()">تطبيق</button>
-            </div>
-
-            <table id="statsTableBase">
-                <thead>
-                    <tr>
-                        <th>الرقم</th>
-                        <th>الوصف</th>
-                        <th>المشاهدات</th>
-                    </tr>
-                </thead>
-                <tbody id="statsTableBody"></tbody>
+                <tbody id="dataTable"></tbody>
             </table>
         </div>
     </details>
 </div>
 
 <script>
-    let editModeRow = null;
-    let selectedPeriod = "الأسبوع";
-
-    // تحويل الأرقام العربية إلى إنجليزية تلقائياً
-    function convertToArabicNumbers(el) {
-        const map = {'٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9'};
-        el.value = el.value.replace(/[٠-٩]/g, function(d) { return map[d]; });
-    }
-
-    // اقتراح .com
-    function suggestCom(el) {
-        const sug = document.getElementById('suggestion');
-        if (el.value.includes('.') || el.value === "") {
-            sug.innerText = "";
-            return;
-        }
-        sug.innerText = el.value + ".com";
-    }
-
-    function handleUrlKey(e) {
-        const el = e.target;
-        const sug = document.getElementById('suggestion');
-        if (e.key === "Enter" || e.key === "Tab") {
-            if (sug.innerText !== "") {
-                e.preventDefault();
-                el.value = sug.innerText;
-                sug.innerText = "";
-            }
+    // وظائف لوحة المفاتيح المخصصة
+    function pressNum(val) {
+        const input = document.getElementById('code');
+        if (val === 'C') {
+            input.value = '';
+        } else if (val === 'B') {
+            input.value = input.value.slice(0, -1);
+        } else {
+            input.value += val;
         }
     }
 
-    function setPeriod(p, el) {
-        selectedPeriod = p;
-        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-        el.classList.add('active');
-        document.getElementById('customDate').style.display = 'none';
+    function shortenUrl(url) {
+        try { return new URL(url).hostname.replace('www.', ''); } catch(e) { return "link"; }
     }
 
-    function showCustom(el) {
-        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-        el.classList.add('active');
-        document.getElementById('customDate').style.display = 'block';
-    }
-
-    function handleData() {
+    function addData() {
         const code = document.getElementById('code').value;
         const url = document.getElementById('url').value;
         const desc = document.getElementById('desc').value;
-        if (!code || !url) return;
+        if(!code || !url) return;
 
-        if (editModeRow) {
-            editModeRow.cells[0].innerText = code;
-            editModeRow.cells[1].innerText = url;
-            editModeRow.cells[2].innerText = desc;
-            editModeRow = null;
-            document.getElementById('submitBtn').innerText = "إضافة الآن";
-        } else {
-            const logBody = document.getElementById('logTable');
-            const row = logBody.insertRow(0);
-            row.innerHTML = `
-                <td>${code}</td>
-                <td style="word-break:break-all">${url}</td>
-                <td>${desc}</td>
-                <td>
-                    <span style="color:blue; cursor:pointer" onclick="editRow(this)">تعديل</span> | 
-                    <span style="color:red; cursor:pointer" onclick="deleteRow(this)">حذف</span>
-                </td>
-            `;
-            
-            const statsBody = document.getElementById('statsTableBody');
-            const sRow = statsBody.insertRow(0);
-            sRow.innerHTML = `<td>${code}</td><td>${desc || '---'}</td><td>${Math.floor(Math.random()*50)}</td>`;
-        }
+        const table = document.getElementById('dataTable');
+        const rowId = 'row-' + Date.now();
+        const row = table.insertRow(0);
+        row.setAttribute('id', rowId);
 
+        const short = shortenUrl(url);
+        row.innerHTML = `
+            <td>${code}</td>
+            <td><span class="truncate">${short}</span></td>
+            <td>${desc || '-'}</td>
+            <td class="col-views">0</td>
+        `;
+
+        const editList = document.getElementById('editList');
+        const editItem = document.createElement('div');
+        editItem.style = "background:white; padding:10px; border-radius:8px; margin-bottom:8px; border:1px solid #eee;";
+        editItem.innerHTML = `
+            <div style="font-size:13px; font-weight:bold;">الرقم: ${code} - ${short}</div>
+            <div class="action-row">
+                <button class="btn-edit" onclick="editRow('${rowId}')">تغيير</button>
+                <button class="btn-del" onclick="deleteRow('${rowId}', this)">حذف</button>
+            </div>
+        `;
+        editList.prepend(editItem);
+
+        // تصفير الحقول
         document.getElementById('code').value = '';
         document.getElementById('url').value = '';
         document.getElementById('desc').value = '';
     }
 
-    function deleteRow(btn) {
-        if(confirm("هل أنت متأكد من الحذف؟")) btn.closest('tr').remove();
+    function deleteRow(id, btn) {
+        if(confirm('حذف نهائي؟')) {
+            document.getElementById(id).remove();
+            btn.parentElement.parentElement.remove();
+        }
     }
 
-    function editRow(btn) {
-        editModeRow = btn.closest('tr');
-        document.getElementById('code').value = editModeRow.cells[0].innerText;
-        document.getElementById('url').value = editModeRow.cells[1].innerText;
-        document.getElementById('desc').value = editModeRow.cells[2].innerText;
-        document.getElementById('submitBtn').innerText = "حفظ التعديلات";
-        window.scrollTo(0,0);
-    }
-
-    function exportPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        const dateNow = new Date().toLocaleDateString('en-GB');
-
-        // العنوان الرئيسي (أبيض وأسود)
-        doc.setFontSize(18);
-        doc.text("Electrwni Links Strategy Report", 105, 20, { align: "center" });
-        
-        // عنوان فرعي
-        doc.setFontSize(12);
-        doc.text("User Interaction & Traffic Analysis", 105, 30, { align: "center" });
-
-        // التواريخ
-        doc.setFontSize(10);
-        doc.text(`Report Date: ${dateNow}`, 20, 45);
-        doc.text(`Stats Period: ${selectedPeriod}`, 20, 52);
-
-        // الجدول (أبيض وأسود بالكامل لتجنب أخطاء ترميز الخطوط العربية في المتصفحات)
-        const rows = [];
-        document.querySelectorAll('#statsTableBody tr').forEach(tr => {
-            rows.push([tr.cells[0].innerText, tr.cells[1].innerText, tr.cells[2].innerText]);
-        });
-
-        doc.autoTable({
-            startY: 60,
-            head: [['ID', 'Description', 'Views']],
-            body: rows,
-            theme: 'grid',
-            headStyles: { fillColor: [0, 0, 0], textColor: [255, 255, 255] },
-            styles: { fontSize: 9, halign: 'center' }
-        });
-
-        doc.save(`Electrwni_Report_${dateNow}.pdf`);
+    function editRow(id) {
+        document.getElementById('code').scrollIntoView();
     }
 </script>
+
 </body>
 </html>
