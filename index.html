@@ -7,10 +7,8 @@
     <style>
         :root {
             --primary-bg: #007bff;
+            --neon-glow: 0 0 15px #00e5ff, 0 0 30px #00e5ff;
             --ig-gradient: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
-            --x-color: #000000;
-            --tg-color: #0088cc;
-            --screen-margin: 15px; /* القيمة الموحدة للبعد عن الشاشة */
         }
 
         body {
@@ -26,17 +24,14 @@
             position: relative;
         }
 
-        /* الإطار المنقط الموزون علوياً وسفلياً */
+        /* الإطار المنقط - استعادة الشكل الأصلي */
         body::before {
             content: '';
             position: absolute;
-            top: var(--screen-margin); 
-            bottom: var(--screen-margin); 
-            left: 25px; 
-            right: 25px;
-            border: 3px dashed rgba(255, 255, 255, 0.4);
+            top: 15px; bottom: 15px; left: 15px; right: 15px;
+            border: 3px dashed rgba(255, 255, 255, 0.6);
             pointer-events: none;
-            border-radius: 20px;
+            border-radius: 15px;
         }
 
         .container {
@@ -45,40 +40,39 @@
             align-items: center;
             width: 90%;
             max-width: 400px;
-            gap: 30px;
+            gap: 25px;
             z-index: 1;
         }
 
-        /* صندوق الإدخال */
+        /* صندوق الإدخال - استعادة التوهج السماوي */
         input {
             width: 100%;
-            padding: 20px;
+            padding: 22px;
             font-size: 20px;
             background: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: var(--neon-glow);
             color: #333;
             box-sizing: border-box;
-            outline: none;
             font-weight: bold;
+            outline: none;
         }
 
-        /* الزر */
         .go-btn {
             background-color: #00d9ff;
             color: white;
             border: 2px dashed white;
-            padding: 15px 70px;
-            font-size: 22px;
+            padding: 18px 60px;
+            font-size: 24px;
             border-radius: 10px;
             cursor: pointer;
             font-weight: bold;
-            transition: 0.3s;
+            transition: all 0.3s;
         }
 
-        /* أيقونات التواصل */
+        /* أيقونات التواصل الاجتماعي */
         .social-icons {
             display: flex;
             gap: 20px;
@@ -90,90 +84,108 @@
             flex-direction: column;
             align-items: center;
             text-decoration: none;
-            width: 75px;
+            cursor: pointer;
         }
 
         .icon {
-            width: 60px;
-            height: 60px;
+            width: 65px; height: 65px;
             border-radius: 15px;
+            background-color: var(--primary-bg);
+            border: 2px solid white;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: var(--primary-bg);
-            border: 2px solid white;
             transition: all 0.4s ease;
+            overflow: hidden;
         }
 
+        /* الشعارات بيضاء في السكون */
         .icon img {
-            width: 32px;
-            height: 32px;
-            filter: brightness(0) invert(1); /* شعار أبيض */
+            width: 35px; height: 35px;
+            filter: brightness(0) invert(1);
             transition: all 0.4s ease;
         }
 
         .username {
-            font-size: 11px;
+            font-size: 12px;
             color: white;
             margin-top: 8px;
+            font-weight: bold;
+            visibility: hidden; /* مخفي حتى اللمسة الأولى */
             opacity: 0;
-            transform: translateY(-5px);
-            transition: all 0.3s ease;
+            transition: 0.3s;
         }
 
-        /* تأثيرات اللمس (Hover/Touch) */
-        .icon-wrapper:hover .username { opacity: 1; transform: translateY(0); }
-        .icon-wrapper:hover .icon img { filter: none; } /* عودة لون الشعار الأصلي */
-
-        /* تخصيص ألوان الخلفية عند اللمس لكل تطبيق */
-        .ig-link:hover .icon { background: var(--ig-gradient); border-color: transparent; }
-        .x-link:hover .icon { background: var(--x-color); border-color: #444; }
-        .tg-link:hover .icon { background: var(--tg-color); border-color: transparent; }
+        /* كلاس التفعيل عند اللمسة الأولى */
+        .active .username { visibility: visible; opacity: 1; }
+        .active .icon img { filter: none; }
+        
+        .active.ig-link .icon { background: var(--ig-gradient); border-color: transparent; }
+        .active.x-link .icon { background: #000; border-color: #444; }
+        .active.tg-link .icon { background: #0088cc; border-color: transparent; }
 
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="input-box" style="width: 100%;">
+    <div class="input-box" style="width:100%">
         <input type="number" id="codeNumber" placeholder="أدخل رقم التحويل" autofocus>
     </div>
 
     <button class="go-btn" onclick="redirect()">أذهب</button>
 
     <div class="social-icons">
-        <a href="https://www.instagram.com/electrwni" target="_blank" class="icon-wrapper ig-link">
+        <!-- Instagram -->
+        <div class="icon-wrapper ig-link" onclick="handleSocialClick(this, 'https://www.instagram.com/electrwni')">
             <div class="icon">
                 <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram">
             </div>
-            <span class="username">electrwni</span>
-        </a>
+            <span class="username">@electrwni</span>
+        </div>
         
-        <a href="https://x.com/electrwni" target="_blank" class="icon-wrapper x-link">
+        <!-- X (شعار X الصريح) -->
+        <div class="icon-wrapper x-link" onclick="handleSocialClick(this, 'https://x.com/electrwni')">
             <div class="icon">
                 <img src="https://cdn-icons-png.flaticon.com/512/5969/5969020.png" alt="X">
             </div>
-            <span class="username">electrwni</span>
-        </a>
+            <span class="username">@electrwni</span>
+        </div>
 
-        <a href="https://t.me/electrwni" target="_blank" class="icon-wrapper tg-link">
+        <!-- Telegram (شعار البرقية) -->
+        <div class="icon-wrapper tg-link" onclick="handleSocialClick(this, 'https://t.me/electrwni')">
             <div class="icon">
                 <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram">
             </div>
-            <span class="username">electrwni</span>
-        </a>
+            <span class="username">@electrwni</span>
+        </div>
     </div>
 </div>
 
 <script>
+    // نظام اللمسة الأولى للإظهار والثانية للفتح
+    function handleSocialClick(element, url) {
+        if (element.classList.contains('active')) {
+            window.open(url, '_blank');
+        } else {
+            // إزالة الحالة النشطة من البقية وتفعيل العنصر الحالي
+            document.querySelectorAll('.icon-wrapper').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+        }
+    }
+
     function redirect() {
         var num = document.getElementById("codeNumber").value;
         const links = JSON.parse(localStorage.getItem('myLinks')) || {};
-        if (links[num]) { window.location.href = links[num]; } 
-        else { alert("عذراً، هذا الرقم غير مسجل!"); }
+        if (links[num]) {
+            window.location.href = links[num];
+        } else {
+            alert("عذراً، هذا الرقم غير مسجل!");
+        }
     }
-    document.getElementById("codeNumber").addEventListener("keypress", function(e) {
-        if (e.key === "Enter") redirect();
+
+    document.getElementById("codeNumber").addEventListener("keypress", function(event) {
+        if (event.key === "Enter") { redirect(); }
     });
 </script>
 
