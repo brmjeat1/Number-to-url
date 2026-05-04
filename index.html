@@ -24,7 +24,7 @@
             position: relative;
         }
 
-        /* الإطار المنقط - استعادة الشكل الأصلي */
+        /* الإطار المنقط */
         body::before {
             content: '';
             position: absolute;
@@ -44,7 +44,7 @@
             z-index: 1;
         }
 
-        /* صندوق الإدخال - استعادة التوهج السماوي */
+        /* صندوق الإدخال متوهج بالسماوي */
         input {
             width: 100%;
             padding: 22px;
@@ -72,7 +72,7 @@
             transition: all 0.3s;
         }
 
-        /* أيقونات التواصل الاجتماعي */
+        /* أيقونات التواصل */
         .social-icons {
             display: flex;
             gap: 20px;
@@ -99,10 +99,10 @@
             overflow: hidden;
         }
 
-        /* الشعارات بيضاء في السكون */
-        .icon img {
+        /* التحكم في لون الشعار SVG: بيضاء في السكون */
+        .icon svg {
             width: 35px; height: 35px;
-            filter: brightness(0) invert(1);
+            fill: white; /* تلوين الأيقونات SVG باللون الأبيض */
             transition: all 0.4s ease;
         }
 
@@ -111,15 +111,15 @@
             color: white;
             margin-top: 8px;
             font-weight: bold;
-            visibility: hidden; /* مخفي حتى اللمسة الأولى */
+            visibility: hidden; /* مخفي */
             opacity: 0;
             transition: 0.3s;
         }
 
-        /* كلاس التفعيل عند اللمسة الأولى */
+        /* تأثيرات كلاس التفعيل النشط (اللمسة الأولى) */
         .active .username { visibility: visible; opacity: 1; }
-        .active .icon img { filter: none; }
         
+        /* تلوين الخلفية حسب التطبيق */
         .active.ig-link .icon { background: var(--ig-gradient); border-color: transparent; }
         .active.x-link .icon { background: #000; border-color: #444; }
         .active.tg-link .icon { background: #0088cc; border-color: transparent; }
@@ -136,26 +136,29 @@
     <button class="go-btn" onclick="redirect()">أذهب</button>
 
     <div class="social-icons">
-        <!-- Instagram -->
+        <!-- Instagram (اللمسة الأولى تظهر الاسم، الثانية تفتح الرابط) -->
         <div class="icon-wrapper ig-link" onclick="handleSocialClick(this, 'https://www.instagram.com/electrwni')">
             <div class="icon">
-                <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram">
+                <!-- شعار إنستقرام SVG -->
+                <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.919-.058-1.265-.069-1.646-.069-4.849 0-3.204.013-3.583.069-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
             </div>
             <span class="username">@electrwni</span>
         </div>
         
-        <!-- X (شعار X الصريح) -->
+        <!-- X (شعار X المفرغ، ليس دائرة) -->
         <div class="icon-wrapper x-link" onclick="handleSocialClick(this, 'https://x.com/electrwni')">
             <div class="icon">
-                <img src="https://cdn-icons-png.flaticon.com/512/5969/5969020.png" alt="X">
+                <!-- شعار X الرسمي SVG -->
+                <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.25 2.25h6.74l4.717 6.233 5.537-6.233zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>
             </div>
             <span class="username">@electrwni</span>
         </div>
 
-        <!-- Telegram (شعار البرقية) -->
+        <!-- Telegram (شعار البرقية/الطائرة الورقية المفرغ) -->
         <div class="icon-wrapper tg-link" onclick="handleSocialClick(this, 'https://t.me/electrwni')">
             <div class="icon">
-                <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram">
+                <!-- شعار تيليجرام SVG -->
+                <svg viewBox="0 0 24 24"><path d="M22.028 2.073a.853.853 0 0 0-.742-.036L1.657 10.4a.853.853 0 0 0-.095 1.545l4.89 2.115l1.69 5.378a.851.851 0 0 0 1.52.262l2.766-3.805l5.222 3.86a.85.85 0 0 0 1.344-.572l3.255-16a.853.853 0 0 0-.271-.75zm-14.73 12.33l1.196 4.31l-.813 1.118l-.383-5.428zm12.39-10.74l-2.614 12.834l-5.642-4.17l-.145-.107l-2.73-1.182l11.131-7.375z"/></svg>
             </div>
             <span class="username">@electrwni</span>
         </div>
@@ -174,6 +177,7 @@
         }
     }
 
+    // دالة التحويل الأصلية
     function redirect() {
         var num = document.getElementById("codeNumber").value;
         const links = JSON.parse(localStorage.getItem('myLinks')) || {};
@@ -184,6 +188,7 @@
         }
     }
 
+    // دعم زر Enter
     document.getElementById("codeNumber").addEventListener("keypress", function(event) {
         if (event.key === "Enter") { redirect(); }
     });
