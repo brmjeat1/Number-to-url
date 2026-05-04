@@ -2,203 +2,179 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إلكتروني | لوحة التحكم الذكية</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>لوحة التحكم | Electrwni</title>
     <style>
-        :root {
-            --primary: #072AC8;
-            --accent: #FCF300;
-            --sky: #1E96FC;
-            --bg: #F8FAFC;
-            --success: #22C55E;
-            --danger: #EF4444;
-        }
-
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            margin: 0; background: var(--bg); color: #1E293B;
-            display: flex; justify-content: center; min-height: 100vh;
-        }
-
-        .admin-container { width: 95%; max-width: 650px; padding: 25px 0; }
-
-        /* الهوية البصرية */
-        .brand-header { text-align: center; margin-bottom: 30px; }
-        .performance-badge { 
-            background: var(--primary); color: white; padding: 5px 15px; 
-            border-radius: 20px; font-size: 0.75rem; font-weight: bold;
-            letter-spacing: 1px; display: inline-block; margin-top: 10px;
-        }
-
-        /* التصميم المعماري للأقسام */
-        .card {
-            background: white; border-radius: 24px; padding: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 20px;
-            border: 1px solid rgba(0,0,0,0.02);
-        }
-
-        .section-title { 
-            font-size: 1.1rem; font-weight: 800; color: var(--primary);
-            margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
-        }
-
-        /* نظام السرد التفاعلي للأرقام */
-        .numbers-inventory {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
-            gap: 12px; margin-top: 15px;
-        }
-
-        .num-pill {
-            background: #F1F5F9; border: 1.5px solid transparent;
-            padding: 12px 8px; border-radius: 16px; text-align: center;
-            font-weight: 700; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .num-pill:hover { 
-            background: var(--accent); border-color: var(--primary); transform: translateY(-3px); 
-        }
-
-        /* مدخلات ذكية (Smart Inputs) */
-        .input-stack { display: flex; flex-direction: column; gap: 15px; }
-        .field-box { display: flex; flex-direction: column; gap: 5px; }
-        .field-box label { font-size: 0.85rem; font-weight: 600; color: #64748B; }
+        :root { --apple-blue: #0071e3; --bg-gray: #f0f2f5; }
+        body { font-family: -apple-system, sans-serif; background-color: var(--bg-gray); margin: 0; padding: 10px; display: flex; justify-content: center; overflow-x: hidden; }
+        .container { width: 100%; max-width: 400px; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding-bottom: 20px; }
         
-        input, select {
-            padding: 14px; border: 2px solid #E2E8F0; border-radius: 12px;
-            font-size: 1rem; outline: none; transition: 0.3s;
+        .header { padding: 20px; text-align: center; border-bottom: 1px solid #eee; }
+        .header h2 { margin: 0; font-size: 18px; color: #1c1e21; }
+
+        details { border-bottom: 1px solid #e9edef; }
+        summary { padding: 15px; font-weight: bold; font-size: 15px; color: #1c1e21; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; background: #fff; }
+        summary::after { content: '▾'; color: var(--apple-blue); font-size: 12px; }
+        details[open] > summary::after { content: '▴'; }
+
+        .sub-details { border-bottom: none; background: #fcfcfc; margin: 0 10px; border-radius: 10px; }
+        .sub-summary { padding: 12px; font-size: 14px; color: #41525d; font-weight: 500; }
+        
+        .content { padding: 15px; background: #f8f9fa; }
+
+        /* المدخلات */
+        input { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #e9edef; border-radius: 10px; box-sizing: border-box; font-size: 16px; outline: none; background: #fff; }
+        input:readonly { background-color: #fff; cursor: default; }
+
+        /* لوحة مفاتيح الموقع (الأزرق والأبيض) */
+        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; direction: ltr; }
+        .num-btn { 
+            background: #fff; border: 1px solid #e9edef; padding: 15px; border-radius: 12px; 
+            font-size: 20px; font-weight: bold; color: var(--apple-blue); cursor: pointer; 
+            text-align: center; transition: 0.1s; -webkit-tap-highlight-color: transparent;
         }
+        .num-btn:active { background: var(--apple-blue); color: #fff; }
+        .btn-clear { color: #ff3b30; }
+        
+        .btn-blue { width: 100%; background: var(--apple-blue); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
 
-        input:focus { border-color: var(--primary); background: #F0F7FF; }
-
-        /* مفاتيح التبديل (Toggles) */
-        .switch-group {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 0; border-bottom: 1px solid #F1F5F9;
-        }
-
-        .switch {
-            position: relative; display: inline-block; width: 50px; height: 26px;
-        }
-
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider {
-            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #CBD5E1; transition: .4s; border-radius: 34px;
-        }
-
-        .slider:before {
-            position: absolute; content: ""; height: 18px; width: 18px;
-            left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%;
-        }
-
-        input:checked + .slider { background-color: var(--success); }
-        input:checked + .slider:before { transform: translateX(24px); }
-
-        /* الأزرار */
-        .btn-prime {
-            background: var(--primary); color: white; border: none;
-            padding: 16px; border-radius: 14px; font-weight: bold;
-            width: 100%; cursor: pointer; font-size: 1rem;
-        }
-
-        /* Modal النافذة المنبثقة */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
-            display: none; justify-content: center; align-items: center; z-index: 1000;
-        }
-
-        .control-panel {
-            background: white; width: 90%; max-width: 400px; border-radius: 28px;
-            padding: 30px; text-align: center; animation: slideUp 0.3s ease-out;
-        }
-
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; margin-top: 5px; }
+        th { font-size: 11px; color: #8696a0; padding-bottom: 8px; text-align: right; border-bottom: 1px solid #eee; }
+        td { padding: 12px 4px; font-size: 13px; border-bottom: 1px solid #f5f6f6; word-wrap: break-word; }
+        .col-views { text-align: center; font-weight: bold; color: var(--apple-blue); }
+        .action-row { display: flex; gap: 8px; margin-top: 5px; }
+        .btn-edit { color: var(--apple-blue); font-size: 11px; cursor: pointer; background: none; border: none; }
+        .btn-del { color: #ff3b30; font-size: 11px; cursor: pointer; background: none; border: none; }
+        .truncate { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--apple-blue); font-weight: 500; }
     </style>
 </head>
 <body>
 
-<div class="admin-container">
-    <header class="brand-header">
-        <h1 style="margin:0; font-size: 1.8rem; color: var(--primary);">إلكتروني Admin</h1>
-        <span class="performance-badge">HIGH-PERFORMANCE ARCHITECTURE</span>
-    </header>
+<div class="container">
+    <div class="header">
+        <h2>لوحة التحكم | Electrwni</h2>
+    </div>
 
-    <!-- القسم 1: التوجيه الذكي -->
-    <div class="card">
-        <div class="section-title"><i class="fas fa-plus-circle"></i> إضافة أو استبدال ترقيم</div>
-        <div class="input-stack">
-            <div style="display: flex; gap: 10px;">
-                <div class="field-box" style="flex: 1;">
-                    <label>الرقم</label>
-                    <input type="number" placeholder="مثلاً: 105">
+    <details open>
+        <summary>الروابط</summary>
+        
+        <details class="sub-details" open>
+            <summary class="sub-summary">١. إضافة الروابط</summary>
+            <div class="content">
+                <!-- حقل الرقم (مغلق للكيبورد العادي) -->
+                <input type="text" id="code" placeholder="أدخل الرقم (استخدم اللوحة أدناه)" readonly>
+                
+                <!-- لوحة مفاتيح الموقع المخصصة -->
+                <div class="numpad">
+                    <div class="num-btn" onclick="pressNum('1')">1</div>
+                    <div class="num-btn" onclick="pressNum('2')">2</div>
+                    <div class="num-btn" onclick="pressNum('3')">3</div>
+                    <div class="num-btn" onclick="pressNum('4')">4</div>
+                    <div class="num-btn" onclick="pressNum('5')">5</div>
+                    <div class="num-btn" onclick="pressNum('6')">6</div>
+                    <div class="num-btn" onclick="pressNum('7')">7</div>
+                    <div class="num-btn" onclick="pressNum('8')">8</div>
+                    <div class="num-btn" onclick="pressNum('9')">9</div>
+                    <div class="num-btn btn-clear" onclick="pressNum('C')">C</div>
+                    <div class="num-btn" onclick="pressNum('0')">0</div>
+                    <div class="num-btn" onclick="pressNum('B')">⌫</div>
                 </div>
-                <div class="field-box" style="flex: 2;">
-                    <label>الرابط المستهدف</label>
-                    <input type="url" placeholder="https://...">
-                </div>
+
+                <input type="url" id="url" placeholder="أدخل الرابط" style="margin-top:20px">
+                <input type="text" id="desc" placeholder="أدخل الوصف">
+                <button class="btn-blue" onclick="addData()">إضافة الرابط</button>
             </div>
-            <button class="btn-prime">تحديث المعمارية الرقمية</button>
-        </div>
-    </div>
+        </details>
 
-    <!-- القسم 2: الأرقام المستخدمة (سرد تفاعلي) -->
-    <div class="card">
-        <div class="section-title"><i class="fas fa-layer-group"></i> جرد الأرقام النشطة</div>
-        <p style="font-size: 0.85rem; color: #64748B; margin-bottom: 15px;">المس الرقم للتحكم في (المشاهدة، التعديل، أو الحذف)</p>
-        <div class="numbers-inventory">
-            <div class="num-pill" onclick="openGate('101')">101</div>
-            <div class="num-pill" onclick="openGate('102')">102</div>
-            <div class="num-pill" onclick="openGate('250')">250</div>
-            <div class="num-pill" onclick="openGate('300')">300</div>
-            <div class="num-pill" onclick="openGate('305')">305</div>
-        </div>
-    </div>
+        <details class="sub-details">
+            <summary class="sub-summary">٢. تعديل الروابط</summary>
+            <div class="content">
+                <div id="editList"></div>
+            </div>
+        </details>
+    </details>
 
-    <!-- القسم 3: إعدادات VIP والتحكم -->
-    <div class="card">
-        <div class="section-title"><i class="fas fa-shield-alt"></i> إعدادات المنصة (VIP)</div>
-        <div class="switch-group">
-            <span>تفعيل وضع الصيانة</span>
-            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+    <details>
+        <summary>الإحصائيات</summary>
+        <div class="content">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:15%">رقم</th>
+                        <th style="width:25%">رابط</th>
+                        <th style="width:40%">وصف</th>
+                        <th style="width:20%; text-align:center;">مشاهدة</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTable"></tbody>
+            </table>
         </div>
-        <div class="switch-group">
-            <span>تعطيل روابط الـ IP غير الآمنة</span>
-            <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
-        </div>
-        <div class="field-box" style="margin-top: 15px;">
-            <label>تنزيل إحصاءات الزيارات</label>
-            <select>
-                <option>حسب الأكثر استخداماً</option>
-                <option>آخر 24 ساعة</option>
-                <option>الشهر الحالي</option>
-                <option>كل الوقت (تقرير شامل)</option>
-            </select>
-        </div>
-    </div>
-</div>
-
-<!-- نظام التحكم المنبثق -->
-<div class="modal-overlay" id="modalOverlay" onclick="closeGate()">
-    <div class="control-panel" onclick="event.stopPropagation()">
-        <h2 id="activeNum" style="color: var(--primary); margin-bottom: 10px;">#101</h2>
-        <p style="color: #64748B; margin-bottom: 25px;">اختر الإجراء المطلوب لهذا الترقيم</p>
-        <div style="display: grid; gap: 10px;">
-            <button class="btn-prime" style="background: var(--sky);"><i class="fas fa-eye"></i> مشاهدة الرابط</button>
-            <button class="btn-prime" style="background: var(--primary);"><i class="fas fa-edit"></i> تعديل الوجهة</button>
-            <button class="btn-prime" style="background: var(--danger);"><i class="fas fa-trash"></i> حذف وسحب الرقم</button>
-        </div>
-    </div>
+    </details>
 </div>
 
 <script>
-    function openGate(num) {
-        document.getElementById('activeNum').innerText = '#' + num;
-        document.getElementById('modalOverlay').style.display = 'flex';
+    // وظائف لوحة المفاتيح المخصصة
+    function pressNum(val) {
+        const input = document.getElementById('code');
+        if (val === 'C') {
+            input.value = '';
+        } else if (val === 'B') {
+            input.value = input.value.slice(0, -1);
+        } else {
+            input.value += val;
+        }
     }
-    function closeGate() {
-        document.getElementById('modalOverlay').style.display = 'none';
+
+    function shortenUrl(url) {
+        try { return new URL(url).hostname.replace('www.', ''); } catch(e) { return "link"; }
+    }
+
+    function addData() {
+        const code = document.getElementById('code').value;
+        const url = document.getElementById('url').value;
+        const desc = document.getElementById('desc').value;
+        if(!code || !url) return;
+
+        const table = document.getElementById('dataTable');
+        const rowId = 'row-' + Date.now();
+        const row = table.insertRow(0);
+        row.setAttribute('id', rowId);
+
+        const short = shortenUrl(url);
+        row.innerHTML = `
+            <td>${code}</td>
+            <td><span class="truncate">${short}</span></td>
+            <td>${desc || '-'}</td>
+            <td class="col-views">0</td>
+        `;
+
+        const editList = document.getElementById('editList');
+        const editItem = document.createElement('div');
+        editItem.style = "background:white; padding:10px; border-radius:8px; margin-bottom:8px; border:1px solid #eee;";
+        editItem.innerHTML = `
+            <div style="font-size:13px; font-weight:bold;">الرقم: ${code} - ${short}</div>
+            <div class="action-row">
+                <button class="btn-edit" onclick="editRow('${rowId}')">تغيير</button>
+                <button class="btn-del" onclick="deleteRow('${rowId}', this)">حذف</button>
+            </div>
+        `;
+        editList.prepend(editItem);
+
+        // تصفير الحقول
+        document.getElementById('code').value = '';
+        document.getElementById('url').value = '';
+        document.getElementById('desc').value = '';
+    }
+
+    function deleteRow(id, btn) {
+        if(confirm('حذف نهائي؟')) {
+            document.getElementById(id).remove();
+            btn.parentElement.parentElement.remove();
+        }
+    }
+
+    function editRow(id) {
+        document.getElementById('code').scrollIntoView();
     }
 </script>
 
