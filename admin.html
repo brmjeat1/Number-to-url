@@ -2,180 +2,224 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>لوحة التحكم | Electrwni</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>electrwni | مستعرض الروابط</title>
     <style>
-        :root { --apple-blue: #0071e3; --bg-gray: #f0f2f5; }
-        body { font-family: -apple-system, sans-serif; background-color: var(--bg-gray); margin: 0; padding: 10px; display: flex; justify-content: center; overflow-x: hidden; }
-        .container { width: 100%; max-width: 400px; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding-bottom: 20px; }
-        
-        .header { padding: 20px; text-align: center; border-bottom: 1px solid #eee; }
-        .header h2 { margin: 0; font-size: 18px; color: #1c1e21; }
-
-        details { border-bottom: 1px solid #e9edef; }
-        summary { padding: 15px; font-weight: bold; font-size: 15px; color: #1c1e21; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; background: #fff; }
-        summary::after { content: '▾'; color: var(--apple-blue); font-size: 12px; }
-        details[open] > summary::after { content: '▴'; }
-
-        .sub-details { border-bottom: none; background: #fcfcfc; margin: 0 10px; border-radius: 10px; }
-        .sub-summary { padding: 12px; font-size: 14px; color: #41525d; font-weight: 500; }
-        
-        .content { padding: 15px; background: #f8f9fa; }
-
-        /* المدخلات */
-        input { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #e9edef; border-radius: 10px; box-sizing: border-box; font-size: 16px; outline: none; background: #fff; }
-        input:readonly { background-color: #fff; cursor: default; }
-
-        /* لوحة مفاتيح الموقع (الأزرق والأبيض) */
-        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; direction: ltr; }
-        .num-btn { 
-            background: #fff; border: 1px solid #e9edef; padding: 15px; border-radius: 12px; 
-            font-size: 20px; font-weight: bold; color: var(--apple-blue); cursor: pointer; 
-            text-align: center; transition: 0.1s; -webkit-tap-highlight-color: transparent;
+        :root {
+            --primary-bg: #007bff;
+            --neon-glow: 0 0 15px #00e5ff, 0 0 30px #00e5ff;
+            --ig-gradient: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+            --sky-blue: #00e5ff;
         }
-        .num-btn:active { background: var(--apple-blue); color: #fff; }
-        .btn-clear { color: #ff3b30; }
-        
-        .btn-blue { width: 100%; background: var(--apple-blue); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
 
-        table { width: 100%; border-collapse: collapse; table-layout: fixed; margin-top: 5px; }
-        th { font-size: 11px; color: #8696a0; padding-bottom: 8px; text-align: right; border-bottom: 1px solid #eee; }
-        td { padding: 12px 4px; font-size: 13px; border-bottom: 1px solid #f5f6f6; word-wrap: break-word; }
-        .col-views { text-align: center; font-weight: bold; color: var(--apple-blue); }
-        .action-row { display: flex; gap: 8px; margin-top: 5px; }
-        .btn-edit { color: var(--apple-blue); font-size: 11px; cursor: pointer; background: none; border: none; }
-        .btn-del { color: #ff3b30; font-size: 11px; cursor: pointer; background: none; border: none; }
-        .truncate { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--apple-blue); font-weight: 500; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--primary-bg);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 25px; bottom: 25px; left: 15px; right: 15px;
+            border: 3px dashed rgba(255, 255, 255, 0.6);
+            pointer-events: none;
+            border-radius: 15px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 90%;
+            max-width: 400px;
+            height: 85vh; 
+            justify-content: center; /* توسيط العناصر في المنتصف */
+            z-index: 1;
+            position: relative;
+        }
+
+        .top-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            flex-grow: 1;
+            justify-content: center; /* المربع والزر في منتصف المساحة */
+        }
+
+        input {
+            width: 100%;
+            padding: 22px;
+            font-size: 20px;
+            background: white;
+            border: none;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: var(--neon-glow);
+            color: #333;
+            box-sizing: border-box;
+            font-weight: bold;
+            outline: none;
+        }
+
+        .go-btn {
+            background-color: #00d9ff;
+            color: white;
+            border: 2px dashed white;
+            padding: 18px 60px;
+            font-size: 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .bottom-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            padding-bottom: 20px;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .icon-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .icon {
+            width: 65px; height: 65px;
+            border-radius: 15px;
+            background-color: var(--primary-bg);
+            border: 2px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s ease;
+            overflow: hidden;
+        }
+
+        .circle-bg {
+            width: 45px; height: 45px;
+            background-color: var(--primary-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .icon svg { width: 25px; height: 25px; fill: white; }
+
+        .username {
+            font-size: 12px;
+            color: white;
+            margin-top: 8px;
+            font-weight: bold;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        #touch-hint {
+            color: var(--sky-blue);
+            font-size: 14px;
+            font-weight: bold;
+            height: 20px;
+            opacity: 0;
+            transition: opacity 0.5s;
+            margin-top: 5px;
+        }
+
+        .active .username { visibility: visible; opacity: 1; }
+        .active.ig-link .icon { background: var(--ig-gradient); border-color: transparent; }
+        .active.x-link .icon { background: #000; border-color: #444; }
+        .active.tg-link .icon { background: #0088cc; border-color: transparent; }
+
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header">
-        <h2>لوحة التحكم | Electrwni</h2>
+    <div class="top-content">
+        <div style="width:100%">
+            <input type="tel" id="codeNumber" placeholder="أدخل رقم التحويل" 
+                   inputmode="numeric" autocomplete="off" autofocus lang="en">
+        </div>
+        <button class="go-btn" onclick="redirect()">أذهب</button>
     </div>
 
-    <details open>
-        <summary>الروابط</summary>
-        
-        <details class="sub-details" open>
-            <summary class="sub-summary">١. إضافة الروابط</summary>
-            <div class="content">
-                <!-- حقل الرقم (مغلق للكيبورد العادي) -->
-                <input type="text" id="code" placeholder="أدخل الرقم (استخدم اللوحة أدناه)" readonly>
-                
-                <!-- لوحة مفاتيح الموقع المخصصة -->
-                <div class="numpad">
-                    <div class="num-btn" onclick="pressNum('1')">1</div>
-                    <div class="num-btn" onclick="pressNum('2')">2</div>
-                    <div class="num-btn" onclick="pressNum('3')">3</div>
-                    <div class="num-btn" onclick="pressNum('4')">4</div>
-                    <div class="num-btn" onclick="pressNum('5')">5</div>
-                    <div class="num-btn" onclick="pressNum('6')">6</div>
-                    <div class="num-btn" onclick="pressNum('7')">7</div>
-                    <div class="num-btn" onclick="pressNum('8')">8</div>
-                    <div class="num-btn" onclick="pressNum('9')">9</div>
-                    <div class="num-btn btn-clear" onclick="pressNum('C')">C</div>
-                    <div class="num-btn" onclick="pressNum('0')">0</div>
-                    <div class="num-btn" onclick="pressNum('B')">⌫</div>
-                </div>
-
-                <input type="url" id="url" placeholder="أدخل الرابط" style="margin-top:20px">
-                <input type="text" id="desc" placeholder="أدخل الوصف">
-                <button class="btn-blue" onclick="addData()">إضافة الرابط</button>
+    <div class="bottom-content">
+        <div class="social-icons">
+            <div class="icon-wrapper ig-link" onclick="handleSocialClick(this, 'https://www.instagram.com/electrwni')">
+                <div class="icon"><div class="circle-bg"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.919-.058-1.265-.069-1.646-.069-4.849 0-3.204.013-3.583.069-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></div></div>
+                <span class="username">electrwni@</span>
             </div>
-        </details>
-
-        <details class="sub-details">
-            <summary class="sub-summary">٢. تعديل الروابط</summary>
-            <div class="content">
-                <div id="editList"></div>
+            <div class="icon-wrapper x-link" onclick="handleSocialClick(this, 'https://x.com/electrwni')">
+                <div class="icon"><div class="circle-bg"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.25 2.25h6.74l4.717 6.233 5.537-6.233zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg></div></div>
+                <span class="username">electrwni@</span>
             </div>
-        </details>
-    </details>
-
-    <details>
-        <summary>الإحصائيات</summary>
-        <div class="content">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width:15%">رقم</th>
-                        <th style="width:25%">رابط</th>
-                        <th style="width:40%">وصف</th>
-                        <th style="width:20%; text-align:center;">مشاهدة</th>
-                    </tr>
-                </thead>
-                <tbody id="dataTable"></tbody>
-            </table>
+            <div class="icon-wrapper tg-link" onclick="handleSocialClick(this, 'https://t.me/electrwni')">
+                <div class="icon"><div class="circle-bg"><svg viewBox="0 0 24 24"><path d="M22.028 2.073a.853.853 0 0 0-.742-.036L1.657 10.4a.853.853 0 0 0-.095 1.545l4.89 2.115l1.69 5.378a.851.851 0 0 0 1.52.262l2.766-3.805l5.222 3.86a.85.85 0 0 0 1.344-.572l3.255-16a.853.853 0 0 0-.271-.75zm-14.73 12.33l1.196 4.31l-.813 1.118l-.383-5.428zm12.39-10.74l-2.614 12.834l-5.642-4.17l-.145-.107l-2.73-1.182l11.131-7.375z"/></svg></div></div>
+                <span class="username">electrwni@</span>
+            </div>
         </div>
-    </details>
+        <div id="touch-hint">ألمس مرة ثانية للذهاب للحساب</div>
+    </div>
 </div>
 
 <script>
-    // وظائف لوحة المفاتيح المخصصة
-    function pressNum(val) {
-        const input = document.getElementById('code');
-        if (val === 'C') {
-            input.value = '';
-        } else if (val === 'B') {
-            input.value = input.value.slice(0, -1);
+    const inputField = document.getElementById('codeNumber');
+    let hintTimeout;
+
+    // وظيفة تحويل الأرقام العربية إلى إنجليزية تلقائياً
+    inputField.addEventListener('input', function(e) {
+        const arabicNums = [/٠/g, /١/g, /٢/g, /٣/g, /٤/g, /٥/g, /٦/g, /٧/g, /٨/g, /٩/g];
+        const englishNums = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        for (let i = 0; i < 10; i++) {
+            this.value = this.value.replace(arabicNums[i], englishNums[i]);
+        }
+    });
+
+    function handleSocialClick(element, url) {
+        const hint = document.getElementById('touch-hint');
+        if (element.classList.contains('active')) {
+            window.open(url, '_blank');
         } else {
-            input.value += val;
+            element.classList.add('active');
+            hint.style.opacity = '1';
+            clearTimeout(hintTimeout);
+            hintTimeout = setTimeout(() => { hint.style.opacity = '0'; }, 5000);
         }
     }
 
-    function shortenUrl(url) {
-        try { return new URL(url).hostname.replace('www.', ''); } catch(e) { return "link"; }
+    function redirect() {
+        var num = inputField.value;
+        const links = JSON.parse(localStorage.getItem('myLinks')) || {};
+        if (links[num]) { window.location.href = links[num]; } 
+        else { alert("عذراً، هذا الرقم غير مسجل!"); }
     }
 
-    function addData() {
-        const code = document.getElementById('code').value;
-        const url = document.getElementById('url').value;
-        const desc = document.getElementById('desc').value;
-        if(!code || !url) return;
-
-        const table = document.getElementById('dataTable');
-        const rowId = 'row-' + Date.now();
-        const row = table.insertRow(0);
-        row.setAttribute('id', rowId);
-
-        const short = shortenUrl(url);
-        row.innerHTML = `
-            <td>${code}</td>
-            <td><span class="truncate">${short}</span></td>
-            <td>${desc || '-'}</td>
-            <td class="col-views">0</td>
-        `;
-
-        const editList = document.getElementById('editList');
-        const editItem = document.createElement('div');
-        editItem.style = "background:white; padding:10px; border-radius:8px; margin-bottom:8px; border:1px solid #eee;";
-        editItem.innerHTML = `
-            <div style="font-size:13px; font-weight:bold;">الرقم: ${code} - ${short}</div>
-            <div class="action-row">
-                <button class="btn-edit" onclick="editRow('${rowId}')">تغيير</button>
-                <button class="btn-del" onclick="deleteRow('${rowId}', this)">حذف</button>
-            </div>
-        `;
-        editList.prepend(editItem);
-
-        // تصفير الحقول
-        document.getElementById('code').value = '';
-        document.getElementById('url').value = '';
-        document.getElementById('desc').value = '';
-    }
-
-    function deleteRow(id, btn) {
-        if(confirm('حذف نهائي؟')) {
-            document.getElementById(id).remove();
-            btn.parentElement.parentElement.remove();
-        }
-    }
-
-    function editRow(id) {
-        document.getElementById('code').scrollIntoView();
-    }
+    inputField.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") { redirect(); }
+    });
 </script>
 
 </body>
