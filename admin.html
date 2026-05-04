@@ -41,7 +41,7 @@
             width: 90%;
             max-width: 400px;
             height: 85vh; 
-            justify-content: center; /* توسيط العناصر في المنتصف */
+            justify-content: space-between; /* توزيع المحتوى بين الوسط والأسفل */
             z-index: 1;
             position: relative;
         }
@@ -53,7 +53,7 @@
             align-items: center;
             gap: 25px;
             flex-grow: 1;
-            justify-content: center; /* المربع والزر في منتصف المساحة */
+            justify-content: center; /* وضع المربع والزر في المنتصف */
         }
 
         input {
@@ -189,13 +189,16 @@
     const inputField = document.getElementById('codeNumber');
     let hintTimeout;
 
-    // وظيفة تحويل الأرقام العربية إلى إنجليزية تلقائياً
-    inputField.addEventListener('input', function(e) {
-        const arabicNums = [/٠/g, /١/g, /٢/g, /٣/g, /٤/g, /٥/g, /٦/g, /٧/g, /٨/g, /٩/g];
-        const englishNums = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    // وظيفة تحويل الأرقام العربية إلى إنجليزية تلقائياً فور الكتابة
+    inputField.addEventListener('input', function() {
+        const arabic = '٠١٢٣٤٥٦٧٨٩';
+        const english = '0123456789';
+        let value = this.value;
         for (let i = 0; i < 10; i++) {
-            this.value = this.value.replace(arabicNums[i], englishNums[i]);
+            const re = new RegExp(arabic[i], 'g');
+            value = value.replace(re, english[i]);
         }
+        this.value = value;
     });
 
     function handleSocialClick(element, url) {
@@ -211,14 +214,28 @@
     }
 
     function redirect() {
-        var num = inputField.value;
+        const num = inputField.value.trim();
+        // جلب البيانات من localStorage المسماة myLinks
         const links = JSON.parse(localStorage.getItem('myLinks')) || {};
-        if (links[num]) { window.location.href = links[num]; } 
-        else { alert("عذراً، هذا الرقم غير مسجل!"); }
+        
+        if (num && links[num]) {
+            // إذا وجد الرقم، يتم التوجيه للرابط المخزن
+            window.location.href = links[num];
+        } else {
+            // إذا لم يجد الرقم، تظهر رسالة تنبيه مع خيار التوجه لصفحة الإدارة
+            const confirmAdmin = confirm("عذراً، هذا الرقم غير مسجل! هل تريد الانتقال لصفحة الإدارة لإضافته؟");
+            if (confirmAdmin) {
+                window.location.href = 'admin.html'; // تأكد أن ملف الإدارة بهذا الاسم
+            }
+        }
     }
 
+    // السماح بالضغط على Enter للبحث
     inputField.addEventListener("keypress", function(event) {
-        if (event.key === "Enter") { redirect(); }
+        if (event.key === "Enter") { 
+            event.preventDefault();
+            redirect(); 
+        }
     });
 </script>
 
