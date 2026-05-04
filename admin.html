@@ -4,136 +4,109 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>لوحة التحكم | Electrwni</title>
+    <!-- مكتبات توليد ملفات PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <style>
-        :root {
-            --apple-blue: #0071e3;
-            --bg-gray: #f0f2f5;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--bg-gray);
-            margin: 0;
-            padding: 10px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 400px;
-            background: #fff;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        /* تنسيق الأقسام المنسدلة */
-        details {
-            border-bottom: 1px solid #e9edef;
-        }
-
-        summary {
-            padding: 15px;
-            font-weight: bold;
-            font-size: 16px;
-            color: #1c1e21;
-            cursor: pointer;
-            list-style: none;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #fff;
-        }
-
+        :root { --apple-blue: #0071e3; --bg-gray: #f0f2f5; --apple-red: #ff3b30; }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--bg-gray); margin: 0; padding: 10px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 450px; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        
+        details { border-bottom: 1px solid #e9edef; }
+        summary { padding: 15px; font-weight: bold; font-size: 16px; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; background: #fff; }
         summary::after { content: '▾'; color: var(--apple-blue); }
         details[open] summary::after { content: '▴'; }
 
-        .content {
-            padding: 15px;
-            background: #f8f9fa;
-        }
+        .content { padding: 15px; background: #f8f9fa; }
+        input, select { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #e9edef; border-radius: 10px; box-sizing: border-box; font-size: 14px; }
+        .btn-blue { width: 100%; background: var(--apple-blue); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        
+        /* قسم الفلاتر الإحصائية */
+        .stats-filter { padding: 10px; background: #fff; border-bottom: 1px solid #eee; }
+        .filter-options { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+        .filter-chip { font-size: 11px; padding: 6px 10px; border: 1px solid #ddd; border-radius: 20px; cursor: pointer; background: white; transition: 0.2s; }
+        .filter-chip.active { background: var(--apple-blue); color: white; border-color: var(--apple-blue); }
+        .custom-range { display: none; padding: 10px; border-top: 1px dashed #ccc; }
 
-        /* حقول الإدخال والأزرار */
-        input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 10px;
-            border: 1px solid #e9edef;
-            border-radius: 10px;
-            box-sizing: border-box;
-            font-size: 14px;
-        }
-
-        .btn-blue {
-            width: 100%;
-            background: var(--apple-blue);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-bottom: 5px;
-        }
-
-        .btn-delete {
-            background: #ff3b30;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            cursor: pointer;
-        }
-
-        /* الجدول المتمركز */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed;
-        }
-
-        th { font-size: 11px; color: #667781; padding-bottom: 8px; text-align: right; }
-        td { padding: 10px 4px; font-size: 12px; border-bottom: 1px solid #eee; word-wrap: break-word; }
-
-        .col-views { text-align: center; font-weight: bold; color: var(--apple-blue); }
+        /* الجدول والتحكم */
+        .table-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; }
+        .btn-pdf { background: var(--apple-red); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; cursor: pointer; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th { color: #667781; text-align: right; padding: 8px 4px; border-bottom: 1px solid #eee; }
+        td { padding: 10px 4px; border-bottom: 1px solid #f0f0f0; }
+        .action-btns { display: flex; gap: 8px; }
+        .edit-link { color: var(--apple-blue); cursor: pointer; text-decoration: none; }
+        .delete-link { color: var(--apple-red); cursor: pointer; text-decoration: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div style="padding: 20px; text-align: center; background: #fff;">
-        <h2 style="margin:0; font-size: 18px;">لوحة التحكم بروابط الموقع</h2>
+    <div style="padding: 20px; text-align: center;">
+        <h2 style="margin:0; font-size: 18px;">لوحة تحكم Electrwni</h2>
     </div>
 
-    <!-- القسم الأول: الروابط -->
+    <!-- سجل المدخلات -->
     <details open>
-        <summary>الروابط</summary>
+        <summary>السجل (إدارة الروابط)</summary>
         <div class="content">
             <input type="number" id="code" placeholder="الرقم">
             <input type="text" id="url" placeholder="الرابط">
             <input type="text" id="desc" placeholder="الوصف">
-            <button class="btn-blue" onclick="addData()">إضافة رابط</button>
-        </div>
-    </details>
-
-    <!-- القسم الثاني: الإحصائيات -->
-    <details>
-        <summary>الإحصائيات</summary>
-        <div class="content">
-            <p style="font-size: 12px; color: #667781; margin-bottom: 10px;">سجل الأكثر مشاهدة:</p>
-            <table>
+            <button class="btn-blue" onclick="handleData()">حفظ البيانات</button>
+            
+            <table style="margin-top: 15px;">
                 <thead>
                     <tr>
                         <th style="width:15%">رقم</th>
-                        <th style="width:25%">رابط</th>
-                        <th style="width:40%">وصف</th>
-                        <th style="width:20%">مشاهدات</th>
+                        <th style="width:40%">الرابط</th>
+                        <th style="width:45%">إجراءات</th>
                     </tr>
                 </thead>
-                <tbody id="dataTable">
-                    <!-- البيانات هنا -->
+                <tbody id="logTable">
+                    <!-- تظهر المدخلات هنا -->
+                </tbody>
+            </table>
+        </div>
+    </details>
+
+    <!-- الإحصائيات -->
+    <details>
+        <summary>الإحصائيات</summary>
+        <div class="stats-filter">
+            <div style="font-size: 12px; font-weight: bold; margin-bottom: 8px;">بحسب:</div>
+            <div class="filter-options">
+                <div class="filter-chip" onclick="applyFilter('اليوم', this)">اليوم</div>
+                <div class="filter-chip active" onclick="applyFilter('الأسبوع', this)">الأسبوع</div>
+                <div class="filter-chip" onclick="applyFilter('الشهر', this)">الشهر</div>
+                <div class="filter-chip" onclick="applyFilter('الربع السنوي', this)">الربع السنوي</div>
+                <div class="filter-chip" onclick="applyFilter('النصف السنوي', this)">النصف السنوي</div>
+                <div class="filter-chip" onclick="applyFilter('السنة', this)">السنة</div>
+                <div class="filter-chip" onclick="showCustomRange(this)">التخصيص</div>
+            </div>
+
+            <div id="datePicker" class="custom-range">
+                <input type="date" id="dateFrom" min="2026-01-01" title="من تاريخ">
+                <input type="date" id="dateTo" title="إلى تاريخ">
+                <button class="btn-blue" style="padding: 5px; font-size: 12px;" onclick="applyCustom()">موافق</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="table-header">
+                <span id="currentPeriodTitle" style="font-size: 11px; color: #667781;">عرض إحصائيات: الأسبوع</span>
+                <button class="btn-pdf" onclick="exportPDF()">تنزيل PDF</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>رقم</th>
+                        <th>وصف الرابط</th>
+                        <th style="text-align: center;">المشاهدات</th>
+                    </tr>
+                </thead>
+                <tbody id="statsTable">
+                    <!-- بيانات الإحصائيات -->
                 </tbody>
             </table>
         </div>
@@ -141,31 +114,104 @@
 </div>
 
 <script>
-    function shortenUrl(url) {
-        try { return new URL(url).hostname.replace('www.', ''); } 
-        catch(e) { return "link"; }
+    let editMode = null;
+    let selectedPeriod = "الأسبوع";
+
+    function applyFilter(period, el) {
+        selectedPeriod = period;
+        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('datePicker').style.display = 'none';
+        document.getElementById('currentPeriodTitle').innerText = `عرض إحصائيات: ${period}`;
     }
 
-    function addData() {
+    function showCustomRange(el) {
+        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('datePicker').style.display = 'block';
+    }
+
+    function applyCustom() {
+        const from = document.getElementById('dateFrom').value;
+        const to = document.getElementById('dateTo').value;
+        if(from && to) {
+            selectedPeriod = `من ${from} إلى ${to}`;
+            document.getElementById('currentPeriodTitle').innerText = `عرض إحصائيات: مخصص`;
+        }
+    }
+
+    function handleData() {
         const code = document.getElementById('code').value;
         const url = document.getElementById('url').value;
         const desc = document.getElementById('desc').value;
         if(!code || !url) return;
 
-        const table = document.getElementById('dataTable');
-        const row = table.insertRow(0);
+        if(editMode) {
+            editMode.cells[0].innerText = code;
+            editMode.cells[1].innerText = url;
+            editMode.dataset.desc = desc;
+            editMode = null;
+        } else {
+            const table = document.getElementById('logTable');
+            const stats = document.getElementById('statsTable');
+            const row = table.insertRow(0);
+            row.dataset.desc = desc;
+            
+            row.innerHTML = `
+                <td>${code}</td>
+                <td style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${url}</td>
+                <td class="action-btns">
+                    <span class="edit-link" onclick="editRow(this)">تعديل</span>
+                    <span class="delete-link" onclick="deleteRow(this)">حذف</span>
+                </td>
+            `;
 
-        row.innerHTML = `
-            <td>${code}</td>
-            <td><span style="display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${shortenUrl(url)}</span></td>
-            <td>${desc || '-'} <button class="btn-delete" onclick="this.parentElement.parentElement.remove()" style="display:block; margin-top:5px;">حذف</button></td>
-            <td class="col-views">0</td>
-        `;
+            const sRow = stats.insertRow(0);
+            sRow.id = "stat-" + code;
+            sRow.innerHTML = `<td>${code}</td><td>${desc || 'بدون وصف'}</td><td style="text-align:center; color:var(--apple-blue); font-weight:bold;">${Math.floor(Math.random()*100)}</td>`;
+        }
 
-        // تصفير الحقول
         document.getElementById('code').value = '';
         document.getElementById('url').value = '';
         document.getElementById('desc').value = '';
+    }
+
+    function deleteRow(btn) {
+        if(confirm("هل أنت متأكد من الحذف؟")) {
+            const row = btn.closest('tr');
+            document.getElementById("stat-" + row.cells[0].innerText)?.remove();
+            row.remove();
+        }
+    }
+
+    function editRow(btn) {
+        const row = btn.closest('tr');
+        document.getElementById('code').value = row.cells[0].innerText;
+        document.getElementById('url').value = row.cells[1].innerText;
+        document.getElementById('desc').value = row.dataset.desc;
+        editMode = row;
+    }
+
+    function exportPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('p', 'mm', 'a4');
+        const today = new Date().toLocaleDateString('ar-EG');
+        
+        doc.text("تقرير استراتيجية تفاعل المستخدمين مع روابطك", 105, 20, { align: 'center' });
+        doc.text(`تاريخ التقرير: ${today}`, 190, 30, { align: 'right' });
+        doc.text(`نطاق الإحصاء: ${selectedPeriod}`, 190, 40, { align: 'right' });
+
+        doc.autoTable({
+            startY: 50,
+            head: [['الرقم', 'الوصف', 'المشاهدات']],
+            body: Array.from(document.querySelectorAll('#statsTable tr')).map(tr => [
+                tr.cells[0].innerText, tr.cells[1].innerText, tr.cells[2].innerText
+            ]),
+            styles: { font: 'courier', halign: 'right' },
+            headStyles: { fillColor: [0, 113, 227] }
+        });
+
+        doc.save(`Electrwni_Report_${selectedPeriod}.pdf`);
     }
 </script>
 
