@@ -21,11 +21,9 @@
         label { display: block; font-size: 13px; color: #86868b; margin-bottom: 6px; font-weight: 500; }
         input, select, textarea { width: 100%; padding: 12px; border: 1.5px solid #d2d2d7; border-radius: 10px; font-size: 15px; box-sizing: border-box; outline: none; }
 
-        /* الكيبورد */
         .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; direction: ltr; }
         .num-btn { background: #f5f5f7; border: 1px solid #d2d2d7; padding: 12px; border-radius: 10px; font-size: 18px; font-weight: bold; color: var(--primary); cursor: pointer; text-align: center; }
         
-        /* الإحصائيات والجدول */
         .stats-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .pdf-btn { background: #34c759; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 13px; }
         .filter-select { width: auto; padding: 5px; font-size: 12px; }
@@ -34,13 +32,40 @@
         th, td { border-bottom: 1px solid #eee; padding: 12px 8px; text-align: right; }
         th { color: #86868b; font-weight: 600; }
         
-        .col-num { width: 10%; }
-        .col-url { width: 25%; color: var(--primary); font-weight: 500; }
-        .col-desc { width: 50%; color: #333; }
-        .col-views { width: 15%; text-align: center; font-weight: bold; }
+        .col-num { width: 8%; }
+        .col-url { width: 22%; color: var(--primary); font-weight: 500; }
+        .col-desc { width: 40%; color: #333; }
+        .col-views { width: 12%; text-align: center; font-weight: bold; }
+        .col-actions { width: 18%; text-align: center; }
 
         .btn-action { width: 100%; background: var(--primary); color: white; border: none; padding: 16px; border-radius: 14px; font-weight: bold; font-size: 16px; cursor: pointer; }
         
+        /* أزرار التعديل والحذف */
+        .btn-edit { background: #ff9500; color: white; border: none; padding: 5px 9px; border-radius: 7px; cursor: pointer; font-size: 12px; margin-left: 4px; }
+        .btn-delete { background: var(--danger); color: white; border: none; padding: 5px 9px; border-radius: 7px; cursor: pointer; font-size: 12px; }
+
+        /* مودال التعديل */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: white; border-radius: 18px; padding: 24px; width: 90%; max-width: 400px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        .modal-box h3 { margin: 0 0 18px; font-size: 17px; }
+        .modal-box label { display: block; font-size: 13px; color: #86868b; margin-bottom: 5px; margin-top: 12px; font-weight: 500; }
+        .modal-box input, .modal-box textarea { width: 100%; padding: 10px; border: 1.5px solid #d2d2d7; border-radius: 10px; font-size: 14px; box-sizing: border-box; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 18px; }
+        .btn-save-edit { flex: 1; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; }
+        .btn-cancel { flex: 1; background: #f5f5f7; color: #333; border: none; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; }
+
+        /* مودال معاينة الرابط */
+        .preview-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 2000; justify-content: center; align-items: center; }
+        .preview-overlay.active { display: flex; }
+        .preview-box { background: white; border-radius: 18px; padding: 28px 24px; width: 90%; max-width: 420px; box-shadow: 0 10px 40px rgba(0,0,0,0.25); text-align: center; }
+        .preview-box .preview-url-display { color: var(--primary); font-size: 16px; font-weight: bold; word-break: break-all; margin: 12px 0 8px; }
+        .preview-box .preview-desc { color: #555; font-size: 14px; margin-bottom: 20px; }
+        .preview-box .btn-go { display: block; background: var(--primary); color: white; text-decoration: none; padding: 13px; border-radius: 12px; font-weight: bold; font-size: 15px; margin-bottom: 10px; }
+        .preview-box .btn-close-preview { display: block; background: #f5f5f7; color: #333; border: none; width: 100%; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; }
+
+        .url-link { cursor: pointer; text-decoration: underline; }
+
         @media print { .admin-container > *:not(#stats-section) { display: none; } #stats-section { width: 100%; } .pdf-btn, .filter-select { display: none; } }
     </style>
 </head>
@@ -95,10 +120,10 @@
                         <th class="col-url">الرابط</th>
                         <th class="col-desc">الوصف</th>
                         <th class="col-views">المشاهدات</th>
+                        <th class="col-actions">خيارات</th>
                     </tr>
                 </thead>
-                <tbody id="tableBody">
-                    </tbody>
+                <tbody id="tableBody"></tbody>
             </table>
         </div>
     </details>
@@ -113,9 +138,37 @@
     </details>
 </div>
 
+<!-- مودال التعديل -->
+<div class="modal-overlay" id="editModal">
+    <div class="modal-box">
+        <h3>تعديل الرابط</h3>
+        <label>الرقم التعريفي</label>
+        <input type="text" id="editId">
+        <label>الرابط (URL)</label>
+        <input type="text" id="editUrl">
+        <label>الوصف</label>
+        <textarea id="editDesc" rows="2"></textarea>
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeEditModal()">إلغاء</button>
+            <button class="btn-save-edit" onclick="saveEdit()">حفظ</button>
+        </div>
+    </div>
+</div>
+
+<!-- مودال معاينة الرابط -->
+<div class="preview-overlay" id="previewModal">
+    <div class="preview-box">
+        <div style="font-size:15px; color:#86868b;">معاينة الرابط</div>
+        <div class="preview-url-display" id="previewUrlText"></div>
+        <div class="preview-desc" id="previewDescText"></div>
+        <a class="btn-go" id="previewGoBtn" href="#" target="_blank">الذهاب إلى الرابط ↗</a>
+        <button class="btn-close-preview" onclick="closePreviewModal()">إغلاق</button>
+    </div>
+</div>
+
 <script>
-    // نظام التخزين
     let linksData = JSON.parse(localStorage.getItem('electrwni_db')) || [];
+    let editingIndex = null;
 
     function k(v) { 
         let i = document.getElementById('numInp');
@@ -151,7 +204,6 @@
         renderTable();
         alert("تم الحفظ بنجاح!");
         
-        // مسح الحقول
         document.getElementById('numInp').value = '';
         document.getElementById('urlInp').value = '';
         document.getElementById('descInp').value = '';
@@ -161,18 +213,80 @@
         const tbody = document.getElementById('tableBody');
         tbody.innerHTML = '';
         
-        linksData.forEach(item => {
+        linksData.forEach((item, index) => {
             const row = `<tr>
                 <td class="col-num">${item.id}</td>
-                <td class="col-url">${item.shortUrl}</td>
+                <td class="col-url"><span class="url-link" onclick="openPreview(${index})">${item.shortUrl}</span></td>
                 <td class="col-desc">${item.description}</td>
                 <td class="col-views">${item.views}</td>
+                <td class="col-actions">
+                    <button class="btn-edit" onclick="openEditModal(${index})">تعديل</button>
+                    <button class="btn-delete" onclick="deleteItem(${index})">حذف</button>
+                </td>
             </tr>`;
             tbody.innerHTML += row;
         });
     }
 
-    // تشغيل العرض عند تحميل الصفحة
+    function openEditModal(index) {
+        editingIndex = index;
+        const item = linksData[index];
+        document.getElementById('editId').value = item.id;
+        document.getElementById('editUrl').value = item.originalUrl;
+        document.getElementById('editDesc').value = item.description === "لا يوجد وصف" ? "" : item.description;
+        document.getElementById('editModal').classList.add('active');
+    }
+
+    function closeEditModal() {
+        editingIndex = null;
+        document.getElementById('editModal').classList.remove('active');
+    }
+
+    function saveEdit() {
+        if(editingIndex === null) return;
+        const newId = document.getElementById('editId').value.trim();
+        const newUrl = document.getElementById('editUrl').value.trim();
+        const newDesc = document.getElementById('editDesc').value.trim();
+
+        if(!newId || !newUrl) { alert("يرجى إكمال البيانات الأساسية"); return; }
+
+        linksData[editingIndex].id = newId;
+        linksData[editingIndex].originalUrl = newUrl;
+        linksData[editingIndex].shortUrl = shortenUrl(newUrl);
+        linksData[editingIndex].description = newDesc || "لا يوجد وصف";
+
+        localStorage.setItem('electrwni_db', JSON.stringify(linksData));
+        renderTable();
+        closeEditModal();
+    }
+
+    function deleteItem(index) {
+        if(!confirm("هل أنت متأكد من حذف هذا الرابط؟")) return;
+        linksData.splice(index, 1);
+        localStorage.setItem('electrwni_db', JSON.stringify(linksData));
+        renderTable();
+    }
+
+    function openPreview(index) {
+        const item = linksData[index];
+        document.getElementById('previewUrlText').textContent = item.shortUrl;
+        document.getElementById('previewDescText').textContent = item.description;
+        document.getElementById('previewGoBtn').href = item.originalUrl;
+        document.getElementById('previewModal').classList.add('active');
+    }
+
+    function closePreviewModal() {
+        document.getElementById('previewModal').classList.remove('active');
+    }
+
+    // إغلاق المودال عند الضغط خارجه
+    document.getElementById('editModal').addEventListener('click', function(e) {
+        if(e.target === this) closeEditModal();
+    });
+    document.getElementById('previewModal').addEventListener('click', function(e) {
+        if(e.target === this) closePreviewModal();
+    });
+
     window.onload = renderTable;
 </script>
 
