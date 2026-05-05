@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>لوحة تحكم Electrwni | المطورة</title>
-    <!-- مكتبة تحويل HTML إلى PDF بجودة عالية ودعم كامل للعربية -->
+    <title>لوحة تحكم Electrwni</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
@@ -12,7 +11,7 @@
             --danger: #ff3b30; --glass: rgba(255, 255, 255, 0.95);
         }
         body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .admin-container { width: 100%; max-width: 700px; }
+        .admin-container { width: 100%; max-width: 750px; }
         
         details { background: var(--glass); border-radius: 18px; margin-bottom: 12px; border: 1px solid #e5e5e7; box-shadow: 0 4px 12px rgba(0,0,0,0.03); overflow: hidden; }
         summary { padding: 18px; font-weight: bold; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
@@ -27,15 +26,13 @@
         .num-btn { background: #f5f5f7; border: 1px solid #d2d2d7; padding: 12px; border-radius: 10px; font-size: 18px; font-weight: bold; color: var(--primary); cursor: pointer; text-align: center; user-select: none; }
 
         .stats-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 10px; }
-        .pdf-btn { background: #34c759; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 13px; }
+        .pdf-btn { background: #34c759; color: white; border: none; padding: 8px 18px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; table-layout: fixed; }
-        th, td { border-bottom: 1px solid #eee; padding: 12px 8px; text-align: right; overflow-wrap: break-word; }
-        th { color: #86868b; font-weight: 600; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
+        th, td { border: 1px solid #eee; padding: 12px 8px; text-align: center; overflow-wrap: break-word; }
+        th { background: #fafafa; color: #333; font-weight: bold; }
         
-        .url-text { color: var(--primary); font-weight: 500; }
-        .url-fade { color: #ccc; font-weight: normal; font-size: 0.85em; }
-
+        .url-text { color: var(--primary); font-weight: bold; }
         .btn-action { width: 100%; background: var(--primary); color: white; border: none; padding: 16px; border-radius: 14px; font-weight: bold; font-size: 16px; cursor: pointer; }
         .btn-edit { background: #ff9500; color: white; border: none; padding: 5px 12px; border-radius: 7px; cursor: pointer; font-size: 12px; }
 
@@ -43,13 +40,15 @@
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; justify-content: center; align-items: center; }
         .modal-overlay.active { display: flex; }
         .modal-box { background: white; border-radius: 18px; padding: 24px; width: 90%; max-width: 400px; }
-        .modal-actions { display: flex; gap: 10px; margin-top: 18px; }
 
-        /* تنسيق نسخة الـ PDF (مخفية في المتصفح وتظهر عند التنزيل فقط) */
-        #pdf-template { display: none; font-family: Arial, sans-serif; padding: 40px; background: #fff; color: #000; }
-        .pdf-table { width: 100%; border: 1px solid #000; border-collapse: collapse; }
-        .pdf-table th, .pdf-table td { border: 1px solid #000; padding: 8px; text-align: center; font-size: 11px; word-break: break-all; }
-        .pdf-header { display: flex; justify-content: space-between; margin-bottom: 30px; }
+        /* تصميم الـ PDF الرسمي */
+        #pdf-template { display: none; padding: 40px; background: #fff; color: #000; direction: rtl; }
+        .pdf-top-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; }
+        .pdf-title-box { text-align: center; margin-bottom: 30px; }
+        .pdf-table { width: 100%; border: 1.5px solid #000; border-collapse: collapse; }
+        .pdf-table th, .pdf-table td { border: 1.5px solid #000; padding: 10px; font-size: 13px; text-align: center; }
+        .pdf-table th { font-weight: bold; }
+        .pdf-note-line { border-bottom: 1px solid #000; margin-top: 15px; height: 20px; width: 100%; }
     </style>
 </head>
 <body>
@@ -87,7 +86,7 @@
         <div class="content">
             <div class="stats-header">
                 <button class="pdf-btn" onclick="downloadPDF()">تنزيل PDF</button>
-                <select class="filter-select" id="filterSelect" onchange="renderTable()" style="width:auto; padding:5px;">
+                <select class="filter-select" id="filterSelect" onchange="renderTable()" style="width:auto; padding:8px; border-radius:8px; border:1px solid #d2d2d7;">
                     <option value="all">كل الوقت</option>
                     <option value="day">اليوم</option>
                     <option value="week">أسبوع</option>
@@ -97,11 +96,11 @@
             <table id="statsTable">
                 <thead>
                     <tr>
-                        <th style="width:12%">الرقم</th>
+                        <th style="width:10%">#</th>
                         <th style="width:30%">الرابط</th>
                         <th style="width:35%">الوصف</th>
-                        <th style="width:13%">المشاهدات</th>
-                        <th style="width:10%">تعديل</th>
+                        <th style="width:15%">المشاهدات</th>
+                        <th style="width:10%">خيارات</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
@@ -109,70 +108,63 @@
         </div>
     </details>
 
-    <!-- استرجاع زر الخصوصية والأمان -->
     <details>
         <summary>الخصوصية والأمان</summary>
         <div class="content">
-            <div class="field">
-                <label>كلمة السر الحالية</label>
-                <input type="password" id="oldPass" placeholder="••••••••">
-            </div>
-            <div class="field">
-                <label>كلمة السر الجديدة</label>
-                <input type="password" id="newPass" placeholder="••••••••">
-            </div>
-            <button class="btn-action" style="background:var(--secondary);" onclick="alert('تم تحديث إعدادات الأمان بنجاح')">حفظ التغييرات</button>
+            <div class="field"><label>كلمة السر الحالية</label><input type="password" placeholder="••••••••"></div>
+            <div class="field"><label>كلمة السر الجديدة</label><input type="password" placeholder="••••••••"></div>
+            <button class="btn-action" style="background:var(--secondary);" onclick="alert('تم التحديث')">حفظ التغييرات</button>
         </div>
     </details>
 </div>
 
-<!-- قالب الـ PDF المخفي (تم تصميمه ليكون أبيض بالكامل لتوفير الحبر) -->
+<!-- قالب الـ PDF -->
 <div id="pdf-template">
-    <div class="pdf-header">
+    <div class="pdf-top-row">
         <div style="text-align: right;">
-            <strong style="font-size: 16px;">electrwni | إلكتروني</strong><br>
-            <span id="pdf-print-date" style="font-size: 10px;"></span>
+            <strong style="font-size: 18px;">Electrwni | إلكتروني</strong>
+        </div>
+        <div style="text-align: left;">
+            <span id="pdf-print-date" style="font-size: 13px; font-weight: bold;"></span>
         </div>
     </div>
     
-    <div style="text-align: center; margin-bottom: 20px;">
-        <h2 style="margin: 0;">تقرير احصائيات الروابط</h2>
-        <p id="pdf-period" style="font-size: 11px; margin-top: 5px;"></p>
+    <div class="pdf-title-box">
+        <h1 style="margin: 0; font-size: 24px; text-decoration: underline;">تقرير احصائيات الروابط</h1>
+        <p id="pdf-period" style="font-size: 14px; margin-top: 10px; font-weight: bold;"></p>
     </div>
 
     <table class="pdf-table">
         <thead>
             <tr>
                 <th style="width: 10%;">المشاهدات</th>
-                <th style="width: 35%;">الوصف</th>
+                <th style="width: 30%;">الوصف</th>
                 <th style="width: 15%;">ID الرابط</th>
-                <th style="width: 30%;">الرابط</th>
-                <th style="width: 10%;">الرقم التسلسلي</th>
+                <th style="width: 35%;">الرابط</th>
+                <th style="width: 10%;">#</th>
             </tr>
         </thead>
         <tbody id="pdf-table-body"></tbody>
     </table>
 
-    <div style="margin-top: 40px; border-top: 1px solid #ccc; padding-top: 10px;">
-        <span style="font-size: 10px; color: #666;">ملاحظات الإدارة / تعليق المشرِف:</span>
-        <div style="height: 60px;"></div>
+    <div style="margin-top: 50px;">
+        <strong style="font-size: 14px;">ملاحظات المسؤول:</strong>
+        <div class="pdf-note-line"></div>
+        <div class="pdf-note-line"></div>
+        <div class="pdf-note-line"></div>
     </div>
 </div>
 
 <!-- مودال التعديل -->
 <div class="modal-overlay" id="editModal">
     <div class="modal-box">
-        <h3>تعديل الرابط</h3>
-        <label>ID الرابط</label>
-        <input type="text" id="editId">
-        <label>الرابط</label>
-        <input type="text" id="editUrl">
-        <label>الوصف</label>
-        <textarea id="editDesc" rows="3"></textarea>
-        <div class="modal-actions">
-            <button class="num-btn" style="flex:1" onclick="closeEditModal()">إلغاء</button>
-            <button class="num-btn" style="flex:1; background:var(--primary); color:white" onclick="saveEdit()">حفظ</button>
-            <button class="num-btn" style="flex:0.5; background:var(--danger); color:white" id="modalDelBtn">حذف</button>
+        <h3 style="margin-top:0">تعديل البيانات</h3>
+        <label>ID الرابط</label><input type="text" id="editId">
+        <label>الرابط</label><input type="text" id="editUrl">
+        <label>الوصف</label><textarea id="editDesc" rows="3"></textarea>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button class="btn-action" style="flex:1" onclick="saveEdit()">حفظ</button>
+            <button class="btn-action" style="flex:1; background:#f5f5f7; color:#333;" onclick="closeEditModal()">إلغاء</button>
         </div>
     </div>
 </div>
@@ -186,20 +178,18 @@
         if(v=='C') i.value=''; else if(v=='B') i.value=i.value.slice(0,-1); else i.value+=v;
     }
 
-    function formatLink(url) {
-        if(!url) return { prefix: '', main: 'Error' };
+    function smartShorten(url) {
         try {
-            let prefix = url.match(/^(https?:\/\/www\.|https?:\/\/|www\.)/i)?.[0] || "";
-            let main = url.replace(prefix, "").split(/[/?#]/)[0];
-            return { prefix: prefix, main: main || url };
-        } catch(e) { return { prefix: '', main: url }; }
+            let pure = url.replace(/^(https?:\/\/)?(www\.)?/i, "");
+            return pure.split(/[/?#]/)[0];
+        } catch(e) { return url; }
     }
 
     function saveData() {
         const num = document.getElementById('numInp').value;
         const url = document.getElementById('urlInp').value;
         const desc = document.getElementById('descInp').value || "بدون وصف";
-        if(!num || !url) { alert("أكمل البيانات"); return; }
+        if(!num || !url) return alert("أكمل البيانات");
         linksData.push({ id: num, originalUrl: url, description: desc, views: 0, date: Date.now() });
         localStorage.setItem('electrwni_db', JSON.stringify(linksData));
         renderTable();
@@ -210,74 +200,63 @@
         const tbody = document.getElementById('tableBody');
         tbody.innerHTML = '';
         linksData.forEach((item, index) => {
-            const linkObj = formatLink(item.originalUrl);
             tbody.innerHTML += `<tr>
-                <td>${index + 1}</td>
-                <td><span class="url-fade">${linkObj.prefix}</span><span class="url-text">${linkObj.main}</span></td>
+                <td style="font-weight:bold">${index + 1}</td>
+                <td class="url-text">${smartShorten(item.originalUrl)}</td>
                 <td>${item.description}</td>
-                <td>${item.views}</td>
+                <td style="font-weight:bold">${item.views}</td>
                 <td><button class="btn-edit" onclick="openEditModal(${index})">تعديل</button></td>
             </tr>`;
         });
     }
 
-    function openEditModal(index) {
-        editingIndex = index;
-        const item = linksData[index];
+    function openEditModal(i) {
+        editingIndex = i;
+        const item = linksData[i];
         document.getElementById('editId').value = item.id;
         document.getElementById('editUrl').value = item.originalUrl;
         document.getElementById('editDesc').value = item.description;
-        document.getElementById('modalDelBtn').onclick = () => { linksData.splice(index,1); localStorage.setItem('electrwni_db', JSON.stringify(linksData)); renderTable(); closeEditModal(); };
         document.getElementById('editModal').classList.add('active');
     }
-
     function closeEditModal() { document.getElementById('editModal').classList.remove('active'); }
-
     function saveEdit() {
-        linksData[editingIndex].id = document.getElementById('editId').value;
-        linksData[editingIndex].originalUrl = document.getElementById('editUrl').value;
-        linksData[editingIndex].description = document.getElementById('editDesc').value;
+        linksData[editingIndex] = {...linksData[editingIndex], id:document.getElementById('editId').value, originalUrl:document.getElementById('editUrl').value, description:document.getElementById('editDesc').value};
         localStorage.setItem('electrwni_db', JSON.stringify(linksData));
-        renderTable();
-        closeEditModal();
+        renderTable(); closeEditModal();
     }
 
-    // وظيفة الـ PDF الجديدة (تدعم العربية 100% وموفرة للحبر)
     function downloadPDF() {
         const template = document.getElementById('pdf-template');
         const pdfTableBody = document.getElementById('pdf-table-body');
         const now = new Date();
-        const dateStr = now.toLocaleDateString('en-GB'); // أرقام إنجليزية للتاريخ
+        const dateStr = now.toLocaleDateString('en-GB').replace(/\//g, ' / ');
         
-        document.getElementById('pdf-print-date').innerText = `طبع بتاريخ: ${dateStr}`;
-        document.getElementById('pdf-period').innerText = `للتاريخ من: ${dateStr} إلى: ${dateStr}`;
+        document.getElementById('pdf-print-date').innerText = `طبع بتاريخ :  ${dateStr}`;
+        document.getElementById('pdf-period').innerText = `للتاريخ من : ${dateStr}  إلى : ${dateStr}`;
         
         pdfTableBody.innerHTML = '';
         linksData.forEach((item, index) => {
-            const linkObj = formatLink(item.originalUrl);
             pdfTableBody.innerHTML += `
                 <tr>
-                    <td>${item.views}</td>
+                    <td style="font-weight:bold">${item.views}</td>
                     <td>${item.description}</td>
-                    <td>${item.id}</td>
-                    <td dir="ltr" style="text-align:left;">${linkObj.main}</td>
-                    <td>${index + 1}</td>
+                    <td style="font-weight:bold">${item.id}</td>
+                    <td dir="ltr" style="font-weight:bold">${smartShorten(item.originalUrl)}</td>
+                    <td style="font-weight:bold">${index + 1}</td>
                 </tr>`;
         });
 
-        template.style.display = 'block'; // إظهار القالب لحظياً
-        
+        template.style.display = 'block';
         const opt = {
             margin: 10,
-            filename: `Electrwni_Report_${dateStr}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-            pagebreak: { mode: 'avoid-all' } // تجنب قطع الصفوف عند تعدد الصفحات
+            filename: `Electrwni_Report.pdf`,
+            image: { type: 'jpeg', quality: 1 },
+            html2canvas: { scale: 3, useCORS: true, letterRendering: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
         html2pdf().from(template).set(opt).save().then(() => {
-            template.style.display = 'none'; // إعادة الإخفاء
+            template.style.display = 'none';
         });
     }
 
