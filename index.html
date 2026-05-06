@@ -3,224 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>electrwni | مستعرض الروابط</title>
+    <title>Electrwni | Link in Bio</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
-        :root {
-            --primary-bg: #007bff;
-            --neon-glow: 0 0 15px #00e5ff, 0 0 30px #00e5ff;
-            --ig-gradient: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
-            --sky-blue: #00e5ff;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--primary-bg);
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            color: white;
-            overflow: hidden;
-            position: relative;
-        }
-
-        body::before {
-            content: '';
-            position: absolute;
-            top: 25px; bottom: 25px; left: 15px; right: 15px;
-            border: 3px dashed rgba(255, 255, 255, 0.6);
-            pointer-events: none;
-            border-radius: 15px;
-        }
-
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 90%;
-            max-width: 400px;
-            height: 85vh; 
-            justify-content: center; /* توسيط العناصر في المنتصف */
-            z-index: 1;
-            position: relative;
-        }
-
-        .top-content {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 25px;
-            flex-grow: 1;
-            justify-content: center; /* المربع والزر في منتصف المساحة */
-        }
-
-        input {
-            width: 100%;
-            padding: 22px;
-            font-size: 20px;
-            background: white;
-            border: none;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: var(--neon-glow);
-            color: #333;
-            box-sizing: border-box;
-            font-weight: bold;
-            outline: none;
-        }
-
-        .go-btn {
-            background-color: #00d9ff;
-            color: white;
-            border: 2px dashed white;
-            padding: 18px 60px;
-            font-size: 24px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-
-        .bottom-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            padding-bottom: 20px;
-        }
-
-        .social-icons {
-            display: flex;
-            gap: 20px;
-            margin-top: 10px;
-        }
-
-        .icon-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-        }
-
-        .icon {
-            width: 65px; height: 65px;
-            border-radius: 15px;
-            background-color: var(--primary-bg);
-            border: 2px solid white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.4s ease;
-            overflow: hidden;
-        }
-
-        .circle-bg {
-            width: 45px; height: 45px;
-            background-color: var(--primary-bg);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2;
-        }
-
-        .icon svg { width: 25px; height: 25px; fill: white; }
-
-        .username {
-            font-size: 12px;
-            color: white;
-            margin-top: 8px;
-            font-weight: bold;
-            visibility: hidden;
-            opacity: 0;
-            transition: 0.3s;
-        }
-
-        #touch-hint {
-            color: var(--sky-blue);
-            font-size: 14px;
-            font-weight: bold;
-            height: 20px;
-            opacity: 0;
-            transition: opacity 0.5s;
-            margin-top: 5px;
-        }
-
-        .active .username { visibility: visible; opacity: 1; }
-        .active.ig-link .icon { background: var(--ig-gradient); border-color: transparent; }
-        .active.x-link .icon { background: #000; border-color: #444; }
-        .active.tg-link .icon { background: #0088cc; border-color: transparent; }
-
+        :root { --bg: #000000; --card: #1c1c1e; --text: #ffffff; --accent: #0a84ff; }
+        body { background-color: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; margin: 0; }
+        
+        .profile-img { width: 96px; height: 96px; border-radius: 50%; border: 3px solid var(--accent); margin-bottom: 16px; object-fit: cover; }
+        .username { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+        .bio { font-size: 14px; color: #8e8e93; text-align: center; max-width: 300px; margin-bottom: 32px; }
+        
+        .links-container { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 16px; }
+        .link-card { background: var(--card); padding: 18px; border-radius: 15px; text-decoration: none; color: var(--text); font-weight: 600; text-align: center; transition: transform 0.2s, background 0.2s; border: 1px solid #38383a; }
+        .link-card:active { transform: scale(0.97); background: #2c2c2e; }
+        
+        .footer { margin-top: auto; padding-top: 50px; font-size: 12px; color: #48484a; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="top-content">
-        <div style="width:100%">
-            <input type="tel" id="codeNumber" placeholder="أدخل رقم التحويل" 
-                   inputmode="numeric" autocomplete="off" autofocus lang="en">
-        </div>
-        <button class="go-btn" onclick="redirect()">أذهب</button>
+    <img src="https://via.placeholder.com/150" alt="Profile" class="profile-img" id="userImg">
+    <div class="username" id="userName">جاري التحميل...</div>
+    <div class="bio" id="userBio">منصة Electrwni للروابط الذكية</div>
+
+    <div class="links-container" id="linksList">
+        <!-- الروابط ستظهر هنا تلقائياً -->
     </div>
 
-    <div class="bottom-content">
-        <div class="social-icons">
-            <div class="icon-wrapper ig-link" onclick="handleSocialClick(this, 'https://www.instagram.com/electrwni')">
-                <div class="icon"><div class="circle-bg"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.919-.058-1.265-.069-1.646-.069-4.849 0-3.204.013-3.583.069-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></div></div>
-                <span class="username">electrwni@</span>
-            </div>
-            <div class="icon-wrapper x-link" onclick="handleSocialClick(this, 'https://x.com/electrwni')">
-                <div class="icon"><div class="circle-bg"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.25 2.25h6.74l4.717 6.233 5.537-6.233zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg></div></div>
-                <span class="username">electrwni@</span>
-            </div>
-            <div class="icon-wrapper tg-link" onclick="handleSocialClick(this, 'https://t.me/electrwni')">
-                <div class="icon"><div class="circle-bg"><svg viewBox="0 0 24 24"><path d="M22.028 2.073a.853.853 0 0 0-.742-.036L1.657 10.4a.853.853 0 0 0-.095 1.545l4.89 2.115l1.69 5.378a.851.851 0 0 0 1.52.262l2.766-3.805l5.222 3.86a.85.85 0 0 0 1.344-.572l3.255-16a.853.853 0 0 0-.271-.75zm-14.73 12.33l1.196 4.31l-.813 1.118l-.383-5.428zm12.39-10.74l-2.614 12.834l-5.642-4.17l-.145-.107l-2.73-1.182l11.131-7.375z"/></svg></div></div>
-                <span class="username">electrwni@</span>
-            </div>
-        </div>
-        <div id="touch-hint">ألمس مرة ثانية للذهاب للحساب</div>
-    </div>
-</div>
+    <div class="footer">POWERED BY ELECTRWNI</div>
 
 <script>
-    const inputField = document.getElementById('codeNumber');
-    let hintTimeout;
+    // ضع إعدادات Firebase الخاصة بك هنا
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        databaseURL: "YOUR_DATABASE_URL",
+        projectId: "YOUR_PROJECT_ID",
+    };
+    firebase.initializeApp(firebaseConfig);
 
-    // وظيفة تحويل الأرقام العربية إلى إنجليزية تلقائياً
-    inputField.addEventListener('input', function(e) {
-        const arabicNums = [/٠/g, /١/g, /٢/g, /٣/g, /٤/g, /٥/g, /٦/g, /٧/g, /٨/g, /٩/g];
-        const englishNums = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-        for (let i = 0; i < 10; i++) {
-            this.value = this.value.replace(arabicNums[i], englishNums[i]);
-        }
-    });
+    // دالة لجلب اللقب من الرابط (مثلاً: index.html?u=khaled)
+    const urlParams = new URLSearchParams(window.location.search);
+    const nickname = urlParams.get('u') || 'default';
 
-    function handleSocialClick(element, url) {
-        const hint = document.getElementById('touch-hint');
-        if (element.classList.contains('active')) {
-            window.open(url, '_blank');
+    const db = firebase.database().ref('users/' + nickname);
+
+    db.on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            document.getElementById('userName').innerText = "@" + nickname;
+            document.getElementById('userBio').innerText = data.bio || "مرحباً بكم في صفحتي";
+            
+            const list = document.getElementById('linksList');
+            list.innerHTML = '';
+            
+            if (data.links) {
+                Object.keys(data.links).forEach(key => {
+                    const link = data.links[key];
+                    list.innerHTML += `
+                        <a href="${link.url}" target="_blank" class="link-card" onclick="countClick('${key}')">
+                            ${link.title}
+                        </a>`;
+                });
+            }
         } else {
-            element.classList.add('active');
-            hint.style.opacity = '1';
-            clearTimeout(hintTimeout);
-            hintTimeout = setTimeout(() => { hint.style.opacity = '0'; }, 5000);
+            document.getElementById('userName').innerText = "المستخدم غير موجود";
         }
-    }
-
-    function redirect() {
-        var num = inputField.value;
-        const links = JSON.parse(localStorage.getItem('myLinks')) || {};
-        if (links[num]) { window.location.href = links[num]; } 
-        else { alert("عذراً، هذا الرقم غير مسجل!"); }
-    }
-
-    inputField.addEventListener("keypress", function(event) {
-        if (event.key === "Enter") { redirect(); }
     });
-</script>
 
+    function countClick(linkKey) {
+        // كود لزيادة عدد النقرات في الخلفية
+        firebase.database().ref('users/' + nickname + '/links/' + linkKey + '/clicks').transaction(c => (c || 0) + 1);
+    }
+</script>
 </body>
 </html>
