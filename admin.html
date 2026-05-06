@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>لوحة تحكم Electrwni</title>
-    <!-- المكتبات المطلوبة -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
@@ -35,9 +34,9 @@
         th, td { border: 1px solid #d2d2d7; padding: 10px; text-align: center; }
         th { background: #f9f9fb; font-size: 13px; }
         
-        .link-cell { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-        .link-url { color: var(--primary); text-decoration: none; font-weight: 500; font-size: 14px; word-break: break-all; }
-        .btn-edit-text { color: #ff9500; font-size: 12px; cursor: pointer; text-decoration: underline; background: none; border: none; padding: 0; }
+        .link-cell { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .link-url { color: var(--primary); text-decoration: none; font-weight: 500; font-size: 14px; }
+        .btn-edit-text { color: #ff9500; font-size: 11px; cursor: pointer; text-decoration: underline; background: none; border: none; padding: 0; }
 
         /* مودال التعديل المتطور */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
@@ -93,8 +92,8 @@
                     <thead>
                         <tr>
                             <th style="width:15%">الرقم</th>
-                            <th>الرابط / تعديل</th>
-                            <th style="width:30%">الوصف</th>
+                            <th style="width:25%">الرابط</th>
+                            <th style="width:45%">الوصف</th>
                             <th style="width:15%">المشاهدات</th>
                         </tr>
                     </thead>
@@ -105,7 +104,6 @@
     </details>
 </div>
 
-<!-- مودال التعديل -->
 <div class="modal-overlay" id="editModal">
     <div class="modal-box">
         <h3 style="text-align:center; margin-bottom:20px;">تعديل الرابط</h3>
@@ -129,7 +127,6 @@
     </div>
 </div>
 
-<!-- قالب الـ PDF -->
 <div id="pdf-template">
     <div class="pdf-header">
         <h1>تقرير روابط Electrwni</h1>
@@ -167,6 +164,16 @@
         fixNumbers(i);
     }
 
+    function getDomainName(url) {
+        try {
+            let parsed = new URL(url);
+            let domain = parsed.hostname.replace('www.', '');
+            return domain.split('.')[0].charAt(0).toUpperCase() + domain.split('.')[0].slice(1);
+        } catch (e) {
+            return "رابط";
+        }
+    }
+
     function saveData() {
         const num = document.getElementById('numInp').value;
         const url = document.getElementById('urlInp').value;
@@ -186,11 +193,11 @@
                     <td style="font-weight:bold">${item.id}</td>
                     <td>
                         <div class="link-cell">
-                            <a href="${item.originalUrl}" target="_blank" class="link-url">${item.originalUrl.substring(0,25)}...</a>
+                            <a href="${item.originalUrl}" target="_blank" class="link-url">${getDomainName(item.originalUrl)}</a>
                             <button class="btn-edit-text" onclick="openEditModal(${index})">تعديل</button>
                         </div>
                     </td>
-                    <td style="font-size:13px">${item.description}</td>
+                    <td style="font-size:13px; text-align:right;">${item.description}</td>
                     <td style="font-weight:bold">${item.views}</td>
                 </tr>`;
         });
