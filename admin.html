@@ -4,63 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Electrwni Admin Pro</title>
+    <!-- استخدام مكتبة html2pdf مع دعم متقدم للرندر -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
             --apple-blue: #0071e3; --apple-gray: #f5f5f7;
-            --apple-border: #d2d2d7; --danger: #ff3b30; --success: #34c759;
+            --apple-border: #d2d2d7; --danger: #ff3b30;
         }
         body { font-family: -apple-system, "Segoe UI", Tahoma, sans-serif; background: var(--apple-gray); margin: 0; padding: 15px; display: flex; justify-content: center; }
         .admin-container { width: 100%; max-width: 850px; }
         
+        /* تصميم الحاويات */
         details { background: #fff; border-radius: 16px; margin-bottom: 15px; border: 1px solid #e5e5e7; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: hidden; }
         summary { padding: 18px; font-weight: 700; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; color: #1d1d1f; }
         summary::after { content: '⌄'; font-size: 20px; color: var(--apple-blue); }
         .content { padding: 20px; border-top: 1px solid #f2f2f2; }
 
+        /* أدوات الإدخال */
         .field { margin-bottom: 15px; }
         label { display: block; font-size: 13px; color: #86868b; margin-bottom: 6px; }
-        input, textarea { width: 100%; padding: 12px; border: 1px solid var(--apple-border); border-radius: 10px; font-size: 15px; box-sizing: border-box; outline: none; transition: 0.2s; text-align: right; }
+        input, textarea { width: 100%; padding: 12px; border: 1px solid var(--apple-border); border-radius: 10px; font-size: 15px; box-sizing: border-box; outline: none; transition: 0.2s; }
+        input:focus { border-color: var(--apple-blue); box-shadow: 0 0 0 3px rgba(0,113,227,0.1); }
 
+        /* لوحة الأرقام */
         .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; direction: ltr; }
         .num-btn { background: #fff; border: 1px solid var(--apple-border); padding: 12px; border-radius: 10px; font-size: 18px; font-weight: bold; color: var(--apple-blue); cursor: pointer; text-align: center; }
+        .num-btn:active { background: #f0f0f0; }
 
+        /* الجدول الذكي (متمركز ولا يحتاج تحريك) */
         .table-wrapper { width: 100%; border: 1px solid #eee; border-radius: 12px; overflow: hidden; background: #fff; }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
         th, td { padding: 14px 8px; text-align: center; border-bottom: 1px solid #f5f5f7; word-wrap: break-word; }
-        th { background: #fafafa; font-size: 12px; color: #86868b; }
+        th { background: #fafafa; font-size: 12px; color: #86868b; text-transform: uppercase; }
         
-        .link-main { color: var(--apple-blue); text-decoration: none; font-weight: 700; font-size: 15px; }
-        .edit-label { font-size: 11px; color: #ff9500; cursor: pointer; text-decoration: underline; margin-top: 4px; display: block; }
+        .link-main { color: var(--apple-blue); text-decoration: none; font-weight: 700; font-size: 15px; display: block; }
+        .edit-label { font-size: 11px; color: #ff9500; cursor: pointer; text-decoration: underline; margin-top: 4px; display: inline-block; }
 
+        /* أزرار الفلترة والتحميل */
+        .filter-bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 20px; }
+        .chip { padding: 8px 16px; border-radius: 20px; background: #eee; font-size: 13px; cursor: pointer; border: none; }
+        .chip.active { background: var(--apple-blue); color: white; }
         .pdf-trigger { background: var(--danger); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 800; cursor: pointer; display: block; margin: 0 auto 20px; }
 
-        /* مودال التعديل الاحترافي */
+        /* مودال التعديل */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
         .modal.active { display: flex; }
-        .modal-card { background: #fff; padding: 25px; border-radius: 20px; width: 90%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .modal-footer { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; }
-        .btn-save { background: var(--success); color: white; border: none; padding: 12px 25px; border-radius: 10px; font-weight: bold; cursor: pointer; order: 2; }
-        .btn-delete { background: var(--danger); color: white; border: none; padding: 12px 25px; border-radius: 10px; font-weight: bold; cursor: pointer; order: 1; }
+        .modal-card { background: #fff; padding: 25px; border-radius: 20px; width: 90%; max-width: 380px; }
 
-        /* PDF Report */
-        #pdf-report { display: none; padding: 40px; background: #fff; color: #000; direction: rtl; }
-        .pdf-header { display: flex; justify-content: space-between; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
-        .pdf-table { width: 100%; border-collapse: collapse; }
-        .pdf-table th, .pdf-table td { border: 1px solid #000; padding: 8px; text-align: center; }
+        /* --- تنسيق الـ PDF الاحترافي (مخفي) --- */
+        #pdf-report { display: none; padding: 50px; background: #fff; color: #000; direction: rtl; font-family: Arial, sans-serif; }
+        .pdf-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #000; padding-bottom: 15px; margin-bottom: 30px; }
+        .pdf-header-right h2 { margin: 0; font-size: 22px; color: #000; }
+        .pdf-header-left { text-align: left; font-size: 12px; font-weight: bold; }
+        .pdf-body-title { text-align: center; text-decoration: underline; margin-bottom: 30px; font-size: 20px; }
+        .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
+        .pdf-table th, .pdf-table td { border: 1.5px solid #000; padding: 12px; font-size: 13px; text-align: center; }
+        .pdf-table th { background: #f2f2f2; }
+        .pdf-footer-lines { margin-top: 50px; }
+        .line { border-bottom: 1px solid #000; margin-bottom: 25px; width: 100%; height: 10px; }
     </style>
 </head>
 <body>
 
 <div class="admin-container">
-    <h2 style="text-align: center; margin-bottom: 25px;">إدارة Electrwni</h2>
+    <h2 style="text-align: center; color: #1d1d1f; margin-bottom: 25px;">إدارة نظام Electrwni</h2>
 
     <details open>
-        <summary>إضافة رابط جديد</summary>
+        <summary>إضافة بيانات الرابط</summary>
         <div class="content">
             <div class="field">
-                <label>الرقم التعريفي (ID)</label>
-                <input type="text" id="idInp" placeholder="أدخل أرقام">
+                <label>رقم الرابط (ID)</label>
+                <input type="text" id="idInp" readonly>
                 <div class="numpad">
                     <div class="num-btn" onclick="p('1')">1</div><div class="num-btn" onclick="p('2')">2</div><div class="num-btn" onclick="p('3')">3</div>
                     <div class="num-btn" onclick="p('4')">4</div><div class="num-btn" onclick="p('5')">5</div><div class="num-btn" onclick="p('6')">6</div>
@@ -68,19 +82,39 @@
                     <div class="num-btn" onclick="p('C')" style="color:red">C</div><div class="num-btn" onclick="p('0')">0</div><div class="num-btn" onclick="p('B')">⌫</div>
                 </div>
             </div>
-            <div class="field"><label>الوجهة (URL)</label><input type="text" id="urlInp"></div>
-            <div class="field"><label>الوصف</label><textarea id="descInp" rows="2"></textarea></div>
+            <div class="field">
+                <label>الوجهة (URL)</label>
+                <input type="text" id="urlInp" placeholder="https://example.com">
+            </div>
+            <div class="field">
+                <label>الوصف</label>
+                <textarea id="descInp" rows="2"></textarea>
+            </div>
             <button onclick="add()" style="width:100%; background:var(--apple-blue); color:#fff; border:none; padding:15px; border-radius:12px; font-weight:bold; cursor:pointer;">حفظ البيانات</button>
         </div>
     </details>
 
     <details open>
-        <summary>الإحصائيات</summary>
+        <summary>الإحصائيات والتقارير</summary>
         <div class="content">
-            <button class="pdf-trigger" onclick="exportPDF()">تنزيل PDF رسمي</button>
+            <div class="filter-bar">
+                <button class="chip active">اليوم</button>
+                <button class="chip">أسبوع</button>
+                <button class="chip">شهر</button>
+                <button class="chip">سنة</button>
+            </div>
+            <button class="pdf-trigger" onclick="exportPDF()">تنزيل تقرير PDF احترافي</button>
+            
             <div class="table-wrapper">
                 <table>
-                    <thead><tr><th style="width:40%">الرابط</th><th style="width:15%">ID</th><th style="width:30%">الوصف</th><th style="width:15%">👁</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th style="width: 40%">الرابط</th>
+                            <th style="width: 15%">ID</th>
+                            <th style="width: 30%">الوصف</th>
+                            <th style="width: 15%">👁</th>
+                        </tr>
+                    </thead>
                     <tbody id="mainTable"></tbody>
                 </table>
             </div>
@@ -88,63 +122,98 @@
     </details>
 </div>
 
-<!-- مودال التعديل المطور -->
+<!-- مودال التعديل -->
 <div class="modal" id="editModal">
     <div class="modal-card">
-        <h3 style="margin-top:0">تحديث السجل</h3>
-        <div class="field"><label>ID</label><input type="text" id="mId"></div>
-        <div class="field"><label>URL</label><input type="text" id="mUrl"></div>
-        <div class="field"><label>الوصف</label><textarea id="mDesc" rows="3"></textarea></div>
-        <div class="modal-footer">
-            <button class="btn-save" onclick="saveEdit()">حفظ التعديلات</button>
-            <button class="btn-delete" onclick="deleteEntry()">حذف السجل</button>
-            <button onclick="closeModal()" style="border:none; background:none; color:#888; cursor:pointer;">إلغاء</button>
+        <h3 style="text-align: center; margin-top: 0;">تحديث البيانات</h3>
+        <input type="text" id="mId" placeholder="ID">
+        <input type="text" id="mUrl" placeholder="URL" style="margin-top:10px;">
+        <textarea id="mDesc" rows="3" style="margin-top:10px;"></textarea>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button onclick="saveEdit()" style="flex:1; background:var(--apple-blue); color:#fff; border:none; padding:12px; border-radius:10px; font-weight:bold;">حفظ</button>
+            <button onclick="closeModal()" style="flex:1; background:#eee; border:none; padding:12px; border-radius:10px;">إلغاء</button>
         </div>
     </div>
 </div>
 
+<!-- قالب الـ PDF المخفي (مصمم كأنه Word) -->
 <div id="pdf-report">
     <div class="pdf-header">
-        <div><h2 style="margin:0">Electrwni</h2><p>تقرير الإحصائيات الرسمي</p></div>
-        <div id="pdfMeta" style="text-align:left; font-size:12px;"></div>
+        <div class="pdf-header-right">
+            <h2>Electrwni | إلكتروني</h2>
+            <p style="margin:5px 0; font-size:12px;">نظام إدارة وتحليل الروابط الذكي</p>
+        </div>
+        <div class="pdf-header-left">
+            <div id="pdfDate"></div>
+            <div id="pdfTime"></div>
+        </div>
     </div>
-    <table class="pdf-table"><thead><tr><th>#</th><th>URL</th><th>ID</th><th>الوصف</th><th>المشاهدات</th></tr></thead><tbody id="pdfTableBody"></tbody></table>
+    
+    <div class="pdf-body-title">تقرير إحصائيات حركة البيانات</div>
+    
+    <table class="pdf-table">
+        <thead>
+            <tr>
+                <th style="width:10%">#</th>
+                <th style="width:30%">الرابط الأصلي</th>
+                <th style="width:15%">ID</th>
+                <th style="width:30%">الوصف</th>
+                <th style="width:15%">المشاهدات</th>
+            </tr>
+        </thead>
+        <tbody id="pdfTableBody"></tbody>
+    </table>
+
+    <div class="pdf-footer-lines">
+        <p style="font-weight:bold; margin-bottom:15px;">ملاحظات المسؤول:</p>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+    </div>
 </div>
 
 <script>
     let db = JSON.parse(localStorage.getItem('electrwni_db')) || [];
     let curIdx = null;
 
-    // --- نظام المحول التلقائي للأرقام ---
-    function convertToEn(str) {
-        return str.replace(/[٠-٩]/g, d => "0123456789"["٠١٢٣٤٥٦٧٨٩".indexOf(d)]);
-    }
-
-    document.addEventListener('input', (e) => {
-        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-            e.target.value = convertToEn(e.target.value);
-        }
-    });
-
+    // لوحة المفاتيح
     function p(v) {
         let i = document.getElementById('idInp');
         if(v=='C') i.value=''; else if(v=='B') i.value=i.value.slice(0,-1); else i.value+=v;
-        i.dispatchEvent(new Event('input')); // تفعيل التحويل التلقائي عند الضغط
+    }
+
+    // اختصار الرابط الذكي
+    function getDomain(url) {
+        try {
+            let d = url.replace(/^(https?:\/\/)?(www\.)?/i, "").split(/[/?#]/)[0];
+            let name = d.split('.')[0];
+            return name.charAt(0).toUpperCase() + name.slice(1);
+        } catch(e) { return "رابط خارجي"; }
     }
 
     function render() {
         const t = document.getElementById('mainTable');
         t.innerHTML = '';
         db.forEach((item, i) => {
-            t.innerHTML += `<tr><td><a href="${item.url}" class="link-main">${item.url.split('/')[2] || 'رابط'}</a><span class="edit-label" onclick="openModal(${i})">تعديل</span></td><td><b>${item.id}</b></td><td>${item.desc || '-'}</td><td>${item.views || 0}</td></tr>`;
+            t.innerHTML += `
+                <tr>
+                    <td>
+                        <a href="${item.url}" target="_blank" class="link-main">${getDomain(item.url)}</a>
+                        <span class="edit-label" onclick="openModal(${i})">تعديل البيانات</span>
+                    </td>
+                    <td><b>${item.id}</b></td>
+                    <td style="font-size:11px; color:#666;">${item.desc || '-'}</td>
+                    <td>${item.views || 0}</td>
+                </tr>`;
         });
     }
 
     function add() {
         const id = document.getElementById('idInp').value;
         const url = document.getElementById('urlInp').value;
-        if(!id || !url) return;
-        db.push({ id, url, desc: document.getElementById('descInp').value, views: 0 });
+        const desc = document.getElementById('descInp').value;
+        if(!id || !url) return alert("يرجى ملء البيانات الأساسية");
+        db.push({ id, url, desc, views: 0 });
         localStorage.setItem('electrwni_db', JSON.stringify(db));
         render();
         ['idInp','urlInp','descInp'].forEach(x => document.getElementById(x).value = '');
@@ -166,24 +235,40 @@
         render(); closeModal();
     }
 
-    function deleteEntry() {
-        if(confirm("هل أنت متأكد من حذف هذا السجل؟")) {
-            db.splice(curIdx, 1);
-            localStorage.setItem('electrwni_db', JSON.stringify(db));
-            render(); closeModal();
-        }
-    }
-
+    // تصدير PDF احترافي 100% عربي وبدون طلاسم
     function exportPDF() {
         const report = document.getElementById('pdf-report');
-        document.getElementById('pdfMeta').innerHTML = `التاريخ: ${new Date().toLocaleDateString('ar-SA')}<br>بواسطة: Electrwni Admin`;
         const pdfBody = document.getElementById('pdfTableBody');
+        const now = new Date();
+        
+        document.getElementById('pdfDate').innerText = "طبع بتاريخ: " + now.toLocaleDateString('ar-SA');
+        document.getElementById('pdfTime').innerText = "الوقت: " + now.toLocaleTimeString('ar-SA');
+
         pdfBody.innerHTML = '';
         db.forEach((item, i) => {
-            pdfBody.innerHTML += `<tr><td>${i+1}</td><td dir="ltr" style="font-size:10px">${item.url}</td><td>${item.id}</td><td>${item.desc}</td><td>${item.views}</td></tr>`;
+            pdfBody.innerHTML += `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td dir="ltr" style="font-size:10px;">${item.url}</td>
+                    <td>${item.id}</td>
+                    <td>${item.desc || '-'}</td>
+                    <td>${item.views}</td>
+                </tr>`;
         });
+
         report.style.display = 'block';
-        html2pdf().from(report).set({ margin: 10, filename: 'Report.pdf', html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4' } }).save().then(() => report.style.display = 'none');
+        
+        const options = {
+            margin: 0,
+            filename: 'Electrwni_Report.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().from(report).set(options).save().then(() => {
+            report.style.display = 'none';
+        });
     }
 
     window.onload = render;
