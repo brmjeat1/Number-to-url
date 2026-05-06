@@ -2,79 +2,71 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Electrwni | Link in Bio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Electrwni | Bio</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
-        :root { --bg: #000000; --card: #1c1c1e; --text: #ffffff; --accent: #0a84ff; }
-        body { background-color: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; margin: 0; }
-        
-        .profile-img { width: 96px; height: 96px; border-radius: 50%; border: 3px solid var(--accent); margin-bottom: 16px; object-fit: cover; }
-        .username { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
-        .bio { font-size: 14px; color: #8e8e93; text-align: center; max-width: 300px; margin-bottom: 32px; }
-        
-        .links-container { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 16px; }
-        .link-card { background: var(--card); padding: 18px; border-radius: 15px; text-decoration: none; color: var(--text); font-weight: 600; text-align: center; transition: transform 0.2s, background 0.2s; border: 1px solid #38383a; }
-        .link-card:active { transform: scale(0.97); background: #2c2c2e; }
-        
-        .footer { margin-top: auto; padding-top: 50px; font-size: 12px; color: #48484a; letter-spacing: 1px; }
+        :root { --bg: #000000; --glass: rgba(28, 28, 30, 0.8); --accent: #0a84ff; --text-main: #ffffff; --text-sub: #8e8e93; }
+        body { background-color: var(--bg); color: var(--text-main); font-family: -apple-system, system-ui, sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 40px 20px; }
+        .profile-container { text-align: center; margin-bottom: 30px; }
+        .avatar { width: 90px; height: 90px; border-radius: 50%; border: 2px solid var(--accent); padding: 3px; margin-bottom: 15px; }
+        .nickname { font-size: 22px; font-weight: 700; }
+        .description { font-size: 14px; color: var(--text-sub); margin-top: 8px; max-width: 280px; }
+        .links-wrapper { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 14px; }
+        .link-item { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); padding: 16px; border-radius: 14px; text-decoration: none; color: var(--text-main); font-weight: 600; text-align: center; transition: 0.3s; }
+        .link-item:active { transform: scale(0.96); background: rgba(255,255,255,0.1); }
+        .brand-footer { margin-top: auto; padding-top: 40px; opacity: 0.4; font-size: 11px; letter-spacing: 2px; }
+        #loading { color: var(--accent); margin-top: 20px; }
     </style>
 </head>
 <body>
-
-    <img src="https://via.placeholder.com/150" alt="Profile" class="profile-img" id="userImg">
-    <div class="username" id="userName">جاري التحميل...</div>
-    <div class="bio" id="userBio">منصة Electrwni للروابط الذكية</div>
-
-    <div class="links-container" id="linksList">
-        <!-- الروابط ستظهر هنا تلقائياً -->
+    <div class="profile-container">
+        <img src="https://ui-avatars.com/api/?name=E&background=0a84ff&color=fff" class="avatar">
+        <div class="nickname" id="userName">جاري التحميل...</div>
+        <div class="description" id="userBio">منصة Electrwni للروابط الذكية</div>
     </div>
-
-    <div class="footer">POWERED BY ELECTRWNI</div>
+    <div id="loading">يرجى الانتظار...</div>
+    <div class="links-wrapper" id="linksList"></div>
+    <div class="brand-footer">POWERED BY ELECTRWNI</div>
 
 <script>
-    // ضع إعدادات Firebase الخاصة بك هنا
+    // بياناتك المستخرجة من الصور السابقة
     const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        databaseURL: "YOUR_DATABASE_URL",
-        projectId: "YOUR_PROJECT_ID",
+        apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
+        authDomain: "electrwni-link.firebaseapp.com",
+        projectId: "electrwni-link",
+        storageBucket: "electrwni-link.firebasestorage.app",
+        messagingSenderId: "712490301263",
+        appId: "1:712490301263:web:2436fa7db9aae4a7b539c9",
+        databaseURL: "https://electrwni-link-default-rtdb.firebaseio.com" // تأكد من هذا الرابط في صفحة Database
     };
+    
     firebase.initializeApp(firebaseConfig);
 
-    // دالة لجلب اللقب من الرابط (مثلاً: index.html?u=khaled)
-    const urlParams = new URLSearchParams(window.location.search);
-    const nickname = urlParams.get('u') || 'default';
+    const params = new URLSearchParams(window.location.search);
+    const userNick = params.get('u') || 'khaled'; 
 
-    const db = firebase.database().ref('users/' + nickname);
+    const db = firebase.database().ref('users/' + userNick);
 
     db.on('value', (snapshot) => {
         const data = snapshot.val();
+        document.getElementById('loading').style.display = 'none';
         if (data) {
-            document.getElementById('userName').innerText = "@" + nickname;
+            document.getElementById('userName').innerText = "@" + userNick;
             document.getElementById('userBio').innerText = data.bio || "مرحباً بكم في صفحتي";
-            
             const list = document.getElementById('linksList');
             list.innerHTML = '';
-            
             if (data.links) {
                 Object.keys(data.links).forEach(key => {
                     const link = data.links[key];
-                    list.innerHTML += `
-                        <a href="${link.url}" target="_blank" class="link-card" onclick="countClick('${key}')">
-                            ${link.title}
-                        </a>`;
+                    list.innerHTML += `<a href="${link.url}" target="_blank" class="link-item">${link.title}</a>`;
                 });
             }
         } else {
             document.getElementById('userName').innerText = "المستخدم غير موجود";
         }
     });
-
-    function countClick(linkKey) {
-        // كود لزيادة عدد النقرات في الخلفية
-        firebase.database().ref('users/' + nickname + '/links/' + linkKey + '/clicks').transaction(c => (c || 0) + 1);
-    }
 </script>
 </body>
 </html>
