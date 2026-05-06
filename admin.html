@@ -10,67 +10,66 @@
             --primary: #0071e3; --secondary: #1d1d1f; --bg: #f5f5f7;
             --danger: #ff3b30; --glass: rgba(255, 255, 255, 0.95);
         }
-        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 20px; display: flex; justify-content: center; }
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 10px; display: flex; justify-content: center; }
         .admin-container { width: 100%; max-width: 800px; }
         
         details { background: var(--glass); border-radius: 18px; margin-bottom: 12px; border: 1px solid #e5e5e7; box-shadow: 0 4px 12px rgba(0,0,0,0.03); overflow: hidden; }
         summary { padding: 18px; font-weight: bold; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
         summary::after { content: '▾'; color: var(--primary); }
-        .content { padding: 20px; border-top: 1px solid #eee; background: #fff; }
+        .content { padding: 15px; border-top: 1px solid #eee; background: #fff; }
 
         .field { margin-bottom: 15px; }
         label { display: block; font-size: 13px; color: #86868b; margin-bottom: 6px; font-weight: 500; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1.5px solid #d2d2d7; border-radius: 10px; font-size: 15px; box-sizing: border-box; outline: none; }
+        input, textarea { width: 100%; padding: 12px; border: 1.5px solid #d2d2d7; border-radius: 10px; font-size: 15px; box-sizing: border-box; outline: none; }
 
         .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; direction: ltr; }
         .num-btn { background: #f5f5f7; border: 1px solid #d2d2d7; padding: 12px; border-radius: 10px; font-size: 18px; font-weight: bold; color: var(--primary); cursor: pointer; text-align: center; user-select: none; }
 
-        /* فلترة الإحصائيات بلمسة واحدة */
-        .filter-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 15px 0; }
-        .filter-chip { padding: 8px 15px; border-radius: 20px; background: #eee; font-size: 13px; cursor: pointer; transition: 0.3s; user-select: none; border: 1px solid transparent; }
+        .filter-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 15px 0; }
+        .filter-chip { padding: 6px 12px; border-radius: 20px; background: #eee; font-size: 12px; cursor: pointer; transition: 0.3s; border: 1px solid transparent; }
         .filter-chip.active { background: var(--primary); color: white; font-weight: bold; }
         
-        .date-picker-box { display: none; margin: 15px auto; text-align: center; gap: 10px; flex-direction: column; max-width: 300px; }
+        .date-picker-box { display: none; margin: 15px auto; text-align: center; gap: 10px; flex-direction: column; }
         .date-picker-box.active { display: flex; }
 
-        /* زر التحميل الأحمر */
-        .pdf-btn-red { background: var(--danger); color: white; border: 2px solid #fff; padding: 12px 25px; border-radius: 12px; cursor: pointer; font-size: 15px; font-weight: 800; display: block; margin: 20px auto; width: fit-content; box-shadow: 0 4px 10px rgba(255,59,48,0.3); }
-        .pdf-btn-red span { color: #f0f0f0; }
+        .pdf-btn-red { background: var(--danger); color: white; border: none; padding: 12px 25px; border-radius: 12px; cursor: pointer; font-size: 15px; font-weight: 800; display: block; margin: 20px auto; width: fit-content; box-shadow: 0 4px 10px rgba(255,59,48,0.3); }
 
-        /* الجدول المكتمل */
-        .table-wrapper { width: 100%; overflow-x: auto; border: 1.5px solid #000; border-radius: 8px; }
-        table { width: 100%; border-collapse: collapse; background: #fff; min-width: 600px; }
-        th, td { border: 1.2px solid #000 !important; padding: 12px 8px; text-align: center; word-break: keep-all; }
-        th { background: #fafafa; font-weight: 900; font-size: 14px; }
+        /* تعديل تموضع الجدول ليكون متجاوباً بالكامل بالنص */
+        .table-wrapper { width: 100%; border: 1px solid #e5e5e7; border-radius: 12px; overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; background: #fff; table-layout: fixed; }
+        th, td { padding: 12px 8px; text-align: center; border-bottom: 1px solid #f0f0f2; word-wrap: break-word; }
+        th { background: #fafafa; font-size: 13px; color: #86868b; }
         
+        .link-cell { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .main-link { color: var(--primary); text-decoration: none; font-weight: bold; font-size: 16px; }
+        .edit-sub { color: #ff9500; font-size: 11px; cursor: pointer; text-decoration: underline; }
+
         .btn-action { width: 100%; background: var(--primary); color: white; border: none; padding: 16px; border-radius: 14px; font-weight: bold; font-size: 16px; cursor: pointer; }
-        .btn-edit { background: #ff9500; color: white; border: none; padding: 5px 12px; border-radius: 7px; cursor: pointer; font-size: 12px; }
 
         /* مودال التعديل */
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
         .modal-overlay.active { display: flex; }
-        .modal-box { background: white; border-radius: 18px; padding: 24px; width: 90%; max-width: 400px; }
+        .modal-box { background: white; border-radius: 18px; padding: 24px; width: 85%; max-width: 350px; }
 
-        /* تصميم الـ PDF الرسمي المطور */
+        /* تصميم الـ PDF الاحترافي */
         #pdf-template { display: none; padding: 40px; background: #fff; color: #000; direction: rtl; }
-        .pdf-top-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; }
+        .pdf-top-row { display: flex; justify-content: space-between; margin-bottom: 30px; border-bottom: 2px solid #000; padding-bottom: 10px; }
         .pdf-title-box { text-align: center; margin-bottom: 30px; }
         .pdf-table { width: 100%; border: 1.5px solid #000; border-collapse: collapse; }
-        .pdf-table th, .pdf-table td { border: 1.5px solid #000; padding: 10px; font-size: 13px; text-align: center; }
-        .pdf-table th { font-weight: bold; }
-        .pdf-note-line { border-bottom: 1px solid #000; margin-top: 15px; height: 20px; width: 100%; }
+        .pdf-table th, .pdf-table td { border: 1.5px solid #000; padding: 8px; font-size: 12px; text-align: center; }
+        .pdf-note-line { border-bottom: 1px solid #ccc; margin-top: 25px; height: 10px; width: 100%; }
     </style>
 </head>
 <body>
 
 <div class="admin-container">
-    <h2 style="text-align: center; margin-bottom: 25px;">لوحة تحكم Electrwni</h2>
+    <h2 style="text-align: center; margin-bottom: 20px;">لوحة تحكم Electrwni</h2>
 
     <details open>
         <summary>إضافة رابط جديد</summary>
         <div class="content">
             <div class="field">
-                <label>الرقم التعريفي (ID)</label>
+                <label>رقم الرابط (ID)</label>
                 <input type="text" id="numInp" placeholder="استخدم اللوحة" readonly>
                 <div class="numpad">
                     <div class="num-btn" onclick="k('1')">1</div><div class="num-btn" onclick="k('2')">2</div><div class="num-btn" onclick="k('3')">3</div>
@@ -85,23 +84,20 @@
             </div>
             <div class="field">
                 <label>الوصف (اختياري)</label>
-                <textarea id="descInp" rows="2" placeholder="اكتب وصفاً مختصراً للرابط..."></textarea>
+                <textarea id="descInp" rows="2" placeholder="وصف مختصر..."></textarea>
             </div>
             <button class="btn-action" onclick="saveData()">حفظ وإضافة</button>
         </div>
     </details>
 
-    <details id="stats-section" open>
+    <details open>
         <summary>إحصائيات كاملة</summary>
         <div class="content">
-            <!-- خيارات الفلترة بلمسة واحدة -->
             <div class="filter-grid" id="filterGrid">
                 <div class="filter-chip active" onclick="setFilter(this, 'day')">اليوم</div>
                 <div class="filter-chip" onclick="setFilter(this, 'week')">أسبوع</div>
                 <div class="filter-chip" onclick="setFilter(this, 'month')">شهر</div>
-                <div class="filter-chip" onclick="setFilter(this, 'half')">نصف عام</div>
                 <div class="filter-chip" onclick="setFilter(this, 'year')">سنة</div>
-                <div class="filter-chip" onclick="setFilter(this, 'all')">كل الوقت</div>
                 <div class="filter-chip" onclick="setFilter(this, 'custom')">مخصص</div>
             </div>
 
@@ -110,20 +106,16 @@
                 <input type="date" id="dateTo">
             </div>
 
-            <!-- زر التنزيل الأحمر -->
-            <button class="pdf-btn-red" onclick="downloadPDF()">تنزيل ملف <span>PDF</span></button>
+            <button class="pdf-btn-red" onclick="downloadPDF()">تنزيل ملف PDF</button>
 
-            <!-- الجدول المكتمل والمحسّن -->
             <div class="table-wrapper">
-                <table id="statsTable">
+                <table>
                     <thead>
                         <tr>
-                            <th style="width:10%">تسلل</th>
-                            <th style="width:25%">الرابط</th>
-                            <th style="width:20%">ID الرابط</th>
-                            <th style="width:30%">الوصف</th>
-                            <th style="width:15%">عدد المشاهدات</th>
-                            <th style="width:10%">خيارات</th>
+                            <th style="width:40%">الرابط</th>
+                            <th style="width:20%">ID</th>
+                            <th style="width:25%">الوصف</th>
+                            <th style="width:15%">👁</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody"></tbody>
@@ -131,48 +123,32 @@
             </div>
         </div>
     </details>
-
-    <details>
-        <summary>الخصوصية والأمان</summary>
-        <div class="content">
-            <div class="field"><label>كلمة السر الحالية</label><input type="password" placeholder="••••••••"></div>
-            <div class="field"><label>كلمة السر الجديدة</label><input type="password" placeholder="••••••••"></div>
-            <button class="btn-action" style="background:var(--secondary);" onclick="alert('تم التحديث')">حفظ التغييرات</button>
-        </div>
-    </details>
 </div>
 
-<!-- قالب الـ PDF -->
+<!-- قالب PDF -->
 <div id="pdf-template">
     <div class="pdf-top-row">
-        <div style="text-align: right;">
-            <strong style="font-size: 18px;">Electrwni | إلكتروني</strong>
-        </div>
-        <div style="text-align: left;">
-            <span id="pdf-print-date" style="font-size: 13px; font-weight: bold;"></span>
-        </div>
+        <strong>Electrwni | إلكتروني</strong>
+        <span id="pdf-print-date"></span>
     </div>
-    
     <div class="pdf-title-box">
-        <h1 style="margin: 0; font-size: 24px; text-decoration: underline;">تقرير إحصائيات الروابط</h1>
-        <p id="pdf-period" style="font-size: 14px; margin-top: 10px; font-weight: bold;"></p>
+        <h2 style="text-decoration: underline;">تقرير إحصائيات الروابط</h2>
+        <p id="pdf-period" style="font-size: 13px;"></p>
     </div>
-
     <table class="pdf-table">
         <thead>
             <tr>
-                <th style="width: 15%;">عدد المشاهدات</th>
-                <th style="width: 30%;">الوصف</th>
-                <th style="width: 15%;">ID الرابط</th>
-                <th style="width: 30%;">الرابط</th>
-                <th style="width: 10%;">تسلل</th>
+                <th>#</th>
+                <th>الرابط</th>
+                <th>ID</th>
+                <th>الوصف</th>
+                <th>المشاهدات</th>
             </tr>
         </thead>
         <tbody id="pdf-table-body"></tbody>
     </table>
-
-    <div style="margin-top: 50px;">
-        <strong style="font-size: 14px;">ملاحظات المسؤول:</strong>
+    <div style="margin-top: 40px;">
+        <strong style="font-size: 14px;">ملاحظات الإدارة:</strong>
         <div class="pdf-note-line"></div>
         <div class="pdf-note-line"></div>
         <div class="pdf-note-line"></div>
@@ -182,13 +158,13 @@
 <!-- مودال التعديل -->
 <div class="modal-overlay" id="editModal">
     <div class="modal-box">
-        <h3 style="margin-top:0">تعديل البيانات</h3>
-        <label>ID الرابط</label><input type="text" id="editId">
-        <label>الرابط</label><input type="text" id="editUrl">
-        <label>الوصف</label><textarea id="editDesc" rows="3"></textarea>
-        <div style="display:flex; gap:10px; margin-top:20px;">
+        <h3 style="margin-top:0">تعديل الرابط</h3>
+        <label>ID</label><input type="text" id="editId">
+        <label>URL</label><input type="text" id="editUrl">
+        <label>الوصف</label><textarea id="editDesc" rows="2"></textarea>
+        <div style="display:flex; gap:10px; margin-top:15px;">
             <button class="btn-action" style="flex:1" onclick="saveEdit()">حفظ</button>
-            <button class="btn-action" style="flex:1; background:#f5f5f7; color:#333;" onclick="closeEditModal()">إلغاء</button>
+            <button class="btn-action" style="flex:1; background:#eee; color:#333;" onclick="closeEditModal()">إلغاء</button>
         </div>
     </div>
 </div>
@@ -202,24 +178,24 @@
         if(v=='C') i.value=''; else if(v=='B') i.value=i.value.slice(0,-1); else i.value+=v;
     }
 
+    // وظيفة اختصار الروابط (اسم الموقع فقط)
     function smartShorten(url) {
         try {
-            let pure = url.replace(/^(https?:\/\/)?(www\.)?/i, "");
-            return pure.length > 20 ? pure.substring(0, 20) + "..." : pure;
-        } catch(e) { return url; }
+            let domain = url.replace(/^(https?:\/\/)?(www\.)?/i, "").split('/')[0].split('.')[0];
+            return domain.charAt(0).toUpperCase() + domain.slice(1);
+        } catch(e) { return "رابط"; }
     }
 
     function setFilter(el, type) {
         document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
         el.classList.add('active');
         document.getElementById('customDates').classList.toggle('active', type === 'custom');
-        renderTable();
     }
 
     function saveData() {
         const num = document.getElementById('numInp').value;
         const url = document.getElementById('urlInp').value;
-        const desc = document.getElementById('descInp').value || "بدون وصف";
+        const desc = document.getElementById('descInp').value || "-";
         if(!num || !url) return alert("أكمل البيانات");
         linksData.push({ id: num, originalUrl: url, description: desc, views: 0, date: Date.now() });
         localStorage.setItem('electrwni_db', JSON.stringify(linksData));
@@ -232,25 +208,29 @@
         tbody.innerHTML = '';
         linksData.forEach((item, index) => {
             tbody.innerHTML += `<tr>
-                <td style="font-weight:bold">${index + 1}</td>
-                <td dir="ltr" style="color:var(--primary); font-weight:bold">${smartShorten(item.originalUrl)}</td>
-                <td>${item.id}</td>
-                <td>${item.description}</td>
-                <td style="font-weight:bold">${item.views}</td>
-                <td><button class="btn-edit" onclick="openEditModal(${index})">تعديل</button></td>
+                <td>
+                    <div class="link-cell">
+                        <a href="${item.originalUrl}" target="_blank" class="main-link">${smartShorten(item.originalUrl)}</a>
+                        <span class="edit-sub" onclick="openEditModal(${index})">تعديل</span>
+                    </div>
+                </td>
+                <td><b>${item.id}</b></td>
+                <td style="font-size:12px">${item.description}</td>
+                <td>${item.views}</td>
             </tr>`;
         });
     }
 
     function openEditModal(i) {
         editingIndex = i;
-        const item = linksData[i];
-        document.getElementById('editId').value = item.id;
-        document.getElementById('editUrl').value = item.originalUrl;
-        document.getElementById('editDesc').value = item.description;
+        document.getElementById('editId').value = linksData[i].id;
+        document.getElementById('editUrl').value = linksData[i].originalUrl;
+        document.getElementById('editDesc').value = linksData[i].description;
         document.getElementById('editModal').classList.add('active');
     }
+
     function closeEditModal() { document.getElementById('editModal').classList.remove('active'); }
+
     function saveEdit() {
         linksData[editingIndex] = {...linksData[editingIndex], id:document.getElementById('editId').value, originalUrl:document.getElementById('editUrl').value, description:document.getElementById('editDesc').value};
         localStorage.setItem('electrwni_db', JSON.stringify(linksData));
@@ -260,31 +240,26 @@
     function downloadPDF() {
         const template = document.getElementById('pdf-template');
         const pdfTbody = document.getElementById('pdf-table-body');
-        const now = new Date().toLocaleDateString('ar-KW').replace(/\//g, ' / ');
-        
-        document.getElementById('pdf-print-date').innerText = `طبع بتاريخ :  ${now}`;
-        const from = document.getElementById('dateFrom').value || now;
-        const to = document.getElementById('dateTo').value || now;
-        document.getElementById('pdf-period').innerText = `الفترة من : ${from}  إلى : ${to}`;
+        const now = new Date();
+        document.getElementById('pdf-print-date').innerText = `بتاريخ: ${now.toLocaleDateString('ar-KW')}`;
+        document.getElementById('pdf-period').innerText = `تقرير إحصائي شامل للروابط المسجلة`;
         
         pdfTbody.innerHTML = '';
         linksData.forEach((item, index) => {
-            pdfTbody.innerHTML += `
-                <tr>
-                    <td style="font-weight:bold">${item.views}</td>
-                    <td>${item.description}</td>
-                    <td style="font-weight:bold">${item.id}</td>
-                    <td dir="ltr" style="font-weight:bold">${smartShorten(item.originalUrl)}</td>
-                    <td style="font-weight:bold">${index + 1}</td>
-                </tr>`;
+            pdfTbody.innerHTML += `<tr>
+                <td>${index + 1}</td>
+                <td dir="ltr" style="font-size:10px">${item.originalUrl}</td>
+                <td>${item.id}</td>
+                <td>${item.description}</td>
+                <td>${item.views}</td>
+            </tr>`;
         });
 
         template.style.display = 'block';
         html2pdf().from(template).set({
             margin: 10,
-            filename: `Electrwni_Report.pdf`,
-            image: { type: 'jpeg', quality: 1 },
-            html2canvas: { scale: 3, useCORS: true },
+            filename: 'Electrwni_Admin_Report.pdf',
+            html2canvas: { scale: 3 },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         }).save().then(() => template.style.display = 'none');
     }
