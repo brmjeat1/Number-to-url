@@ -31,7 +31,7 @@
     <div class="brand-footer">POWERED BY ELECTRWNI</div>
 
 <script>
-    // بياناتك المستخرجة من الصور السابقة
+    // الإعدادات المحدثة لقاعدة البيانات
     const firebaseConfig = {
         apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
         authDomain: "electrwni-link.firebaseapp.com",
@@ -39,7 +39,7 @@
         storageBucket: "electrwni-link.firebasestorage.app",
         messagingSenderId: "712490301263",
         appId: "1:712490301263:web:2436fa7db9aae4a7b539c9",
-        databaseURL: "https://electrwni-link-default-rtdb.firebaseio.com" // تأكد من هذا الرابط في صفحة Database
+        databaseURL: "https://electrwni-link-default-rtdb.asia-southeast1.firebasedatabase.app/"
     };
     
     firebase.initializeApp(firebaseConfig);
@@ -47,13 +47,13 @@
     const params = new URLSearchParams(window.location.search);
     const userNick = params.get('u') || 'khaled'; 
 
-    const db = firebase.database().ref('users/' + userNick);
+    const db = firebase.database().ref('users/' + constNick);
 
     db.on('value', (snapshot) => {
         const data = snapshot.val();
         document.getElementById('loading').style.display = 'none';
         if (data) {
-            document.getElementById('userName').innerText = "@" + userNick;
+            document.getElementById('userName').innerText = "@" + constNick;
             document.getElementById('userBio').innerText = data.bio || "مرحباً بكم في صفحتي";
             const list = document.getElementById('linksList');
             list.innerHTML = '';
