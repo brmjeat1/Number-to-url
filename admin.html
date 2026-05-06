@@ -3,241 +3,293 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Electrwni Admin</title>
+    <title>لوحة تحكم Electrwni</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        :root { --primary: #0071e3; --danger: #ff3b30; --bg: #f5f5f7; --border: #e5e5e7; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #1d1d1f; }
-        .container { width: 100%; max-width: 850px; margin: 0 auto; }
+        :root {
+            --primary: #0071e3; --secondary: #1d1d1f; --bg: #f5f5f7;
+            --danger: #ff3b30; --glass: rgba(255, 255, 255, 0.95);
+        }
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .admin-container { width: 100%; max-width: 800px; }
         
-        details { background: #fff; border-radius: 14px; margin-bottom: 12px; border: 1px solid var(--border); overflow: hidden; }
-        summary { padding: 15px; font-weight: bold; cursor: pointer; list-style: none; display: flex; justify-content: space-between; }
-        .content { padding: 20px; border-top: 1px solid var(--border); }
+        details { background: var(--glass); border-radius: 18px; margin-bottom: 12px; border: 1px solid #e5e5e7; box-shadow: 0 4px 12px rgba(0,0,0,0.03); overflow: hidden; }
+        summary { padding: 18px; font-weight: bold; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+        summary::after { content: '▾'; color: var(--primary); }
+        .content { padding: 20px; border-top: 1px solid #eee; background: #fff; }
 
-        input, textarea { width: 100%; padding: 12px; border: 1px solid #d2d2d7; border-radius: 10px; margin-bottom: 10px; box-sizing: border-box; }
-        .btn-main { width: 100%; background: var(--primary); color: #fff; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        .field { margin-bottom: 15px; }
+        label { display: block; font-size: 13px; color: #86868b; margin-bottom: 6px; font-weight: 500; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1.5px solid #d2d2d7; border-radius: 10px; font-size: 15px; box-sizing: border-box; outline: none; }
 
-        /* الجدول المنسق بدون عمود تسلسل في العرض الرئيسي */
-        .table-wrapper { width: 100%; overflow-x: auto; background: #fff; border-radius: 10px; border: 1px solid var(--border); }
-        table { width: 100%; border-collapse: collapse; min-width: 450px; }
-        th, td { padding: 14px 10px; border: 1px solid #f0f0f2; text-align: center; vertical-align: middle; }
-        th { background: #fafafa; font-size: 13px; color: #86868b; }
+        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; direction: ltr; }
+        .num-btn { background: #f5f5f7; border: 1px solid #d2d2d7; padding: 12px; border-radius: 10px; font-size: 18px; font-weight: bold; color: var(--primary); cursor: pointer; text-align: center; user-select: none; }
+
+        /* فلترة الإحصائيات بلمسة واحدة */
+        .filter-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 15px 0; }
+        .filter-chip { padding: 8px 15px; border-radius: 20px; background: #eee; font-size: 13px; cursor: pointer; transition: 0.3s; user-select: none; border: 1px solid transparent; }
+        .filter-chip.active { background: var(--primary); color: white; font-weight: bold; }
         
-        .link-group { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .site-link { color: var(--primary); text-decoration: none; font-weight: 600; font-size: 15px; }
-        .edit-trigger { color: #ff9500; font-size: 11px; cursor: pointer; text-decoration: underline; }
+        .date-picker-box { display: none; margin: 15px auto; text-align: center; gap: 10px; flex-direction: column; max-width: 300px; }
+        .date-picker-box.active { display: flex; }
 
-        /* أزرار الفلترة والـ PDF */
-        .filter-bar { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 15px; }
-        .chip { padding: 6px 15px; background: #eee; border-radius: 20px; font-size: 12px; cursor: pointer; }
-        .chip.active { background: var(--primary); color: #fff; }
-        .pdf-trigger { background: var(--danger); color: #fff; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; display: block; margin: 10px auto; font-weight: bold; }
+        /* زر التحميل الأحمر */
+        .pdf-btn-red { background: var(--danger); color: white; border: 2px solid #fff; padding: 12px 25px; border-radius: 12px; cursor: pointer; font-size: 15px; font-weight: 800; display: block; margin: 20px auto; width: fit-content; box-shadow: 0 4px 10px rgba(255,59,48,0.3); }
+        .pdf-btn-red span { color: #f0f0f0; }
+
+        /* الجدول المكتمل */
+        .table-wrapper { width: 100%; overflow-x: auto; border: 1.5px solid #000; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; background: #fff; min-width: 600px; }
+        th, td { border: 1.2px solid #000 !important; padding: 12px 8px; text-align: center; word-break: keep-all; }
+        th { background: #fafafa; font-weight: 900; font-size: 14px; }
+        
+        .btn-action { width: 100%; background: var(--primary); color: white; border: none; padding: 16px; border-radius: 14px; font-weight: bold; font-size: 16px; cursor: pointer; }
+        .btn-edit { background: #ff9500; color: white; border: none; padding: 5px 12px; border-radius: 7px; cursor: pointer; font-size: 12px; }
 
         /* مودال التعديل */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        .modal.active { display: flex; }
-        .modal-card { background: #fff; padding: 25px; border-radius: 20px; width: 90%; max-width: 400px; }
-        .modal-footer { display: flex; justify-content: space-between; margin-top: 20px; gap: 15px; }
-        .btn-save { flex: 1; background: var(--primary); color: #fff; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; }
-        .btn-del { flex: 1; background: var(--danger); color: #fff; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: white; border-radius: 18px; padding: 24px; width: 90%; max-width: 400px; }
 
-        /* تنسيق PDF المخفي (يحتوي على التسلسل) */
-        #pdf-export { display: none; padding: 40px; background: #fff; direction: rtl; }
-        .pdf-header { display: flex; justify-content: space-between; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
-        .pdf-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .pdf-table th, .pdf-table td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+        /* تصميم الـ PDF الرسمي المطور */
+        #pdf-template { display: none; padding: 40px; background: #fff; color: #000; direction: rtl; }
+        .pdf-top-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; }
+        .pdf-title-box { text-align: center; margin-bottom: 30px; }
+        .pdf-table { width: 100%; border: 1.5px solid #000; border-collapse: collapse; }
+        .pdf-table th, .pdf-table td { border: 1.5px solid #000; padding: 10px; font-size: 13px; text-align: center; }
+        .pdf-table th { font-weight: bold; }
+        .pdf-note-line { border-bottom: 1px solid #000; margin-top: 15px; height: 20px; width: 100%; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2 style="text-align: center;">لوحة تحكم إلكتروني</h2>
+<div class="admin-container">
+    <h2 style="text-align: center; margin-bottom: 25px;">لوحة تحكم Electrwni</h2>
 
-    <!-- قسم الإضافة -->
     <details open>
-        <summary>إضافة بيانات جديدة</summary>
+        <summary>إضافة رابط جديد</summary>
         <div class="content">
-            <input type="text" id="idInp" placeholder="ID الرابط">
-            <input type="text" id="urlInp" placeholder="ضع الرابط هنا">
-            <textarea id="descInp" placeholder="وصف الرابط"></textarea>
-            <button class="btn-main" onclick="addItem()">حفظ البيانات</button>
+            <div class="field">
+                <label>الرقم التعريفي (ID)</label>
+                <input type="text" id="numInp" placeholder="استخدم اللوحة" readonly>
+                <div class="numpad">
+                    <div class="num-btn" onclick="k('1')">1</div><div class="num-btn" onclick="k('2')">2</div><div class="num-btn" onclick="k('3')">3</div>
+                    <div class="num-btn" onclick="k('4')">4</div><div class="num-btn" onclick="k('5')">5</div><div class="num-btn" onclick="k('6')">6</div>
+                    <div class="num-btn" onclick="k('7')">7</div><div class="num-btn" onclick="k('8')">8</div><div class="num-btn" onclick="k('9')">9</div>
+                    <div class="num-btn" onclick="k('C')" style="color:red">C</div><div class="num-btn" onclick="k('0')">0</div><div class="num-btn" onclick="k('B')">⌫</div>
+                </div>
+            </div>
+            <div class="field">
+                <label>الرابط (URL)</label>
+                <input type="text" id="urlInp" placeholder="https://www.google.com">
+            </div>
+            <div class="field">
+                <label>الوصف (اختياري)</label>
+                <textarea id="descInp" rows="2" placeholder="اكتب وصفاً مختصراً للرابط..."></textarea>
+            </div>
+            <button class="btn-action" onclick="saveData()">حفظ وإضافة</button>
         </div>
     </details>
 
-    <!-- قسم الإحصائيات -->
-    <details open>
-        <summary>التقارير والإحصائيات</summary>
+    <details id="stats-section" open>
+        <summary>إحصائيات كاملة</summary>
         <div class="content">
-            <div class="filter-bar">
-                <div class="chip active">أسبوع</div>
-                <div class="chip">شهر</div>
-                <div class="chip">سنة</div>
+            <!-- خيارات الفلترة بلمسة واحدة -->
+            <div class="filter-grid" id="filterGrid">
+                <div class="filter-chip active" onclick="setFilter(this, 'day')">اليوم</div>
+                <div class="filter-chip" onclick="setFilter(this, 'week')">أسبوع</div>
+                <div class="filter-chip" onclick="setFilter(this, 'month')">شهر</div>
+                <div class="filter-chip" onclick="setFilter(this, 'half')">نصف عام</div>
+                <div class="filter-chip" onclick="setFilter(this, 'year')">سنة</div>
+                <div class="filter-chip" onclick="setFilter(this, 'all')">كل الوقت</div>
+                <div class="filter-chip" onclick="setFilter(this, 'custom')">مخصص</div>
             </div>
-            <button class="pdf-trigger" onclick="generatePDF()">تنزيل تقرير PDF</button>
-            
+
+            <div class="date-picker-box" id="customDates">
+                <input type="date" id="dateFrom">
+                <input type="date" id="dateTo">
+            </div>
+
+            <!-- زر التنزيل الأحمر -->
+            <button class="pdf-btn-red" onclick="downloadPDF()">تنزيل ملف <span>PDF</span></button>
+
+            <!-- الجدول المكتمل والمحسّن -->
             <div class="table-wrapper">
-                <table>
+                <table id="statsTable">
                     <thead>
                         <tr>
-                            <th>الرابط / تعديل</th>
-                            <th style="width: 20%">ID</th>
-                            <th style="width: 40%">الوصف</th>
-                            <th style="width: 15%">👁</th>
+                            <th style="width:10%">تسلل</th>
+                            <th style="width:25%">الرابط</th>
+                            <th style="width:20%">ID الرابط</th>
+                            <th style="width:30%">الوصف</th>
+                            <th style="width:15%">عدد المشاهدات</th>
+                            <th style="width:10%">خيارات</th>
                         </tr>
                     </thead>
-                    <tbody id="mainTableBody"></tbody>
+                    <tbody id="tableBody"></tbody>
                 </table>
             </div>
         </div>
     </details>
-</div>
 
-<!-- مودال التعديل -->
-<div class="modal" id="editModal">
-    <div class="modal-card">
-        <h3 style="text-align: center;">تعديل البيانات</h3>
-        <label style="font-size: 12px; color: #666;">ID</label>
-        <input type="text" id="mId">
-        <label style="font-size: 12px; color: #666;">الرابط</label>
-        <input type="text" id="mUrl">
-        <label style="font-size: 12px; color: #666;">الوصف</label>
-        <textarea id="mDesc"></textarea>
-        <div class="modal-footer">
-            <button class="btn-save" onclick="confirmSave()">حفظ</button>
-            <button class="btn-del" onclick="confirmDelete()">حذف</button>
+    <details>
+        <summary>الخصوصية والأمان</summary>
+        <div class="content">
+            <div class="field"><label>كلمة السر الحالية</label><input type="password" placeholder="••••••••"></div>
+            <div class="field"><label>كلمة السر الجديدة</label><input type="password" placeholder="••••••••"></div>
+            <button class="btn-action" style="background:var(--secondary);" onclick="alert('تم التحديث')">حفظ التغييرات</button>
         </div>
-        <center><button onclick="closeModal()" style="margin-top:15px; background:none; border:none; color: #888; cursor:pointer;">إغلاق</button></center>
-    </div>
+    </details>
 </div>
 
-<!-- هيكل التقرير المخصص للـ PDF (يظهر فيه التسلسل) -->
-<div id="pdf-export">
-    <div class="pdf-header">
+<!-- قالب الـ PDF -->
+<div id="pdf-template">
+    <div class="pdf-top-row">
         <div style="text-align: right;">
-            <h2 style="margin:0;">إلكتروني | Electrwni</h2>
-            <p style="margin:5px 0;">لوحة تحكم إدارة الروابط</p>
+            <strong style="font-size: 18px;">Electrwni | إلكتروني</strong>
         </div>
         <div style="text-align: left;">
-            <p id="pdfDate" style="font-weight: bold;"></p>
+            <span id="pdf-print-date" style="font-size: 13px; font-weight: bold;"></span>
         </div>
     </div>
-    <h3 style="text-align: center; text-decoration: underline;">تقرير إحصائيات الروابط</h3>
+    
+    <div class="pdf-title-box">
+        <h1 style="margin: 0; font-size: 24px; text-decoration: underline;">تقرير إحصائيات الروابط</h1>
+        <p id="pdf-period" style="font-size: 14px; margin-top: 10px; font-weight: bold;"></p>
+    </div>
+
     <table class="pdf-table">
         <thead>
             <tr>
-                <th>#</th>
-                <th>الرابط الأصلي</th>
-                <th>ID</th>
-                <th>الوصف</th>
-                <th>مشاهدات</th>
+                <th style="width: 15%;">عدد المشاهدات</th>
+                <th style="width: 30%;">الوصف</th>
+                <th style="width: 15%;">ID الرابط</th>
+                <th style="width: 30%;">الرابط</th>
+                <th style="width: 10%;">تسلل</th>
             </tr>
         </thead>
-        <tbody id="pdfTableBody"></tbody>
+        <tbody id="pdf-table-body"></tbody>
     </table>
+
+    <div style="margin-top: 50px;">
+        <strong style="font-size: 14px;">ملاحظات المسؤول:</strong>
+        <div class="pdf-note-line"></div>
+        <div class="pdf-note-line"></div>
+        <div class="pdf-note-line"></div>
+    </div>
+</div>
+
+<!-- مودال التعديل -->
+<div class="modal-overlay" id="editModal">
+    <div class="modal-box">
+        <h3 style="margin-top:0">تعديل البيانات</h3>
+        <label>ID الرابط</label><input type="text" id="editId">
+        <label>الرابط</label><input type="text" id="editUrl">
+        <label>الوصف</label><textarea id="editDesc" rows="3"></textarea>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button class="btn-action" style="flex:1" onclick="saveEdit()">حفظ</button>
+            <button class="btn-action" style="flex:1; background:#f5f5f7; color:#333;" onclick="closeEditModal()">إلغاء</button>
+        </div>
+    </div>
 </div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('electrwni_db')) || [];
-    let curIdx = null;
+    let linksData = JSON.parse(localStorage.getItem('electrwni_db')) || [];
+    let editingIndex = null;
 
-    // استخراج اسم الموقع المختصر
-    function shortUrl(url) {
-        try {
-            let domain = url.replace(/^(https?:\/\/)?(www\.)?/, "");
-            domain = domain.split('.')[0]; 
-            return domain.charAt(0).toUpperCase() + domain.slice(1);
-        } catch(e) { return "الرابط"; }
+    function k(v) {
+        let i = document.getElementById('numInp');
+        if(v=='C') i.value=''; else if(v=='B') i.value=i.value.slice(0,-1); else i.value+=v;
     }
 
-    function render() {
-        const body = document.getElementById('mainTableBody');
-        body.innerHTML = '';
-        db.forEach((item, i) => {
-            body.innerHTML += `
-                <tr>
-                    <td>
-                        <div class="link-group">
-                            <a href="${item.url}" target="_blank" class="site-link">${shortUrl(item.url)}</a>
-                            <span class="edit-trigger" onclick="openModal(${i})">تعديل</span>
-                        </div>
-                    </td>
-                    <td><b>${item.id}</b></td>
-                    <td><div style="font-size:12px; line-height:1.4;">${item.desc}</div></td>
-                    <td>${item.views || 0}</td>
-                </tr>`;
+    function smartShorten(url) {
+        try {
+            let pure = url.replace(/^(https?:\/\/)?(www\.)?/i, "");
+            return pure.length > 20 ? pure.substring(0, 20) + "..." : pure;
+        } catch(e) { return url; }
+    }
+
+    function setFilter(el, type) {
+        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('customDates').classList.toggle('active', type === 'custom');
+        renderTable();
+    }
+
+    function saveData() {
+        const num = document.getElementById('numInp').value;
+        const url = document.getElementById('urlInp').value;
+        const desc = document.getElementById('descInp').value || "بدون وصف";
+        if(!num || !url) return alert("أكمل البيانات");
+        linksData.push({ id: num, originalUrl: url, description: desc, views: 0, date: Date.now() });
+        localStorage.setItem('electrwni_db', JSON.stringify(linksData));
+        renderTable();
+        ['numInp','urlInp','descInp'].forEach(id => document.getElementById(id).value = '');
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+        linksData.forEach((item, index) => {
+            tbody.innerHTML += `<tr>
+                <td style="font-weight:bold">${index + 1}</td>
+                <td dir="ltr" style="color:var(--primary); font-weight:bold">${smartShorten(item.originalUrl)}</td>
+                <td>${item.id}</td>
+                <td>${item.description}</td>
+                <td style="font-weight:bold">${item.views}</td>
+                <td><button class="btn-edit" onclick="openEditModal(${index})">تعديل</button></td>
+            </tr>`;
         });
     }
 
-    function addItem() {
-        const id = document.getElementById('idInp').value;
-        const url = document.getElementById('urlInp').value;
-        const desc = document.getElementById('descInp').value;
-        if(!id || !url) return alert("يرجى إكمال الحقول");
-        db.push({ id, url, desc, views: 0, timestamp: Date.now() });
-        localStorage.setItem('electrwni_db', JSON.stringify(db));
-        render();
-        ['idInp','urlInp','descInp'].forEach(i => document.getElementById(i).value = '');
-    }
-
-    function openModal(i) {
-        curIdx = i;
-        document.getElementById('mId').value = db[i].id;
-        document.getElementById('mUrl').value = db[i].url;
-        document.getElementById('mDesc').value = db[i].desc;
+    function openEditModal(i) {
+        editingIndex = i;
+        const item = linksData[i];
+        document.getElementById('editId').value = item.id;
+        document.getElementById('editUrl').value = item.originalUrl;
+        document.getElementById('editDesc').value = item.description;
         document.getElementById('editModal').classList.add('active');
     }
-
-    function closeModal() { document.getElementById('editModal').classList.remove('active'); }
-
-    function confirmSave() {
-        db[curIdx].id = document.getElementById('mId').value;
-        db[curIdx].url = document.getElementById('mUrl').value;
-        db[curIdx].desc = document.getElementById('mDesc').value;
-        localStorage.setItem('electrwni_db', JSON.stringify(db));
-        render(); closeModal();
+    function closeEditModal() { document.getElementById('editModal').classList.remove('active'); }
+    function saveEdit() {
+        linksData[editingIndex] = {...linksData[editingIndex], id:document.getElementById('editId').value, originalUrl:document.getElementById('editUrl').value, description:document.getElementById('editDesc').value};
+        localStorage.setItem('electrwni_db', JSON.stringify(linksData));
+        renderTable(); closeEditModal();
     }
 
-    function confirmDelete() {
-        if(confirm("حذف الرابط نهائياً؟")) {
-            db.splice(curIdx, 1);
-            localStorage.setItem('electrwni_db', JSON.stringify(db));
-            render(); closeModal();
-        }
-    }
-
-    function generatePDF() {
-        const container = document.getElementById('pdf-export');
-        const pdfBody = document.getElementById('pdfTableBody');
-        const dateEl = document.getElementById('pdfDate');
-        const now = new Date();
-        dateEl.innerText = `طبع بتاريخ: ${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}`;
+    function downloadPDF() {
+        const template = document.getElementById('pdf-template');
+        const pdfTbody = document.getElementById('pdf-table-body');
+        const now = new Date().toLocaleDateString('ar-KW').replace(/\//g, ' / ');
         
-        pdfBody.innerHTML = '';
-        db.forEach((item, i) => {
-            pdfBody.innerHTML += `
+        document.getElementById('pdf-print-date').innerText = `طبع بتاريخ :  ${now}`;
+        const from = document.getElementById('dateFrom').value || now;
+        const to = document.getElementById('dateTo').value || now;
+        document.getElementById('pdf-period').innerText = `الفترة من : ${from}  إلى : ${to}`;
+        
+        pdfTbody.innerHTML = '';
+        linksData.forEach((item, index) => {
+            pdfTbody.innerHTML += `
                 <tr>
-                    <td>${i + 1}</td>
-                    <td dir="ltr" style="font-size:10px;">${item.url}</td>
-                    <td>${item.id}</td>
-                    <td>${item.desc}</td>
-                    <td>${item.views}</td>
+                    <td style="font-weight:bold">${item.views}</td>
+                    <td>${item.description}</td>
+                    <td style="font-weight:bold">${item.id}</td>
+                    <td dir="ltr" style="font-weight:bold">${smartShorten(item.originalUrl)}</td>
+                    <td style="font-weight:bold">${index + 1}</td>
                 </tr>`;
         });
 
-        container.style.display = 'block';
-        const opt = {
+        template.style.display = 'block';
+        html2pdf().from(template).set({
             margin: 10,
-            filename: 'Electrwni_Report.pdf',
-            html2canvas: { scale: 2 },
+            filename: `Electrwni_Report.pdf`,
+            image: { type: 'jpeg', quality: 1 },
+            html2canvas: { scale: 3, useCORS: true },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-
-        html2pdf().from(container).set(opt).save().then(() => {
-            container.style.display = 'none';
-        });
+        }).save().then(() => template.style.display = 'none');
     }
 
-    window.onload = render;
+    window.onload = renderTable;
 </script>
 </body>
 </html>
