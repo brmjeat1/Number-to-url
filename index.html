@@ -31,7 +31,6 @@
     <div class="brand-footer">POWERED BY ELECTRWNI</div>
 
 <script>
-    // الإعدادات المحدثة لقاعدة البيانات
     const firebaseConfig = {
         apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
         authDomain: "electrwni-link.firebaseapp.com",
@@ -47,16 +46,18 @@
     const params = new URLSearchParams(window.location.search);
     const userNick = params.get('u') || 'khaled'; 
 
-    const db = firebase.database().ref('users/' + constNick);
+    const db = firebase.database().ref('users/' + userNick);
 
     db.on('value', (snapshot) => {
         const data = snapshot.val();
         document.getElementById('loading').style.display = 'none';
+        
         if (data) {
-            document.getElementById('userName').innerText = "@" + constNick;
+            document.getElementById('userName').innerText = "@" + userNick;
             document.getElementById('userBio').innerText = data.bio || "مرحباً بكم في صفحتي";
             const list = document.getElementById('linksList');
             list.innerHTML = '';
+            
             if (data.links) {
                 Object.keys(data.links).forEach(key => {
                     const link = data.links[key];
@@ -65,7 +66,10 @@
             }
         } else {
             document.getElementById('userName').innerText = "المستخدم غير موجود";
+            document.getElementById('userBio').innerText = "قم بإنشاء بيانات المستخدم في قاعدة البيانات";
         }
+    }, (error) => {
+        document.getElementById('loading').innerText = "خطأ في الاتصال بقاعدة البيانات";
     });
 </script>
 </body>
