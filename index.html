@@ -1,4 +1,4 @@
-‏<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -15,7 +15,6 @@
             flex-direction: column; 
             min-height: 100vh; 
             align-items: center; 
-            /* خلفية الصفحة الأساسية - لم تتغير */
             background-image: radial-gradient(circle at top right, rgb(0,3,125) 0%, rgb(0,3,125) 48%, rgb(7,31,149) 48%, rgb(7,31,149) 53%, rgb(230,255,0) 53%, rgb(230,255,0) 56%, rgb(34,30,252) 56%, rgb(34,30,252) 69%, rgb(6,14,216) 69%, rgb(6,14,216) 100%);
             background-attachment: fixed;
             justify-content: space-between;
@@ -25,34 +24,26 @@
         .header-text { color: #ffffff; font-size: 1.1rem; font-weight: 500; }
         .highlight-text { color: var(--light-blue); font-size: 1.4rem; font-weight: bold; margin: 0 5px; }
         
-        /* التعديل: نقل اللون الأصفر ليكون حداً للون الأزرق في الهيدر */
-        .yellow-line { 
-            background: var(--accent); 
-            width: 100%; 
-            height: 3px; 
-            margin-top: -3px; /* لضمان التلاصق التام كحد */
-        }
+        .yellow-line { background: var(--accent); width: 100%; height: 3px; margin-top: -3px; }
 
-        /* التعديل: تحويل المحتوى الأبيض ليصبح مستطيلاً طولياً وليس مربعاً */
         .white-wrapper {
             background: #ffffff;
-            width: 85%; /* العرض نسبي للشاشة */
-            max-width: 400px; /* تم تقليل الحد الأقصى للعرض لزيادة المظهر الطولي */
+            width: 85%; 
+            max-width: 400px; 
             margin: 40px auto;
             border-radius: 24px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 40px 20px; /* زيادة الحشو الرأسي لتعزيز الشكل الطولي */
+            padding: 40px 20px; 
             box-sizing: border-box;
-            /* للتأكد من أنه يمتد طولياً */
             min-height: 500px; 
-            justify-content: center; /* تمركز المحتوى داخله */
+            justify-content: center; 
         }
 
         .input-group { width: 100%; text-align: center; }
-        .input-label { color: var(--primary); font-weight: bold; margin-bottom: 12px; display: block; } /* زيادة الهامش قليلاً */
+        .input-label { color: var(--primary); font-weight: bold; margin-bottom: 12px; display: block; } 
         
         input { 
             width: 100%; padding: 15px; font-size: 1.2rem; border: 2px solid var(--primary); 
@@ -63,14 +54,14 @@
 
         .btn-go { 
             width: 100%; padding: 15px; background: var(--primary); color: #fff; border: none; 
-            border-radius: 12px; font-size: 1.2rem; font-weight: bold; margin-top: 20px; /* زيادة الهامش */
+            border-radius: 12px; font-size: 1.2rem; font-weight: bold; margin-top: 20px; 
             cursor: pointer; transition: transform 0.1s;
         }
         .btn-go:active { transform: scale(0.98); }
 
-        .social-links { display: flex; justify-content: center; gap: 15px; margin: 30px 0; align-items: center; } /* زيادة المسافات */
+        .social-links { display: flex; justify-content: center; gap: 15px; margin: 30px 0; align-items: center; } 
         .social-icon { 
-            background: var(--primary); width: 48px; height: 48px; /* تكبير الأيقونات قليلاً للتناسب مع الشكل الطولي */
+            background: var(--primary); width: 48px; height: 48px; 
             border-radius: 50%; display: flex; align-items: center; justify-content: center; 
             text-decoration: none; color: var(--accent); border: 2px solid var(--sky); cursor: pointer;
         }
@@ -92,7 +83,6 @@
 
         .footer { 
             background: #ffffff; width: 100%; padding: 20px; 
-            /* التعديل: تحويل لون التوقيع من الأبيض إلى الأزرق المشابه لما فوقه */
             color: var(--primary); 
             font-size: 0.85rem; border-top: 1px solid #eee; text-align: center; 
             line-height: 1.5; box-sizing: border-box;
@@ -104,16 +94,14 @@
     <div class="header-box">
         <div class="header-text">توجيه <span class="highlight-text">الأرقام إلى روابط</span> لمنصة إلكتروني</div>
     </div>
-    <!-- الخط الأصفر الآن يعمل كحد للأزرق -->
     <div class="yellow-line"></div>
 
-    <!-- الحاوية البيضاء أصبحت مستطيلاً طولياً -->
     <div class="white-wrapper">
         <div class="input-group">
             <span class="input-label">أدخل الرقم الآن</span>
             <input type="text" id="linkId" inputmode="numeric" pattern="[0-9]*" placeholder="أدخل الرقم هنا...">
-            <div id="error-msg" class="error-msg">لا يوجد هذا الرقم بالمدخلات</div>
-            <button class="btn-go" onclick="redirect()">انتقل الآن</button>
+            <div id="error-msg" class="error-msg">جاري التحقق...</div>
+            <button class="btn-go" id="btnGo">انتقل الآن</button>
         </div>
 
         <div class="social-links">
@@ -122,7 +110,7 @@
             <a href="https://x.com/electrwni" target="_blank" class="social-icon">
                 <svg viewBox="0 0 24 24" style="width:18px"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932 6.064-6.932zm-1.292 19.494h2.039L6.486 3.24H4.298l13.311 17.407z"/></svg>
             </a>
-            <div class="social-icon" onclick="openQR()"><i class="fas fa-qrcode"></i></div>
+            <div class="social-icon" id="qrBtn"><i class="fas fa-qrcode"></i></div>
         </div>
 
         <a href="https://ig.me/m/electrwni" target="_blank" class="order-link">
@@ -135,100 +123,97 @@
         </div>
     </div>
 
-    <!-- التوقيع الآن باللون الأزرق -->
     <div class="footer">
         تم تطوير المحرك البرمجي بواسطة Electrwni، الكويت بنية بمعمارية عالية الأداء Built with High-Performance Architecture, by electrwni, kuwait
     </div>
 
-    <div id="qrModal" class="modal" onclick="closeQR()">
-        <div class="modal-content" onclick="event.stopPropagation()">
+    <div id="qrModal" class="modal">
+        <div class="modal-content">
             <img id="modal-qr" src="" style="width:200px; height:200px;">
-            <button class="btn-copy" onclick="copyLink()">نسخ الرابط</button>
-            <p style="font-size: 11px; color: #666; margin-top: 10px;">اضغط مطولاً للحفظ في الألبوم</p>
+            <button class="btn-copy" id="copyBtn">نسخ الرابط</button>
+            <p style="font-size: 11px; color: #666; margin-top: 10px;">اضغط في أي مكان للإغلاق</p>
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+        import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
+            authDomain: "electrwni-link.firebaseapp.com",
+            databaseURL: "https://electrwni-link-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "electrwni-link",
+            storageBucket: "electrwni-link.firebasestorage.app",
+            messagingSenderId: "712490301263",
+            appId: "1:712490301263:web:2084210da3f687285ab73a",
+            measurementId: "G-LCCGHWKH87"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
         const input = document.getElementById('linkId');
-        
-        input.addEventListener('input', (e) => e.target.value = e.target.value.replace(/[^0-9]/g, ''));
-        input.addEventListener('keypress', (e) => { if(e.key === 'Enter') redirect(); });
+        const btnGo = document.getElementById('btnGo');
+        const errorMsg = document.getElementById('error-msg');
 
-        function redirect() {
-            const val = input.value;
-            const error = document.getElementById('error-msg');
-            // قاعدة بيانات بسيطة للروابط (مثال)
-            const linksDatabase = {
-                "123": "https://electrwni.com/page1",
-                "456": "https://electrwni.com/page2",
-                "789": "https://electrwni.com/store"
-            };
+        // دالة التوجيه باستخدام Firebase
+        async function redirect() {
+            const val = input.value.trim();
+            if(!val) {
+                errorMsg.innerText = "يرجى إدخال رقم أولاً";
+                errorMsg.style.display = 'block';
+                return;
+            }
 
-            if(linksDatabase[val]) {
-                error.style.display = 'none';
-                window.location.href = linksDatabase[val];
-            } else if (val === "") {
-                error.innerText = "يرجى إدخال رقم أولاً";
-                error.style.display = 'block';
-            } else {
-                error.innerText = "لا يوجد هذا الرقم بالمدخلات";
-                error.style.display = 'block';
+            errorMsg.innerText = "جاري التحقق...";
+            errorMsg.style.display = 'block';
+            errorMsg.style.color = "var(--primary)";
+
+            try {
+                const dbRef = ref(db);
+                // نفترض أن الروابط مخزنة في فرع باسم 'links' داخل Firebase
+                const snapshot = await get(child(dbRef, `links/${val}`));
+                
+                if (snapshot.exists()) {
+                    window.location.href = snapshot.val();
+                } else {
+                    errorMsg.innerText = "لا يوجد هذا الرقم بالمدخلات";
+                    errorMsg.style.color = "#ff0000";
+                }
+            } catch (error) {
+                console.error(error);
+                errorMsg.innerText = "خطأ في الاتصال بالخادم";
             }
         }
 
-        function openQR() {
+        btnGo.addEventListener('click', redirect);
+        input.addEventListener('keypress', (e) => { if(e.key === 'Enter') redirect(); });
+        input.addEventListener('input', (e) => e.target.value = e.target.value.replace(/[^0-9]/g, ''));
+
+        // وظائف الـ QR والشاشات المنبثقة
+        document.getElementById('qrBtn').onclick = () => {
             const qrImg = document.getElementById('modal-qr');
             qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(window.location.href)}&color=072ac8`;
             document.getElementById('qrModal').style.display = 'flex';
-        }
+        };
 
-        function closeQR() { document.getElementById('qrModal').style.display = 'none'; }
+        document.getElementById('qrModal').onclick = () => {
+            document.getElementById('qrModal').style.display = 'none';
+        };
 
-        function copyLink() {
-            navigator.clipboard.writeText(window.location.href).then(() => {
-                alert("تم نسخ الرابط!");
-            });
-        }
+        document.getElementById('copyBtn').onclick = (e) => {
+            e.stopPropagation();
+            navigator.clipboard.writeText(window.location.href).then(() => alert("تم نسخ الرابط!"));
+        };
 
+        // الأنيميشن الخاص بالنصوص
         const phrases = ["سرّع الوصول لأعمالك ..", "امتلك بايو احترافي الآن ..", "أطلب الخدمة الآن ..", "سوق لدعاياتك بلمحة بصر .."];
         let i = 0;
         setInterval(() => {
             i = (i + 1) % phrases.length;
-            const typingTextSpan = document.getElementById('typing-text');
-            if (typingTextSpan) {
-                typingTextSpan.innerText = phrases[i];
-            }
+            document.getElementById('typing-text').innerText = phrases[i];
         }, 4000);
     </script>
 </body>
-    <script type="module">
-  // 1. استيراد المكتبات الأساسية من CDN مستقر
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-analytics.js";
-  import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js";
-
-  // 2. إعدادات مشروعك (مستخرجة من صورتك)
-  const firebaseConfig = {
-    apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
-    authDomain: "electrwni-link.firebaseapp.com",
-    databaseURL: "https://electrwni-link-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "electrwni-link",
-    storageBucket: "electrwni-link.firebasestorage.app",
-    messagingSenderId: "712490301263",
-    appId: "1:712490301263:web:2084210da3f687285ab73a",
-    measurementId: "G-LCCGHWKH87"
-  };
-
-  // 3. تشغيل Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  const db = getDatabase(app);
-
-  // ملاحظة: التصميم سيبقى كما هو، هذا الكود يعمل في "الخلفية" فقط
-  console.log("Electrwni System: Connected to Firebase");
-
-  // هنا يمكنك إضافة وظائف الربط (مثلاً عند الضغط على زر "تحويل")
-  // window.db = db; // لجعل قاعدة البيانات متاحة لبقية سكربتات الموقع
-</script>
-
 </html>
