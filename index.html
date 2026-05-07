@@ -41,14 +41,17 @@
         databaseURL: "https://electrwni-link-default-rtdb.asia-southeast1.firebasedatabase.app/"
     };
     
-    firebase.initializeApp(firebaseConfig);
+    // منع التهيئة المزدوجة
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
 
     const params = new URLSearchParams(window.location.search);
     const userNick = params.get('u') || 'khaled'; 
 
     const db = firebase.database().ref('users/' + userNick);
 
-    db.on('value', (snapshot) => {
+    db.once('value').then((snapshot) => {
         const data = snapshot.val();
         document.getElementById('loading').style.display = 'none';
         
@@ -66,9 +69,9 @@
             }
         } else {
             document.getElementById('userName').innerText = "المستخدم غير موجود";
-            document.getElementById('userBio').innerText = "قم بإنشاء بيانات المستخدم في قاعدة البيانات";
+            document.getElementById('userBio').innerText = "الرجاء التأكد من الرابط أو إضافة المستخدم في قاعدة البيانات.";
         }
-    }, (error) => {
+    }).catch((error) => {
         document.getElementById('loading').innerText = "خطأ في الاتصال بقاعدة البيانات";
     });
 </script>
