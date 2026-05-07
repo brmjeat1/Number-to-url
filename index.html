@@ -164,8 +164,7 @@
             qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(currentUrl)}&color=072ac8`;
         };
 
-        const phrases = ["سرّع الوصول لأعمالك ..", "لطلب الخدمة واصلنا ..", "روابطك بلمسة زر ..", " دعاياتك و رقم وانطلق ..", "سوق لإعلاناتك برقم .."];
-
+        const phrases = ["حقق وصول أسرع لبيتك الرقمي ..", "امتلك بايو احترافي الآن ..", "أوصل جمهورك لمستودع روابطك ..", "سوق لدعاياتك بلمحة بصر .."];
         let i = 0;
         const typingEl = document.getElementById('typing-text');
         function updateText() { i = (i + 1) % phrases.length; typingEl.innerText = phrases[i]; }
@@ -178,17 +177,3 @@
         }
     </script>
 </body>
-
-        let i = 0;
-        const typingEl = document.getElementById('typing-text');
-        function updateText() { i = (i + 1) % phrases.length; typingEl.innerText = phrases[i]; }
-        setInterval(updateText, 4000);
-
-        function redirect() {
-            const val = document.getElementById('linkId').value;
-            if(val) window.location.href = "https://electrwni.com/" + val;
-            else alert("يرجى إدخال الرقم");
-        }
-    </script>
-</body>
-</html>
