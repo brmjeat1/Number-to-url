@@ -201,4 +201,34 @@
         }, 4000);
     </script>
 </body>
+    <script type="module">
+  // 1. استيراد المكتبات الأساسية من CDN مستقر
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-analytics.js";
+  import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js";
+
+  // 2. إعدادات مشروعك (مستخرجة من صورتك)
+  const firebaseConfig = {
+    apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
+    authDomain: "electrwni-link.firebaseapp.com",
+    databaseURL: "https://electrwni-link-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "electrwni-link",
+    storageBucket: "electrwni-link.firebasestorage.app",
+    messagingSenderId: "712490301263",
+    appId: "1:712490301263:web:2084210da3f687285ab73a",
+    measurementId: "G-LCCGHWKH87"
+  };
+
+  // 3. تشغيل Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const db = getDatabase(app);
+
+  // ملاحظة: التصميم سيبقى كما هو، هذا الكود يعمل في "الخلفية" فقط
+  console.log("Electrwni System: Connected to Firebase");
+
+  // هنا يمكنك إضافة وظائف الربط (مثلاً عند الضغط على زر "تحويل")
+  // window.db = db; // لجعل قاعدة البيانات متاحة لبقية سكربتات الموقع
+</script>
+
 </html>
