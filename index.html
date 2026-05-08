@@ -1,81 +1,219 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Electrwni | Link in Bio</title>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <title>التوجيه الرقمي لروابط منصة إلكتروني</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --bg: #000000; --card: #1c1c1e; --text: #ffffff; --accent: #0a84ff; }
-        body { background-color: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; margin: 0; }
+        :root { --primary: #072AC8; --accent: #FCF300; --sky: #1E96FC; --light-blue: #A2D6F9; --box-blue: #3B82F6; --box-yellow: #FFF041; }
         
-        .profile-img { width: 96px; height: 96px; border-radius: 50%; border: 3px solid var(--accent); margin-bottom: 16px; object-fit: cover; }
-        .username { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
-        .bio { font-size: 14px; color: #8e8e93; text-align: center; max-width: 300px; margin-bottom: 32px; }
+        body { 
+            margin: 0; 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
+            align-items: center; 
+            background-image: radial-gradient(circle at top right, rgb(0,3,125) 0%, rgb(0,3,125) 48%, rgb(7,31,149) 48%, rgb(7,31,149) 53%, rgb(230,255,0) 53%, rgb(230,255,0) 56%, rgb(34,30,252) 56%, rgb(34,30,252) 69%, rgb(6,14,216) 69%, rgb(6,14,216) 100%);
+            background-attachment: fixed;
+            justify-content: space-between;
+        }
+
+        .header-box { background: var(--primary); width: 100%; min-height: 60px; display: flex; align-items: center; justify-content: center; padding: 10px 0; }
+        .header-text { color: #ffffff; font-size: 1.1rem; font-weight: 500; }
+        .highlight-text { color: var(--light-blue); font-size: 1.4rem; font-weight: bold; margin: 0 5px; }
         
-        .links-container { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 16px; }
-        .link-card { background: var(--card); padding: 18px; border-radius: 15px; text-decoration: none; color: var(--text); font-weight: 600; text-align: center; transition: transform 0.2s, background 0.2s; border: 1px solid #38383a; }
-        .link-card:active { transform: scale(0.97); background: #2c2c2e; }
+        .yellow-line { background: var(--accent); width: 100%; height: 3px; margin-top: -3px; }
+
+        .white-wrapper {
+            background: #ffffff;
+            width: 85%; 
+            max-width: 400px; 
+            margin: 40px auto;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px; 
+            box-sizing: border-box;
+            min-height: 500px; 
+            justify-content: center; 
+        }
+
+        .input-group { width: 100%; text-align: center; }
+        .input-label { color: var(--primary); font-weight: bold; margin-bottom: 12px; display: block; } 
         
-        .footer { margin-top: auto; padding-top: 50px; font-size: 12px; color: #48484a; letter-spacing: 1px; }
+        input { 
+            width: 100%; padding: 15px; font-size: 1.2rem; border: 2px solid var(--primary); 
+            border-radius: 12px; text-align: center; outline: none; box-sizing: border-box;
+        }
+        
+        .error-msg { color: #ff0000; font-size: 0.9rem; margin-top: 8px; display: none; font-weight: bold; }
+
+        .btn-go { 
+            width: 100%; padding: 15px; background: var(--primary); color: #fff; border: none; 
+            border-radius: 12px; font-size: 1.2rem; font-weight: bold; margin-top: 20px; 
+            cursor: pointer; transition: transform 0.1s;
+        }
+        .btn-go:active { transform: scale(0.98); }
+
+        .social-links { display: flex; justify-content: center; gap: 15px; margin: 30px 0; align-items: center; } 
+        .social-icon { 
+            background: var(--primary); width: 48px; height: 48px; 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            text-decoration: none; color: var(--accent); border: 2px solid var(--sky); cursor: pointer;
+        }
+        .social-icon i, .social-icon svg { font-size: 22px; fill: var(--accent); }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: white; padding: 25px; border-radius: 20px; text-align: center; width: 280px; }
+        .btn-copy { background: var(--sky); color: white; border: none; padding: 10px; border-radius: 8px; width: 100%; margin-top: 15px; cursor: pointer; font-weight: bold; }
+
+        .order-link { display: block; margin-bottom: 25px; color: var(--primary); text-decoration: none; font-weight: bold; font-size: 1rem; }
+
+        .info-box-wrapper {
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 10px; filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.1));
+            direction: ltr; transform: scale(0.85);
+        }
+        .yellow-part { background: var(--box-yellow); color: var(--primary); font-weight: bold; padding: 10px 18px; border-radius: 15px; font-size: 1.45rem; z-index: 2; }
+        .blue-part { background: var(--box-blue); color: #ffffff; padding: 10px 22px; border-radius: 15px 0 0 15px; margin-right: -10px; font-size: 1.25rem; min-width: 200px; display: flex; align-items: center; justify-content: center; direction: rtl; }
+
+        .footer { 
+            background: #ffffff; width: 100%; padding: 20px; 
+            color: var(--primary); 
+            font-size: 0.85rem; border-top: 1px solid #eee; text-align: center; 
+            line-height: 1.5; box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
 
-    <img src="https://via.placeholder.com/150" alt="Profile" class="profile-img" id="userImg">
-    <div class="username" id="userName">جاري التحميل...</div>
-    <div class="bio" id="userBio">منصة Electrwni للروابط الذكية</div>
+    <div class="header-box">
+        <div class="header-text">توجيه <span class="highlight-text">الأرقام إلى روابط</span> لمنصة إلكتروني</div>
+    </div>
+    <div class="yellow-line"></div>
 
-    <div class="links-container" id="linksList">
-        <!-- الروابط ستظهر هنا تلقائياً -->
+    <div class="white-wrapper">
+        <div class="input-group">
+            <span class="input-label"> أبتسم أنت بصفحة Electrwni </span>
+            <input type="text" id="linkId" inputmode="numeric" pattern="[0-9]*" placeholder="أدخل الرقم هنا...">
+            <div id="error-msg" class="error-msg">جاري التحقق...</div>
+            <button class="btn-go" id="btnGo">انتقل الآن</button>
+        </div>
+
+        <div class="social-links">
+            <a href="https://t.me/electrwni" target="_blank" class="social-icon"><i class="fa-brands fa-telegram"></i></a>
+            <a href="https://www.instagram.com/electrwni" target="_blank" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://x.com/electrwni" target="_blank" class="social-icon">
+                <svg viewBox="0 0 24 24" style="width:18px"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932 6.064-6.932zm-1.292 19.494h2.039L6.486 3.24H4.298l13.311 17.407z"/></svg>
+            </a>
+            <div class="social-icon" id="qrBtn"><i class="fas fa-qrcode"></i></div>
+        </div>
+
+        <a href="https://ig.me/m/electrwni" target="_blank" class="order-link">
+            أسهل وأسرع وأجمع لروابطك <i class="fa-brands fa-instagram"></i>
+        </a>
+
+        <div class="info-box-wrapper">
+            <div class="blue-part"><span id="typing-text">حقق وصول أسرع لبيتك الرقمي ..</span></div>
+            <div class="yellow-part">هذه الخدمة </div>
+        </div>
     </div>
 
-    <div class="footer">POWERED BY ELECTRWNI</div>
+    <div class="footer">
+        تم تطوير المحرك البرمجي بواسطة Electrwni، الكويت بنية بمعمارية عالية الأداء Built with High-Performance Architecture, by electrwni, kuwait
+    </div>
 
-<script>
-    // ضع إعدادات Firebase الخاصة بك هنا
-    const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        databaseURL: "YOUR_DATABASE_URL",
-        projectId: "YOUR_PROJECT_ID",
-    };
-    firebase.initializeApp(firebaseConfig);
+    <div id="qrModal" class="modal">
+        <div class="modal-content">
+            <img id="modal-qr" src="" style="width:200px; height:200px;">
+            <button class="btn-copy" id="copyBtn">نسخ الرابط</button>
+            <p style="font-size: 11px; color: #666; margin-top: 10px;">اضغط في أي مكان للإغلاق</p>
+        </div>
+    </div>
 
-    // دالة لجلب اللقب من الرابط (مثلاً: index.html?u=khaled)
-    const urlParams = new URLSearchParams(window.location.search);
-    const nickname = urlParams.get('u') || 'default';
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+        import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js";
 
-    const db = firebase.database().ref('users/' + nickname);
+        const firebaseConfig = {
+            apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
+            authDomain: "electrwni-link.firebaseapp.com",
+            databaseURL: "https://electrwni-link-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "electrwni-link",
+            storageBucket: "electrwni-link.firebasestorage.app",
+            messagingSenderId: "712490301263",
+            appId: "1:712490301263:web:2084210da3f687285ab73a",
+            measurementId: "G-LCCGHWKH87"
+        };
 
-    db.on('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-            document.getElementById('userName').innerText = "@" + nickname;
-            document.getElementById('userBio').innerText = data.bio || "مرحباً بكم في صفحتي";
-            
-            const list = document.getElementById('linksList');
-            list.innerHTML = '';
-            
-            if (data.links) {
-                Object.keys(data.links).forEach(key => {
-                    const link = data.links[key];
-                    list.innerHTML += `
-                        <a href="${link.url}" target="_blank" class="link-card" onclick="countClick('${key}')">
-                            ${link.title}
-                        </a>`;
-                });
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const input = document.getElementById('linkId');
+        const btnGo = document.getElementById('btnGo');
+        const errorMsg = document.getElementById('error-msg');
+
+        // دالة التوجيه باستخدام Firebase
+        async function redirect() {
+            const val = input.value.trim();
+            if(!val) {
+                errorMsg.innerText = "يرجى إدخال رقم أولاً";
+                errorMsg.style.display = 'block';
+                return;
             }
-        } else {
-            document.getElementById('userName').innerText = "المستخدم غير موجود";
-        }
-    });
 
-    function countClick(linkKey) {
-        // كود لزيادة عدد النقرات في الخلفية
-        firebase.database().ref('users/' + nickname + '/links/' + linkKey + '/clicks').transaction(c => (c || 0) + 1);
-    }
-</script>
+            errorMsg.innerText = "جاري التحقق...";
+            errorMsg.style.display = 'block';
+            errorMsg.style.color = "var(--primary)";
+
+            try {
+                const dbRef = ref(db);
+                // نفترض أن الروابط مخزنة في فرع باسم 'links' داخل Firebase
+                const snapshot = await get(child(dbRef, `links/${val}`));
+                
+                if (snapshot.exists()) {
+                    window.location.href = snapshot.val();
+                } else {
+                    errorMsg.innerText = "لا يوجد هذا الرقم بالمدخلات";
+                    errorMsg.style.color = "#ff0000";
+                }
+            } catch (error) {
+                console.error(error);
+                errorMsg.innerText = "خطأ في الاتصال بالخادم";
+            }
+        }
+
+        btnGo.addEventListener('click', redirect);
+        input.addEventListener('keypress', (e) => { if(e.key === 'Enter') redirect(); });
+        input.addEventListener('input', (e) => e.target.value = e.target.value.replace(/[^0-9]/g, ''));
+
+        // وظائف الـ QR والشاشات المنبثقة
+        document.getElementById('qrBtn').onclick = () => {
+            const qrImg = document.getElementById('modal-qr');
+            qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(window.location.href)}&color=072ac8`;
+            document.getElementById('qrModal').style.display = 'flex';
+        };
+
+        document.getElementById('qrModal').onclick = () => {
+            document.getElementById('qrModal').style.display = 'none';
+        };
+
+        document.getElementById('copyBtn').onclick = (e) => {
+            e.stopPropagation();
+            navigator.clipboard.writeText(window.location.href).then(() => alert("تم نسخ الرابط!"));
+        };
+
+        // الأنيميشن الخاص بالنصوص
+        const phrases = ["سرّع الوصول لأعمالك ..", "امتلك بايو احترافي الآن ..", "أطلب الخدمة الآن ..", "سوق لدعاياتك بلمحة بصر .."];
+        let i = 0;
+        setInterval(() => {
+            i = (i + 1) % phrases.length;
+            document.getElementById('typing-text').innerText = phrases[i];
+        }, 4000);
+    </script>
 </body>
 </html>
