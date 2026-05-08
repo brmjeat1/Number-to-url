@@ -1,103 +1,81 @@
-<div class="white-wrapper">
-    <div class="input-group" id="main-interface">
-        <div id="visitor-view">
-            <span class="input-label">أدخل الرقم الآن</span>
-            <input type="text" id="linkId" inputmode="numeric" placeholder="أدخل الرقم هنا...">
-            <div id="error-msg" class="error-msg">لا يوجد هذا الرقم بالمدخلات</div>
-            <button class="btn-go" onclick="redirect()">انتقل الآن</button>
-            <p style="margin-top:15px; font-size:13px; color:#666;">
-                ليس لديك حساب؟ <span onclick="toggleAuth('signup')" style="color:var(--primary); cursor:pointer; font-weight:bold;">Sign Up</span>
-            </p>
-        </div>
 
-        <div id="signup-view" style="display:none;">
-            <span class="input-label" style="font-size:1.5rem;">إنشاء حساب جديد</span>
-            <input type="email" id="regEmail" placeholder="البريد الإلكتروني" style="margin-bottom:10px;">
-            <input type="password" id="regPass" placeholder="كلمة المرور">
-            <button class="btn-go" onclick="handleAuth('signup')" style="background:var(--box-blue);">إنشاء الحساب (Sign Up)</button>
-            <p style="margin-top:15px; font-size:13px; color:#666;">
-                لديك حساب بالفعل؟ <span onclick="toggleAuth('visitor')" style="color:var(--primary); cursor:pointer; font-weight:bold;">دخول</span>
-            </p>
-        </div>
-    </div>
-
-    <div class="social-links">
-        <a href="https://t.me/electrwni" target="_blank" class="social-icon"><i class="fa-brands fa-telegram"></i></a>
-        <a href="https://www.instagram.com/electrwni" target="_blank" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
-        <div class="social-icon" onclick="openQR()"><i class="fas fa-qrcode"></i></div>
-    </div>
-
-    <div class="info-box-wrapper">
-        <div class="blue-part"><span id="typing-text">حقق وصول أسرع لبيتك الرقمي ..</span></div>
-        <div class="yellow-part">رقم روابطك</div>
-    </div>
-</div>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
-    import { getDatabase, ref, get, child, set } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
-        authDomain: "electrwni-link.firebaseapp.com",
-        databaseURL: "https://electrwni-link-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "electrwni-link",
-        storageBucket: "electrwni-link.firebasestorage.app",
-        messagingSenderId: "712490301263",
-        appId: "1:712490301263:web:2084210da3f687285ab73a"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
-
-    // دالة التبديل بين الواجهات
-    window.toggleAuth = (view) => {
-        document.getElementById('visitor-view').style.display = (view === 'visitor') ? 'block' : 'none';
-        document.getElementById('signup-view').style.display = (view === 'signup') ? 'block' : 'none';
-    };
-
-    // معالجة التسجيل والدخول
-    window.handleAuth = async (type) => {
-        const email = document.getElementById('regEmail').value;
-        const pass = document.getElementById('regPass').value;
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electrwni | Link in Bio</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <style>
+        :root { --bg: #000000; --card: #1c1c1e; --text: #ffffff; --accent: #0a84ff; }
+        body { background-color: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; margin: 0; }
         
-        try {
-            if(type === 'signup') {
-                const cred = await createUserWithEmailAndPassword(auth, email, pass);
-                // إعداد ملف المستخدم لأول مرة
-                await set(ref(db, 'users/' + cred.user.uid), {
-                    email: email,
-                    plan: 'Free',
-                    slug: email.split('@')[0] + Math.floor(Math.random()*1000)
+        .profile-img { width: 96px; height: 96px; border-radius: 50%; border: 3px solid var(--accent); margin-bottom: 16px; object-fit: cover; }
+        .username { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+        .bio { font-size: 14px; color: #8e8e93; text-align: center; max-width: 300px; margin-bottom: 32px; }
+        
+        .links-container { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 16px; }
+        .link-card { background: var(--card); padding: 18px; border-radius: 15px; text-decoration: none; color: var(--text); font-weight: 600; text-align: center; transition: transform 0.2s, background 0.2s; border: 1px solid #38383a; }
+        .link-card:active { transform: scale(0.97); background: #2c2c2e; }
+        
+        .footer { margin-top: auto; padding-top: 50px; font-size: 12px; color: #48484a; letter-spacing: 1px; }
+    </style>
+</head>
+<body>
+
+    <img src="https://via.placeholder.com/150" alt="Profile" class="profile-img" id="userImg">
+    <div class="username" id="userName">جاري التحميل...</div>
+    <div class="bio" id="userBio">منصة Electrwni للروابط الذكية</div>
+
+    <div class="links-container" id="linksList">
+        <!-- الروابط ستظهر هنا تلقائياً -->
+    </div>
+
+    <div class="footer">POWERED BY ELECTRWNI</div>
+
+<script>
+    // ضع إعدادات Firebase الخاصة بك هنا
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        databaseURL: "YOUR_DATABASE_URL",
+        projectId: "YOUR_PROJECT_ID",
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    // دالة لجلب اللقب من الرابط (مثلاً: index.html?u=khaled)
+    const urlParams = new URLSearchParams(window.location.search);
+    const nickname = urlParams.get('u') || 'default';
+
+    const db = firebase.database().ref('users/' + nickname);
+
+    db.on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            document.getElementById('userName').innerText = "@" + nickname;
+            document.getElementById('userBio').innerText = data.bio || "مرحباً بكم في صفحتي";
+            
+            const list = document.getElementById('linksList');
+            list.innerHTML = '';
+            
+            if (data.links) {
+                Object.keys(data.links).forEach(key => {
+                    const link = data.links[key];
+                    list.innerHTML += `
+                        <a href="${link.url}" target="_blank" class="link-card" onclick="countClick('${key}')">
+                            ${link.title}
+                        </a>`;
                 });
-                alert("تم إنشاء حسابك بنجاح!");
             }
-            window.location.href = "admin.html";
-        } catch (e) { alert("خطأ: " + e.message); }
-    };
-
-    // دالة التوجيه للزوار (Redirect)
-    window.redirect = async () => {
-        const val = document.getElementById('linkId').value;
-        const error = document.getElementById('error-msg');
-        if(!val) return;
-
-        const dbRef = ref(db);
-        const snapshot = await get(child(dbRef, `links/${val}`));
-        if (snapshot.exists()) {
-            window.location.href = snapshot.val();
         } else {
-            error.style.display = 'block';
-        }
-    };
-
-    // مراقبة حالة المستخدم
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            console.log("User is logged in");
-            // يمكن هنا إضافة زر "انتقل للوحة تحكمك" بدلاً من الحقول
+            document.getElementById('userName').innerText = "المستخدم غير موجود";
         }
     });
+
+    function countClick(linkKey) {
+        // كود لزيادة عدد النقرات في الخلفية
+        firebase.database().ref('users/' + nickname + '/links/' + linkKey + '/clicks').transaction(c => (c || 0) + 1);
+    }
 </script>
+</body>
+</html>
