@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم | Electrwni</title>
+    <style>
+        body { background: #0f172a; color: white; font-family: sans-serif; padding: 20px; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 12px; }
+        .content { margin-top: 30px; background: rgba(255, 255, 255, 0.05); padding: 2rem; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .btn-logout { background: #ef4444; color: white; padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <span>مرحباً بك في إلكتروني</span>
+        <button class="btn-logout" onclick="logout()">خروج</button>
+    </div>
+
+    <div class="content">
+        <h3>بيانات الحساب</h3>
+        <p id="user-email">تحميل...</p>
+        <hr style="border: 0.5px solid rgba(255,255,255,0.1)">
+        <p>هنا يمكنك البدء بإدارة أدواتك الرقمية.</p>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-auth-compat.js"></script>
+    <script>
+        const firebaseConfig = { apiKey: "YOUR_API_KEY", authDomain: "...", projectId: "..." };
+        firebase.initializeApp(firebaseConfig);
+
+        // التحقق من حالة تسجيل الدخول
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                document.getElementById('user-email').innerText = "البريد الحالي: " + user.email;
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        function logout() {
+            firebase.auth().signOut().then(() => { window.location.href = 'login.html'; });
+        }
+    </script>
+</body>
+</html>
