@@ -24,30 +24,28 @@
         th { background: #f8f8f9; color: #86868b; font-size: 13px; padding: 12px 5px; border-bottom: 2px solid var(--border); }
         td { padding: 14px 5px; text-align: center; border-bottom: 1px solid #f1f1f2; font-size: 14px; vertical-align: middle; }
         tr:nth-child(even) { background: #fafafa; }
-        .col-id { width: 45px; }
-        .col-link { width: 75px; }
-        .col-desc { width: auto; }
-        .col-views { width: 65px; }
+        .col-id { width: 45px; } .col-link { width: 75px; } .col-views { width: 65px; }
         .link-box { display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .link-box a { color: var(--primary); text-decoration: none; font-weight: 600; }
         .edit-trigger { color: #ff9500; font-size: 11px; cursor: pointer; text-decoration: underline; }
+        
+        /* نظام الفلترة */
         .filter-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 15px; }
         .chip { padding: 8px 14px; border-radius: 20px; background: #e5e5e7; font-size: 12px; cursor: pointer; }
         .chip.active { background: var(--primary); color: white; }
         #dateRange { display: none; gap: 5px; justify-content: center; margin-bottom: 15px; }
         #dateRange.active { display: flex; }
+
+        .input-style { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; box-sizing: border-box; }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         .modal.active { display: flex; }
         .modal-card { background: white; border-radius: 20px; padding: 25px; width: 90%; max-width: 380px; }
-        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 15px 0; direction: ltr; }
-        .n-btn { background: #f2f2f7; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; }
-        .input-style { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; box-sizing: border-box; }
-        .btn-row { display: flex; gap: 10px; }
-        .btn { flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; }
+        .btn { padding: 14px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; width: 100%; }
         .btn-save { background: var(--primary); color: white; }
-        .btn-del { background: #f2f2f7; color: var(--danger); }
-        .pdf-btn { background: var(--danger); color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; display: block; margin: 10px auto; cursor: pointer; }
-        #pdf-template { display: none; padding: 30px; background: white; direction: rtl; }
+        
+        #pdf-template { display: none; padding: 40px; background: white; direction: rtl; width: 900px; }
+        #pdf-template table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        #pdf-template th, #pdf-template td { border: 1px solid #ddd; padding: 10px; word-break: break-all; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -58,16 +56,17 @@
     <details open>
         <summary> إضافة الروابط </summary>
         <div class="content">
-            <input type="text" id="addId" class="input-style" placeholder="رقم ID" inputmode="numeric" pattern="[0-9]*">
-            <input type="url" id="addUrl" class="input-style" placeholder="أدخل الرابط الطويل هنا">
-            <input type="text" id="addDesc" class="input-style" placeholder="الوصف">
-            <button class="btn-save btn" style="width:100%" onclick="addNew()">حفظ وإضافة</button>
+            <input type="tel" id="addId" class="input-style" placeholder="الرقم" inputmode="decimal">
+            <input type="url" id="addUrl" class="input-style" placeholder="أدخل الرابط" oninput="forceEnglish(this)">
+            <input type="text" id="addDesc" class="input-style" placeholder="الوصف ( ليكن بثلاث إلى خمس كلمات)">
+            <button class="btn-save btn" onclick="addNew()">إضافة</button>
         </div>
     </details>
 
     <details open>
         <summary> الإحصائيات </summary>
         <div class="content">
+            <!-- أزرار الفلترة الزمنية -->
             <div class="filter-grid">
                 <div class="chip active" onclick="setFilter(this, 'all')">الكل</div>
                 <div class="chip" onclick="setFilter(this, 'day')">اليوم</div>
@@ -76,8 +75,12 @@
                 <div class="chip" onclick="setFilter(this, 'year')">السنة</div>
                 <div class="chip" onclick="setFilter(this, 'custom')">مخصص</div>
             </div>
-            <div id="dateRange"><input type="date" id="startD" onchange="refreshTable()"><input type="date" id="endD" onchange="refreshTable()"></div>
-            <button class="pdf-btn" onclick="makePDF()">تنزيل التقرير PDF</button>
+            <div id="dateRange">
+                <input type="date" id="startD" onchange="refreshTable()" class="input-style" style="width:48%">
+                <input type="date" id="endD" onchange="refreshTable()" class="input-style" style="width:48%">
+            </div>
+
+            <button class="btn" style="background:var(--danger); color:white; margin-bottom:10px;" onclick="makePDF()">تنزيل التقرير PDF</button>
             <div class="table-wrapper">
                 <table>
                     <thead>
@@ -92,61 +95,50 @@
 
 <div class="modal" id="editModal" onclick="this.classList.remove('active')">
     <div class="modal-card" onclick="event.stopPropagation()">
-        <h3 style="text-align:center; margin-top:0;">تعديل البيانات</h3>
-        <label style="font-size:12px; color:#888;">رقم ID</label>
-        <input type="text" id="editId" class="input-style" inputmode="numeric" pattern="[0-9]*">
-        <div class="numpad">
-            <button class="n-btn" onclick="nk('1')">1</button><button class="n-btn" onclick="nk('2')">2</button><button class="n-btn" onclick="nk('3')">3</button>
-            <button class="n-btn" onclick="nk('4')">4</button><button class="n-btn" onclick="nk('5')">5</button><button class="n-btn" onclick="nk('6')">6</button>
-            <button class="n-btn" onclick="nk('7')">7</button><button class="n-btn" onclick="nk('8')">8</button><button class="n-btn" onclick="nk('9')">9</button>
-            <button class="n-btn" style="color:red" onclick="nk('C')">C</button><button class="n-btn" onclick="nk('0')">0</button><button class="n-btn" onclick="nk('B')">⌫</button>
-        </div>
-        <label style="font-size:12px; color:#888;">الرابط</label>
-        <input type="url" id="editUrl" class="input-style">
-        <label style="font-size:12px; color:#888;">الوصف</label>
-        <input type="text" id="editDesc" class="input-style">
-        <div class="btn-row">
-            <button class="btn btn-save" onclick="updateDoc()">حفظ التغيير</button>
-            <button class="btn btn-del" onclick="deleteDoc()">حذف</button>
-        </div>
+        <h3 style="text-align:center;">تعديل البيانات</h3>
+        <input type="tel" id="editId" class="input-style" placeholder="ID" inputmode="decimal">
+        <input type="url" id="editUrl" class="input-style" placeholder="الرابط" oninput="forceEnglish(this)">
+        <input type="text" id="editDesc" class="input-style" placeholder="الوصف">
+        <button class="btn btn-save" onclick="updateDoc()">حفظ التغيير</button>
     </div>
 </div>
 
 <div id="pdf-template">
-    <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding-bottom:10px;">
-        <strong> electrwni | إلكتروني </strong>
+    <div style="display:flex; justify-content:space-between; border-bottom:2px solid #0071e3; padding-bottom:10px;">
+        <strong>electrwni | إلكتروني</strong>
         <span id="pDate"></span>
     </div>
-    <h2 style="text-align:center"> تقرير إحصائيات </h2>
-    <table style="width:100%; border:1px solid #eee; border-collapse:collapse; text-align:center;">
-        <thead><tr style="background:#f9f9f9;"><th>ID</th><th>الرابط</th><th>الوصف</th><th>المشاهدات</th></tr></thead>
+    <h2 style="text-align:center;">تقرير الإحصائيات الرسمي</h2>
+    <table>
+        <thead><tr style="background:#f2f2f7;"><th>ID</th><th>الرابط</th><th>الوصف</th><th>مشاهدات</th></tr></thead>
         <tbody id="pBody"></tbody>
     </table>
 </div>
 
 <script>
+    function forceEnglish(el) {
+        const ar = "أبتثجحخدذرزسشصضطظعغفقكلمنهويءآأإؤئ";
+        const en = "abttjhhddrrsssshssddttzz'ghffqklmnnhwy'aaaaaeou";
+        let val = el.value.toLowerCase();
+        let res = "";
+        for (let i = 0; i < val.length; i++) {
+            let idx = ar.indexOf(val[i]);
+            res += (idx !== -1) ? en[idx] : val[i];
+        }
+        el.value = res.replace(/[^a-z0-9.:\/-_]/gi, '');
+    }
+
     const firebaseConfig = { projectId: "electrwni" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     let linksData = [];
     let filterType = 'all';
-    let activeFId = null;
 
     function fetchData() {
         db.collection("links").onSnapshot(snap => {
             linksData = snap.docs.map(doc => ({ fId: doc.id, ...doc.data() }));
             refreshTable();
         });
-    }
-
-    async function addNew() {
-        const id = document.getElementById('addId').value;
-        const url = document.getElementById('addUrl').value;
-        const desc = document.getElementById('addDesc').value;
-        if(id && url) {
-            await db.collection("links").add({ id, url, desc, clicks: [] });
-            ['addId','addUrl','addDesc'].forEach(i => document.getElementById(i).value = '');
-        }
     }
 
     function setFilter(el, type) {
@@ -167,7 +159,8 @@
             if(!s || !e) return clicks.length;
             return clicks.filter(c => moment(c).isBetween(s, e, 'day', '[]')).length;
         }
-        return clicks.filter(c => moment(c).isAfter(now.subtract(1, filterType))).length;
+        let duration = filterType === 'day' ? 'days' : filterType === 'week' ? 'weeks' : filterType === 'month' ? 'months' : 'years';
+        return clicks.filter(c => moment(c).isAfter(moment().subtract(1, duration))).length;
     }
 
     function refreshTable() {
@@ -176,60 +169,47 @@
         linksData.forEach(item => {
             tb.innerHTML += `<tr>
                 <td class="col-id"><b>${item.id}</b></td>
-                <td class="col-link"><div class="link-box"><a href="${item.url}" target="_blank" onclick="track('${item.fId}')">رابط</a><span class="edit-trigger" onclick="openEdit('${item.fId}')">تعديل</span></div></td>
-                <td class="col-desc" style="text-align:right; font-size:12px; color:#555;">${item.desc || '-'}</td>
-                <td class="col-views">${getCount(item.clicks)}</td>
+                <td class="col-link"><div class="link-box"><a href="${item.url}" target="_blank">رابط</a><span class="edit-trigger" onclick="openEdit('${item.fId}')">تعديل</span></div></td>
+                <td style="text-align:right; font-size:12px;">${item.desc || '-'}</td>
+                <td>${getCount(item.clicks)}</td>
             </tr>`;
         });
     }
 
-    async function track(fId) {
-        await db.collection("links").doc(fId).update({ clicks: firebase.firestore.FieldValue.arrayUnion(Date.now()) });
+    async function addNew() {
+        const id = document.getElementById('addId').value;
+        const url = document.getElementById('addUrl').value;
+        const desc = document.getElementById('addDesc').value;
+        if(id && url) {
+            await db.collection("links").add({ id, url, desc, clicks: [] });
+            ['addId','addUrl','addDesc'].forEach(i => document.getElementById(i).value = '');
+        }
     }
 
     function openEdit(fId) {
         const item = linksData.find(x => x.fId === fId);
-        activeFId = fId;
         document.getElementById('editId').value = item.id;
         document.getElementById('editUrl').value = item.url;
         document.getElementById('editDesc').value = item.desc;
         document.getElementById('editModal').classList.add('active');
     }
 
-    async function updateDoc() {
-        await db.collection("links").doc(activeFId).update({
-            id: document.getElementById('editId').value,
-            url: document.getElementById('editUrl').value,
-            desc: document.getElementById('editDesc').value
-        });
-        document.getElementById('editModal').classList.remove('active');
-    }
-
-    async function deleteDoc() {
-        if(confirm("حذف الرابط نهائياً؟")) {
-            await db.collection("links").doc(activeFId).delete();
-            document.getElementById('editModal').classList.remove('active');
-        }
-    }
-
-    function nk(v) {
-        let i = document.getElementById('editId');
-        if(v=='C') i.value=''; else if(v=='B') i.value=i.value.slice(0,-1); else i.value+=v;
-    }
-
     function makePDF() {
         const body = document.getElementById('pBody');
-        document.getElementById('pDate').innerText = `بتاريخ: ${moment().format('YYYY/MM/DD')}`;
+        document.getElementById('pDate').innerText = moment().format('YYYY/MM/DD');
         body.innerHTML = '';
         linksData.forEach(item => {
-            body.innerHTML += `<tr><td style="border:1px solid #eee; padding:8px;">${item.id}</td><td style="border:1px solid #eee; padding:8px; font-size:10px;">${item.url}</td><td style="border:1px solid #eee; padding:8px;">${item.desc}</td><td style="border:1px solid #eee; padding:8px;">${getCount(item.clicks)}</td></tr>`;
+            body.innerHTML += `<tr><td>${item.id}</td><td>${item.url}</td><td>${item.desc}</td><td>${getCount(item.clicks)}</td></tr>`;
         });
         const temp = document.getElementById('pdf-template');
         temp.style.display = 'block';
-        html2pdf().from(temp).set({ margin: 10, filename: 'Report.pdf', html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).save().then(()=>temp.style.display='none');
+        html2pdf().from(temp).set({
+            margin: 10, filename: 'Report.pdf',
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        }).save().then(() => temp.style.display = 'none');
     }
 
     window.onload = fetchData;
 </script>
 </body>
-</html>
