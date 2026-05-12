@@ -114,19 +114,39 @@
             const ar = [/٠/g, /١/g, /٢/g, /٣/g, /٤/g, /٥/g, /٦/g, /٧/g, /٨/g, /٩/g];
             for (let i = 0; i < 10; i++) v = v.replace(ar[i], i);
             e.target.value = v.replace(/[^0-9]/g, '');
+            
+            // إخفاء رسالة الخطأ بمجرد البدء بالكتابة أو المسح
+            if(e.target.value === "") errorMsg.style.display = 'none';
         });
 
         btnGo.onclick = async () => {
             const val = input.value.trim();
             if(!val) return;
+
             errorMsg.style.display = 'block';
             errorMsg.style.color = "blue";
             errorMsg.innerText = "جاري التحقق...";
+
             try {
                 const snap = await get(child(ref(db), `links/${val}`));
-                if (snap.exists()) window.location.href = snap.val();
-                else { errorMsg.innerText = "الرقم غير مسجل"; errorMsg.style.color = "red"; }
-            } catch (e) { errorMsg.innerText = "خطأ في الاتصال"; errorMsg.style.color = "red"; }
+                if (snap.exists()) {
+                    let targetUrl = snap.val();
+                    
+                    // تحسين التوجيه: التأكد من وجود بروتوكول لضمان عدم حدوث خطأ 404
+                    if (!targetUrl.startsWith('http')) {
+                        targetUrl = 'https://' + targetUrl;
+                    }
+                    
+                    window.location.href = targetUrl;
+                } else { 
+                    errorMsg.innerText = "الرقم غير مسجل"; 
+                    errorMsg.style.color = "red"; 
+                }
+            } catch (e) { 
+                errorMsg.innerText = "خطأ في الاتصال"; 
+                errorMsg.style.color = "red"; 
+                console.error("Firebase Error:", e);
+            }
         };
 
         // برمجة زر الباركود
