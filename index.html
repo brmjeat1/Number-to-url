@@ -7,35 +7,71 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --primary: #072AC8; --accent: #FCF300; --sky: #1E96FC; --light-blue: #A2D6F9; }
-        body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; display: flex; flex-direction: column; min-height: 100vh; align-items: center; background-attachment: fixed; justify-content: space-between; background-image: radial-gradient(circle at top right, rgb(0,3,125) 0%, rgb(0,3,125) 48%, rgb(7,31,149) 48%, rgb(7,31,149) 53%, rgb(230,255,0) 53%, rgb(230,255,0) 56%, rgb(34,30,252) 56%, rgb(34,30,252) 69%, rgb(6,14,216) 69%, rgb(6,14,216) 100%); }
+        
+        body { 
+            margin: 0; 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
+            align-items: center; 
+            background-attachment: fixed; 
+            justify-content: space-between; 
+            background-image: radial-gradient(circle at top right, rgb(0,3,125) 0%, rgb(0,3,125) 48%, rgb(7,31,149) 48%, rgb(7,31,149) 53%, rgb(230,255,0) 53%, rgb(230,255,0) 56%, rgb(34,30,252) 56%, rgb(34,30,252) 69%, rgb(6,14,216) 69%, rgb(6,14,216) 100%); 
+        }
+
         .header-box { background: var(--primary); width: 100%; min-height: 60px; display: flex; align-items: center; justify-content: center; padding: 10px 0; }
         .header-text { color: #ffffff; font-size: 1.1rem; }
         .highlight-text { color: var(--light-blue); font-size: 1.4rem; font-weight: bold; margin: 0 5px; }
-        .white-wrapper { background: #ffffff; width: 85%; max-width: 400px; margin: 40px auto; border-radius: 24px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); display: flex; flex-direction: column; align-items: center; padding: 40px 20px; box-sizing: border-box; min-height: 480px; justify-content: center; }
+        
+        .white-wrapper { 
+            background: #ffffff; 
+            width: 85%; 
+            max-width: 400px; 
+            margin: 40px auto; 
+            border-radius: 24px; 
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 40px 20px; 
+            box-sizing: border-box; 
+            min-height: 480px; 
+            justify-content: center; 
+        }
+
         input { width: 100%; padding: 15px; font-size: 1.2rem; border: 2px solid var(--primary); border-radius: 12px; text-align: center; outline: none; box-sizing: border-box; }
         .error-msg { color: #ff0000; font-size: 0.9rem; margin-top: 8px; display: none; font-weight: bold; }
-        .btn-go { width: 100%; padding: 15px; background: var(--primary); color: #fff; border: none; border-radius: 12px; font-size: 1.2rem; font-weight: bold; margin-top: 20px; cursor: pointer; }
+        .btn-go { width: 100%; padding: 15px; background: var(--primary); color: #fff; border: none; border-radius: 12px; font-size: 1.2rem; font-weight: bold; margin-top: 20px; cursor: pointer; transition: 0.3s; }
+
         .auth-links { display: flex; width: 100%; justify-content: space-around; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; }
         .auth-btn { text-decoration: none; color: var(--primary); font-weight: bold; font-size: 0.9rem; padding: 8px 15px; border: 1px solid var(--primary); border-radius: 8px; }
         .auth-btn.signup { background: var(--primary); color: #fff; }
+
         .social-links { display: flex; justify-content: center; gap: 15px; margin: 25px 0; align-items: center; } 
         .social-icon { background: var(--primary); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; color: var(--accent); border: 2px solid var(--sky); cursor: pointer; }
+
         .footer { background: var(--primary); width: 100%; padding: 20px; color: #ffffff; font-size: 0.85rem; text-align: center; line-height: 1.6; box-sizing: border-box; }
     </style>
 </head>
 <body>
+
     <div class="header-box">
         <div class="header-text">توجيه <span class="highlight-text">الأرقام إلى روابط</span> لمنصة إلكتروني</div>
     </div>
+
     <div class="white-wrapper">
         <div style="color: var(--primary); font-weight: bold; margin-bottom: 12px;">أبتسم أنت بصفحة Electrwni</div>
+        
         <input type="text" id="linkId" inputmode="numeric" placeholder="أدخل الرقم هنا...">
         <div id="error-msg" class="error-msg"></div>
         <button class="btn-go" id="btnGo">انتقل الآن</button>
+
         <div class="auth-links">
-            <a href="#" class="auth-btn">تسجيل دخول</a>
-            <a href="#" class="auth-btn signup">تسجيل جديد</a>
+            <a href="login.html" class="auth-btn">تسجيل دخول</a>
+            <a href="signup.html" class="auth-btn signup">تسجيل جديد</a>
         </div>
+
         <div class="social-links">
             <a href="https://t.me/electrwni" target="_blank" class="social-icon"><i class="fa-brands fa-telegram"></i></a>
             <a href="https://www.instagram.com/electrwni" target="_blank" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
@@ -45,13 +81,16 @@
             <div class="social-icon" id="qrBtn"><i class="fas fa-qrcode"></i></div>
         </div>
     </div>
+
     <div class="footer">
         تم تطوير المحرك البرمجي بواسطة Electrwni، الكويت بنية بمعمارية عالية الأداء <br>
         Built with High-Performance Architecture, by electrwni, kuwait
     </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
         import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js";
+
         const firebaseConfig = {
             apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
             authDomain: "electrwni-link.firebaseapp.com",
@@ -61,12 +100,15 @@
             messagingSenderId: "712490301263",
             appId: "1:712490301263:web:2084210da3f687285ab73a"
         };
+
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+
         const input = document.getElementById('linkId');
         const btnGo = document.getElementById('btnGo');
         const errorMsg = document.getElementById('error-msg');
 
+        // ميزة تحويل الأرقام (عربي/إنجليزي) وتصفية المدخلات
         input.addEventListener('input', (e) => {
             let v = e.target.value;
             const ar = [/٠/g, /١/g, /٢/g, /٣/g, /٤/g, /٥/g, /٦/g, /٧/g, /٨/g, /٩/g];
@@ -78,12 +120,18 @@
             const val = input.value.trim();
             if(!val) return;
             errorMsg.style.display = 'block';
+            errorMsg.style.color = "blue";
             errorMsg.innerText = "جاري التحقق...";
             try {
                 const snap = await get(child(ref(db), `links/${val}`));
                 if (snap.exists()) window.location.href = snap.val();
                 else { errorMsg.innerText = "الرقم غير مسجل"; errorMsg.style.color = "red"; }
-            } catch (e) { errorMsg.innerText = "خطأ في الاتصال"; }
+            } catch (e) { errorMsg.innerText = "خطأ في الاتصال"; errorMsg.style.color = "red"; }
+        };
+
+        // برمجة زر الباركود
+        document.getElementById('qrBtn').onclick = () => {
+            alert("ميزة المسح الضوئي قيد التطوير للارتباط بالدومين الجديد!");
         };
     </script>
 </body>
