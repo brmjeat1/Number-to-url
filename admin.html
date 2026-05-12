@@ -5,11 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>إدارة Electrwni</title>
     
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
-    
-    <!-- Utilities -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
 
@@ -17,50 +14,39 @@
         :root { --primary: #0071e3; --bg: #f5f5f7; --border: #e5e5e7; --text: #1d1d1f; --danger: #ff3b30; }
         body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 10px; color: var(--text); overflow-x: hidden; }
         .container { width: 100%; max-width: 800px; margin: 0 auto; box-sizing: border-box; }
-        
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 10px; }
         .brand { font-weight: bold; font-size: 20px; color: var(--primary); }
-
         details { background: white; border-radius: 16px; margin-bottom: 15px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.02); overflow: hidden; }
         summary { padding: 16px; font-weight: 600; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
         .content { padding: 15px; border-top: 1px solid var(--border); }
-
-        /* الجدول المتجاوب المنضبط */
         .table-wrapper { border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: white; width: 100%; }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; word-wrap: break-word; }
         th { background: #f8f8f9; color: #86868b; font-size: 13px; padding: 12px 5px; border-bottom: 2px solid var(--border); }
         td { padding: 14px 5px; text-align: center; border-bottom: 1px solid #f1f1f2; font-size: 14px; vertical-align: middle; }
         tr:nth-child(even) { background: #fafafa; }
-
-        /* أوزان الأعمدة المتجاوبة */
-        .col-id { width: 45px; }      /* مساحة لـ 3 أرقام */
-        .col-link { width: 75px; }    /* مساحة رابط وتعديل */
-        .col-desc { width: auto; }     /* مساحة الوصف الكبيرة */
-        .col-views { width: 65px; }    /* مساحة مشاهدات */
-
+        .col-id { width: 45px; }
+        .col-link { width: 75px; }
+        .col-desc { width: auto; }
+        .col-views { width: 65px; }
         .link-box { display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .link-box a { color: var(--primary); text-decoration: none; font-weight: 600; }
         .edit-trigger { color: #ff9500; font-size: 11px; cursor: pointer; text-decoration: underline; }
-
         .filter-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 15px; }
         .chip { padding: 8px 14px; border-radius: 20px; background: #e5e5e7; font-size: 12px; cursor: pointer; }
         .chip.active { background: var(--primary); color: white; }
         #dateRange { display: none; gap: 5px; justify-content: center; margin-bottom: 15px; }
         #dateRange.active { display: flex; }
-
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         .modal.active { display: flex; }
         .modal-card { background: white; border-radius: 20px; padding: 25px; width: 90%; max-width: 380px; }
         .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 15px 0; direction: ltr; }
         .n-btn { background: #f2f2f7; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; }
-        
         .input-style { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; box-sizing: border-box; }
         .btn-row { display: flex; gap: 10px; }
         .btn { flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; }
         .btn-save { background: var(--primary); color: white; }
         .btn-del { background: #f2f2f7; color: var(--danger); }
         .pdf-btn { background: var(--danger); color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; display: block; margin: 10px auto; cursor: pointer; }
-
         #pdf-template { display: none; padding: 30px; background: white; direction: rtl; }
     </style>
 </head>
@@ -72,8 +58,8 @@
     <details open>
         <summary> إضافة الروابط </summary>
         <div class="content">
-            <input type="text" id="addId" class="input-style" placeholder="رقم ID">
-            <input type="text" id="addUrl" class="input-style" placeholder="أدخل الرابط الطويل هنا">
+            <input type="text" id="addId" class="input-style" placeholder="رقم ID" inputmode="numeric" pattern="[0-9]*">
+            <input type="url" id="addUrl" class="input-style" placeholder="أدخل الرابط الطويل هنا">
             <input type="text" id="addDesc" class="input-style" placeholder="الوصف">
             <button class="btn-save btn" style="width:100%" onclick="addNew()">حفظ وإضافة</button>
         </div>
@@ -90,23 +76,12 @@
                 <div class="chip" onclick="setFilter(this, 'year')">السنة</div>
                 <div class="chip" onclick="setFilter(this, 'custom')">مخصص</div>
             </div>
-
-            <div id="dateRange">
-                <input type="date" id="startD" onchange="refreshTable()">
-                <input type="date" id="endD" onchange="refreshTable()">
-            </div>
-
+            <div id="dateRange"><input type="date" id="startD" onchange="refreshTable()"><input type="date" id="endD" onchange="refreshTable()"></div>
             <button class="pdf-btn" onclick="makePDF()">تنزيل التقرير PDF</button>
-
             <div class="table-wrapper">
                 <table>
                     <thead>
-                        <tr>
-                            <th class="col-id">الرقم</th>
-                            <th class="col-link">الرابط</th>
-                            <th class="col-desc">الوصف</th>
-                            <th class="col-views">مشاهدات</th>
-                        </tr>
+                        <tr><th class="col-id">الرقم</th><th class="col-link">الرابط</th><th class="col-desc">الوصف</th><th class="col-views">المشاهدات</th></tr>
                     </thead>
                     <tbody id="mainTable"></tbody>
                 </table>
@@ -115,13 +90,11 @@
     </details>
 </div>
 
-<!-- مودال التعديل -->
 <div class="modal" id="editModal" onclick="this.classList.remove('active')">
     <div class="modal-card" onclick="event.stopPropagation()">
-        <span class="close-btn" style="float:left; cursor:pointer;" onclick="document.getElementById('editModal').classList.remove('active')">✕</span>
         <h3 style="text-align:center; margin-top:0;">تعديل البيانات</h3>
         <label style="font-size:12px; color:#888;">رقم ID</label>
-        <input type="text" id="editId" class="input-style" readonly>
+        <input type="text" id="editId" class="input-style" inputmode="numeric" pattern="[0-9]*">
         <div class="numpad">
             <button class="n-btn" onclick="nk('1')">1</button><button class="n-btn" onclick="nk('2')">2</button><button class="n-btn" onclick="nk('3')">3</button>
             <button class="n-btn" onclick="nk('4')">4</button><button class="n-btn" onclick="nk('5')">5</button><button class="n-btn" onclick="nk('6')">6</button>
@@ -129,7 +102,7 @@
             <button class="n-btn" style="color:red" onclick="nk('C')">C</button><button class="n-btn" onclick="nk('0')">0</button><button class="n-btn" onclick="nk('B')">⌫</button>
         </div>
         <label style="font-size:12px; color:#888;">الرابط</label>
-        <input type="text" id="editUrl" class="input-style">
+        <input type="url" id="editUrl" class="input-style">
         <label style="font-size:12px; color:#888;">الوصف</label>
         <input type="text" id="editDesc" class="input-style">
         <div class="btn-row">
@@ -146,17 +119,15 @@
     </div>
     <h2 style="text-align:center"> تقرير إحصائيات </h2>
     <table style="width:100%; border:1px solid #eee; border-collapse:collapse; text-align:center;">
-        <thead><tr style="background:#f9f9f9;"><th>ID</th><th>الرابط</th><th>الوصف</th><th>مشاهداته</th></tr></thead>
+        <thead><tr style="background:#f9f9f9;"><th>ID</th><th>الرابط</th><th>الوصف</th><th>المشاهدات</th></tr></thead>
         <tbody id="pBody"></tbody>
     </table>
 </div>
 
 <script>
-    // إعدادات Firebase (يتم استبدالها ببيانات مشروعك)
     const firebaseConfig = { projectId: "electrwni" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-
     let linksData = [];
     let filterType = 'all';
     let activeFId = null;
@@ -205,12 +176,7 @@
         linksData.forEach(item => {
             tb.innerHTML += `<tr>
                 <td class="col-id"><b>${item.id}</b></td>
-                <td class="col-link">
-                    <div class="link-box">
-                        <a href="${item.url}" target="_blank" onclick="track('${item.fId}')">رابط</a>
-                        <span class="edit-trigger" onclick="openEdit('${item.fId}')">تعديل</span>
-                    </div>
-                </td>
+                <td class="col-link"><div class="link-box"><a href="${item.url}" target="_blank" onclick="track('${item.fId}')">رابط</a><span class="edit-trigger" onclick="openEdit('${item.fId}')">تعديل</span></div></td>
                 <td class="col-desc" style="text-align:right; font-size:12px; color:#555;">${item.desc || '-'}</td>
                 <td class="col-views">${getCount(item.clicks)}</td>
             </tr>`;
@@ -218,9 +184,7 @@
     }
 
     async function track(fId) {
-        await db.collection("links").doc(fId).update({
-            clicks: firebase.firestore.FieldValue.arrayUnion(Date.now())
-        });
+        await db.collection("links").doc(fId).update({ clicks: firebase.firestore.FieldValue.arrayUnion(Date.now()) });
     }
 
     function openEdit(fId) {
@@ -258,22 +222,14 @@
         document.getElementById('pDate').innerText = `بتاريخ: ${moment().format('YYYY/MM/DD')}`;
         body.innerHTML = '';
         linksData.forEach(item => {
-            body.innerHTML += `<tr>
-                <td style="border:1px solid #eee; padding:8px;">${item.id}</td>
-                <td style="border:1px solid #eee; padding:8px; font-size:10px;">${item.url}</td>
-                <td style="border:1px solid #eee; padding:8px;">${item.desc}</td>
-                <td style="border:1px solid #eee; padding:8px;">${getCount(item.clicks)}</td>
-            </tr>`;
+            body.innerHTML += `<tr><td style="border:1px solid #eee; padding:8px;">${item.id}</td><td style="border:1px solid #eee; padding:8px; font-size:10px;">${item.url}</td><td style="border:1px solid #eee; padding:8px;">${item.desc}</td><td style="border:1px solid #eee; padding:8px;">${getCount(item.clicks)}</td></tr>`;
         });
         const temp = document.getElementById('pdf-template');
         temp.style.display = 'block';
-        html2pdf().from(temp).set({
-            margin: 10, filename: 'Report.pdf',
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        }).save().then(()=>temp.style.display='none');
+        html2pdf().from(temp).set({ margin: 10, filename: 'Report.pdf', html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).save().then(()=>temp.style.display='none');
     }
 
     window.onload = fetchData;
 </script>
 </body>
+</html>
