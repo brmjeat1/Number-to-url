@@ -115,7 +115,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
     <script>
-        // إعدادات مشروعك الحقيقية
         const firebaseConfig = {
             apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
             authDomain: "electrwni-link.firebaseapp.com",
@@ -125,22 +124,18 @@
             appId: "1:712490301263:web:2084210da3f687285ab73a"
         };
 
-        // تهيئة Firebase
         firebase.initializeApp(firebaseConfig);
 
-        // التحقق من حالة تسجيل الدخول ومنع الدخول لغير المسجلين
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 document.getElementById('user-email').innerHTML = `
                     <strong>البريد الإلكتروني:</strong> <span style="color: var(--accent)">${user.email}</span>
                 `;
             } else {
-                // إذا لم يكن مسجلاً، يطرده لصفحة تسجيل الدخول
                 window.location.href = 'login.html';
             }
         });
 
-        // وظيفة تسجيل الخروج
         function logout() {
             firebase.auth().signOut().then(() => {
                 window.location.href = 'login.html';
