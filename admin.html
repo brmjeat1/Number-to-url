@@ -69,7 +69,7 @@
 
     <!-- إضافة رابط -->
     <details open>
-        <summary>إضافة رابط جديد</summary>
+        <summary> إشافة الروابط </summary>
         <div class="content">
             <input type="text" id="addId" class="input-style" placeholder="رقم ID">
             <input type="text" id="addUrl" class="input-style" placeholder="أدخل الرابط الطويل هنا">
@@ -80,7 +80,7 @@
 
     <!-- الإحصائيات والجدول -->
     <details open>
-        <summary>تقرير الإحصائيات</summary>
+        <summary> الإحصائيات </summary>
         <div class="content">
             <div class="filter-grid">
                 <div class="chip active" onclick="setFilter(this, 'all')">الكل</div>
@@ -147,7 +147,7 @@
 <!-- قالب PDF -->
 <div id="pdf-template">
     <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding-bottom:10px;">
-        <strong>electrwni | إلكتروني</strong>
+        <strong> electrwni | إلكتروني </strong>
         <span id="pDate"></span>
     </div>
     <h2 style="text-align:center">تقرير إحصائيات الروابط</h2>
@@ -244,7 +244,7 @@
     function makePDF() {
         const body = document.getElementById('pBody');
         const d = new Date();
-        document.getElementById('pDate').innerText = `طبع بتاريخ: ${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
+        document.getElementById('pDate').innerText = ` : طبع بتاريخ  ${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
         body.innerHTML = '';
         db.forEach(item => {
             body.innerHTML += `<tr>
