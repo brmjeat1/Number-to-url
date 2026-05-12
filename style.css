@@ -1,21 +1,25 @@
-/* إعدادات الخط والخلفية المعتمدة على اختيارك */
+/* ضبط أساسيات القياس */
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: 'Tajawal', sans-serif;
     margin: 0;
     padding: 0;
     min-height: 100vh;
-    /* التدرج اللوني من الرابط الذي أرسلته */
     background: linear-gradient(180deg, #A2D6F9 0%, #1E96FC 50%, #072AC8 100%);
     background-attachment: fixed;
     display: flex;
     justify-content: center;
     color: #333;
+    line-height: 1.6;
 }
 
 .container {
-    width: 90%;
+    width: 95%;
     max-width: 600px;
-    padding: 40px 0;
+    padding: 40px 15px;
 }
 
 /* رأس الصفحة */
@@ -26,70 +30,87 @@ header {
 }
 
 .logo {
-    font-size: 2rem;
-    font-weight: bold;
+    font-size: 2.2rem;
+    font-weight: 800;
     margin-bottom: 5px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* تصميم البطاقات (Cards) */
+/* تصميم البطاقات بتأثير Glassmorphism */
 .card {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(10px);
     border-radius: 20px;
     padding: 25px;
     margin-bottom: 20px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .card-header {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 15px;
 }
 
 .card-header h2 {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     margin: 0 10px;
     color: #072AC8;
 }
 
-/* تنسيق الحقول والأزرار */
+/* تنسيق الحقول والأزرار - مرونة كاملة */
 .input-group {
     display: flex;
-    gap: 10px;
+    gap: 12px;
+    flex-wrap: wrap; /* لدعم الشاشات الصغيرة */
 }
 
 input {
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
+    padding: 14px;
+    border: 2px solid #eee;
+    border-radius: 12px;
     font-family: 'Tajawal';
+    outline: none;
+    transition: 0.3s ease;
+    font-size: 1rem;
 }
 
-.input-small { width: 25%; }
-.input-large { width: 55%; }
+input:focus {
+    border-color: #1E96FC;
+    box-shadow: 0 0 8px rgba(30, 150, 252, 0.2);
+}
+
+.input-small { flex: 1; min-width: 80px; }
+.input-large { flex: 2; min-width: 150px; }
 
 .btn-add {
-    width: 20%;
+    padding: 12px 20px;
     background-color: #072AC8;
     color: white;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
     font-weight: bold;
-    transition: 0.3s;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-add:hover {
     background-color: #1E96FC;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(30, 150, 252, 0.3);
 }
 
 /* التذييل */
 footer {
     text-align: center;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 0.9rem;
-    line-height: 1.6;
-    margin-top: 30px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.95rem;
+    margin-top: 40px;
+    padding-bottom: 20px;
 }
