@@ -25,24 +25,24 @@
         td { padding: 14px 5px; text-align: center; border-bottom: 1px solid #f1f1f2; font-size: 14px; vertical-align: middle; }
         tr:nth-child(even) { background: #fafafa; }
         .col-id { width: 45px; } .col-link { width: 75px; } .col-views { width: 65px; }
-        .link-box { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .link-box a { color: var(--primary); text-decoration: none; font-weight: 600; }
-        .edit-trigger { color: #ff9500; font-size: 11px; cursor: pointer; text-decoration: underline; }
+        .input-style { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; box-sizing: border-box; }
         
-        /* نظام الفلترة */
+        /* الكيبورد الرقمي المدمج */
+        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; background: #e5e5e7; padding: 8px; border-radius: 12px; }
+        .key { background: white; padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; cursor: pointer; font-size: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); user-select: none; }
+        .key:active { background: #d1d1d6; }
+        .key.delete { color: var(--danger); }
+
         .filter-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 15px; }
         .chip { padding: 8px 14px; border-radius: 20px; background: #e5e5e7; font-size: 12px; cursor: pointer; }
         .chip.active { background: var(--primary); color: white; }
         #dateRange { display: none; gap: 5px; justify-content: center; margin-bottom: 15px; }
         #dateRange.active { display: flex; }
-
-        .input-style { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; box-sizing: border-box; }
+        .btn { padding: 14px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; width: 100%; }
+        .btn-save { background: var(--primary); color: white; }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         .modal.active { display: flex; }
         .modal-card { background: white; border-radius: 20px; padding: 25px; width: 90%; max-width: 380px; }
-        .btn { padding: 14px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; width: 100%; }
-        .btn-save { background: var(--primary); color: white; }
-        
         #pdf-template { display: none; padding: 40px; background: white; direction: rtl; width: 900px; }
         #pdf-template table { width: 100%; border-collapse: collapse; table-layout: fixed; }
         #pdf-template th, #pdf-template td { border: 1px solid #ddd; padding: 10px; word-break: break-all; font-size: 12px; }
@@ -56,9 +56,18 @@
     <details open>
         <summary> إضافة الروابط </summary>
         <div class="content">
-            <input type="tel" id="addId" class="input-style" placeholder="الرقم" inputmode="decimal">
+            <input type="tel" id="addId" class="input-style" placeholder="الرقم" readonly>
+            
+            <!-- الكيبورد الرقمي -->
+            <div class="keypad">
+                <div class="key" onclick="pressKey('1')">1</div><div class="key" onclick="pressKey('2')">2</div><div class="key" onclick="pressKey('3')">3</div>
+                <div class="key" onclick="pressKey('4')">4</div><div class="key" onclick="pressKey('5')">5</div><div class="key" onclick="pressKey('6')">6</div>
+                <div class="key" onclick="pressKey('7')">7</div><div class="key" onclick="pressKey('8')">8</div><div class="key" onclick="pressKey('9')">9</div>
+                <div class="key" style="background:none; box-shadow:none;"></div><div class="key" onclick="pressKey('0')">0</div><div class="key delete" onclick="pressKey('X')">X</div>
+            </div>
+
             <input type="url" id="addUrl" class="input-style" placeholder="أدخل الرابط" oninput="forceEnglish(this)">
-            <input type="text" id="addDesc" class="input-style" placeholder="الوصف ( ليكن بثلاث إلى خمس كلمات)">
+            <input type="text" id="addDesc" class="input-style" placeholder="الوصف (3-5 كلمات)">
             <button class="btn-save btn" onclick="addNew()">إضافة</button>
         </div>
     </details>
@@ -66,7 +75,6 @@
     <details open>
         <summary> الإحصائيات </summary>
         <div class="content">
-            <!-- أزرار الفلترة الزمنية -->
             <div class="filter-grid">
                 <div class="chip active" onclick="setFilter(this, 'all')">الكل</div>
                 <div class="chip" onclick="setFilter(this, 'day')">اليوم</div>
@@ -79,13 +87,10 @@
                 <input type="date" id="startD" onchange="refreshTable()" class="input-style" style="width:48%">
                 <input type="date" id="endD" onchange="refreshTable()" class="input-style" style="width:48%">
             </div>
-
-            <button class="btn" style="background:var(--danger); color:white; margin-bottom:10px;" onclick="makePDF()">تنزيل التقرير PDF</button>
+            <button class="btn" style="background:var(--danger); color:white; margin-bottom:10px;" onclick="makePDF()">تنزيل PDF</button>
             <div class="table-wrapper">
                 <table>
-                    <thead>
-                        <tr><th class="col-id">الرقم</th><th class="col-link">الرابط</th><th class="col-desc">الوصف</th><th class="col-views">المشاهدات</th></tr>
-                    </thead>
+                    <thead><tr><th class="col-id">الرقم</th><th class="col-link">الرابط</th><th>الوصف</th><th class="col-views">مشاهدات</th></tr></thead>
                     <tbody id="mainTable"></tbody>
                 </table>
             </div>
@@ -96,7 +101,7 @@
 <div class="modal" id="editModal" onclick="this.classList.remove('active')">
     <div class="modal-card" onclick="event.stopPropagation()">
         <h3 style="text-align:center;">تعديل البيانات</h3>
-        <input type="tel" id="editId" class="input-style" placeholder="ID" inputmode="decimal">
+        <input type="tel" id="editId" class="input-style" placeholder="ID">
         <input type="url" id="editUrl" class="input-style" placeholder="الرابط" oninput="forceEnglish(this)">
         <input type="text" id="editDesc" class="input-style" placeholder="الوصف">
         <button class="btn btn-save" onclick="updateDoc()">حفظ التغيير</button>
@@ -105,22 +110,30 @@
 
 <div id="pdf-template">
     <div style="display:flex; justify-content:space-between; border-bottom:2px solid #0071e3; padding-bottom:10px;">
-        <strong>electrwni | إلكتروني</strong>
-        <span id="pDate"></span>
+        <strong>electrwni | إلكتروني</strong><span id="pDate"></span>
     </div>
-    <h2 style="text-align:center;">تقرير الإحصائيات الرسمي</h2>
+    <h2 style="text-align:center;">تقرير الإحصائيات</h2>
     <table>
-        <thead><tr style="background:#f2f2f7;"><th>ID</th><th>الرابط</th><th>الوصف</th><th>مشاهدات</th></tr></thead>
+        <thead><tr><th>ID</th><th>الرابط</th><th>الوصف</th><th>مشاهدات</th></tr></thead>
         <tbody id="pBody"></tbody>
     </table>
 </div>
 
 <script>
+    // كيبورد الأرقام
+    function pressKey(val) {
+        const input = document.getElementById('addId');
+        if (val === 'X') {
+            input.value = input.value.slice(0, -1);
+        } else {
+            input.value += val;
+        }
+    }
+
     function forceEnglish(el) {
         const ar = "أبتثجحخدذرزسشصضطظعغفقكلمنهويءآأإؤئ";
         const en = "abttjhhddrrsssshssddttzz'ghffqklmnnhwy'aaaaaeou";
-        let val = el.value.toLowerCase();
-        let res = "";
+        let val = el.value.toLowerCase(), res = "";
         for (let i = 0; i < val.length; i++) {
             let idx = ar.indexOf(val[i]);
             res += (idx !== -1) ? en[idx] : val[i];
@@ -131,8 +144,7 @@
     const firebaseConfig = { projectId: "electrwni" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-    let linksData = [];
-    let filterType = 'all';
+    let linksData = [], filterType = 'all';
 
     function fetchData() {
         db.collection("links").onSnapshot(snap => {
@@ -154,10 +166,8 @@
         if(filterType === 'all') return clicks.length;
         const now = moment();
         if(filterType === 'custom') {
-            const s = document.getElementById('startD').value;
-            const e = document.getElementById('endD').value;
-            if(!s || !e) return clicks.length;
-            return clicks.filter(c => moment(c).isBetween(s, e, 'day', '[]')).length;
+            const s = document.getElementById('startD').value, e = document.getElementById('endD').value;
+            return (!s || !e) ? clicks.length : clicks.filter(c => moment(c).isBetween(s, e, 'day', '[]')).length;
         }
         let duration = filterType === 'day' ? 'days' : filterType === 'week' ? 'weeks' : filterType === 'month' ? 'months' : 'years';
         return clicks.filter(c => moment(c).isAfter(moment().subtract(1, duration))).length;
@@ -169,7 +179,7 @@
         linksData.forEach(item => {
             tb.innerHTML += `<tr>
                 <td class="col-id"><b>${item.id}</b></td>
-                <td class="col-link"><div class="link-box"><a href="${item.url}" target="_blank">رابط</a><span class="edit-trigger" onclick="openEdit('${item.fId}')">تعديل</span></div></td>
+                <td><div style="display:flex; flex-direction:column; align-items:center;"><a href="${item.url}" target="_blank" style="color:var(--primary); text-decoration:none; font-weight:600;">رابط</a><span style="color:#ff9500; font-size:11px; cursor:pointer;" onclick="openEdit('${item.fId}')">تعديل</span></div></td>
                 <td style="text-align:right; font-size:12px;">${item.desc || '-'}</td>
                 <td>${getCount(item.clicks)}</td>
             </tr>`;
@@ -177,9 +187,7 @@
     }
 
     async function addNew() {
-        const id = document.getElementById('addId').value;
-        const url = document.getElementById('addUrl').value;
-        const desc = document.getElementById('addDesc').value;
+        const id = document.getElementById('addId').value, url = document.getElementById('addUrl').value, desc = document.getElementById('addDesc').value;
         if(id && url) {
             await db.collection("links").add({ id, url, desc, clicks: [] });
             ['addId','addUrl','addDesc'].forEach(i => document.getElementById(i).value = '');
@@ -203,13 +211,10 @@
         });
         const temp = document.getElementById('pdf-template');
         temp.style.display = 'block';
-        html2pdf().from(temp).set({
-            margin: 10, filename: 'Report.pdf',
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        }).save().then(() => temp.style.display = 'none');
+        html2pdf().from(temp).set({ margin: 10, filename: 'Report.pdf', html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).save().then(() => temp.style.display = 'none');
     }
 
     window.onload = fetchData;
 </script>
 </body>
+</html>
