@@ -5,97 +5,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>لوحة تحكم Electrwni</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <style>
-        :root {
-            --primary: #0071e3; --secondary: #1d1d1f; --bg: #f5f5f7;
-            --danger: #ff3b30; --glass: rgba(255, 255, 255, 0.95);
-        }
+        :root { --primary: #0071e3; --bg: #f5f5f7; --danger: #ff3b30; }
         body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 10px; display: flex; justify-content: center; }
-        .admin-container { width: 100%; max-width: 800px; position: relative; }
+        .admin-container { width: 100%; max-width: 800px; }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .brand-right { font-weight: bold; font-size: 18px; }
+
+        details { background: white; border-radius: 18px; margin-bottom: 12px; border: 1px solid #e5e5e7; overflow: hidden; }
+        summary { padding: 18px; font-weight: bold; cursor: pointer; list-style: none; display: flex; justify-content: space-between; }
+        .content { padding: 15px; border-top: 1px solid #eee; }
+
+        /* الفلتر */
+        .filter-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 10px; }
+        .filter-chip { padding: 8px 12px; border-radius: 20px; background: #e5e5e7; font-size: 12px; cursor: pointer; }
+        .filter-chip.active { background: var(--primary); color: white; }
         
-        .header-top { display: flex; justify-content: flex-start; align-items: center; margin-bottom: 20px; padding: 0 5px; }
-        .brand-right { font-weight: bold; font-size: 18px; color: var(--secondary); }
+        #customDateBox { display: none; text-align: center; margin-bottom: 15px; gap: 5px; justify-content: center; }
+        #customDateBox.active { display: flex; }
+        input[type="date"] { padding: 5px; border-radius: 8px; border: 1px solid #ddd; }
 
-        details { background: var(--glass); border-radius: 18px; margin-bottom: 12px; border: 1px solid #e5e5e7; box-shadow: 0 4px 12px rgba(0,0,0,0.03); overflow: hidden; }
-        summary { padding: 18px; font-weight: bold; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
-        summary::after { content: '▾'; color: var(--primary); }
-        .content { padding: 15px; border-top: 1px solid #eee; background: #fff; }
-
-        .field { margin-bottom: 15px; }
-        label { display: block; font-size: 13px; color: #86868b; margin-bottom: 6px; font-weight: 500; }
-        input, textarea { width: 100%; padding: 12px; border: 1.5px solid #d2d2d7; border-radius: 10px; font-size: 15px; box-sizing: border-box; outline: none; }
-
-        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; direction: ltr; }
-        .num-btn { background: #f5f5f7; border: 1px solid #d2d2d7; padding: 12px; border-radius: 10px; font-size: 18px; font-weight: bold; color: var(--primary); cursor: pointer; text-align: center; user-select: none; }
-
-        .pdf-btn-red { background: var(--danger); color: white; border: none; padding: 12px 25px; border-radius: 12px; cursor: pointer; font-size: 15px; font-weight: 800; display: block; margin: 20px auto; width: fit-content; box-shadow: 0 4px 10px rgba(255,59,48,0.3); }
-
-        .table-wrapper { width: 100%; border: 1px solid #e5e5e7; border-radius: 12px; overflow: hidden; }
+        .pdf-btn-red { background: var(--danger); color: white; border: none; padding: 12px 25px; border-radius: 12px; cursor: pointer; display: block; margin: 15px auto; font-weight: bold; }
+        
+        .table-wrapper { width: 100%; border-radius: 12px; overflow: hidden; border: 1px solid #e5e5e7; }
         table { width: 100%; border-collapse: collapse; background: #fff; table-layout: fixed; }
-        th, td { padding: 12px 8px; text-align: center; border-bottom: 1px solid #f0f0f2; word-wrap: break-word; }
-        th { background: #fafafa; font-size: 13px; color: #86868b; }
-        
-        .edit-sub { color: #ff9500; font-size: 11px; cursor: pointer; text-decoration: underline; }
-        .btn-action { width: 100%; background: var(--primary); color: white; border: none; padding: 16px; border-radius: 14px; font-weight: bold; font-size: 16px; cursor: pointer; }
+        th, td { padding: 12px; text-align: center; border-bottom: 1px solid #f0f0f2; font-size: 13px; }
+        th { background: #fafafa; color: #86868b; }
 
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
         .modal-overlay.active { display: flex; }
-        .modal-box { background: white; border-radius: 18px; padding: 24px; width: 85%; max-width: 350px; position: relative; }
-        .close-x { position: absolute; top: 15px; left: 15px; font-size: 20px; cursor: pointer; color: #86868b; font-weight: bold; }
+        .modal-box { background: white; border-radius: 18px; padding: 25px; width: 85%; max-width: 350px; position: relative; }
+        .close-x { position: absolute; top: 15px; left: 15px; cursor: pointer; font-weight: bold; }
+        .btn-action { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; }
 
-        /* تنسيق PDF ثابت */
-        #pdf-template { display: none; padding: 30px; background: #fff; color: #000; direction: rtl; }
-        .pdf-header { display: flex; justify-content: space-between; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
-        .pdf-table { width: 100%; border: 1px solid #000; border-collapse: collapse; }
-        .pdf-table th, .pdf-table td { border: 1px solid #000; padding: 8px; text-align: center; font-size: 12px; }
+        #pdf-template { display: none; padding: 40px; background: #fff; direction: rtl; }
     </style>
 </head>
 <body>
 
 <div class="admin-container">
-    <div class="header-top">
-        <div class="brand-right">electrwni | إلكتروني</div>
-    </div>
+    <div class="header-top"><div class="brand-right">electrwni | إلكتروني</div></div>
 
     <details open>
         <summary>إضافة رابط جديد</summary>
         <div class="content">
-            <div class="field">
-                <label>رقم الرابط (ID)</label>
-                <input type="text" id="numInp" placeholder="استخدم اللوحة" readonly>
-                <div class="numpad">
-                    <div class="num-btn" onclick="k('1')">1</div><div class="num-btn" onclick="k('2')">2</div><div class="num-btn" onclick="k('3')">3</div>
-                    <div class="num-btn" onclick="k('4')">4</div><div class="num-btn" onclick="k('5')">5</div><div class="num-btn" onclick="k('6')">6</div>
-                    <div class="num-btn" onclick="k('7')">7</div><div class="num-btn" onclick="k('8')">8</div><div class="num-btn" onclick="k('9')">9</div>
-                    <div class="num-btn" onclick="k('C')" style="color:red">C</div><div class="num-btn" onclick="k('0')">0</div><div class="num-btn" onclick="k('B')">⌫</div>
-                </div>
-            </div>
-            <div class="field">
-                <label>الرابط (URL)</label>
-                <input type="text" id="urlInp" placeholder="https://...">
-            </div>
-            <div class="field">
-                <label>الوصف (اختياري)</label>
-                <textarea id="descInp" rows="2"></textarea>
-            </div>
-            <button class="btn-action" onclick="saveData()">حفظ وإضافة</button>
+            <input type="text" id="numInp" placeholder="رقم ID" style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #ddd;">
+            <input type="text" id="urlInp" placeholder="https://..." style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #ddd;">
+            <button class="btn-action" onclick="saveData()">حفظ</button>
         </div>
     </details>
 
     <details open>
-        <summary>إحصائيات الروابط</summary>
+        <summary>الإحصائيات</summary>
         <div class="content">
-            <button class="pdf-btn-red" onclick="downloadPDF()">تنزيل ملف PDF</button>
+            <div class="filter-grid">
+                <div class="filter-chip active" onclick="updateFilter(this, 'all')">الكل</div>
+                <div class="filter-chip" onclick="updateFilter(this, 'day')">اليوم</div>
+                <div class="filter-chip" onclick="updateFilter(this, 'week')">الأسبوع</div>
+                <div class="filter-chip" onclick="updateFilter(this, 'month')">الشهر</div>
+                <div class="filter-chip" onclick="updateFilter(this, 'year')">السنة</div>
+                <div class="filter-chip" onclick="updateFilter(this, 'custom')">مخصص</div>
+            </div>
+
+            <div id="customDateBox">
+                <input type="date" id="dateStart" onchange="renderTable()">
+                <input type="date" id="dateEnd" onchange="renderTable()">
+            </div>
+
+            <button class="pdf-btn-red" onclick="downloadPDF()">تنزيل PDF</button>
+
             <div class="table-wrapper">
                 <table>
-                    <thead>
-                        <tr>
-                            <th style="width:40%">الرابط</th>
-                            <th style="width:20%">ID</th>
-                            <th style="width:25%">الوصف</th>
-                            <th style="width:15%">مشاهدة</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>الرابط</th><th>ID</th><th>مشاهدة</th></tr></thead>
                     <tbody id="tableBody"></tbody>
                 </table>
             </div>
@@ -103,57 +85,65 @@
     </details>
 </div>
 
-<div class="modal-overlay" id="editModal" onclick="checkClose(event)">
+<!-- Modal -->
+<div class="modal-overlay" id="editModal" onclick="this.classList.remove('active')">
     <div class="modal-box" onclick="event.stopPropagation()">
-        <span class="close-x" onclick="closeEditModal()">X</span>
-        <h3 style="margin-top:0">تعديل البيانات</h3>
-        <label>ID</label><input type="text" id="editId">
-        <label>URL</label><input type="text" id="editUrl">
-        <label>الوصف</label><textarea id="editDesc" rows="2"></textarea>
-        <div style="display:flex; gap:10px; margin-top:15px;">
-            <button class="btn-action" style="flex:1" onclick="saveEdit()">حفظ</button>
-            <button class="btn-action" style="flex:1; background:#f2f2f2; color:var(--danger);" onclick="deleteLink()">حذف</button>
-        </div>
+        <span class="close-x" onclick="document.getElementById('editModal').classList.remove('active')">X</span>
+        <h3>تعديل الرابط</h3>
+        <input type="text" id="editUrl" style="width:100%; padding:10px; margin-bottom:10px;">
+        <button class="btn-action" onclick="saveEdit()">تحديث</button>
     </div>
 </div>
 
+<!-- PDF -->
 <div id="pdf-template">
-    <div class="pdf-header">
+    <div style="display:flex; justify-content:space-between; border-bottom:2px solid #000; padding-bottom:10px;">
         <strong>electrwni | إلكتروني</strong>
-        <span id="pdf-date-target"></span>
+        <span id="pdf-date"></span>
     </div>
-    <h2 style="text-align:center">تقرير إحصائيات الروابط</h2>
-    <table class="pdf-table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>الرابط</th>
-                <th>الوصف</th>
-                <th>المشاهدات</th>
-            </tr>
-        </thead>
+    <h2 style="text-align:center">تقرير النقرات الإحصائي</h2>
+    <table style="width:100%; border-collapse:collapse; border:1px solid #000; text-align:center;">
+        <thead><tr style="background:#eee;"><th>ID</th><th>الرابط</th><th>النقرات</th></tr></thead>
         <tbody id="pdf-body"></tbody>
     </table>
 </div>
 
 <script>
     let linksData = JSON.parse(localStorage.getItem('electrwni_db')) || [];
-    let editingIndex = null;
-
-    function k(v) {
-        let i = document.getElementById('numInp');
-        if(v=='C') i.value=''; else if(v=='B') i.value=i.value.slice(0,-1); else i.value+=v;
-    }
+    let currentFilter = 'all';
 
     function saveData() {
         const num = document.getElementById('numInp').value;
         const url = document.getElementById('urlInp').value;
-        const desc = document.getElementById('descInp').value || "-";
         if(!num || !url) return alert("أكمل البيانات");
-        linksData.push({ id: num, originalUrl: url, description: desc, views: 0 });
+        linksData.push({ id: num, url: url, clicks: [] });
         localStorage.setItem('electrwni_db', JSON.stringify(linksData));
         renderTable();
-        ['numInp','urlInp','descInp'].forEach(id => document.getElementById(id).value = '');
+    }
+
+    function updateFilter(el, type) {
+        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        currentFilter = type;
+        document.getElementById('customDateBox').classList.toggle('active', type === 'custom');
+        renderTable();
+    }
+
+    function getFilteredViews(clicks) {
+        if (!clicks) return 0;
+        if (currentFilter === 'all') return clicks.length;
+        
+        const now = moment();
+        if (currentFilter === 'custom') {
+            const start = document.getElementById('dateStart').value;
+            const end = document.getElementById('dateEnd').value;
+            if (!start || !end) return clicks.length;
+            return clicks.filter(c => moment(c).isBetween(start, end, 'day', '[]')).length;
+        }
+        
+        // الفلاتر الزمنية الثابتة
+        const duration = currentFilter === 'day' ? 'day' : currentFilter === 'week' ? 'week' : currentFilter === 'month' ? 'month' : 'year';
+        return clicks.filter(c => moment(c).isAfter(now.clone().subtract(1, duration))).length;
     }
 
     function renderTable() {
@@ -161,68 +151,39 @@
         tbody.innerHTML = '';
         linksData.forEach((item, index) => {
             tbody.innerHTML += `<tr>
-                <td>
-                    <div style="display:flex; flex-direction:column;">
-                        <a href="${item.originalUrl}" target="_blank" style="color:var(--primary); font-weight:bold; text-decoration:none;">رابط</a>
-                        <span class="edit-sub" onclick="openEditModal(${index})">تعديل</span>
-                    </div>
-                </td>
+                <td><a href="#" onclick="trackClick(${index}); window.open('${item.url}')">رابط</a></td>
                 <td><b>${item.id}</b></td>
-                <td style="font-size:11px">${item.description}</td>
-                <td>${item.views}</td>
+                <td>${getFilteredViews(item.clicks)}</td>
             </tr>`;
         });
     }
 
-    function openEditModal(i) {
-        editingIndex = i;
-        document.getElementById('editId').value = linksData[i].id;
-        document.getElementById('editUrl').value = linksData[i].originalUrl;
-        document.getElementById('editDesc').value = linksData[i].description;
-        document.getElementById('editModal').classList.add('active');
-    }
-
-    function closeEditModal() { document.getElementById('editModal').classList.remove('active'); }
-    function checkClose(e) { if(e.target.id === 'editModal') closeEditModal(); }
-
-    function saveEdit() {
-        linksData[editingIndex] = {...linksData[editingIndex], id: document.getElementById('editId').value, originalUrl: document.getElementById('editUrl').value, description: document.getElementById('editDesc').value };
+    function trackClick(index) {
+        linksData[index].clicks.push(Date.now());
         localStorage.setItem('electrwni_db', JSON.stringify(linksData));
-        renderTable(); closeEditModal();
-    }
-
-    function deleteLink() {
-        if(confirm("حذف الرابط؟")) {
-            linksData.splice(editingIndex, 1);
-            localStorage.setItem('electrwni_db', JSON.stringify(linksData));
-            renderTable(); closeEditModal();
-        }
+        renderTable();
     }
 
     function downloadPDF() {
-        const template = document.getElementById('pdf-template');
         const pdfBody = document.getElementById('pdf-body');
-        
-        // توليد التاريخ لحظة الضغط فقط للـ PDF
         const d = new Date();
-        const dateStr = `طبع بتاريخ : ${d.getFullYear()}/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getDate().toString().padStart(2,'0')}`;
-        document.getElementById('pdf-date-target').innerText = dateStr;
-
+        document.getElementById('pdf-date').innerText = `طبع بتاريخ: ${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
+        
         pdfBody.innerHTML = '';
         linksData.forEach(item => {
             pdfBody.innerHTML += `<tr>
-                <td>${item.id}</td>
-                <td dir="ltr" style="font-size:10px">${item.originalUrl}</td>
-                <td>${item.description}</td>
-                <td>${item.views}</td>
+                <td style="border:1px solid #000; padding:8px;">${item.id}</td>
+                <td style="border:1px solid #000; padding:8px;">${item.url}</td>
+                <td style="border:1px solid #000; padding:8px;">${getFilteredViews(item.clicks)}</td>
             </tr>`;
         });
 
+        const template = document.getElementById('pdf-template');
         template.style.display = 'block';
         html2pdf().from(template).set({
             margin: 10,
             filename: 'Report.pdf',
-            html2canvas: { scale: 3 },
+            html2canvas: { scale: 2, letterRendering: false, useCORS: true },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         }).save().then(() => template.style.display = 'none');
     }
