@@ -4,43 +4,149 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة التحكم | Electrwni</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background: #0f172a; color: white; font-family: sans-serif; padding: 20px; }
-        .navbar { display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 12px; }
-        .content { margin-top: 30px; background: rgba(255, 255, 255, 0.05); padding: 2rem; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); }
-        .btn-logout { background: #ef4444; color: white; padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; }
+        :root { --primary: #072AC8; --accent: #FCF300; --dark-bg: #0f172a; }
+        body { 
+            background: var(--dark-bg); 
+            color: white; 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
+        .navbar { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: rgba(255, 255, 255, 0.05); 
+            padding: 15px 25px; 
+            border-radius: 16px; 
+            width: 100%; 
+            max-width: 800px; 
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .brand { font-weight: bold; color: var(--accent); font-size: 1.2rem; }
+        .content { 
+            margin-top: 30px; 
+            background: rgba(255, 255, 255, 0.05); 
+            padding: 2.5rem; 
+            border-radius: 24px; 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            width: 100%; 
+            max-width: 800px; 
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .user-info {
+            background: rgba(7, 42, 200, 0.2);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-right: 4px solid var(--primary);
+        }
+        .btn-logout { 
+            background: #ef4444; 
+            color: white; 
+            padding: 10px 20px; 
+            border-radius: 10px; 
+            border: none; 
+            cursor: pointer; 
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .btn-logout:hover { background: #dc2626; transform: scale(1.05); }
+        .btn-home {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .status-badge {
+            background: #10b981;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="navbar">
-        <span>مرحباً بك في إلكتروني</span>
-        <button class="btn-logout" onclick="logout()">خروج</button>
+        <div class="brand"><i class="fas fa-bolt"></i> إلكتروني</div>
+        <button class="btn-logout" onclick="logout()">خروج <i class="fas fa-sign-out-alt"></i></button>
     </div>
 
     <div class="content">
-        <h3>بيانات الحساب</h3>
-        <p id="user-email">تحميل...</p>
-        <hr style="border: 0.5px solid rgba(255,255,255,0.1)">
-        <p>هنا يمكنك البدء بإدارة أدواتك الرقمية.</p>
+        <h2>لوحة إدارة الحساب</h2>
+        <p>أهلاً بك في فضاء Electrwni الرقمي.</p>
+        
+        <div class="user-info">
+            <div id="user-email">جاري تحميل بياناتك...</div>
+            <div style="margin-top: 10px;">
+                <span class="status-badge">نشط الآن</span>
+            </div>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 25px 0;">
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px;">
+                <i class="fas fa-link" style="color: var(--accent); font-size: 1.5rem;"></i>
+                <h4>إدارة الروابط</h4>
+                <a href="admin.html" style="color: white; font-size: 0.8rem;">انقر هنا للإضافة</a>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px;">
+                <i class="fas fa-user-shield" style="color: var(--accent); font-size: 1.5rem;"></i>
+                <h4>الأمان</h4>
+                <p style="font-size: 0.8rem; opacity: 0.7;">حسابك محمي بواسطة Firebase</p>
+            </div>
+        </div>
+
+        <a href="index.html" class="btn-home"><i class="fas fa-arrow-right"></i> العودة للصفحة الرئيسية</a>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
     <script>
-        const firebaseConfig = { apiKey: "YOUR_API_KEY", authDomain: "...", projectId: "..." };
+        // إعدادات مشروعك الحقيقية
+        const firebaseConfig = {
+            apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
+            authDomain: "electrwni-link.firebaseapp.com",
+            projectId: "electrwni-link",
+            storageBucket: "electrwni-link.firebasestorage.app",
+            messagingSenderId: "712490301263",
+            appId: "1:712490301263:web:2084210da3f687285ab73a"
+        };
+
+        // تهيئة Firebase
         firebase.initializeApp(firebaseConfig);
 
-        // التحقق من حالة تسجيل الدخول
+        // التحقق من حالة تسجيل الدخول ومنع الدخول لغير المسجلين
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
-                document.getElementById('user-email').innerText = "البريد الحالي: " + user.email;
+                document.getElementById('user-email').innerHTML = `
+                    <strong>البريد الإلكتروني:</strong> <span style="color: var(--accent)">${user.email}</span>
+                `;
             } else {
+                // إذا لم يكن مسجلاً، يطرده لصفحة تسجيل الدخول
                 window.location.href = 'login.html';
             }
         });
 
+        // وظيفة تسجيل الخروج
         function logout() {
-            firebase.auth().signOut().then(() => { window.location.href = 'login.html'; });
+            firebase.auth().signOut().then(() => {
+                window.location.href = 'login.html';
+            }).catch((error) => {
+                console.error("خطأ في تسجيل الخروج:", error);
+            });
         }
     </script>
 </body>
