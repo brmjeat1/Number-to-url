@@ -5,36 +5,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>إنضم إلينا | Electrwni</title>
     <style>
-        body { background: #0f172a; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        body { background: #0f172a; color: white; font-family: 'Segoe UI', Tahoma, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); padding: 2rem; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); width: 90%; max-width: 400px; text-align: center; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; background: rgba(255, 255, 255, 0.1); color: white; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; border-radius: 8px; border: none; background: #3b82f6; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #2563eb; }
-        a { color: #94a3b8; text-decoration: none; font-size: 0.9rem; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; background: rgba(255, 255, 255, 0.1); color: white; box-sizing: border-box; outline: none; transition: 0.3s; border: 1px solid transparent; }
+        input:focus { border-color: #3b82f6; }
+        button { width: 100%; padding: 12px; border-radius: 8px; border: none; background: #3b82f6; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        button:hover { background: #2563eb; transform: translateY(-2px); }
+        button:disabled { background: #64748b; cursor: not-allowed; }
+        a { color: #94a3b8; text-decoration: none; font-size: 0.9rem; transition: 0.3s; }
+        a:hover { color: #3b82f6; }
+        .error-msg { color: #ef4444; font-size: 0.8rem; margin-top: 10px; display: none; }
     </style>
 </head>
 <body>
     <div class="glass-card">
-        <h2>إنشاء حساب جديد</h2>
+        <h2 style="margin-bottom: 5px;">إنشاء حساب جديد</h2>
+        <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 20px;">ابدأ رحلتك الرقمية مع إلكتروني</p>
+        
         <input type="email" id="email" placeholder="البريد الإلكتروني">
         <input type="password" id="password" placeholder="كلمة المرور">
-        <button onclick="signUp()">تسجيل</button>
-        <p><a href="login.html">لديك حساب؟ سجل دخولك</a></p>
+        
+        <div id="error-box" class="error-msg"></div>
+        
+        <button id="signup-btn" onclick="signUp()">إنشاء حساب</button>
+        <p style="margin-top: 20px;"><a href="login.html">لديك حساب بالفعل؟ سجل دخولك</a></p>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    
     <script>
-        // ضع إعدادات Firebase الخاصة بك هنا
-        const firebaseConfig = { apiKey: "YOUR_API_KEY", authDomain: "...", projectId: "..." };
+        // إعدادات Firebase الخاصة بك (نفس الموجودة في Dashboard)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
+            authDomain: "electrwni-link.firebaseapp.com",
+            projectId: "electrwni-link",
+            storageBucket: "electrwni-link.firebasestorage.app",
+            messagingSenderId: "712490301263",
+            appId: "1:712490301263:web:2084210da3f687285ab73a"
+        };
+
         firebase.initializeApp(firebaseConfig);
 
         function signUp() {
             const email = document.getElementById('email').value;
             const pass = document.getElementById('password').value;
+            const btn = document.getElementById('signup-btn');
+            const errorBox = document.getElementById('error-box');
+
+            if (!email || !pass) {
+                errorBox.style.display = 'block';
+                errorBox.innerText = "يرجى ملء جميع الحقول";
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "جاري الإنشاء...";
+            errorBox.style.display = 'none';
+
             firebase.auth().createUserWithEmailAndPassword(email, pass)
-                .then(() => { window.location.href = 'dashboard.html'; })
-                .catch((error) => { alert(error.message); });
+                .then((userCredential) => {
+                    // تم التسجيل بنجاح، التوجه للداشبورد
+                    window.location.href = 'dashboard.html';
+                })
+                .catch((error) => {
+                    btn.disabled = false;
+                    btn.innerText = "إنشاء حساب";
+                    errorBox.style.display = 'block';
+                    
+                    // ترجمة الأخطاء الشائعة للعربية
+                    if (error.code === 'auth/email-already-in-use') errorBox.innerText = "هذا البريد مسجل مسبقاً";
+                    else if (error.code === 'auth/weak-password') errorBox.innerText = "كلمة المرور ضعيفة جداً";
+                    else if (error.code === 'auth/invalid-email') errorBox.innerText = "البريد الإلكتروني غير صحيح";
+                    else errorBox.innerText = "حدث خطأ: " + error.message;
+                });
         }
     </script>
 </body>
