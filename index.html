@@ -68,7 +68,7 @@
         <button class="btn-go" id="btnGo">انتقل الآن</button>
 
         <div class="auth-links">
-            <a href="login.html" class="auth-btn">تسجيل دخول</a>
+            <a href="singin.html" class="auth-btn">تسجيل دخول</a>
             <a href="signup.html" class="auth-btn signup">تسجيل جديد</a>
         </div>
 
@@ -108,14 +108,27 @@
         const btnGo = document.getElementById('btnGo');
         const errorMsg = document.getElementById('error-msg');
 
-        // ميزة تحويل الأرقام (عربي/إنجليزي) وتصفية المدخلات
+        // وظيفة التحقق من وجود رقم في الرابط (التوجيه التلقائي)
+        async function checkAutoRedirect() {
+            const path = window.location.pathname.replace('/', '').trim();
+            if (path && !isNaN(path)) {
+                try {
+                    const snap = await get(child(ref(db), `links/${path}`));
+                    if (snap.exists()) {
+                        let target = snap.val();
+                        if (!target.startsWith('http')) target = 'https://' + target;
+                        window.location.href = target;
+                    }
+                } catch (e) { console.error("Auto-redirect Error:", e); }
+            }
+        }
+        checkAutoRedirect();
+
         input.addEventListener('input', (e) => {
             let v = e.target.value;
             const ar = [/٠/g, /١/g, /٢/g, /٣/g, /٤/g, /٥/g, /٦/g, /٧/g, /٨/g, /٩/g];
             for (let i = 0; i < 10; i++) v = v.replace(ar[i], i);
             e.target.value = v.replace(/[^0-9]/g, '');
-            
-            // إخفاء رسالة الخطأ بمجرد البدء بالكتابة أو المسح
             if(e.target.value === "") errorMsg.style.display = 'none';
         });
 
@@ -131,12 +144,7 @@
                 const snap = await get(child(ref(db), `links/${val}`));
                 if (snap.exists()) {
                     let targetUrl = snap.val();
-                    
-                    // تحسين التوجيه: التأكد من وجود بروتوكول لضمان عدم حدوث خطأ 404
-                    if (!targetUrl.startsWith('http')) {
-                        targetUrl = 'https://' + targetUrl;
-                    }
-                    
+                    if (!targetUrl.startsWith('http')) targetUrl = 'https://' + targetUrl;
                     window.location.href = targetUrl;
                 } else { 
                     errorMsg.innerText = "الرقم غير مسجل"; 
@@ -145,11 +153,9 @@
             } catch (e) { 
                 errorMsg.innerText = "خطأ في الاتصال"; 
                 errorMsg.style.color = "red"; 
-                console.error("Firebase Error:", e);
             }
         };
 
-        // برمجة زر الباركود
         document.getElementById('qrBtn').onclick = () => {
             alert("ميزة المسح الضوئي قيد التطوير للارتباط بالدومين الجديد!");
         };
