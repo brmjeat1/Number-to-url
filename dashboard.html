@@ -3,110 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم | Electrwni</title>
+    <title>لوحة التحكم | Electrwni.link</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #072AC8; --gray-bg: #f3f4f6; --text-dark: #1f2937; }
-        body { background: var(--gray-bg); color: var(--text-dark); font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        :root { --primary: #072AC8; --accent: #FCF300; --gray-bg: #f3f4f6; --text-dark: #1f2937; }
+        body { background: var(--gray-bg); color: var(--text-dark); font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding-bottom: 50px; }
         
-        /* الهيدر العلوي */
-        .navbar { display: flex; justify-content: space-between; align-items: center; background: #ffffff; padding: 10px 25px; width: 100%; box-sizing: border-box; border-bottom: 1px solid #e5e7eb; }
-        .brand { font-weight: bold; color: var(--primary); font-size: 1.2rem; }
-        .btn-logout { background: #ef4444; color: white; padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; }
+        /* الهيدر */
+        .navbar { display: flex; justify-content: space-between; align-items: center; background: #ffffff; padding: 10px 25px; width: 100%; box-sizing: border-box; border-bottom: 1px solid #e5e7eb; position: sticky; top: 0; z-index: 1000; }
+        .brand { font-weight: bold; color: var(--primary); font-size: 1.3rem; letter-spacing: 0.5px; }
+        .btn-logout { background: #ef4444; color: white; padding: 8px 18px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-logout:hover { opacity: 0.8; }
 
         /* المستطيل الأبيض المركزي */
-        .white-card { background: #ffffff; width: 90%; max-width: 500px; margin: 30px auto; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); padding: 30px; box-sizing: border-box; }
+        .white-card { background: #ffffff; width: 92%; max-width: 550px; margin: 30px auto; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.06); padding: 35px; box-sizing: border-box; }
         
-        .section-title { border-bottom: 2px solid var(--gray-bg); padding-bottom: 10px; margin: 20px 0 15px; color: var(--primary); font-weight: bold; display: flex; align-items: center; gap: 10px; }
-        .input-group { margin-bottom: 15px; text-align: right; }
-        label { display: block; font-size: 0.85rem; margin-bottom: 5px; color: #6b7280; }
-        input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #d1d5db; background: #f9fafb; box-sizing: border-box; outline: none; }
+        h2 { text-align: center; margin-top: 0; font-size: 1.5rem; color: var(--text-dark); }
+        .section-title { border-bottom: 2px solid var(--gray-bg); padding-bottom: 10px; margin: 30px 0 20px; color: var(--primary); font-weight: bold; display: flex; align-items: center; gap: 12px; font-size: 1.1rem; }
         
-        .action-row { display: flex; gap: 10px; margin-top: 8px; }
-        .btn-small { flex: 1; padding: 8px; border-radius: 6px; border: none; cursor: pointer; font-size: 0.8rem; font-weight: bold; transition: 0.3s; }
-        .btn-copy { background: #e5e7eb; color: var(--text-dark); }
+        /* حقول الإدخال */
+        .input-group { margin-bottom: 20px; position: relative; }
+        label { display: block; font-size: 0.9rem; margin-bottom: 8px; color: #4b5563; font-weight: 500; }
+        input, select { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #d1d5db; background: #f9fafb; box-sizing: border-box; outline: none; font-size: 1rem; transition: 0.3s; }
+        input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 4px rgba(7, 42, 200, 0.05); }
+
+        /* روابط العرض التلقائية */
+        .auto-links { background: #f8fafc; padding: 15px; border-radius: 14px; border: 1px dashed #cbd5e1; margin-top: 10px; }
+        .link-item { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 0.85rem; color: #64748b; }
+        .link-item:last-child { margin-bottom: 0; }
+        .link-actions { display: flex; gap: 8px; }
+        .btn-action { padding: 6px 12px; border-radius: 8px; border: none; cursor: pointer; font-size: 0.75rem; font-weight: bold; }
+        .btn-copy { background: #e2e8f0; color: #475569; }
         .btn-go { background: var(--primary); color: white; }
 
-        .footer-link { display: block; text-align: center; margin-top: 20px; color: #6b7280; text-decoration: none; font-size: 0.9rem; }
+        /* نظام المستطيلات التفاعلية (بيانات الاتصال) */
+        .dynamic-row { display: flex; gap: 10px; margin-bottom: 12px; align-items: center; }
+        .dynamic-row select { flex: 0.4; }
+        .dynamic-row input { flex: 1; }
+        .btn-ctrl { width: 40px; height: 40px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .btn-add { background: #10b981; color: white; }
+        .btn-remove { background: #fee2e2; color: #ef4444; }
+
+        /* الأمان */
+        .pass-wrapper { position: relative; }
+        .eye-icon { position: absolute; left: 14px; top: 14px; cursor: pointer; color: #9ca3af; font-size: 1.1rem; }
+
+        .btn-save { width: 100%; padding: 16px; background: #10b981; color: white; border: none; border-radius: 14px; font-weight: bold; cursor: pointer; margin-top: 25px; font-size: 1.1rem; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
+        .footer-link { display: block; text-align: center; margin-top: 25px; color: #94a3b8; text-decoration: none; font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
     <div class="navbar">
-        <div class="brand"><i class="fas fa-bolt"></i> إلكتروني</div>
-        <button class="btn-logout" onclick="logout()">خروج</button>
+        <div class="brand">Electrwni.link</div>
+        <button class="btn-logout" onclick="logout()">خروج <i class="fas fa-sign-out-alt"></i></button>
     </div>
 
     <div class="white-card">
-        <h2 style="text-align: center; margin-top: 0;">لوحة الإدارة</h2>
+        <h2>لوحة التحكم الإبداعية</h2>
         
-        <!-- القسم الأول: الروابط -->
-        <div class="section-title"><i class="fas fa-link"></i> رابطك المعروض Bio</div>
+        <div class="section-title"><i class="fas fa-magic"></i> أنشئ صفحة روابطك</div>
         
         <div class="input-group">
-            <label>١- سجل دومينك</label>
-            <input type="text" placeholder="mylink.com" id="userDomain">
-        </div>
-
-        <div class="input-group">
-            <label>واجهة البايو</label>
-            <input type="text" readonly value="https://electrwni.link/u/user" id="bioUrl">
-            <div class="action-row">
-                <button class="btn-small btn-copy" onclick="copy('bioUrl')">نسخ</button>
-                <button class="btn-small btn-go" onclick="window.open('#','_blank')">ذهاب</button>
+            <label>١- اسم صفحتك</label>
+            <input type="text" id="pageName" placeholder="مثلاً: ali-store" oninput="updateLiveLinks()">
+            
+            <div class="auto-links" id="linksPreview">
+                <div class="link-item">
+                    <span id="displayBio">صفحة العرض: Electrwni.link/u/..</span>
+                    <div class="link-actions">
+                        <button class="btn-action btn-copy" onclick="copy('displayBio')">نسخ</button>
+                        <button class="btn-action btn-go">ذهاب</button>
+                    </div>
+                </div>
+                <div class="link-item">
+                    <span id="displayAdmin">صفحة المدير: Electrwni.link/admin/..</span>
+                    <div class="link-actions">
+                        <button class="btn-action btn-copy" onclick="copy('displayAdmin')">نسخ</button>
+                        <button class="btn-action btn-go">ذهاب</button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="input-group">
-            <label>صفحة المدير</label>
-            <input type="text" readonly value="https://electrwni.link/admin" id="adminUrl">
-            <div class="action-row">
-                <button class="btn-small btn-copy" onclick="copy('adminUrl')">نسخ</button>
-                <button class="btn-small btn-go" onclick="window.location.href='admin.html'">ذهاب</button>
+        <div class="section-title"><i class="fas fa-share-nodes"></i> بيانات الاتصال السريع</div>
+        <div id="dynamic-contact-container">
+            <div class="dynamic-row">
+                <select>
+                    <option value="whatsapp">واتساب</option>
+                    <option value="instagram">إنستقرام</option>
+                    <option value="telegram">تليجرام</option>
+                    <option value="map">الخارطة</option>
+                    <option value="phone">الهاتف</option>
+                    <option value="mail">الإيميل</option>
+                    <option value="web">موقع</option>
+                </select>
+                <input type="text" placeholder="الرابط أو Nickname">
+                <button class="btn-ctrl btn-add" onclick="addRow()">+</button>
             </div>
         </div>
 
-        <!-- القسم الثاني: الأمان -->
-        <div class="section-title"><i class="fas fa-shield-alt"></i> الأمان</div>
+        <div class="section-title"><i class="fas fa-user-shield"></i> الأمان</div>
         
         <div class="input-group">
-            <label>٢- إيميل الحالي</label>
-            <input type="email" id="displayEmail" readonly>
+            <label>٢- الإيميل (المسجل حالياً)</label>
+            <input type="email" id="userEmail" readonly style="background: #f1f5f9; color: #64748b;">
         </div>
 
         <div class="input-group">
-            <label>إيميل بديل</label>
-            <input type="email" placeholder="أدخل إيميل الطوارئ">
+            <label>إيميل بديل للطوارئ</label>
+            <input type="email" placeholder="email@example.com">
         </div>
 
         <div class="input-group">
             <label>٣- كلمة السر القديمة</label>
-            <div style="position: relative;">
-                <input type="password" id="oldPass" value="********">
-                <i class="fas fa-eye" style="position: absolute; left: 10px; top: 12px; cursor: pointer; color: #9ca3af;" onclick="togglePass()"></i>
+            <div class="pass-wrapper">
+                <input type="password" id="oldPass" value="password123">
+                <i class="fas fa-eye eye-icon" onclick="togglePass('oldPass')"></i>
             </div>
         </div>
 
         <div class="input-group">
-            <label>أدخل كلمة السر الجديدة</label>
-            <input type="password">
+            <label>كلمة السر الجديدة</label>
+            <input type="password" id="newPass">
         </div>
 
-        <div class="input-group">
-            <label>أدخل كلمة السر مرة أخرى</label>
-            <input type="password">
-        </div>
+        <button class="btn-save" onclick="saveAll()">حفظ كافة التغييرات</button>
 
-        <button style="width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px;">حفظ التغييرات</button>
-
-        <a href="index.html" class="footer-link"><i class="fas fa-arrow-right"></i> العودة للرئيسية</a>
+        <a href="index.html" class="footer-link"><i class="fas fa-arrow-left"></i> العودة للرئيسية</a>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <script>
-        // إعدادات Firebase الخاصة بك
         const firebaseConfig = {
             apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
             authDomain: "electrwni-link.firebaseapp.com",
@@ -116,32 +147,64 @@
             messagingSenderId: "712490301263",
             appId: "1:712490301263:web:2084210da3f687285ab73a"
         };
-
         firebase.initializeApp(firebaseConfig);
 
-        // جلب بيانات المستخدم
+        // جلب الإيميل تلقائياً من جلسة التسجيل
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
-                document.getElementById('displayEmail').value = user.email;
+                document.getElementById('userEmail').value = user.email;
             } else {
                 window.location.href = 'singin.html';
             }
         });
 
+        // تحديث الروابط لحظياً
+        function updateLiveLinks() {
+            const name = document.getElementById('pageName').value || "..";
+            document.getElementById('displayBio').innerText = `صفحة العرض: Electrwni.link/u/${name}`;
+            document.getElementById('displayAdmin').innerText = `صفحة المدير: Electrwni.link/admin/${name}`;
+        }
+
+        // إضافة سطر اتصال جديد
+        function addRow() {
+            const container = document.getElementById('dynamic-contact-container');
+            const newRow = document.createElement('div');
+            newRow.className = 'dynamic-row';
+            newRow.innerHTML = `
+                <select>
+                    <option value="whatsapp">واتساب</option>
+                    <option value="instagram">إنستقرام</option>
+                    <option value="telegram">تليجرام</option>
+                    <option value="map">الخارطة</option>
+                    <option value="phone">الهاتف</option>
+                    <option value="mail">الإيميل</option>
+                    <option value="web">موقع</option>
+                </select>
+                <input type="text" placeholder="الرابط أو Nickname">
+                <button class="btn-ctrl btn-remove" onclick="this.parentElement.remove()">-</button>
+            `;
+            container.appendChild(newRow);
+        }
+
+        // إظهار/إخفاء الباسوورد
+        function togglePass(id) {
+            const el = document.getElementById(id);
+            el.type = el.type === "password" ? "text" : "password";
+        }
+
+        function copy(id) {
+            const text = document.getElementById(id).innerText.split(': ')[1];
+            navigator.clipboard.writeText(text);
+            alert("تم النسخ بنجاح!");
+        }
+
         function logout() {
             firebase.auth().signOut().then(() => { window.location.href = 'singin.html'; });
         }
 
-        function copy(id) {
-            const copyText = document.getElementById(id);
-            copyText.select();
-            document.execCommand("copy");
-            alert("تم النسخ: " + copyText.value);
-        }
-
-        function togglePass() {
-            const x = document.getElementById("oldPass");
-            x.type = x.type === "password" ? "text" : "password";
+        function saveAll() {
+            alert("جاري مزامنة البيانات مع هويتك الرقمية...");
+            // هنا يتم الربط مع Firebase Database لاحقاً
         }
     </script>
 </body>
