@@ -86,23 +86,25 @@
         </div>
     </div>
 
+    <!-- Firebase SDK Setup -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     
     <script>
-        // إعدادات Firebase الحقيقية الخاصة بمشروعك
+        // إعدادات Firebase المحدثة والكاملة لمشروعك
         const firebaseConfig = {
             apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
             authDomain: "electrwni-link.firebaseapp.com",
+            databaseURL: "https://electrwni-link-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "electrwni-link",
             storageBucket: "electrwni-link.firebasestorage.app",
             messagingSenderId: "712490301263",
-            appId: "1:712490301263:web:2084210da3f687285ab73a"
+            appId: "1:712490301263:web:2084210da3f687285ab73a",
+            measurementId: "G-LCCGHWKH87"
         };
 
         firebase.initializeApp(firebaseConfig);
 
-        // وظيفة تسجيل الدخول
         function login() {
             const email = document.getElementById('email').value;
             const pass = document.getElementById('password').value;
@@ -126,8 +128,7 @@
                     btn.disabled = false;
                     btn.innerHTML = 'دخول <i class="fas fa-sign-in-alt"></i>';
                     
-                    // ترجمة أخطاء تسجيل الدخول
-                    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
                         showError("خطأ في البريد الإلكتروني أو كلمة المرور");
                     } else if (error.code === 'auth/invalid-email') {
                         showError("صيغة البريد الإلكتروني غير صحيحة");
@@ -143,7 +144,6 @@
             errorBox.innerText = msg;
         }
 
-        // تسجيل الدخول عند ضغط زر Enter
         document.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') login();
         });
