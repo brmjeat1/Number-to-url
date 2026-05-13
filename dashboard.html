@@ -6,116 +6,107 @@
     <title>لوحة التحكم | Electrwni</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #072AC8; --accent: #FCF300; --dark-bg: #0f172a; }
-        body { 
-            background: var(--dark-bg); 
-            color: white; 
-            font-family: 'Segoe UI', Tahoma, sans-serif; 
-            margin: 0; 
-            padding: 20px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-        }
-        .navbar { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            background: rgba(255, 255, 255, 0.05); 
-            padding: 15px 25px; 
-            border-radius: 16px; 
-            width: 100%; 
-            max-width: 800px; 
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .brand { font-weight: bold; color: var(--accent); font-size: 1.2rem; }
-        .content { 
-            margin-top: 30px; 
-            background: rgba(255, 255, 255, 0.05); 
-            padding: 2.5rem; 
-            border-radius: 24px; 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            width: 100%; 
-            max-width: 800px; 
-            box-sizing: border-box;
-            text-align: center;
-        }
-        .user-info {
-            background: rgba(7, 42, 200, 0.2);
-            padding: 15px;
-            border-radius: 12px;
-            margin: 20px 0;
-            border-right: 4px solid var(--primary);
-        }
-        .btn-logout { 
-            background: #ef4444; 
-            color: white; 
-            padding: 10px 20px; 
-            border-radius: 10px; 
-            border: none; 
-            cursor: pointer; 
-            font-weight: bold;
-            transition: 0.3s;
-        }
-        .btn-logout:hover { background: #dc2626; transform: scale(1.05); }
-        .btn-home {
-            display: inline-block;
-            margin-top: 20px;
-            color: var(--accent);
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-        .status-badge {
-            background: #10b981;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            margin-right: 10px;
-        }
+        :root { --primary: #072AC8; --gray-bg: #f3f4f6; --text-dark: #1f2937; }
+        body { background: var(--gray-bg); color: var(--text-dark); font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        
+        /* الهيدر العلوي */
+        .navbar { display: flex; justify-content: space-between; align-items: center; background: #ffffff; padding: 10px 25px; width: 100%; box-sizing: border-box; border-bottom: 1px solid #e5e7eb; }
+        .brand { font-weight: bold; color: var(--primary); font-size: 1.2rem; }
+        .btn-logout { background: #ef4444; color: white; padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; }
+
+        /* المستطيل الأبيض المركزي */
+        .white-card { background: #ffffff; width: 90%; max-width: 500px; margin: 30px auto; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); padding: 30px; box-sizing: border-box; }
+        
+        .section-title { border-bottom: 2px solid var(--gray-bg); padding-bottom: 10px; margin: 20px 0 15px; color: var(--primary); font-weight: bold; display: flex; align-items: center; gap: 10px; }
+        .input-group { margin-bottom: 15px; text-align: right; }
+        label { display: block; font-size: 0.85rem; margin-bottom: 5px; color: #6b7280; }
+        input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #d1d5db; background: #f9fafb; box-sizing: border-box; outline: none; }
+        
+        .action-row { display: flex; gap: 10px; margin-top: 8px; }
+        .btn-small { flex: 1; padding: 8px; border-radius: 6px; border: none; cursor: pointer; font-size: 0.8rem; font-weight: bold; transition: 0.3s; }
+        .btn-copy { background: #e5e7eb; color: var(--text-dark); }
+        .btn-go { background: var(--primary); color: white; }
+
+        .footer-link { display: block; text-align: center; margin-top: 20px; color: #6b7280; text-decoration: none; font-size: 0.9rem; }
     </style>
 </head>
 <body>
+
     <div class="navbar">
         <div class="brand"><i class="fas fa-bolt"></i> إلكتروني</div>
-        <button class="btn-logout" onclick="logout()">خروج <i class="fas fa-sign-out-alt"></i></button>
+        <button class="btn-logout" onclick="logout()">خروج</button>
     </div>
 
-    <div class="content">
-        <h2>لوحة إدارة الحساب</h2>
-        <p>أهلاً بك في فضاء Electrwni الرقمي.</p>
+    <div class="white-card">
+        <h2 style="text-align: center; margin-top: 0;">لوحة الإدارة</h2>
         
-        <div class="user-info">
-            <div id="user-email">جاري تحميل بياناتك...</div>
-            <div style="margin-top: 10px;">
-                <span class="status-badge">نشط الآن</span>
+        <!-- القسم الأول: الروابط -->
+        <div class="section-title"><i class="fas fa-link"></i> رابطك المعروض Bio</div>
+        
+        <div class="input-group">
+            <label>١- سجل دومينك</label>
+            <input type="text" placeholder="mylink.com" id="userDomain">
+        </div>
+
+        <div class="input-group">
+            <label>واجهة البايو</label>
+            <input type="text" readonly value="https://electrwni.link/u/user" id="bioUrl">
+            <div class="action-row">
+                <button class="btn-small btn-copy" onclick="copy('bioUrl')">نسخ</button>
+                <button class="btn-small btn-go" onclick="window.open('#','_blank')">ذهاب</button>
             </div>
         </div>
 
-        <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 25px 0;">
-        
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px;">
-                <i class="fas fa-link" style="color: var(--accent); font-size: 1.5rem;"></i>
-                <h4>إدارة الروابط</h4>
-                <a href="admin.html" style="color: white; font-size: 0.8rem;">انقر هنا للإضافة</a>
-            </div>
-            <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px;">
-                <i class="fas fa-user-shield" style="color: var(--accent); font-size: 1.5rem;"></i>
-                <h4>الأمان</h4>
-                <p style="font-size: 0.8rem; opacity: 0.7;">حسابك محمي بواسطة Firebase</p>
+        <div class="input-group">
+            <label>صفحة المدير</label>
+            <input type="text" readonly value="https://electrwni.link/admin" id="adminUrl">
+            <div class="action-row">
+                <button class="btn-small btn-copy" onclick="copy('adminUrl')">نسخ</button>
+                <button class="btn-small btn-go" onclick="window.location.href='admin.html'">ذهاب</button>
             </div>
         </div>
 
-        <a href="index.html" class="btn-home"><i class="fas fa-arrow-right"></i> العودة للصفحة الرئيسية</a>
+        <!-- القسم الثاني: الأمان -->
+        <div class="section-title"><i class="fas fa-shield-alt"></i> الأمان</div>
+        
+        <div class="input-group">
+            <label>٢- إيميل الحالي</label>
+            <input type="email" id="displayEmail" readonly>
+        </div>
+
+        <div class="input-group">
+            <label>إيميل بديل</label>
+            <input type="email" placeholder="أدخل إيميل الطوارئ">
+        </div>
+
+        <div class="input-group">
+            <label>٣- كلمة السر القديمة</label>
+            <div style="position: relative;">
+                <input type="password" id="oldPass" value="********">
+                <i class="fas fa-eye" style="position: absolute; left: 10px; top: 12px; cursor: pointer; color: #9ca3af;" onclick="togglePass()"></i>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>أدخل كلمة السر الجديدة</label>
+            <input type="password">
+        </div>
+
+        <div class="input-group">
+            <label>أدخل كلمة السر مرة أخرى</label>
+            <input type="password">
+        </div>
+
+        <button style="width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px;">حفظ التغييرات</button>
+
+        <a href="index.html" class="footer-link"><i class="fas fa-arrow-right"></i> العودة للرئيسية</a>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
     <script>
-        // إعدادات Firebase الكاملة والمحدثة
+        // إعدادات Firebase الخاصة بك
         const firebaseConfig = {
             apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
             authDomain: "electrwni-link.firebaseapp.com",
@@ -123,29 +114,34 @@
             projectId: "electrwni-link",
             storageBucket: "electrwni-link.firebasestorage.app",
             messagingSenderId: "712490301263",
-            appId: "1:712490301263:web:2084210da3f687285ab73a",
-            measurementId: "G-LCCGHWKH87"
+            appId: "1:712490301263:web:2084210da3f687285ab73a"
         };
 
         firebase.initializeApp(firebaseConfig);
 
+        // جلب بيانات المستخدم
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
-                document.getElementById('user-email').innerHTML = `
-                    <strong>البريد الإلكتروني:</strong> <span style="color: var(--accent)">${user.email}</span>
-                `;
+                document.getElementById('displayEmail').value = user.email;
             } else {
-                // التوجيه لصفحة تسجيل الدخول إذا لم يكن مسجلاً
                 window.location.href = 'singin.html';
             }
         });
 
         function logout() {
-            firebase.auth().signOut().then(() => {
-                window.location.href = 'singin.html';
-            }).catch((error) => {
-                console.error("خطأ في تسجيل الخروج:", error);
-            });
+            firebase.auth().signOut().then(() => { window.location.href = 'singin.html'; });
+        }
+
+        function copy(id) {
+            const copyText = document.getElementById(id);
+            copyText.select();
+            document.execCommand("copy");
+            alert("تم النسخ: " + copyText.value);
+        }
+
+        function togglePass() {
+            const x = document.getElementById("oldPass");
+            x.type = x.type === "password" ? "text" : "password";
         }
     </script>
 </body>
