@@ -115,13 +115,16 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
     <script>
+        // إعدادات Firebase الكاملة والمحدثة
         const firebaseConfig = {
             apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
             authDomain: "electrwni-link.firebaseapp.com",
+            databaseURL: "https://electrwni-link-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "electrwni-link",
             storageBucket: "electrwni-link.firebasestorage.app",
             messagingSenderId: "712490301263",
-            appId: "1:712490301263:web:2084210da3f687285ab73a"
+            appId: "1:712490301263:web:2084210da3f687285ab73a",
+            measurementId: "G-LCCGHWKH87"
         };
 
         firebase.initializeApp(firebaseConfig);
@@ -132,13 +135,14 @@
                     <strong>البريد الإلكتروني:</strong> <span style="color: var(--accent)">${user.email}</span>
                 `;
             } else {
-                window.location.href = 'login.html';
+                // التوجيه لصفحة تسجيل الدخول إذا لم يكن مسجلاً
+                window.location.href = 'singin.html';
             }
         });
 
         function logout() {
             firebase.auth().signOut().then(() => {
-                window.location.href = 'login.html';
+                window.location.href = 'singin.html';
             }).catch((error) => {
                 console.error("خطأ في تسجيل الخروج:", error);
             });
