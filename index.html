@@ -3,13 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <script>
-window.location.replace('./signin.html');
-
-    </script>
-    
-    <title>إلكتروني - تسجيل وتخصيص حساب جديد</title>
+    <title>إلكتروني - التوجيه الرقمي الفوري</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
@@ -22,6 +16,7 @@ window.location.replace('./signin.html');
             --text-dark: #0f172a !important;
             --text-muted: #475569 !important;
             --success: #16a34a;
+            --danger: #dc2626;
         }
         
         body { 
@@ -62,118 +57,94 @@ window.location.replace('./signin.html');
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
             width: 92%; 
-            max-width: 520px; 
-            margin: 30px auto; 
+            max-width: 440px; 
+            margin: 50px auto; 
             border-radius: 28px; 
             box-shadow: 0 25px 50px rgba(15, 23, 42, 0.06); 
-            padding: 35px 28px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 40px 30px; 
             box-sizing: border-box; 
         }
 
-        .steps-indicator { display: flex; justify-content: space-between; margin-bottom: 30px; position: relative; padding: 0 10px; }
-        .steps-indicator::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 2px; background: rgba(0,0,0,0.05); z-index: 1; transform: translateY(-50%); }
-        .step-dot { width: 35px; height: 35px; border-radius: 50%; background: #fff; border: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--text-muted); z-index: 2; font-size: 0.9rem; }
-        .step-dot.active { border-color: var(--primary); background: var(--primary); color: #fff; box-shadow: 0 0 12px rgba(7, 42, 200, 0.2); }
-        .step-dot.completed { border-color: var(--success); background: var(--success); color: #fff; }
+        .welcome-brand { color: var(--primary); font-weight: 700; font-size: 1.2rem; margin-bottom: 20px; text-align: center; }
 
-        .step-content { display: none; }
-        .step-content.active { display: block; }
-
-        .welcome-title { color: var(--text-dark); font-weight: 700; font-size: 1.35rem; margin-bottom: 6px; text-align: center; }
-        .welcome-sub { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 25px; text-align: center; }
-
-        .form-group { margin-bottom: 18px; display: flex; flex-direction: column; }
-        .form-group label { color: var(--text-dark); font-weight: 600; font-size: 0.85rem; margin-bottom: 6px; padding-right: 4px; }
-
-        .input-wrapper { position: relative; display: flex; align-items: center; }
-        .input-wrapper i.field-icon { position: absolute; right: 16px; color: #94a3b8; font-size: 1rem; z-index: 10; }
-
-        input, select, textarea { 
+        input { 
             width: 100%; 
-            padding: 13px 44px 13px 16px !important; 
-            font-size: 0.95rem; 
-            font-weight: 500;
-            border: 2px solid rgba(7, 42, 200, 0.08) !important; 
-            border-radius: 14px !important; 
+            padding: 15px; 
+            font-size: 1.3rem; 
+            font-weight: 700;
+            border: 2px solid rgba(7, 42, 200, 0.1) !important; 
+            border-radius: 16px !important; 
+            text-align: center; 
             outline: none; 
             box-sizing: border-box; 
             background: #ffffff !important;
             color: var(--text-dark) !important;
+            transition: all 0.3s ease;
             font-family: 'Tajawal', sans-serif;
+            letter-spacing: 2px;
         }
+        input:focus { border-color: var(--primary) !important; box-shadow: 0 0 15px rgba(7, 42, 200, 0.08) !important; }
+        input::placeholder { font-size: 1.05rem; font-weight: 500; letter-spacing: 0px; color: #94a3b8; }
 
-        .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 15px; }
-        .category-card { background: #fff; border: 2px solid rgba(7, 42, 200, 0.05); border-radius: 14px; padding: 14px; text-align: center; cursor: pointer; color: var(--text-dark); font-weight: 600; font-size: 0.9rem; }
-        .category-card.selected { border-color: var(--primary); background: rgba(7, 42, 200, 0.04); color: var(--primary); }
+        .error-msg { font-size: 0.9rem; margin-top: 12px; display: none; font-weight: 700; text-align: center; }
+        
+        .btn-go { 
+            width: 100%; 
+            padding: 15px; 
+            background: var(--primary); 
+            color: #fff; 
+            border: none; 
+            border-radius: 16px; 
+            font-size: 1.1rem; 
+            font-weight: 700; 
+            margin-top: 20px; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            font-family: 'Tajawal', sans-serif;
+            box-shadow: 0 4px 12px rgba(7, 42, 200, 0.15);
+        }
+        .btn-go:hover { background: var(--primary-light); transform: translateY(-1px); }
 
-        .network-row { background: rgba(255,255,255,0.9); border: 1px solid rgba(0,0,0,0.06); padding: 14px; border-radius: 16px; margin-bottom: 12px; }
-        .network-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .network-title { font-weight: 700; font-size: 0.9rem; color: var(--text-dark); display: flex; align-items: center; gap: 8px; }
-        .toggle-group { display: flex; background: rgba(0,0,0,0.04); padding: 3px; border-radius: 8px; }
-        .toggle-btn { padding: 4px 10px; font-size: 0.75rem; font-weight: 700; border: none; background: transparent; border-radius: 6px; cursor: pointer; color: var(--text-muted); }
-        .toggle-btn.active { background: #fff; color: var(--primary); }
+        .auth-links { display: flex; width: 100%; justify-content: space-around; margin-top: 30px; border-top: 1px solid rgba(0,0,0,0.06); padding-top: 25px; gap: 12px; }
+        .auth-btn { text-decoration: none; color: var(--text-dark); font-weight: 700; font-size: 0.9rem; padding: 11px 20px; border: 1px solid rgba(0,0,0,0.08); border-radius: 12px; flex: 1; text-align: center; transition: all 0.2s; background: #fff; }
+        .auth-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .auth-btn.signup { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 4px 10px rgba(7, 42, 200, 0.1); }
+        .auth-btn.signup:hover { background: var(--primary-light); color: #fff; }
 
-        .nav-buttons { display: flex; gap: 12px; margin-top: 25px; }
-        .btn-action { flex: 1; padding: 14px; border-radius: 14px; font-size: 1rem; font-weight: 700; cursor: pointer; border: none; }
-        .btn-next { background: var(--primary); color: #fff; }
-        .btn-prev { background: rgba(0,0,0,0.05); color: var(--text-dark); }
+        .social-links { display: flex; justify-content: center; gap: 14px; margin-top: 30px; align-items: center; } 
+        .social-icon { background: #fff; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; text-decoration: none; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.06); cursor: pointer; transition: all 0.2s; font-size: 1.1rem; }
+        .social-icon:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-1px); }
 
-        .divider { display: flex; align-items: center; text-align: center; margin: 20px 0; color: var(--text-muted); font-size: 0.8rem; }
-        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
-
-        .btn-google { width: 100%; padding: 12px; background: #ffffff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 14px; color: var(--text-dark); font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; }
-        .auth-footer { margin-top: 25px; font-size: 0.9rem; color: var(--text-muted); text-align: center; }
-        .auth-footer a { color: var(--primary); text-decoration: none; font-weight: 700; }
-
-        .footer { background: rgba(255, 255, 255, 0.7); border-top: 1px solid var(--glass-border); width: 100%; padding: 20px; color: var(--text-muted); font-size: 0.85rem; text-align: center; box-sizing: border-box; }
+        .footer { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid var(--glass-border); width: 100%; padding: 20px; color: var(--text-muted); font-size: 0.85rem; text-align: center; line-height: 1.7; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
     <div class="header-box">
-        <div class="header-text">منصة <span class="highlight-text">إلكتروني</span> الرقمية</div>
+        <div class="header-text">توجيه <span class="highlight-text">الأرقام إلى روابط</span> لمنصة إلكتروني</div>
     </div>
 
     <div class="white-wrapper">
-        <div class="steps-indicator">
-            <div class="step-dot active" id="dot1">1</div>
-            <div class="step-dot" id="dot2">2</div>
-            <div class="step-dot" id="dot3">3</div>
+        <div class="welcome-brand"><i class="fa-solid fa-bolt" style="margin-left:6px;"></i> أبتسم أنت بصفحة Electrwni</div>
+        
+        <input type="text" id="linkId" inputmode="numeric" placeholder="أدخل الرقم التعريفي هنا...">
+        <div id="error-msg" class="error-msg"></div>
+        <button class="btn-go" id="btnGo">انتقل الآن</button>
+
+        <div class="auth-links">
+            <a href="signin.html" class="auth-btn">تسجيل دخول</a>
+            <a href="signup.html" class="auth-btn signup">تسجيل جديد</a>
         </div>
 
-        <form id="multiStepForm" onsubmit="event.preventDefault();">
-            <div class="step-content active" id="step1">
-                <div class="welcome-title">إنشاء حساب جديد</div>
-                <div class="welcome-sub">احجز اسمك الرقمي وابدأ مشاركة روابطك بذكاء</div>
-
-                <div class="form-group">
-                    <label>اسم المستخدم (رابط صفحتك)</label>
-                    <div class="input-wrapper">
-                        <input type="text" id="username" placeholder="username" required autocomplete="off">
-                        <i class="fa-solid fa-at field-icon"></i>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>البريد الإلكتروني</label>
-                    <div class="input-wrapper">
-                        <input type="email" id="email" placeholder="name@example.com" required>
-                        <i class="fa-solid fa-envelope field-icon"></i>
-                    </div>
-                </div>
-
-                <div class="nav-buttons">
-                    <button type="button" class="btn-action btn-next" onclick="nextStep(2)">المتابعة والتخصيص</button>
-                </div>
-
-                <div class="divider">أو سجل سريعاً عبر</div>
-                <button type="button" class="btn-google">سجل باستخدام حساب Google</button>
-                <div class="auth-footer">لديك حساب بالفعل؟ <a href="signin.html">تسجيل الدخول</a></div>
-            </div>
-            
-            <div class="step-content" id="step2"></div>
-            <div class="step-content" id="step3"></div>
-        </form>
+        <div class="social-links">
+            <a href="https://t.me/electrwni" target="_blank" class="social-icon"><i class="fa-brands fa-telegram"></i></a>
+            <a href="https://www.instagram.com/electrwni" target="_blank" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://x.com/electrwni" target="_blank" class="social-icon"><i class="fa-brands fa-x-twitter"></i></a>
+            <div class="social-icon" id="qrBtn"><i class="fas fa-qrcode"></i></div>
+        </div>
     </div>
 
     <div class="footer">
@@ -181,11 +152,77 @@ window.location.replace('./signin.html');
         Built with High-Performance Architecture, by electrwni, kuwait
     </div>
 
-    <script>
-        function nextStep(stepNumber) {
-            document.querySelectorAll('.step-content').forEach(content => content.classList.remove('active'));
-            document.getElementById(`step${stepNumber}`).classList.add('active');
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+        import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
+            authDomain: "electrwni-link.firebaseapp.com",
+            databaseURL: "https://electrwni-link-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "electrwni-link",
+            storageBucket: "electrwni-link.firebasestorage.app",
+            messagingSenderId: "712490301263",
+            appId: "1:712490301263:web:2084210da3f687285ab73a"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const input = document.getElementById('linkId');
+        const btnGo = document.getElementById('btnGo');
+        const errorMsg = document.getElementById('error-msg');
+
+        async function checkAutoRedirect() {
+            const path = window.location.pathname.replace('/', '').trim();
+            if (path && !isNaN(path)) {
+                try {
+                    const snap = await get(child(ref(db), `links/${path}`));
+                    if (snap.exists()) {
+                        let target = snap.val();
+                        if (!target.startsWith('http')) target = 'https://' + target;
+                        window.location.href = target;
+                    }
+                } catch (e) { console.error("Auto-redirect Error:", e); }
+            }
         }
+        checkAutoRedirect();
+
+        input.addEventListener('input', (e) => {
+            let v = e.target.value;
+            const ar = [/٠/g, /١/g, /٢/g, /٣/g, /٤/g, /٥/g, /٦/g, /٧/g, /٨/g, /٩/g];
+            for (let i = 0; i < 10; i++) v = v.replace(ar[i], i);
+            e.target.value = v.replace(/[^0-9]/g, '');
+            if(e.target.value === "") errorMsg.style.display = 'none';
+        });
+
+        btnGo.onclick = async () => {
+            const val = input.value.trim();
+            if(!val) return;
+
+            errorMsg.style.display = 'block';
+            errorMsg.style.color = "var(--primary)";
+            errorMsg.innerText = "جاري فحص الرقم والتوجيه...";
+
+            try {
+                const snap = await get(child(ref(db), `links/${val}`));
+                if (snap.exists()) {
+                    let targetUrl = snap.val();
+                    if (!targetUrl.startsWith('http')) targetUrl = 'https://' + targetUrl;
+                    window.location.href = targetUrl;
+                } else { 
+                    errorMsg.innerText = "الرقم غير مسجل في قواعد البيانات"; 
+                    errorMsg.style.color = "var(--danger)"; 
+                }
+            } catch (e) { 
+                errorMsg.innerText = "خطأ في الاتصال بالخادم الرئيسي"; 
+                errorMsg.style.color = "var(--danger)"; 
+            }
+        };
+
+        document.getElementById('qrBtn').onclick = () => {
+            alert("ميزة مسح الـ QR ومزامنة المعرفات قيد التهيئة البرمجية الآن!");
+        };
     </script>
 </body>
 </html>
