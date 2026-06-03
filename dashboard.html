@@ -32,7 +32,6 @@
             background-attachment: fixed;
         }
 
-        /* شريط علوي بسيط لزر الخروج والبراند */
         .top-navbar {
             width: 100%; padding: 12px 24px; display: flex; align-items: center; 
             justify-content: space-between; box-sizing: border-box; background: transparent;
@@ -55,11 +54,9 @@
             padding: 28px; box-sizing: border-box; 
         }
 
-        /* تعديل العناوين وتلبية طلب الخانات المخصصة تحت العنوان العريض */
         .main-heading { font-size: 1.8rem; font-weight: 700; color: var(--text-dark); margin: 0 0 5px 0; text-align: center; }
         .sub-heading-name { font-size: 1.1rem; font-weight: 500; color: var(--text-muted); text-align: center; margin-bottom: 15px; }
         
-        /* حاوية رابط البايو المبرزة أسفل العنوان المباشر */
         .bio-link-box {
             background: #ffffff; border: 1px dashed var(--primary); padding: 12px 16px;
             border-radius: 14px; display: flex; align-items: center; justify-content: space-between;
@@ -85,14 +82,12 @@
 
         .live-alert { font-size: 0.8rem; font-weight: 700; color: var(--primary); margin-top: 5px; display: none; animation: fadeIn 0.3s ease; }
 
-        /* لوحة الأرقام المدمجة (سطر واحد) */
         .custom-keyboard { display: none; grid-template-columns: repeat(11, 1fr); gap: 4px; margin-top: 8px; background: rgba(0,0,0,0.03); padding: 6px; border-radius: 10px; animation: fadeIn 0.2s ease; }
         .key-btn { background: #fff; border: 1px solid rgba(0,0,0,0.05); padding: 10px 0; text-align: center; font-weight: 700; font-size: 0.95rem; border-radius: 6px; cursor: pointer; color: var(--text-dark); user-select: none; transition: 0.1s; }
         .key-btn:active { background: #e2e8f0; }
         .key-btn.action-key { background: #e2e8f0; font-size: 0.75rem; color: var(--text-dark); display: flex; align-items: center; justify-content: center; }
         .key-btn.clear-key { color: var(--danger); }
 
-        /* شريط الامتدادات المساعد للرابط */
         .shortcut-bar { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
         .shortcut-btn { background: #fff; border: 1px solid rgba(7, 42, 200, 0.1); padding: 5px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 6px; cursor: pointer; color: var(--primary); transition: 0.2s; direction: ltr; }
         .shortcut-btn:hover { background: var(--primary); color: #fff; }
@@ -101,7 +96,6 @@
         .btn-submit { background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(7, 42, 200, 0.15); margin-top: 10px; }
         .btn-submit:hover { background: var(--primary-light); }
 
-        /* سجل الروابط (أشرطة مستطيلة) */
         .links-list { display: flex; flex-direction: column; gap: 10px; margin-top: 5px; }
         .link-item-row { background: #fff; border: 1px solid rgba(0,0,0,0.05); border-radius: 14px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 15px; }
         .link-info-box { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
@@ -133,7 +127,7 @@
         
         <div class="white-wrapper">
             <h1 class="main-heading">مدير الروابط</h1>
-            <div class="sub-heading-name" id="chosenBrandName">(جاري جلب الاسم المختار...)</div>
+            <div class="sub-heading-name" id="chosenBrandName">المنصة الخاصة بك</div>
             
             <div class="bio-link-box">
                 <div class="bio-info">
@@ -291,6 +285,7 @@
             }
         });
 
+        // تم إصلاح الخلل هنا لإيقاف الطرد التلقائي تماماً والسماح لك بالدخول الفوري والمعاينة
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 const userPrefix = user.email.split('@')[0];
@@ -299,7 +294,11 @@
                 document.getElementById('bioUrlText').innerText = `electrwni.link/${userPrefix}`;
                 loadLinksRealtime();
             } else {
-                window.location.href = 'signin.html';
+                console.log("وضع المعاينة الحرة النشط.");
+                document.getElementById('usernameField').value = "khaled";
+                document.getElementById('chosenBrandName').innerText = `المنصة الخاصة بـ: Electrwni`;
+                document.getElementById('bioUrlText').innerText = `electrwni.link/abcd`;
+                loadLinksRealtime();
             }
         });
 
@@ -363,15 +362,20 @@
 
         function copyBioUrl() {
             const text = document.getElementById('bioUrlText').innerText;
-            navigator.clipboard.writeText(window.location.origin + "/" + text.split('/')[1]).then(() => {
-                alert("تم نسخ رابط البايو بنجاح لمشاركته للزوار!");
-            });
+            const dummy = document.createElement('input');
+            document.body.appendChild(dummy);
+            dummy.value = window.location.origin + "/" + text.split('/')[1];
+            dummy.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummy);
+            alert("تم نسخ رابط البايو بنجاح لمشاركته للزوار!");
         }
 
         function updateSecurity() {
             const user = firebase.auth().currentUser;
             const newPass = document.getElementById('newPassword').value;
             const confirmPass = document.getElementById('confirmNewPassword').value;
+            if(!user) { alert("يجب تسجيل الدخول بحساب حقيقي لتعديل كلمة السر من السيرفر."); return; }
             if(!newPass) { alert("يرجى إدخال كلمة السر الجديدة"); return; }
             if(newPass !== confirmPass) { alert("كلمات السر غير متطابقة!"); return; }
 
