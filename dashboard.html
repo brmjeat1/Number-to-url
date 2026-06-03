@@ -25,7 +25,6 @@
             background-image: radial-gradient(at top left, #e0f2fe 0px, transparent 50%), radial-gradient(at bottom right, #eff6ff 0px, transparent 50%) !important;
         }
 
-        /* هيدر تفاعلي مطور يقرأ اليوزر الفعلي */
         .top-navbar {
             width: 100%; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; box-sizing: border-box;
         }
@@ -47,7 +46,6 @@
         .main-heading { font-size: 1.8rem; font-weight: 700; color: var(--text-dark); margin: 0 0 5px 0; text-align: center; }
         .user-prize-display { font-size: 1.4rem; font-weight: 700; color: var(--primary); text-align: center; margin-bottom: 15px; }
         
-        /* علبة الرابط النظيفة تماماً والمعدلة حسب طلبك وحذف الأيقونات المشوهة في الصورة */
         .bio-link-box {
             background: #ffffff; border: 1px dashed var(--primary); padding: 16px; border-radius: 14px; text-align: center; margin-bottom: 25px; position: relative;
         }
@@ -55,7 +53,6 @@
         .bio-label { font-size: 0.95rem; font-weight: 500; color: var(--text-dark); }
         .bio-url { font-size: 1.2rem; font-weight: 700; color: var(--primary); direction: ltr; text-align: center; display: block; margin-top: 2px; }
         
-        /* زر نسخ سفلي أنيق ومنفصل لضمان تجربة مستخدم بدون أخطاء */
         .btn-action-copy {
             background: var(--primary); color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-family: 'Tajawal'; font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px;
         }
@@ -105,7 +102,6 @@
 </head>
 <body>
 
-    <!-- الهيدر التفاعلي الذي يعكس شعار النطاق مع اليوزر المكتوب تلقائياً وبألوانه الصحيحة -->
     <div class="top-navbar">
         <div class="brand-logo" id="headerBrand">Electrwni<span class="dot-link">.link/</span><span class="dynamic-user" id="headerUser">...</span></div>
         <button class="logout-btn" onclick="logout()">خروج</button>
@@ -115,10 +111,8 @@
         
         <div class="white-wrapper">
             <h1 class="main-heading">مدير الروابط</h1>
-            <!-- اسم اليوزر الفعلي بالخط العريض واللون الأزرق أسفل عنوان الصفحة -->
             <div class="user-prize-display" id="chosenBrandName">...</div>
             
-            <!-- خانة عرض الرابط المحدثة كلياً بناءً على توجيهاتك وحذف الأيقونات المشوهة -->
             <div class="bio-link-box">
                 <div class="bio-info">
                     <span class="bio-label">يظهر رابطك للجمهور هكذا</span>
@@ -184,7 +178,6 @@
             </div>
         </div>
 
-        <!-- حصر أوامر الحماية بكلمات السر بالكامل وحذف كل ما يعيق تجربة المستخدم السلسة -->
         <div class="white-wrapper">
             <div class="section-title" style="border-top:none; padding-top:0;"><i class="fa-solid fa-shield-halved" style="color:var(--primary)"></i> الخصوصية والأمان</div>
             <div class="security-grid">
@@ -200,7 +193,10 @@
                     <label>تأكيد الرقم السري الجديد</label>
                     <input type="password" id="confirmNewPassword" placeholder="••••••••">
                 </div>
-                <button type="button" class="btn-action-main" style="background:var(--success); color:#fff;" onclick="updateSecurity()">حفظ إعدادات الأمان</button>
+                <button type="button" class="btn-action-main" style="background:var(--success); color:#fff; margin-bottom: 5px;" onclick="updateSecurity()">حفظ إعدادات الأمان</button>
+                
+                <!-- زر حذف الحساب المدمج بشكل متناسق أسفل مربع الأمان والخصوصية -->
+                <button type="button" class="btn-action-main" style="background:var(--danger); color:#fff;" onclick="deleteAccount()">حذف الحساب والتسجيلات نهائياً</button>
             </div>
         </div>
 
@@ -268,11 +264,9 @@
             }
         });
 
-        // قراءة تفاعلية تامة لليوزر من السيرفر لمنع ثبات الاسم "khaled" بشكل عشوائي كما في الصورة المرفقة
         firebase.auth().onAuthStateChanged((user) => {
             let activeUsername = "user";
             if (user) {
-                // استخلاص اليوزر الحقيقي المدخل بدلاً من البيانات الثابتة
                 activeUsername = user.email.split('@')[0];
                 db.ref(`users/${user.uid}/username`).once('value').then((snapshot) => {
                     if (snapshot.exists()) {
@@ -348,7 +342,6 @@
             } catch (e) { alert("حدث خطأ: " + e.message); }
         };
 
-        // إصلاح آلية النسخ النظيفة بدون أيقونات مشوهة وبأعلى دقة للمستخدم والجمهور
         function copyBioUrl() {
             const currentSlug = document.getElementById('chosenBrandName').innerText;
             const linkToCopy = "https://electrwni.link/" + currentSlug;
@@ -376,6 +369,21 @@
                 document.getElementById('newPassword').value = '';
                 document.getElementById('confirmNewPassword').value = '';
             }).catch(error => { alert("خطأ: " + error.message); });
+        }
+
+        // الدالة المضافة حديثاً لحذف الحساب والتسجيلات القديمة فوراً من السيرفر وإعادة التوجيه لصفحة التسجيل
+        function deleteAccount() {
+            if (confirm("هل أنت متأكد تماماً من حذف حسابك وكافة تسجيلات الدخول القديمة نهائياً؟ لا يمكن التراجع عن هذا الإجراء.")) {
+                const user = firebase.auth().currentUser;
+                if (!user) { alert("يجب أن تكون مسجلاً الدخول لتتمكن من تنفيذ هذا الأمر."); return; }
+
+                user.delete().then(() => {
+                    alert("تم حذف الحساب وتسجيلات الدخول القديمة بنجاح من السيرفر.");
+                    window.location.href = 'signup.html';
+                }).catch((error) => {
+                    alert("خطأ أمني: يرجى إعادة تسجيل الدخول مجدداً لتتمكن من حذف الحساب بشكل آمن: " + error.message);
+                });
+            }
         }
 
         function logout() { firebase.auth().signOut().then(() => { window.location.href = 'signin.html'; }); }
