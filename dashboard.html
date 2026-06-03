@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مدير الروابط | Electrwni</title>
+    <title>مدير الروابط | Electrwni.link</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
@@ -20,53 +20,43 @@
         }
         
         body { 
-            margin: 0; 
-            font-family: 'Tajawal', sans-serif; 
-            display: flex; 
-            flex-direction: column; 
-            min-height: 100vh; 
-            background-color: #f8fafc !important;
-            background-image: 
-                radial-gradient(at top left, #e0f2fe 0px, transparent 50%),
-                radial-gradient(at bottom right, #eff6ff 0px, transparent 50%) !important;
-            background-attachment: fixed;
+            margin: 0; font-family: 'Tajawal', sans-serif; display: flex; flex-direction: column; min-height: 100vh; 
+            background-color: #f8fafc !important; background-attachment: fixed;
+            background-image: radial-gradient(at top left, #e0f2fe 0px, transparent 50%), radial-gradient(at bottom right, #eff6ff 0px, transparent 50%) !important;
         }
 
+        /* الهيدر التفاعلي المتطور */
         .top-navbar {
-            width: 100%; padding: 12px 24px; display: flex; align-items: center; 
-            justify-content: space-between; box-sizing: border-box; background: transparent;
+            width: 100%; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; box-sizing: border-box;
         }
         .brand-logo { font-weight: 700; color: var(--text-dark); font-size: 1.1rem; }
+        .brand-logo span { color: var(--primary); }
         
         .logout-btn {
-            background: rgba(220, 38, 38, 0.08); color: var(--danger); border: none;
-            padding: 8px 16px; border-radius: 10px; font-weight: 700; cursor: pointer;
-            font-family: 'Tajawal'; transition: all 0.2s;
+            background: rgba(220, 38, 38, 0.08); color: var(--danger); border: none; padding: 8px 16px; border-radius: 10px; font-weight: 700; cursor: pointer; font-family: 'Tajawal'; transition: all 0.2s;
         }
         .logout-btn:hover { background: var(--danger); color: #fff; }
 
         .main-container { width: 92%; max-width: 580px; margin: 10px auto 40px auto; display: flex; flex-direction: column; gap: 25px; }
 
         .white-wrapper { 
-            background: var(--glass-bg) !important; backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border);
-            border-radius: 24px; box-shadow: 0 25px 50px rgba(15, 23, 42, 0.06); 
-            padding: 28px; box-sizing: border-box; 
+            background: var(--glass-bg) !important; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 24px; box-shadow: 0 25px 50px rgba(15, 23, 42, 0.06); padding: 28px; box-sizing: border-box; 
         }
 
+        /* تعديل العناوين والجائزة الزرقاء العريضة */
         .main-heading { font-size: 1.8rem; font-weight: 700; color: var(--text-dark); margin: 0 0 5px 0; text-align: center; }
-        .sub-heading-name { font-size: 1.1rem; font-weight: 500; color: var(--text-muted); text-align: center; margin-bottom: 15px; }
+        .user-prize-display { font-size: 1.4rem; font-weight: 700; color: var(--primary); text-align: center; margin-bottom: 15px; }
         
+        /* حاوية رابط البايو بالأيقونات الزرقاء التفاعلية */
         .bio-link-box {
-            background: #ffffff; border: 1px dashed var(--primary); padding: 12px 16px;
-            border-radius: 14px; display: flex; align-items: center; justify-content: space-between;
-            gap: 10px; margin-bottom: 25px; box-shadow: 0 4px 12px rgba(7, 42, 200, 0.02);
+            background: #ffffff; border: 1px dashed var(--primary); padding: 12px 16px; border-radius: 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 25px;
         }
-        .bio-info { display: flex; flex-direction: column; gap: 2px; }
-        .bio-label { font-size: 0.75rem; font-weight: 700; color: var(--primary); }
+        .bio-info { display: flex; align-items: center; gap: 10px; }
+        .bio-icons-zone { display: flex; gap: 8px; font-size: 1.2rem; color: var(--primary); }
         .bio-url { font-size: 1rem; font-weight: 700; color: var(--text-dark); direction: ltr; text-align: right; }
-        .btn-copy { background: var(--primary); color: #fff; border: none; padding: 6px 12px; border-radius: 8px; font-family: 'Tajawal'; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
-        .btn-copy:hover { background: var(--primary-light); }
+        
+        .btn-copy-icon { background: none; border: none; color: var(--primary); font-size: 1.3rem; cursor: pointer; padding: 4px; transition: transform 0.2s; }
+        .btn-copy-icon:hover { transform: scale(1.15); color: var(--primary-light); }
 
         .section-title { font-size: 1.1rem; font-weight: 700; color: var(--text-dark); margin: 0 0 15px 0; display: flex; align-items: center; gap: 8px; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 15px; }
 
@@ -74,22 +64,20 @@
         .form-group label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-dark); margin-bottom: 6px; }
 
         input {
-            width: 100%; padding: 13px 14px; font-size: 0.95rem; font-family: 'Tajawal', sans-serif;
-            border: 2px solid rgba(7, 42, 200, 0.08) !important; border-radius: 12px !important; outline: none;
-            background: #fff !important; color: var(--text-dark) !important; box-sizing: border-box; font-weight: 500;
+            width: 100%; padding: 13px 14px; font-size: 0.95rem; font-family: 'Tajawal', sans-serif; border: 2px solid rgba(7, 42, 200, 0.08) !important; border-radius: 12px !important; outline: none; background: #fff !important; color: var(--text-dark) !important; box-sizing: border-box; font-weight: 500;
         }
         input:focus { border-color: var(--primary) !important; box-shadow: 0 0 15px rgba(7, 42, 200, 0.06) !important; }
 
-        .live-alert { font-size: 0.8rem; font-weight: 700; color: var(--primary); margin-top: 5px; display: none; animation: fadeIn 0.3s ease; }
+        .live-alert { font-size: 0.8rem; font-weight: 700; color: var(--primary); margin-top: 5px; display: none; }
 
-        .custom-keyboard { display: none; grid-template-columns: repeat(11, 1fr); gap: 4px; margin-top: 8px; background: rgba(0,0,0,0.03); padding: 6px; border-radius: 10px; animation: fadeIn 0.2s ease; }
-        .key-btn { background: #fff; border: 1px solid rgba(0,0,0,0.05); padding: 10px 0; text-align: center; font-weight: 700; font-size: 0.95rem; border-radius: 6px; cursor: pointer; color: var(--text-dark); user-select: none; transition: 0.1s; }
+        .custom-keyboard { display: none; grid-template-columns: repeat(11, 1fr); gap: 4px; margin-top: 8px; background: rgba(0,0,0,0.03); padding: 6px; border-radius: 10px; }
+        .key-btn { background: #fff; border: 1px solid rgba(0,0,0,0.05); padding: 10px 0; text-align: center; font-weight: 700; font-size: 0.95rem; border-radius: 6px; cursor: pointer; color: var(--text-dark); user-select: none; }
         .key-btn:active { background: #e2e8f0; }
         .key-btn.action-key { background: #e2e8f0; font-size: 0.75rem; color: var(--text-dark); display: flex; align-items: center; justify-content: center; }
         .key-btn.clear-key { color: var(--danger); }
 
         .shortcut-bar { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-        .shortcut-btn { background: #fff; border: 1px solid rgba(7, 42, 200, 0.1); padding: 5px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 6px; cursor: pointer; color: var(--primary); transition: 0.2s; direction: ltr; }
+        .shortcut-btn { background: #fff; border: 1px solid rgba(7, 42, 200, 0.1); padding: 5px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 6px; cursor: pointer; color: var(--primary); direction: ltr; }
         .shortcut-btn:hover { background: var(--primary); color: #fff; }
 
         .btn-action-main { width: 100%; padding: 13px; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; font-family: 'Tajawal'; transition: all 0.2s; }
@@ -103,23 +91,20 @@
         .number-badge { background: rgba(7, 42, 200, 0.08); color: var(--primary); font-weight: 700; font-size: 0.85rem; padding: 2px 8px; border-radius: 6px; }
         .actual-link { font-weight: 700; font-size: 0.9rem; color: var(--text-dark); text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; direction: ltr; }
         .actual-link:hover { color: var(--primary); text-decoration: underline; }
-        .link-desc-line { font-size: 0.78rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         
         .link-meta-box { display: flex; align-items: center; gap: 14px; }
         .views-counter { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
-        .edit-icon-btn { background: none; border: none; color: var(--primary); font-size: 1rem; cursor: pointer; padding: 4px; transition: 0.2s; }
-        .edit-icon-btn:hover { color: var(--primary-light); transform: scale(1.1); }
+        .edit-icon-btn { background: none; border: none; color: var(--primary); font-size: 1rem; cursor: pointer; padding: 4px; }
 
         .security-grid { display: flex; flex-direction: column; gap: 14px; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
         .footer { background: rgba(255, 255, 255, 0.7); border-top: 1px solid var(--glass-border); width: 100%; padding: 20px; color: var(--text-muted); font-size: 0.85rem; text-align: center; box-sizing: border-box; margin-top: auto; }
     </style>
 </head>
 <body>
 
+    <!-- الهيدر التفاعلي المطور بموجب التعديلات المكافأة -->
     <div class="top-navbar">
-        <div class="brand-logo"><i class="fa-solid fa-bolt" style="color:var(--primary);"></i> Electrwni</div>
+        <div class="brand-logo"><i class="fa-solid fa-bolt" style="color:var(--primary);"></i> Electrwni<span>.link</span></div>
         <button class="logout-btn" onclick="logout()">خروج</button>
     </div>
 
@@ -127,14 +112,19 @@
         
         <div class="white-wrapper">
             <h1 class="main-heading">مدير الروابط</h1>
-            <div class="sub-heading-name" id="chosenBrandName">المنصة الخاصة بك</div>
+            <!-- الجائزة للمستخدم: اسم اليوزر بالخط العريض وباللون الأزرق -->
+            <div class="user-prize-display" id="chosenBrandName">...</div>
             
+            <!-- رابط البايو بالأيقونات الزرقاء المطلوبة والنسخ النظيف لحل الـ 404 -->
             <div class="bio-link-box">
                 <div class="bio-info">
-                    <span class="bio-label"><i class="fa-solid fa-link"></i> رابط البايو والتحويل الخاص بك:</span>
-                    <span class="bio-url" id="bioUrlText">electrwni.link/abcd</span>
+                    <div class="bio-icons-zone">
+                        <i class="fa-solid fa-earth-americas"></i>
+                        <i class="fa-regular fa-file-lines"></i>
+                    </div>
+                    <span class="bio-url" id="bioUrlText">electrwni.link/...</span>
                 </div>
-                <button class="btn-copy" onclick="copyBioUrl()">نسخ الرابط</button>
+                <button class="btn-copy-icon" onclick="copyBioUrl()" title="نسخ الرابط"><i class="fa-solid fa-copy"></i></button>
             </div>
 
             <div class="section-title"><i class="fa-solid fa-plus-minus" style="color:var(--primary)"></i> روابطك برقم</div>
@@ -194,13 +184,10 @@
             </div>
         </div>
 
+        <!-- حذف حقل اليوزرنيم وحصر الأوامر بكلمة السر فقط بموجب طلبك -->
         <div class="white-wrapper">
             <div class="section-title" style="border-top:none; padding-top:0;"><i class="fa-solid fa-shield-halved" style="color:var(--primary)"></i> الخصوصية والأمان</div>
             <div class="security-grid">
-                <div class="form-group" style="margin-bottom:0;">
-                    <label>اسم المستخدم (username)</label>
-                    <input type="text" id="usernameField" placeholder="username">
-                </div>
                 <div class="form-group" style="margin-bottom:0;">
                     <label>الرقم السري الحالي</label>
                     <input type="password" id="currentPassword" placeholder="••••••••">
@@ -254,9 +241,7 @@
 
         linkNumInput.addEventListener('focus', () => { keyboard.style.display = 'grid'; });
         document.addEventListener('click', (e) => {
-            if (!linkNumInput.contains(e.target) && !keyboard.contains(e.target)) {
-                keyboard.style.display = 'none';
-            }
+            if (!linkNumInput.contains(e.target) && !keyboard.contains(e.target)) { keyboard.style.display = 'none'; }
         });
 
         function pressKey(key) {
@@ -275,31 +260,26 @@
             const val = e.target.value.trim();
             if(!val) { alertBox.style.display = 'none'; return; }
             if(localLinksData[val]) {
-                alertBox.style.display = 'block';
-                alertBox.style.color = 'var(--primary)';
+                alertBox.style.display = 'block'; alertBox.style.color = 'var(--primary)';
                 alertBox.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> رقم ${val} مدخل مسبقاً وهو: (${localLinksData[val].desc || 'بدون وصف'})`;
             } else {
-                alertBox.style.display = 'block';
-                alertBox.style.color = 'var(--success)';
+                alertBox.style.display = 'block'; alertBox.style.color = 'var(--success)';
                 alertBox.innerHTML = `<i class="fa-solid fa-circle-check"></i> رقم ${val} متاح وجديد بالكامل`;
             }
         });
 
-        // تم إصلاح الخلل هنا لإيقاف الطرد التلقائي تماماً والسماح لك بالدخول الفوري والمعاينة
+        // قراءة تفاعلية لاسم المسجل الحقيقي ومنع أي طرد عشوائي يسبب 404
         firebase.auth().onAuthStateChanged((user) => {
+            let currentSlug = "abcd";
             if (user) {
-                const userPrefix = user.email.split('@')[0];
-                document.getElementById('usernameField').value = userPrefix;
-                document.getElementById('chosenBrandName').innerText = `المنصة الخاصة بـ: ${userPrefix}`;
-                document.getElementById('bioUrlText').innerText = `electrwni.link/${userPrefix}`;
-                loadLinksRealtime();
+                currentSlug = user.email.split('@')[0];
             } else {
-                console.log("وضع المعاينة الحرة النشط.");
-                document.getElementById('usernameField').value = "khaled";
-                document.getElementById('chosenBrandName').innerText = `المنصة الخاصة بـ: Electrwni`;
-                document.getElementById('bioUrlText').innerText = `electrwni.link/abcd`;
-                loadLinksRealtime();
+                console.log("المعاينة الحرة نشطة بدون طرد.");
+                currentSlug = "khaled"; 
             }
+            document.getElementById('chosenBrandName').innerText = currentSlug;
+            document.getElementById('bioUrlText').innerText = `electrwni.link/${currentSlug}`;
+            loadLinksRealtime();
         });
 
         function loadLinksRealtime() {
@@ -335,9 +315,7 @@
         }
 
         function populateEdit(num, url, desc) {
-            linkNumInput.value = num;
-            targetUrlInput.value = url;
-            linkDescInput.value = desc;
+            linkNumInput.value = num; targetUrlInput.value = url; linkDescInput.value = desc;
             window.scrollTo({ top: 0, behavior: 'smooth' });
             linkNumInput.dispatchEvent(new Event('input'));
         }
@@ -355,32 +333,34 @@
                 const currentViews = (localLinksData[num] && localLinksData[num].views) ? localLinksData[num].views : 0;
                 await db.ref(`links_meta/${num}`).set({ url: url, desc: desc, views: currentViews });
                 alert("تم حفظ ومزامنة الرابط بنجاح!");
-                linkForm.reset();
-                alertBox.style.display = 'none';
+                linkForm.reset(); alertBox.style.display = 'none';
             } catch (e) { alert("حدث خطأ: " + e.message); }
         };
 
+        // تنظيف وحل مشكلة الـ 404 في النسخ عبر تأمين المسار المطلق لنطاق الخدمة
         function copyBioUrl() {
-            const text = document.getElementById('bioUrlText').innerText;
+            const slug = document.getElementById('chosenBrandName').innerText;
+            const absoluteUrl = "https://electrwni.link/" + slug;
+            
             const dummy = document.createElement('input');
             document.body.appendChild(dummy);
-            dummy.value = window.location.origin + "/" + text.split('/')[1];
+            dummy.value = absoluteUrl;
             dummy.select();
             document.execCommand('copy');
             document.body.removeChild(dummy);
-            alert("تم نسخ رابط البايو بنجاح لمشاركته للزوار!");
+            alert("تم نسخ الرابط المباشر للبايو بنجاح!");
         }
 
         function updateSecurity() {
             const user = firebase.auth().currentUser;
             const newPass = document.getElementById('newPassword').value;
             const confirmPass = document.getElementById('confirmNewPassword').value;
-            if(!user) { alert("يجب تسجيل الدخول بحساب حقيقي لتعديل كلمة السر من السيرفر."); return; }
-            if(!newPass) { alert("يرجى إدخال كلمة السر الجديدة"); return; }
-            if(newPass !== confirmPass) { alert("كلمات السر غير متطابقة!"); return; }
+            if(!user) { alert("يجب تسجيل الدخول لتغيير كلمة السر."); return; }
+            if(!newPass) { alert("أدخل كلمة السر الجديدة."); return; }
+            if(newPass !== confirmPass) { alert("الرموز غير متطابقة."); return; }
 
             user.updatePassword(newPass).then(() => {
-                alert("تم تحديث الأمان بنجاح!");
+                alert("تم تحديث كلمة السر بنجاح!");
                 document.getElementById('currentPassword').value = '';
                 document.getElementById('newPassword').value = '';
                 document.getElementById('confirmNewPassword').value = '';
