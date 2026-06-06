@@ -3,203 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>electrwni | لوحة التحكم الذكية المتقدمة</title>
+    <title>electrwni | لوحة التحكم</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
     <style>
-        :root {
-            --bg-color: #f4f7f6;
-            --card-bg: #ffffff;
-            --text-color: #333333;
-            --primary: #000000;
-            --accent: #555555;
-            --border-color: #e0e0e0;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--card-bg);
-            padding: 15px 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            margin-bottom: 25px;
-        }
-
-        .header .brand {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        .header .user-info {
-            font-size: 16px;
-            color: var(--accent);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .logout-btn {
-            background: #ff4d4d;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .main-container {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .form-card {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            margin-bottom: 25px;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        input, textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 15px;
-        }
-
-        .btn-submit {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            width: 100%;
-            margin-bottom: 10px;
-        }
-
-        .btn-pdf {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-
-        .table-container {
-            background: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: right;
-        }
-
-        th, td {
-            padding: 15px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        th {
-            background-color: #fafafa;
-            color: var(--accent);
-            font-weight: 600;
-        }
-
-        .action-btn {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 13px;
-        }
-
+        :root { --bg-color: #f4f7f6; --card-bg: #ffffff; --text-color: #333333; --primary: #000000; --accent: #555555; --border-color: #e0e0e0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); padding: 15px 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        .header .brand { font-size: 24px; font-weight: bold; color: var(--primary); }
+        .header .user-info { font-size: 16px; color: var(--accent); display: flex; align-items: center; gap: 15px; }
+        .logout-btn { background: #ff4d4d; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .main-container { max-width: 1100px; margin: 0 auto; }
+        .form-card { background: var(--card-bg); padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        input { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; box-sizing: border-box; font-size: 15px; }
+        .btn-submit { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; margin-bottom: 10px; }
+        .btn-pdf { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: bold; margin-bottom: 15px; }
+        .table-container { background: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: right; }
+        th, td { padding: 15px; border-bottom: 1px solid var(--border-color); }
+        th { background-color: #fafafa; color: var(--accent); font-weight: 600; }
+        .action-btn { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; text-decoration: none; display: inline-block; font-size: 13px; }
         .btn-go { background-color: #007bff; color: white; }
         .btn-view { background-color: #17a2b8; color: white; margin-right: 3px; }
         .btn-edit { background-color: #ffc107; color: #333; margin-right: 3px; }
         .btn-delete { background-color: #dc3545; color: white; margin-right: 3px; }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background-color: white;
-            padding: 30px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 500px;
-            position: relative;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            font-size: 24px;
-            cursor: pointer;
-            color: #aaa;
-        }
-        .close-modal:hover { color: #000; }
-
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+        .modal-content { background-color: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; position: relative; }
+        .close-modal { position: absolute; top: 15px; left: 15px; font-size: 24px; cursor: pointer; color: #aaa; }
         #protected-content { display: none; }
     </style>
 </head>
 <body>
-
     <div id="protected-content" class="main-container">
-        
         <div class="header">
             <div class="brand">electrwni | إلكتروني</div>
             <div class="user-info">
@@ -207,33 +45,24 @@
                 <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
             </div>
         </div>
-
         <div class="form-card">
             <h3>إضافة توجيه رقمي جديد</h3>
             <div class="form-grid">
-                <input type="number" id="input-number" placeholder="الرقم الافتراضي (مثال: 5)">
-                <input type="url" id="input-url" placeholder="الرابط الموجه إليه (https://...)">
+                <input type="number" id="input-number" placeholder="الرقم الافتراضي">
+                <input type="url" id="input-url" placeholder="الرابط الموجه إليه">
                 <input type="text" id="input-desc" placeholder="الوصف أو اسم الجهة">
             </div>
             <button class="btn-submit" onclick="addNewLink()">حفظ البيانات التوجيهية</button>
         </div>
-
-        <button class="btn-pdf" onclick="exportToPDF()">🖨️ طباعة السجلات الحالية كـ PDF</button>
-
+        <button class="btn-pdf" onclick="exportToPDF()">🖨️ طباعة السجلات كـ PDF</button>
         <div class="table-container" id="pdf-table-area">
             <table>
                 <thead>
-                    <tr>
-                        <th>الرقم</th>
-                        <th>الوصف</th>
-                        <th>الرابط الوجهة</th>
-                        <th>الإجراءات</th>
-                    </tr>
+                    <tr><th>الرقم</th><th>الوصف</th><th>الرابط الوجهة</th><th>الإجراءات</th></tr>
                 </thead>
                 <tbody id="data-table-body"></tbody>
             </table>
         </div>
-
     </div>
 
     <div id="editModal" class="modal" onclick="closeModalOnOutsideClick(event)">
@@ -241,14 +70,8 @@
             <span class="close-modal" onclick="closeEditModal()">&times;</span>
             <h3>تعديل البيانات الرقمية</h3>
             <input type="hidden" id="edit-key">
-            <div style="margin-bottom:15px;">
-                <label>الرابط:</label>
-                <input type="url" id="edit-url" style="margin-top:5px;">
-            </div>
-            <div style="margin-bottom:20px;">
-                <label>الوصف:</label>
-                <input type="text" id="edit-desc" style="margin-top:5px;">
-            </div>
+            <div style="margin-bottom:15px;"><label>الرابط:</label><input type="url" id="edit-url"></div>
+            <div style="margin-bottom:20px;"><label>الوصف:</label><input type="text" id="edit-desc"></div>
             <div style="display:flex; gap:10px;">
                 <button class="btn-submit" onclick="saveEditedLink()" style="background:#007bff;">حفظ التعديلات</button>
                 <button class="btn-submit" id="modal-delete-btn" style="background:#dc3545;">حذف</button>
@@ -258,13 +81,14 @@
 
     <script>
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
+            apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
             authDomain: "electrwni-link.firebaseapp.com",
-            databaseURL: "https://electrwni-link-default-rtdb.firebaseio.com",
+            databaseURL: "https://electrwni-link-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "electrwni-link",
-            storageBucket: "electrwni-link.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            storageBucket: "electrwni-link.firebasestorage.app",
+            messagingSenderId: "712490301263",
+            appId: "1:712490301263:web:2084210da3f687285ab73a",
+            measurementId: "G-LCCGHWKH87"
         };
 
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
@@ -277,8 +101,7 @@
                 if (user.displayName && user.displayName.trim() !== "") {
                     document.getElementById('user-display-name').innerText = user.displayName;
                 } else {
-                    const fallbackName = user.email.split('@')[0];
-                    document.getElementById('user-display-name').innerText = fallbackName;
+                    document.getElementById('user-display-name').innerText = user.email.split('@')[0];
                 }
                 fetchTableData();
             } else {
@@ -301,10 +124,10 @@
                             <tr>
                                 <td><strong>${numberKey}</strong></td>
                                 <td>${description}</td>
-                                <td><span style="color:#007bff; font-size:13px;">${targetUrl}</span></td>
+                                <td><span style="color:#007bff;">${targetUrl}</span></td>
                                 <td>
                                     <a href="${targetUrl}" target="_blank" class="action-btn btn-go">اذهب</a>
-                                    <button class="action-btn btn-view" onclick="alert('الرابط الكامل:\\n' + '${targetUrl}')">مشاهدة</button>
+                                    <button class="action-btn btn-view" onclick="alert('الرابط:\\n' + '${targetUrl}')">مشاهدة</button>
                                     <button class="action-btn btn-edit" onclick="openEditModal('${numberKey}', '${targetUrl}', '${description}')">تعديل</button>
                                     <button class="action-btn btn-delete" onclick="deleteLink('${numberKey}')">حذف</button>
                                 </td>
@@ -313,7 +136,7 @@
                         tableBody.innerHTML += row;
                     });
                 } else {
-                    tableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#999;">لا توجد بيانات حالياً.</td></tr>`;
+                    tableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#999;">لا توجد بيانات.</td></tr>`;
                 }
             });
         }
@@ -322,28 +145,17 @@
             const number = document.getElementById('input-number').value.trim();
             const url = document.getElementById('input-url').value.trim();
             const desc = document.getElementById('input-desc').value.trim();
-
-            if (!number || !url) { alert("من فضلك أدخل الرقم والرابط!"); return; }
-
-            db.ref('links/' + number).set({
-                url: url,
-                description: desc ? desc : "لا يوجد وصف"
-            }).then(() => {
-                alert("تم الحفظ بنجاح!");
-                document.getElementById('input-number').value = "";
-                document.getElementById('input-url').value = "";
-                document.getElementById('input-desc').value = "";
+            if (!number || !url) { alert("أدخل الرقم والرابط!"); return; }
+            db.ref('links/' + number).set({ url: url, description: desc ? desc : "لا يوجد وصف" }).then(() => {
+                document.getElementById('input-number').value = ""; document.getElementById('input-url').value = ""; document.getElementById('input-desc').value = "";
             });
         }
 
         function openEditModal(key, url, desc) {
-            document.getElementById('edit-key').value = key;
-            document.getElementById('edit-url').value = url;
-            document.getElementById('edit-desc').value = desc;
+            document.getElementById('edit-key').value = key; document.getElementById('edit-url').value = url; document.getElementById('edit-desc').value = desc;
             document.getElementById('modal-delete-btn').onclick = function() { deleteLink(key); closeEditModal(); };
             document.getElementById('editModal').style.display = 'flex';
         }
-
         function closeEditModal() { document.getElementById('editModal').style.display = 'none'; }
         function closeModalOnOutsideClick(e) { if(e.target.id === 'editModal') closeEditModal(); }
 
@@ -351,34 +163,11 @@
             const key = document.getElementById('edit-key').value;
             const url = document.getElementById('edit-url').value.trim();
             const desc = document.getElementById('edit-desc').value.trim();
-
-            if (!url) { alert("الرابط لا يمكن أن يكون فارغاً!"); return; }
-
-            db.ref('links/' + key).update({ url: url, description: desc }).then(() => {
-                alert("تم تحديث البيانات المحددة!");
-                closeEditModal();
-            });
+            db.ref('links/' + key).update({ url: url, description: desc }).then(() => { closeEditModal(); });
         }
 
-        function deleteLink(key) {
-            if (confirm("هل تريد حذف السجل رقم " + key + " بشكل نهائي؟")) {
-                db.ref('links/' + key).remove().then(() => { alert("تم الحذف."); });
-            }
-        }
-
-        function exportToPDF() {
-            const element = document.getElementById('pdf-table-area');
-            const today = new Date().toISOString().slice(0,10).replace(/-/g, '/');
-            const opt = {
-                margin:       10,
-                filename:     `electrwni_report_${today}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-            html2pdf().set(opt).from(element).save();
-        }
-
+        function deleteLink(key) { if (confirm("حذف الرقم " + key + "؟")) { db.ref('links/' + key).remove(); } }
+        function exportToPDF() { html2pdf().set({ margin: 10, filename: 'report.pdf', html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(document.getElementById('pdf-table-area')).save(); }
         function logout() { auth.signOut().then(() => { window.location.href = "login.html"; }); }
     </script>
 </body>
