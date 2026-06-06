@@ -3,215 +3,263 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مدير الروابط | Electrwni.link</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>electrwni | لوحة التحكم الذكية المتقدمة</title>
+    <!-- مكتبات Firebase الأساسية -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     
+    <!-- مكتبة المزامنة والطباعة للـ PDF العربي المحدثة -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <style>
-        :root { 
-            --primary: #072AC8; 
-            --primary-light: #1e46f5;
-            --glass-bg: rgba(255, 255, 255, 0.85);
-            --glass-border: rgba(255, 255, 255, 0.7);
-            --text-dark: #0f172a !important;
-            --text-muted: #475569 !important;
-            --success: #16a34a;
-            --danger: #dc2626;
-        }
-        
-        body { 
-            margin: 0; font-family: 'Tajawal', sans-serif; display: flex; flex-direction: column; min-height: 100vh; 
-            background-color: #f8fafc !important; background-attachment: fixed;
-            background-image: radial-gradient(at top left, #e0f2fe 0px, transparent 50%), radial-gradient(at bottom right, #eff6ff 0px, transparent 50%) !important;
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --primary: #000000;
+            --accent: #555555;
+            --border-color: #e0e0e0;
         }
 
-        .top-navbar {
-            width: 100%; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; box-sizing: border-box;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
         }
-        .brand-logo { font-weight: 700; color: var(--text-dark); font-size: 1.1rem; }
-        .brand-logo span.dot-link { color: var(--primary); }
-        .brand-logo span.dynamic-user { color: var(--primary); font-weight: 700; margin-right: 4px; }
-        
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 15px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        .header .brand {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .header .user-info {
+            font-size: 16px;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
         .logout-btn {
-            background: rgba(220, 38, 38, 0.08); color: var(--danger); border: none; padding: 8px 16px; border-radius: 10px; font-weight: 700; cursor: pointer; font-family: 'Tajawal'; transition: all 0.2s;
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
         }
-        .logout-btn:hover { background: var(--danger); color: #fff; }
 
-        .main-container { width: 92%; max-width: 580px; margin: 10px auto 40px auto; display: flex; flex-direction: column; gap: 25px; }
-
-        .white-wrapper { 
-            background: var(--glass-bg) !important; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 24px; box-shadow: 0 25px 50px rgba(15, 23, 42, 0.06); padding: 28px; box-sizing: border-box; 
+        .main-container {
+            max-width: 1100px;
+            margin: 0 auto;
         }
 
-        .main-heading { font-size: 1.8rem; font-weight: 700; color: var(--text-dark); margin: 0 0 5px 0; text-align: center; }
-        .user-prize-display { font-size: 1.4rem; font-weight: 700; color: var(--primary); text-align: center; margin-bottom: 15px; }
-        
-        .bio-link-box {
-            background: #ffffff; border: 1px dashed var(--primary); padding: 16px; border-radius: 14px; text-align: center; margin-bottom: 25px; position: relative;
+        .form-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
         }
-        .bio-info { display: flex; flex-direction: column; gap: 6px; align-items: center; justify-content: center; }
-        .bio-label { font-size: 0.95rem; font-weight: 500; color: var(--text-dark); }
-        .bio-url { font-size: 1.2rem; font-weight: 700; color: var(--primary); direction: ltr; text-align: center; display: block; margin-top: 2px; }
-        
-        .btn-action-copy {
-            background: var(--primary); color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-family: 'Tajawal'; font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px;
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
         }
-        .btn-action-copy:hover { background: var(--primary-light); }
 
-        .section-title { font-size: 1.1rem; font-weight: 700; color: var(--text-dark); margin: 0 0 15px 0; display: flex; align-items: center; gap: 8px; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 15px; }
-
-        .form-group { margin-bottom: 16px; position: relative; }
-        .form-group label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-dark); margin-bottom: 6px; }
-
-        input {
-            width: 100%; padding: 13px 14px; font-size: 0.95rem; font-family: 'Tajawal', sans-serif; border: 2px solid rgba(7, 42, 200, 0.08) !important; border-radius: 12px !important; outline: none; background: #fff !important; color: var(--text-dark) !important; box-sizing: border-box; font-weight: 500;
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 15px;
         }
-        input:focus { border-color: var(--primary) !important; box-shadow: 0 0 15px rgba(7, 42, 200, 0.06) !important; }
 
-        .live-alert { font-size: 0.8rem; font-weight: 700; color: var(--primary); margin-top: 5px; display: none; }
+        .btn-submit {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            margin-bottom: 10px;
+        }
 
-        .custom-keyboard { display: none; grid-template-columns: repeat(11, 1fr); gap: 4px; margin-top: 8px; background: rgba(0,0,0,0.03); padding: 6px; border-radius: 10px; }
-        .key-btn { background: #fff; border: 1px solid rgba(0,0,0,0.05); padding: 10px 0; text-align: center; font-weight: 700; font-size: 0.95rem; border-radius: 6px; cursor: pointer; color: var(--text-dark); user-select: none; }
-        .key-btn:active { background: #e2e8f0; }
-        .key-btn.action-key { background: #e2e8f0; font-size: 0.75rem; color: var(--text-dark); display: flex; align-items: center; justify-content: center; }
-        .key-btn.clear-key { color: var(--danger); }
+        .btn-pdf {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
 
-        .shortcut-bar { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-        .shortcut-btn { background: #fff; border: 1px solid rgba(7, 42, 200, 0.1); padding: 5px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 6px; cursor: pointer; color: var(--primary); direction: ltr; }
-        .shortcut-btn:hover { background: var(--primary); color: #fff; }
+        .table-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            overflow-x: auto;
+        }
 
-        .btn-action-main { width: 100%; padding: 13px; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; font-family: 'Tajawal'; transition: all 0.2s; }
-        .btn-submit { background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(7, 42, 200, 0.15); margin-top: 10px; }
-        .btn-submit:hover { background: var(--primary-light); }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+        }
 
-        .links-list { display: flex; flex-direction: column; gap: 10px; margin-top: 5px; }
-        .link-item-row { background: #fff; border: 1px solid rgba(0,0,0,0.05); border-radius: 14px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 15px; }
-        .link-info-box { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
-        .link-main-line { display: flex; align-items: center; gap: 10px; }
-        .number-badge { background: rgba(7, 42, 200, 0.08); color: var(--primary); font-weight: 700; font-size: 0.85rem; padding: 2px 8px; border-radius: 6px; }
-        .actual-link { font-weight: 700; font-size: 0.9rem; color: var(--text-dark); text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; direction: ltr; }
-        .actual-link:hover { color: var(--primary); text-decoration: underline; }
-        
-        .link-meta-box { display: flex; align-items: center; gap: 14px; }
-        .views-counter { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
-        .edit-icon-btn { background: none; border: none; color: var(--primary); font-size: 1rem; cursor: pointer; padding: 4px; }
+        th, td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
 
-        .security-grid { display: flex; flex-direction: column; gap: 14px; }
-        .footer { background: rgba(255, 255, 255, 0.7); border-top: 1px solid var(--glass-border); width: 100%; padding: 20px; color: var(--text-muted); font-size: 0.85rem; text-align: center; box-sizing: border-box; margin-top: auto; }
+        th {
+            background-color: #fafafa;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 13px;
+        }
+
+        .btn-go { background-color: #007bff; color: white; }
+        .btn-view { background-color: #17a2b8; color: white; margin-right: 3px; }
+        .btn-edit { background-color: #ffc107; color: #333; margin-right: 3px; }
+        .btn-delete { background-color: #dc3545; color: white; margin-right: 3px; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #aaa;
+        }
+        .close-modal:hover { color: #000; }
+
+        #protected-content { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="top-navbar">
-        <div class="brand-logo" id="headerBrand">Electrwni<span class="dot-link">.link/</span><span class="dynamic-user" id="headerUser">...</span></div>
-        <button class="logout-btn" onclick="logout()">خروج</button>
-    </div>
-
-    <div class="main-container">
+    <div id="protected-content" class="main-container">
         
-        <div class="white-wrapper">
-            <h1 class="main-heading">مدير الروابط</h1>
-            <div class="user-prize-display" id="chosenBrandName">...</div>
-            
-            <div class="bio-link-box">
-                <div class="bio-info">
-                    <span class="bio-label">يظهر رابطك للجمهور هكذا</span>
-                    <span class="bio-url" id="bioUrlText">electrwni.link/...</span>
-                </div>
-                <button class="btn-action-copy" onclick="copyBioUrl()"><i class="fa-regular fa-copy"></i> نسخ الرابط</button>
-            </div>
-
-            <div class="section-title"><i class="fa-solid fa-plus-minus" style="color:var(--primary)"></i> روابطك برقم</div>
-            
-            <form id="linkForm" onsubmit="event.preventDefault();">
-                <div class="form-group">
-                    <label>الرقم المعرف</label>
-                    <input type="text" id="linkNumber" placeholder="أدخل الرقم" autocomplete="off">
-                    <div class="live-alert" id="liveAlertBox"></div>
-                    
-                    <div class="custom-keyboard" id="numberKeyboard">
-                        <div class="key-btn action-key clear-key" onclick="pressKey('clear')">مسح</div>
-                        <div class="key-btn" onclick="pressKey('1')">1</div>
-                        <div class="key-btn" onclick="pressKey('2')">2</div>
-                        <div class="key-btn" onclick="pressKey('3')">3</div>
-                        <div class="key-btn" onclick="pressKey('4')">4</div>
-                        <div class="key-btn" onclick="pressKey('5')">5</div>
-                        <div class="key-btn" onclick="pressKey('6')">6</div>
-                        <div class="key-btn" onclick="pressKey('7')">7</div>
-                        <div class="key-btn" onclick="pressKey('8')">8</div>
-                        <div class="key-btn" onclick="pressKey('9')">9</div>
-                        <div class="key-btn action-key" onclick="pressKey('delete')"><i class="fa-solid fa-delete-left"></i></div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>الرابط المستهدف</label>
-                    <input type="url" id="targetUrl" placeholder="https://example.com" inputmode="url" lang="en" dir="ltr" style="text-align: left;">
-                    
-                    <div class="shortcut-bar">
-                        <button type="button" class="shortcut-btn" onclick="insertShortcut('.com')">.com</button>
-                        <button type="button" class="shortcut-btn" onclick="insertShortcut('.net')">.net</button>
-                        <button type="button" class="shortcut-btn" onclick="insertShortcut('.org')">.org</button>
-                        <button type="button" class="shortcut-btn" onclick="insertShortcut('.sa')">.sa</button>
-                        <button type="button" class="shortcut-btn" onclick="insertShortcut('.kw')">.kw</button>
-                        <button type="button" class="shortcut-btn" onclick="insertShortcut('/')">/</button>
-                        <button type="button" class="shortcut-btn" onclick="insertShortcut('@')">@</button>
-                        <button type="button" class="shortcut-btn" onclick="insertShortcut('_')">_</button>
-                        <button type="button" class="shortcut-btn" onclick="insertShortcut('-')">-</button>
-                        <button type="button" class="shortcut-btn" onclick="insertShortcut('.')">.</button>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>الوصف التوضيحي</label>
-                    <input type="text" id="linkDesc" placeholder="اكتب وصفاً أو اسماً لهذا الرابط...">
-                </div>
-
-                <button type="button" class="btn-action-main btn-submit" id="btnSaveLink">حفظ وإطلاق الرابط</button>
-            </form>
-        </div>
-
-        <div class="white-wrapper">
-            <div class="section-title" style="border-top:none; padding-top:0;"><i class="fa-solid fa-folder-open" style="color:var(--primary)"></i> سجل الروابط النشطة</div>
-            <div class="links-list" id="linksContainer">
-                <div style="text-align:center; color:var(--text-muted); font-size:0.85rem; padding:15px;">جاري تحميل سجل الروابط...</div>
+        <div class="header">
+            <div class="brand">electrwni | إلكتروني</div>
+            <div class="user-info">
+                <span>مرحباً: <strong id="user-display-name">جاري التحميل...</strong></span>
+                <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
             </div>
         </div>
 
-        <div class="white-wrapper">
-            <div class="section-title" style="border-top:none; padding-top:0;"><i class="fa-solid fa-shield-halved" style="color:var(--primary)"></i> الخصوصية والأمان</div>
-            <div class="security-grid">
-                <div class="form-group" style="margin-bottom:0;">
-                    <label>الرقم السري الحالي</label>
-                    <input type="password" id="currentPassword" placeholder="••••••••">
-                </div>
-                <div class="form-group" style="margin-bottom:0;">
-                    <label>الرقم السري الجديد</label>
-                    <input type="password" id="newPassword" placeholder="••••••••">
-                </div>
-                <div class="form-group" style="margin-bottom:10px;">
-                    <label>تأكيد الرقم السري الجديد</label>
-                    <input type="password" id="confirmNewPassword" placeholder="••••••••">
-                </div>
-                <button type="button" class="btn-action-main" style="background:var(--success); color:#fff; margin-bottom: 5px;" onclick="updateSecurity()">حفظ إعدادات الأمان</button>
-                
-                <!-- زر حذف الحساب المدمج بشكل متناسق أسفل مربع الأمان والخصوصية -->
-                <button type="button" class="btn-action-main" style="background:var(--danger); color:#fff;" onclick="deleteAccount()">حذف الحساب والتسجيلات نهائياً</button>
+        <div class="form-card">
+            <h3>إضافة توجيه رقمي جديد</h3>
+            <div class="form-grid">
+                <input type="number" id="input-number" placeholder="الرقم الافتراضي (مثال: 5)">
+                <input type="url" id="input-url" placeholder="الرابط الموجه إليه (https://...)">
+                <input type="text" id="input-desc" placeholder="الوصف أو اسم الجهة">
             </div>
+            <button class="btn-submit" onclick="addNewLink()">حفظ البيانات التوجيهية</button>
+        </div>
+
+        <button class="btn-pdf" onclick="exportToPDF()">🖨️ طباعة السجلات الحالية كـ PDF</button>
+
+        <div class="table-container" id="pdf-table-area">
+            <table>
+                <thead>
+                    <tr>
+                        <th>الرقم</th>
+                        <th>الوصف</th>
+                        <th>الرابط الوجهة</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="data-table-body"></tbody>
+            </table>
         </div>
 
     </div>
 
-    <div class="footer">
-        تم تطوير المحرك البرمجي بواسطة Electrwni، الكويت بنية بمعمارية عالية الأداء <br>
-        Built with High-Performance Architecture, by electrwni, kuwait
+    <div id="editModal" class="modal" onclick="closeModalOnOutsideClick(event)">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeEditModal()">&times;</span>
+            <h3>تعديل البيانات الرقمية</h3>
+            <input type="hidden" id="edit-key">
+            <div style="margin-bottom:15px;">
+                <label>الرابط:</label>
+                <input type="url" id="edit-url" style="margin-top:5px;">
+            </div>
+            <div style="margin-bottom:20px;">
+                <label>الوصف:</label>
+                <input type="text" id="edit-desc" style="margin-top:5px;">
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button class="btn-submit" onclick="saveEditedLink()" style="background:#007bff;">حفظ التعديلات</button>
+                <button class="btn-submit" id="modal-delete-btn" style="background:#dc3545;">حذف</button>
+            </div>
+        </div>
     </div>
-
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <script>
+        // هنا تم وضع بيانات Config الحقيقية الخاصة بك لتتصل بقاعدتك فوراً
         const firebaseConfig = {
             apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
             authDomain: "electrwni-link.firebaseapp.com",
@@ -219,174 +267,123 @@
             projectId: "electrwni-link",
             storageBucket: "electrwni-link.firebasestorage.app",
             messagingSenderId: "712490301263",
-            appId: "1:712490301263:web:2084210da3f687285ab73a"
+            appId: "1:712490301263:web:2084210da3f687285ab73a",
+            measurementId: "G-LCCGHWKH87"
         };
 
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const auth = firebase.auth();
         const db = firebase.database();
 
-        const linkNumInput = document.getElementById('linkNumber');
-        const keyboard = document.getElementById('numberKeyboard');
-        const alertBox = document.getElementById('liveAlertBox');
-        const targetUrlInput = document.getElementById('targetUrl');
-        const linkDescInput = document.getElementById('linkDesc');
-        const btnSaveLink = document.getElementById('btnSaveLink');
-        const linksContainer = document.getElementById('linksContainer');
-
-        let localLinksData = {};
-
-        linkNumInput.addEventListener('focus', () => { keyboard.style.display = 'grid'; });
-        document.addEventListener('click', (e) => {
-            if (!linkNumInput.contains(e.target) && !keyboard.contains(e.target)) { keyboard.style.display = 'none'; }
-        });
-
-        function pressKey(key) {
-            if (key === 'clear') { linkNumInput.value = ''; } 
-            else if (key === 'delete') { linkNumInput.value = linkNumInput.value.slice(0, -1); } 
-            else { linkNumInput.value += key; }
-            linkNumInput.dispatchEvent(new Event('input'));
-        }
-
-        function insertShortcut(val) {
-            targetUrlInput.value += val;
-            targetUrlInput.focus();
-        }
-
-        linkNumInput.addEventListener('input', (e) => {
-            const val = e.target.value.trim();
-            if(!val) { alertBox.style.display = 'none'; return; }
-            if(localLinksData[val]) {
-                alertBox.style.display = 'block'; alertBox.style.color = 'var(--primary)';
-                alertBox.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> رقم ${val} مدخل مسبقاً وهو: (${localLinksData[val].desc || 'بدون وصف'})`;
-            } else {
-                alertBox.style.display = 'block'; alertBox.style.color = 'var(--success)';
-                alertBox.innerHTML = `<i class="fa-solid fa-circle-check"></i> رقم ${val} متاح وجديد بالكامل`;
-            }
-        });
-
-        firebase.auth().onAuthStateChanged((user) => {
-            let activeUsername = "user";
+        auth.onAuthStateChanged((user) => {
             if (user) {
-                activeUsername = user.email.split('@')[0];
-                db.ref(`users/${user.uid}/username`).once('value').then((snapshot) => {
-                    if (snapshot.exists()) {
-                        activeUsername = snapshot.val();
-                    }
-                    updateUIWithUser(activeUsername);
-                });
+                document.getElementById('protected-content').style.display = 'block';
+                if (user.displayName && user.displayName.trim() !== "") {
+                    document.getElementById('user-display-name').innerText = user.displayName;
+                } else {
+                    const fallbackName = user.email.split('@')[0];
+                    document.getElementById('user-display-name').innerText = fallbackName;
+                }
+                fetchTableData();
             } else {
-                console.log("وضع المعاينة الحرة النشط.");
-                updateUIWithUser("username");
+                window.location.href = "login.html";
             }
-            loadLinksRealtime();
         });
 
-        function updateUIWithUser(username) {
-            document.getElementById('chosenBrandName').innerText = username;
-            document.getElementById('headerUser').innerText = username;
-            document.getElementById('bioUrlText').innerText = `electrwni.link/${username}`;
-        }
+        function fetchTableData() {
+            const tableBody = document.getElementById('data-table-body');
+            db.ref('links').on('value', (snapshot) => {
+                tableBody.innerHTML = "";
+                if (snapshot.exists()) {
+                    snapshot.forEach((childSnapshot) => {
+                        const numberKey = childSnapshot.key;
+                        const data = childSnapshot.val();
+                        let targetUrl = typeof data === 'object' ? data.url : data;
+                        let description = typeof data === 'object' && data.description ? data.description : "لا يوجد وصف";
 
-        function loadLinksRealtime() {
-            db.ref('links_meta').on('value', (snapshot) => {
-                linksContainer.innerHTML = '';
-                localLinksData = snapshot.val() || {};
-                const keys = Object.keys(localLinksData);
-                
-                if(keys.length === 0) {
-                    linksContainer.innerHTML = `<div style="text-align:center; color:var(--text-muted); font-size:0.85rem; padding:15px;">لا توجد أرقام مسجلة حالياً</div>`;
-                    return;
+                        const row = `
+                            <tr>
+                                <td><strong>${numberKey}</strong></td>
+                                <td>${description}</td>
+                                <td><span style="color:#007bff; font-size:13px;">${targetUrl}</span></td>
+                                <td>
+                                    <a href="${targetUrl}" target="_blank" class="action-btn btn-go">اذهب</a>
+                                    <button class="action-btn btn-view" onclick="alert('الرابط الكامل:\\n' + '${targetUrl}')">مشاهدة</button>
+                                    <button class="action-btn btn-edit" onclick="openEditModal('${numberKey}', '${targetUrl}', '${description}')">تعديل</button>
+                                    <button class="action-btn btn-delete" onclick="deleteLink('${numberKey}')">حذف</button>
+                                </td>
+                            </tr>
+                        `;
+                        tableBody.innerHTML += row;
+                    });
+                } else {
+                    tableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#999;">لا توجد بيانات حالياً.</td></tr>`;
                 }
-
-                keys.forEach(num => {
-                    const item = localLinksData[num];
-                    linksContainer.innerHTML += `
-                        <div class="link-item-row">
-                            <div class="link-info-box">
-                                <div class="link-main-line">
-                                    <span class="number-badge">${num}</span>
-                                    <a href="${item.url}" target="_blank" class="actual-link">${item.url}</a>
-                                </div>
-                                <div class="link-desc-line">${item.desc || 'لا يوجد وصف مضاف'}</div>
-                            </div>
-                            <div class="link-meta-box">
-                                <span class="views-counter"><i class="fa-regular fa-eye"></i> ${item.views || 0}</span>
-                                <button class="edit-icon-btn" onclick="populateEdit('${num}', '${item.url}', '${item.desc || ''}')"><i class="fa-solid fa-pen-to-square"></i></button>
-                            </div>
-                        </div>
-                    `;
-                });
             });
         }
 
-        function populateEdit(num, url, desc) {
-            linkNumInput.value = num; targetUrlInput.value = url; linkDescInput.value = desc;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            linkNumInput.dispatchEvent(new Event('input'));
+        function addNewLink() {
+            const number = document.getElementById('input-number').value.trim();
+            const url = document.getElementById('input-url').value.trim();
+            const desc = document.getElementById('input-desc').value.trim();
+
+            if (!number || !url) { alert("من فضلك أدخل الرقم والرابط!"); return; }
+
+            db.ref('links/' + number).set({
+                url: url,
+                description: desc ? desc : "لا يوجد وصف"
+            }).then(() => {
+                alert("تم الحفظ بنجاح!");
+                document.getElementById('input-number').value = "";
+                document.getElementById('input-url').value = "";
+                document.getElementById('input-desc').value = "";
+            });
         }
 
-        btnSaveLink.onclick = async () => {
-            const num = linkNumInput.value.trim();
-            let url = targetUrlInput.value.trim();
-            const desc = linkDescInput.value.trim();
-
-            if(!num || !url) { alert("يرجى ملء خانة الرقم والرابط أولاً!"); return; }
-            if (!url.startsWith('http')) url = 'https://' + url;
-
-            try {
-                await db.ref(`links/${num}`).set(url);
-                const currentViews = (localLinksData[num] && localLinksData[num].views) ? localLinksData[num].views : 0;
-                await db.ref(`links_meta/${num}`).set({ url: url, desc: desc, views: currentViews });
-                alert("تم حفظ ومزامنة الرابط بنجاح!");
-                linkForm.reset(); alertBox.style.display = 'none';
-            } catch (e) { alert("حدث خطأ: " + e.message); }
-        };
-
-        function copyBioUrl() {
-            const currentSlug = document.getElementById('chosenBrandName').innerText;
-            const linkToCopy = "https://electrwni.link/" + currentSlug;
-            
-            const tempInput = document.createElement('input');
-            document.body.appendChild(tempInput);
-            tempInput.value = linkToCopy;
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
-            alert("تم نسخ الرابط بنجاح لنشره للجمهور!");
+        function openEditModal(key, url, desc) {
+            document.getElementById('edit-key').value = key;
+            document.getElementById('edit-url').value = url;
+            document.getElementById('edit-desc').value = desc;
+            document.getElementById('modal-delete-btn').onclick = function() { deleteLink(key); closeEditModal(); };
+            document.getElementById('editModal').style.display = 'flex';
         }
 
-        function updateSecurity() {
-            const user = firebase.auth().currentUser;
-            const newPass = document.getElementById('newPassword').value;
-            const confirmPass = document.getElementById('confirmNewPassword').value;
-            if(!user) { alert("يجب تسجيل الدخول لتغيير كلمة السر."); return; }
-            if(!newPass) { alert("أدخل كلمة السر الجديدة."); return; }
-            if(newPass !== confirmPass) { alert("الرموز غير متطابقة."); return; }
+        function closeEditModal() { document.getElementById('editModal').style.display = 'none'; }
+        function closeModalOnOutsideClick(e) { if(e.target.id === 'editModal') closeEditModal(); }
 
-            user.updatePassword(newPass).then(() => {
-                alert("تم تحديث كلمة السر بنجاح!");
-                document.getElementById('currentPassword').value = '';
-                document.getElementById('newPassword').value = '';
-                document.getElementById('confirmNewPassword').value = '';
-            }).catch(error => { alert("خطأ: " + error.message); });
+        function saveEditedLink() {
+            const key = document.getElementById('edit-key').value;
+            const url = document.getElementById('edit-url').value.trim();
+            const desc = document.getElementById('edit-desc').value.trim();
+
+            if (!url) { alert("الرابط لا يمكن أن يكون فارغاً!"); return; }
+
+            db.ref('links/' + key).update({ url: url, description: desc }).then(() => {
+                alert("تم تحديث البيانات المحددة!");
+                closeEditModal();
+            });
         }
 
-        // الدالة المضافة حديثاً لحذف الحساب والتسجيلات القديمة فوراً من السيرفر وإعادة التوجيه لصفحة التسجيل
-        function deleteAccount() {
-            if (confirm("هل أنت متأكد تماماً من حذف حسابك وكافة تسجيلات الدخول القديمة نهائياً؟ لا يمكن التراجع عن هذا الإجراء.")) {
-                const user = firebase.auth().currentUser;
-                if (!user) { alert("يجب أن تكون مسجلاً الدخول لتتمكن من تنفيذ هذا الأمر."); return; }
-
-                user.delete().then(() => {
-                    alert("تم حذف الحساب وتسجيلات الدخول القديمة بنجاح من السيرفر.");
-                    window.location.href = 'signup.html';
-                }).catch((error) => {
-                    alert("خطأ أمني: يرجى إعادة تسجيل الدخول مجدداً لتتمكن من حذف الحساب بشكل آمن: " + error.message);
-                });
+        function deleteLink(key) {
+            if (confirm("هل تريد حذف السجل رقم " + key + " بشكل نهائي؟")) {
+                db.ref('links/' + key).remove().then(() => { alert("تم الحذف."); });
             }
         }
 
-        function logout() { firebase.auth().signOut().then(() => { window.location.href = 'signin.html'; }); }
+        function exportToPDF() {
+            const element = document.getElementById('pdf-table-area');
+            const today = new Date().toISOString().slice(0,10).replace(/-/g, '/');
+            const opt = {
+                margin:       10,
+                filename:     `electrwni_report_${today}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+
+        function logout() { auth.signOut().then(() => { window.location.href = "login.html"; }); }
     </script>
 </body>
 </html>
