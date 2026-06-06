@@ -3,226 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إلكتروني - التوجيه الرقمي الفوري</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+    <title>electrwni | التوجيه الرقمي السريع</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <style>
-        :root { 
-            --primary: #072AC8; 
-            --primary-light: #1e46f5;
-            --glass-bg: rgba(255, 255, 255, 0.85);
-            --glass-border: rgba(255, 255, 255, 0.7);
-            --text-dark: #0f172a !important;
-            --text-muted: #475569 !important;
-            --success: #16a34a;
-            --danger: #dc2626;
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
         }
-        
-        body { 
-            margin: 0; 
-            font-family: 'Tajawal', sans-serif; 
-            display: flex; 
-            flex-direction: column; 
-            min-height: 100vh; 
-            background-color: #f8fafc !important;
-            background-image: 
-                radial-gradient(at top left, #e0f2fe 0px, transparent 50%),
-                radial-gradient(at bottom right, #eff6ff 0px, transparent 50%) !important;
-            background-attachment: fixed;
-            align-items: center; 
-            justify-content: space-between; 
-        }
-
-        .header-box { 
-            background: rgba(255, 255, 255, 0.7) !important; 
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 16px;
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--glass-border);
-            width: 100%; 
-            min-height: 65px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            padding: 10px 0; 
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
         }
-        
-        .header-text { color: var(--text-dark); font-size: 1.1rem; font-weight: 500; }
-        .highlight-text { color: var(--primary); font-size: 1.3rem; font-weight: 700; margin: 0 5px; }
-        
-        .white-wrapper { 
-            background: var(--glass-bg) !important; 
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            width: 92%; 
-            max-width: 440px; 
-            margin: 50px auto; 
-            border-radius: 28px; 
-            box-shadow: 0 25px 50px rgba(15, 23, 42, 0.06); 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            padding: 40px 30px; 
-            box-sizing: border-box; 
-        }
-
-        .welcome-brand { color: var(--primary); font-weight: 700; font-size: 1.2rem; margin-bottom: 20px; text-align: center; }
-
-        input { 
-            width: 100%; 
-            padding: 15px; 
-            font-size: 1.3rem; 
-            font-weight: 700;
-            border: 2px solid rgba(7, 42, 200, 0.1) !important; 
-            border-radius: 16px !important; 
-            text-align: center; 
-            outline: none; 
-            box-sizing: border-box; 
-            background: #ffffff !important;
-            color: var(--text-dark) !important;
-            transition: all 0.3s ease;
-            font-family: 'Tajawal', sans-serif;
-            letter-spacing: 2px;
-        }
-        input:focus { border-color: var(--primary) !important; box-shadow: 0 0 15px rgba(7, 42, 200, 0.08) !important; }
-        input::placeholder { font-size: 1.05rem; font-weight: 500; letter-spacing: 0px; color: #94a3b8; }
-
-        .error-msg { font-size: 0.9rem; margin-top: 12px; display: none; font-weight: 700; text-align: center; }
-        
-        .btn-go { 
-            width: 100%; 
-            padding: 15px; 
-            background: var(--primary); 
-            color: #fff; 
-            border: none; 
-            border-radius: 16px; 
-            font-size: 1.1rem; 
-            font-weight: 700; 
-            margin-top: 20px; 
-            cursor: pointer; 
-            transition: all 0.3s ease; 
-            font-family: 'Tajawal', sans-serif;
-            box-shadow: 0 4px 12px rgba(7, 42, 200, 0.15);
-        }
-        .btn-go:hover { background: var(--primary-light); transform: translateY(-1px); }
-
-        .auth-links { display: flex; width: 100%; justify-content: space-around; margin-top: 30px; border-top: 1px solid rgba(0,0,0,0.06); padding-top: 25px; gap: 12px; }
-        .auth-btn { text-decoration: none; color: var(--text-dark); font-weight: 700; font-size: 0.9rem; padding: 11px 20px; border: 1px solid rgba(0,0,0,0.08); border-radius: 12px; flex: 1; text-align: center; transition: all 0.2s; background: #fff; }
-        .auth-btn:hover { border-color: var(--primary); color: var(--primary); }
-        .auth-btn.signup { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 4px 10px rgba(7, 42, 200, 0.1); }
-        .auth-btn.signup:hover { background: var(--primary-light); color: #fff; }
-
-        .social-links { display: flex; justify-content: center; gap: 14px; margin-top: 30px; align-items: center; } 
-        .social-icon { background: #fff; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; text-decoration: none; color: var(--text-dark); border: 1px solid rgba(0,0,0,0.06); cursor: pointer; transition: all 0.2s; font-size: 1.1rem; }
-        .social-icon:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-1px); }
-
-        .footer { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid var(--glass-border); width: 100%; padding: 20px; color: var(--text-muted); font-size: 0.85rem; text-align: center; line-height: 1.7; box-sizing: border-box; }
+        h1 { font-size: 28px; margin-bottom: 10px; }
+        p { color: #f0f0f0; font-size: 16px; }
+        .loading-text { color: #ffeb3b; font-weight: bold; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="header-box">
-        <div class="header-text">توجيه <span class="highlight-text">الأرقام إلى روابط</span> لمنصة إلكتروني</div>
+    <div class="container">
+        <h1>مرحباً بك في منصة إلكتروني</h1>
+        <p>يرجى إدخال الرقم في نهاية الرابط للتوجيه التلقائي.</p>
+        <div id="status" class="loading-text">جاري التحقق من الرقم الممرر...</div>
     </div>
 
-    <div class="white-wrapper">
-        <div class="welcome-brand"><i class="fa-solid fa-bolt" style="margin-left:6px;"></i> أبتسم أنت بصفحة Electrwni</div>
-        
-        <input type="text" id="linkId" inputmode="numeric" placeholder="أدخل الرقم التعريفي هنا...">
-        <div id="error-msg" class="error-msg"></div>
-        <button class="btn-go" id="btnGo">انتقل الآن</button>
-
-        <div class="auth-links">
-            <a href="signin.html" class="auth-btn">تسجيل دخول</a>
-            <a href="signup.html" class="auth-btn signup">تسجيل جديد</a>
-        </div>
-
-        <div class="social-links">
-            <a href="https://t.me/electrwni" target="_blank" class="social-icon"><i class="fa-brands fa-telegram"></i></a>
-            <a href="https://www.instagram.com/electrwni" target="_blank" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
-            <a href="https://x.com/electrwni" target="_blank" class="social-icon"><i class="fa-brands fa-x-twitter"></i></a>
-            <div class="social-icon" id="qrBtn"><i class="fas fa-qrcode"></i></div>
-        </div>
-    </div>
-
-    <div class="footer">
-        تم تطوير المحرك البرمجي بواسطة Electrwni، الكويت بنية بمعمارية عالية الأداء <br>
-        Built with High-Performance Architecture, by electrwni, kuwait
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-        import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js";
-
+    <script>
         const firebaseConfig = {
-            apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
+            apiKey: "YOUR_API_KEY",
             authDomain: "electrwni-link.firebaseapp.com",
-            databaseURL: "https://electrwni-link-default-rtdb.asia-southeast1.firebasedatabase.app",
+            databaseURL: "https://electrwni-link-default-rtdb.firebaseio.com",
             projectId: "electrwni-link",
-            storageBucket: "electrwni-link.firebasestorage.app",
-            messagingSenderId: "712490301263",
-            appId: "1:712490301263:web:2084210da3f687285ab73a"
+            storageBucket: "electrwni-link.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const db = firebase.database();
 
-        const input = document.getElementById('linkId');
-        const btnGo = document.getElementById('btnGo');
-        const errorMsg = document.getElementById('error-msg');
-
-        async function checkAutoRedirect() {
-            const path = window.location.pathname.replace('/', '').trim();
-            if (path && !isNaN(path)) {
-                try {
-                    const snap = await get(child(ref(db), `links/${path}`));
-                    if (snap.exists()) {
-                        let target = snap.val();
-                        if (!target.startsWith('http')) target = 'https://' + target;
-                        window.location.href = target;
-                    }
-                } catch (e) { console.error("Auto-redirect Error:", e); }
-            }
+        function convertArabicNumbers(str) {
+            const arabicNums = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+            return str.replace(/[٠-٩]/g, (w) => arabicNums.indexOf(w));
         }
-        checkAutoRedirect();
 
-        input.addEventListener('input', (e) => {
-            let v = e.target.value;
-            const ar = [/٠/g, /١/g, /٢/g, /٣/g, /٤/g, /٥/g, /٦/g, /٧/g, /٨/g, /٩/g];
-            for (let i = 0; i < 10; i++) v = v.replace(ar[i], i);
-            e.target.value = v.replace(/[^0-9]/g, '');
-            if(e.target.value === "") errorMsg.style.display = 'none';
-        });
+        const urlParams = new URLSearchParams(window.location.search);
+        let numKey = urlParams.get('num') || window.location.hash.substring(1);
 
-        btnGo.onclick = async () => {
-            const val = input.value.trim();
-            if(!val) return;
-
-            errorMsg.style.display = 'block';
-            errorMsg.style.color = "var(--primary)";
-            errorMsg.innerText = "جاري فحص الرقم والتوجيه...";
-
-            try {
-                const snap = await get(child(ref(db), `links/${val}`));
+        if (numKey) {
+            numKey = convertArabicNumbers(numKey.trim());
+            db.ref('links/' + numKey).once('value').then((snap) => {
                 if (snap.exists()) {
-                    let targetUrl = snap.val();
-                    if (!targetUrl.startsWith('http')) targetUrl = 'https://' + targetUrl;
+                    let data = snap.val();
+                    let targetUrl = typeof data === 'object' ? data.url : data;
+                    
+                    if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
+                        targetUrl = 'https://' + targetUrl;
+                    }
+                    document.getElementById('status').innerText = "تم العثور على الرابط! جاري التوجيه الآن...";
                     window.location.href = targetUrl;
-                } else { 
-                    errorMsg.innerText = "الرقم غير مسجل في قواعد البيانات"; 
-                    errorMsg.style.color = "var(--danger)"; 
+                } else {
+                    document.getElementById('status').style.color = '#ff4d4d';
+                    document.getElementById('status').innerText = "عذراً، هذا الرقم غير مسجل في النظام.";
                 }
-            } catch (e) { 
-                errorMsg.innerText = "خطأ في الاتصال بالخادم الرئيسي"; 
-                errorMsg.style.color = "var(--danger)"; 
-            }
-        };
-
-        document.getElementById('qrBtn').onclick = () => {
-            alert("ميزة مسح الـ QR ومزامنة المعرفات قيد التهيئة البرمجية الآن!");
-        };
+            }).catch((err) => {
+                document.getElementById('status').innerText = "حدث خطأ أثناء الاتصال بقاعدة البيانات.";
+            });
+        } else {
+            document.getElementById('status').innerText = "جاهز لاستقبال الطلبات الرقمية.";
+        }
     </script>
 </body>
 </html>
