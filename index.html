@@ -3,43 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>electrwni | التوجيه الرقمي السريع</title>
+    <title>منصة إلكتروني | تحويل الأرقام إلى روابط</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
-        }
-        .container {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 40px;
-            border-radius: 16px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-        }
-        h1 { font-size: 28px; margin-bottom: 10px; }
-        p { color: #f0f0f0; font-size: 16px; }
-        .loading-text { color: #ffeb3b; font-weight: bold; margin-top: 20px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); color: white; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center; }
+        .welcome-card { background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.15); padding: 40px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); max-width: 500px; width: 90%; }
+        h1 { font-size: 28px; margin-bottom: 15px; font-weight: bold; }
+        p { font-size: 16px; color: #e0e0e0; margin-bottom: 30px; line-height: 1.6; }
+        .btn-group { display: flex; gap: 15px; justify-content: center; }
+        .btn { padding: 12px 30px; border-radius: 10px; font-size: 16px; font-weight: bold; text-decoration: none; cursor: pointer; transition: 0.3s; }
+        .btn-primary { background-color: #ffffff; color: #203a43; }
+        .btn-secondary { background-color: transparent; color: #ffffff; border: 2px solid #ffffff; }
+        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+        .status { margin-top: 20px; font-size: 14px; color: #ffeb3b; }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="welcome-card" id="main-ui">
         <h1>مرحباً بك في منصة إلكتروني</h1>
-        <p>يرجى إدخال الرقم في نهاية الرابط للتوجيه التلقائي.</p>
-        <div id="status" class="loading-text">جاري التحقق من الرقم الممرر...</div>
+        <p>يرجى إدخال الرقم في نهاية الرابط للتوجيه التلقائي، أو قم بإنشاء حسابك لإدارة روابطك الرقمية الخاصة وتوجيهها بكل سهولة.</p>
+        <div class="btn-group">
+            <a href="dashboard.html" class="btn btn-primary">لوحة التحكم</a>
+            <a href="signin.html" class="btn btn-secondary">تسجيل الدخول / جديد</a>
+        </div>
+        <div id="status-msg" class="status"></div>
     </div>
 
     <script>
-        // هنا تم وضع بيانات Config الحقيقية الخاصة بك لتتصل بقاعدتك فوراً
         const firebaseConfig = {
             apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
             authDomain: "electrwni-link.firebaseapp.com",
@@ -47,42 +39,31 @@
             projectId: "electrwni-link",
             storageBucket: "electrwni-link.firebasestorage.app",
             messagingSenderId: "712490301263",
-            appId: "1:712490301263:web:2084210da3f687285ab73a",
-            measurementId: "G-LCCGHWKH87"
+            appId: "1:712490301263:web:2084210da3f687285ab73a"
         };
 
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
 
-        function convertArabicNumbers(str) {
-            const arabicNums = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
-            return str.replace(/[٠-٩]/g, (w) => arabicNums.indexOf(w));
-        }
+        // فحص الهاش في الرابط للتوجيه التلقائي: مثال: electrwni.link/#userId/5
+        const hashData = window.location.hash.substring(1); 
+        
+        if (hashData && hashData.includes('/')) {
+            const parts = hashData.split('/');
+            const userId = parts[0];
+            const linkNumber = parts[1];
+            
+            document.getElementById('status-msg').innerText = "جاري فحص وتوجيه الرابط الرقمي...";
 
-        const urlParams = new URLSearchParams(window.location.search);
-        let numKey = urlParams.get('num') || window.location.hash.substring(1);
-
-        if (numKey) {
-            numKey = convertArabicNumbers(numKey.trim());
-            db.ref('links/' + numKey).once('value').then((snap) => {
-                if (snap.exists()) {
-                    let data = snap.val();
-                    let targetUrl = typeof data === 'object' ? data.url : data;
-                    
-                    if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
-                        targetUrl = 'https://' + targetUrl;
-                    }
-                    document.getElementById('status').innerText = "تم العثور على الرابط! جاري التوجيه الآن...";
-                    window.location.href = targetUrl;
+            db.ref('users/' + userId + '/links/' + linkNumber).once('value').then((snapshot) => {
+                if (snapshot.exists()) {
+                    window.location.href = snapshot.val();
                 } else {
-                    document.getElementById('status').style.color = '#ff4d4d';
-                    document.getElementById('status').innerText = "عذراً، هذا الرقم غير مسجل في النظام.";
+                    document.getElementById('status-msg').innerText = "عذراً، هذا الرقم غير مسجل أو منتهي.";
                 }
             }).catch((err) => {
-                document.getElementById('status').innerText = "حدث خطأ أثناء الاتصال بقاعدة البيانات.";
+                document.getElementById('status-msg').innerText = "خطأ في الاتصال بقاعدة البيانات.";
             });
-        } else {
-            document.getElementById('status').innerText = "جاهز لاستقبال الطلبات الرقمية.";
         }
     </script>
 </body>
