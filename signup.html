@@ -3,397 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إلكتروني - تسجيل وتخصيص حساب جديد</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+    <title>إلكتروني | تسجيل مشترك جديد</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <style>
-        /* تصفير وإجبار النظام على النمط الفاتح الفاخر الموحد لقتل التداخل */
-        :root { 
-            --primary: #072AC8; 
-            --primary-light: #1e46f5;
-            --glass-bg: rgba(255, 255, 255, 0.85);
-            --glass-border: rgba(255, 255, 255, 0.7);
-            --text-dark: #0f172a !important;
-            --text-muted: #475569 !important;
-            --success: #16a34a;
-        }
-        
-        body { 
-            margin: 0; 
-            font-family: 'Tajawal', sans-serif; 
-            display: flex; 
-            flex-direction: column; 
-            min-height: 100vh; 
-            background-color: #f8fafc !important;
-            background-image: 
-                radial-gradient(at top left, #e0f2fe 0px, transparent 50%),
-                radial-gradient(at bottom right, #eff6ff 0px, transparent 50%) !important;
-            background-attachment: fixed;
-            align-items: center; 
-            justify-content: space-between; 
-        }
-
-        .header-box { 
-            background: rgba(255, 255, 255, 0.7) !important; 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--glass-border);
-            width: 100%; 
-            min-height: 65px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            padding: 10px 0; 
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02);
-        }
-        
-        .header-text { color: var(--text-dark); font-size: 1.1rem; font-weight: 500; }
-        .highlight-text { color: var(--primary); font-size: 1.3rem; font-weight: 700; margin: 0 5px; }
-        
-        /* حاوية بيضاء ناصعة زجاجية تمنع ظهور أي خلفية سوداء قديمة */
-        .white-wrapper { 
-            background: var(--glass-bg) !important; 
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            width: 92%; 
-            max-width: 520px; 
-            margin: 30px auto; 
-            border-radius: 28px; 
-            box-shadow: 0 25px 50px rgba(15, 23, 42, 0.06); 
-            padding: 35px 28px; 
-            box-sizing: border-box; 
-            transition: all 0.4s ease;
-        }
-
-        .steps-indicator { display: flex; justify-content: space-between; margin-bottom: 30px; position: relative; padding: 0 10px; }
-        .steps-indicator::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 2px; background: rgba(0,0,0,0.05); z-index: 1; transform: translateY(-50%); }
-        .step-dot { width: 35px; height: 35px; border-radius: 50%; background: #fff; border: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--text-muted); z-index: 2; transition: all 0.3s ease; font-size: 0.9rem; }
-        .step-dot.active { border-color: var(--primary); background: var(--primary); color: #fff; box-shadow: 0 0 12px rgba(7, 42, 200, 0.2); }
-        .step-dot.completed { border-color: var(--success); background: var(--success); color: #fff; }
-
-        .step-content { display: none; }
-        .step-content.active { display: block; animation: fadeIn 0.4s ease; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
-        .welcome-title { color: var(--text-dark); font-weight: 700; font-size: 1.35rem; margin-bottom: 6px; text-align: center; }
-        .welcome-sub { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 25px; text-align: center; }
-
-        .form-group { margin-bottom: 18px; display: flex; flex-direction: column; }
-        .form-group label { color: var(--text-dark); font-weight: 600; font-size: 0.85rem; margin-bottom: 6px; padding-right: 4px; }
-
-        .input-wrapper { position: relative; display: flex; align-items: center; }
-        .input-wrapper i.field-icon { position: absolute; right: 16px; color: #94a3b8; font-size: 1rem; z-index: 10; }
-
-        input, select, textarea { 
-            width: 100%; 
-            padding: 13px 44px 13px 16px !important; 
-            font-size: 0.95rem; 
-            font-weight: 500;
-            border: 2px solid rgba(7, 42, 200, 0.08) !important; 
-            border-radius: 14px !important; 
-            outline: none; 
-            box-sizing: border-box; 
-            background: #ffffff !important;
-            color: var(--text-dark) !important;
-            transition: all 0.3s ease;
-            font-family: 'Tajawal', sans-serif;
-        }
-        input:focus, select:focus, textarea:focus { border-color: var(--primary) !important; box-shadow: 0 0 15px rgba(7, 42, 200, 0.08) !important; }
-
-        .live-status-box { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; padding: 0 4px; font-size: 0.8rem; }
-        .live-url-box { color: var(--text-muted); }
-        .live-url-box span { color: var(--primary); font-weight: 700; }
-        .availability-indicator { font-weight: 700; display: none; }
-
-        .strength-meter { height: 4px; width: 100%; background: rgba(0, 0, 0, 0.05); border-radius: 2px; margin-top: 6px; display: none; overflow: hidden; }
-        .strength-bar { height: 100%; width: 0; transition: all 0.4s ease; }
-
-        .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 15px; }
-        .category-card { background: #fff; border: 2px solid rgba(7, 42, 200, 0.05); border-radius: 14px; padding: 14px; text-align: center; cursor: pointer; transition: all 0.2s ease; color: var(--text-dark); font-weight: 600; font-size: 0.9rem; }
-        .category-card:hover { border-color: rgba(7, 42, 200, 0.2); }
-        .category-card.selected { border-color: var(--primary); background: rgba(7, 42, 200, 0.04); color: var(--primary); }
-
-        .network-row { background: rgba(255,255,255,0.9); border: 1px solid rgba(0,0,0,0.06); padding: 14px; border-radius: 16px; margin-bottom: 12px; }
-        .network-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .network-title { font-weight: 700; font-size: 0.9rem; color: var(--text-dark); display: flex; align-items: center; gap: 8px; }
-        .toggle-group { display: flex; background: rgba(0,0,0,0.04); padding: 3px; border-radius: 8px; }
-        .toggle-btn { padding: 4px 10px; font-size: 0.75rem; font-weight: 700; border: none; background: transparent; border-radius: 6px; cursor: pointer; color: var(--text-muted); transition: all 0.2s; }
-        .toggle-btn.active { background: #fff; color: var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-
-        .nav-buttons { display: flex; gap: 12px; margin-top: 25px; }
-        .btn-action { flex: 1; padding: 14px; border-radius: 14px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease; border: none; }
-        .btn-next { background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(7, 42, 200, 0.15); }
-        .btn-next:hover { background: var(--primary-light); transform: translateY(-1px); }
-        .btn-prev { background: rgba(0,0,0,0.05); color: var(--text-dark); }
-        .btn-prev:hover { background: rgba(0,0,0,0.08); }
-
-        .divider { display: flex; align-items: center; text-align: center; margin: 20px 0; color: var(--text-muted); font-size: 0.8rem; }
-        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
-        .divider:not(:empty)::before { margin-left: .5em; } .divider:not(:empty)::after { margin-right: .5em; }
-
-        .btn-google { width: 100%; padding: 12px; background: #ffffff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 14px; color: var(--text-dark); font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; transition: all 0.2s; }
-        .btn-google:hover { background: #f8fafc; }
-        .btn-google svg { width: 18px; height: 18px; }
-
-        .auth-footer { margin-top: 25px; font-size: 0.9rem; color: var(--text-muted); text-align: center; }
-        .auth-footer a { color: var(--primary); text-decoration: none; font-weight: 700; }
-
-        .toast-notification { position: fixed; bottom: -80px; left: 50%; transform: translateX(-50%); background: #fff; border: 1px solid var(--glass-border); padding: 15px 30px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 12px; z-index: 9999; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .toast-notification.show { bottom: 40px; }
-        .toast-icon { width: 24px; height: 24px; background: var(--success); border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
-
-        .footer { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid var(--glass-border); width: 100%; padding: 20px; color: var(--text-muted); font-size: 0.85rem; text-align: center; line-height: 1.7; box-sizing: border-box; font-weight: 500; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #0f172a, #1e293b); color: #fff; margin: 0; padding: 20px; min-height: 100vh; display: flex; justify-content: center; align-items: center; direction: rtl; }
+        .auth-container { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); padding: 30px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); max-width: 450px; width: 100%; }
+        h2 { text-align: center; margin-bottom: 20px; color: #38bdf8; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 6px; font-size: 13px; color: #94a3b8; }
+        input, select { width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #fff; box-sizing: border-box; font-size: 14px; }
+        input:focus, select:focus { border-color: #38bdf8; outline: none; background: rgba(255, 255, 255, 0.15); }
+        select option { background: #1e293b; color: #fff; }
+        button { background: #38bdf8; color: #0f172a; border: none; padding: 13px; border-radius: 8px; cursor: pointer; width: 100%; font-size: 16px; font-weight: 700; margin-top: 10px; transition: 0.3s; }
+        button:hover { background: #0ea5e9; transform: translateY(-1px); }
+        .toggle-link { text-align: center; margin-top: 15px; font-size: 13px; }
+        .toggle-link a { color: #38bdf8; text-decoration: none; }
     </style>
 </head>
 <body>
 
-    <div class="header-box">
-        <div class="header-text">منصة <span class="highlight-text">إلكتروني</span> الرقمية</div>
-    </div>
-
-    <div class="white-wrapper">
-        <div class="steps-indicator">
-            <div class="step-dot active" id="dot1">1</div>
-            <div class="step-dot" id="dot2">2</div>
-            <div class="step-dot" id="dot3">3</div>
-        </div>
-
-        <form id="multiStepForm" onsubmit="event.preventDefault();">
+    <div class="auth-container">
+        <h2 id="auth-title">إنشاء حساب شريك جديد</h2>
+        <form id="auth-form" onsubmit="handleAuth(event)">
             
-            <div class="step-content active" id="step1">
-                <div class="welcome-title">إنشاء حساب جديد</div>
-                <div class="welcome-sub">احجز اسمك الرقمي وابدأ مشاركة روابطك بذكاء</div>
-
-                <div class="form-group">
-                    <label>اسم المستخدم (رابط صفحتك)</label>
-                    <div class="input-wrapper">
-                        <input type="text" id="username" placeholder="username" required autocomplete="off">
-                        <i class="fa-solid fa-at field-icon"></i>
-                    </div>
-                    <div class="live-status-box">
-                        <div class="live-url-box">رابطك المباشر: <span id="liveUrl">electrwni.link/username</span></div>
-                        <div class="availability-indicator" id="availability">متاح</div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>البريد الإلكتروني</label>
-                    <div class="input-wrapper">
-                        <input type="email" id="email" placeholder="name@example.com" required>
-                        <i class="fa-solid fa-envelope field-icon"></i>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>كلمة المرور</label>
-                    <div class="input-wrapper">
-                        <input type="password" id="password" placeholder="••••••••" required>
-                        <i class="fa-solid fa-lock field-icon"></i>
-                    </div>
-                    <div class="strength-meter" id="strengthMeter"><div class="strength-bar" id="strengthBar"></div></div>
-                </div>
-
-                <div class="nav-buttons">
-                    <button type="button" class="btn-action btn-next" onclick="nextStep(2)">المتابعة والتخصيص</button>
-                </div>
-
-                <div class="divider">أو سجل سريعاً عبر</div>
-                <button type="button" class="btn-google" id="googleBtn">
-                    <svg viewBox="0 0 24 24">
-                        <path fill="#EA4335" d="M12 5.04c1.65 0 3.14.57 4.31 1.69l3.22-3.22C17.58 1.63 14.98 1 12 1 7.35 1 3.4 3.65 1.45 7.5l3.85 2.99C6.23 7.04 8.89 5.04 12 5.04z"/>
-                        <path fill="#4285F4" d="M23.49 12.27c0-.81-.07-1.59-.2-2.34H12v4.43h6.44c-.28 1.47-1.11 2.71-2.36 3.55l3.66 2.84c2.14-1.97 3.38-4.88 3.38-8.48z"/>
-                        <path fill="#FBBC05" d="M5.3 14.49c-.23-.69-.36-1.42-.36-2.19s.13-1.5.36-2.19L1.45 7.5C.52 9.35 0 11.42 0 13.6s.52 4.25 1.45 6.1l3.85-2.99z"/>
-                        <path fill="#34A853" d="M12 23c3.24 0 5.97-1.07 7.96-2.92l-3.66-2.84c-1.01.68-2.31 1.08-4.3 1.08-3.11 0-5.77-2-6.7-4.46L1.45 16.85C3.4 20.7 7.35 23 12 23z"/>
-                    </svg>
-                    سجل باستخدام حساب Google
-                </button>
-                <div class="auth-footer">لديك حساب بالفعل؟ <a href="singin.html">تسجيل الدخول</a></div>
+            <div class="form-group" id="name-group">
+                <label>اسم المشترك / المؤسسة الشخصية:</label>
+                <input type="text" id="user-name" placeholder="مثال: مشترك إلكتروني رقم 1">
             </div>
 
-            <div class="step-content" id="step2">
-                <div class="welcome-title">تخصيص مساحتك الخاصة</div>
-                <div class="welcome-sub">أخبرنا بنوع نشاطك لتهيئة الواجهة الملائمة لك</div>
-
-                <div class="form-group">
-                    <label>تصنيف مجال العمل الخاص بك</label>
-                    <div class="category-grid">
-                        <div class="category-card" onclick="selectCategory(this)">مطور / مصمم</div>
-                        <div class="category-card" onclick="selectCategory(this)">صانع محتوى</div>
-                        <div class="category-card" onclick="selectCategory(this)">متجر / أعمال</div>
-                        <div class="category-card" onclick="selectCategory(this)">شخصي / أخرى</div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>عنوان الصفحة الشخصية الظاهري</label>
-                    <div class="input-wrapper">
-                        <input type="text" placeholder="مثال: المهندس خالد الهذال">
-                        <i class="fa-solid fa-signature field-icon"></i>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>النبذة التعريفية القصيرة (Bio)</label>
-                    <div class="input-wrapper">
-                        <textarea placeholder="اكتب سطرًا يصف مجال عملك أو تخصصك للزوار..." style="resize:none; padding-right:16px; height: 75px;"></textarea>
-                    </div>
-                </div>
-
-                <div class="nav-buttons">
-                    <button type="button" class="btn-action btn-prev" onclick="nextStep(1)">السابق</button>
-                    <button type="button" class="btn-action btn-next" onclick="nextStep(3)">المتابعة للروابط</button>
-                </div>
+            <div class="form-group" id="platform-group">
+                <label>اسم المنصة الرقمية (للبايو):</label>
+                <input type="text" id="user-platform" placeholder="مثال: بوابة التوجيه الرقمي">
             </div>
 
-            <div class="step-content" id="step3">
-                <div class="welcome-title">تغذية قنوات الاتصال والشبكات</div>
-                <div class="welcome-sub">أضف قنواتك الأساسية وشبكاتك لتبدأ العمل حية فوراً</div>
-
-                <div class="form-group">
-                    <label>الموقع الجغرافي (رابط الخريطة Google Maps)</label>
-                    <div class="input-wrapper"><input type="text" placeholder="https://maps.google.com/..."><i class="fa-solid fa-map-location-dot field-icon"></i></div>
-                </div>
-                <div class="form-group">
-                    <label>رقم الاتصال المباشر (هاتف)</label>
-                    <div class="input-wrapper"><input type="tel" placeholder="+965 xxxxxxxx"><i class="fa-solid fa-phone field-icon"></i></div>
-                </div>
-                <div class="form-group">
-                    <label>البريد الإلكتروني للمراسلة</label>
-                    <div class="input-wrapper"><input type="email" placeholder="contact@domain.com"><i class="fa-solid fa-envelope-open field-icon"></i></div>
-                </div>
-
-                <div class="divider">شبكات التواصل الاجتماعي الجاهزة للربط</div>
-                <div id="networksContainer"></div>
-
-                <div class="nav-buttons">
-                    <button type="button" class="btn-action btn-prev" onclick="nextStep(2)">السابق</button>
-                    <button type="button" class="btn-action btn-next" style="background:var(--success);" onclick="finishRegistration()">إطلاق موقعك وحفظ الحساب</button>
-                </div>
+            <div class="form-group">
+                <label>البريد الإلكتروني:</label>
+                <input type="email" id="user-email" required placeholder="name@example.com">
             </div>
 
+            <div class="form-group">
+                <label>كلمة المرور:</label>
+                <input type="password" id="user-password" required placeholder="••••••••" minlength="6">
+            </div>
+
+            <div class="form-group" id="plan-group">
+                <label>باقة الاشتراك الحالية:</label>
+                <select id="user-plan">
+                    <option value="Free">الباقة المجانية (Free)</option>
+                    <option value="Pro">الباقة المحترفة (Pro)</option>
+                    <option value="Business">باقة الأعمال (Business)</option>
+                </select>
+            </div>
+
+            <button type="submit" id="submit-btn">سجل حسابك الآن</button>
         </form>
-    </div>
 
-    <div class="toast-notification" id="toast">
-        <div class="toast-icon"><i class="fa-solid fa-check"></i></div>
-        <div style="font-weight:700; font-size:0.95rem; color:var(--text-dark);">تهانينا! تم حجز وحفظ موقعك بنجاح.</div>
-    </div>
-
-    <div class="footer">
-        تم تطوير المحرك البرمجي بواسطة Electrwni، الكويت بنية بمعمارية عالية الأداء <br>
-        Built with High-Performance Architecture, by electrwni, kuwait
+        <div class="toggle-link">
+            <a href="#" id="switch-mode-btn" onclick="toggleMode(event)">لديك حساب بالفعل؟ تسجيل الدخول للمنصة</a>
+        </div>
     </div>
 
     <script>
-        // مصفوفة الـ 11 شبكة تواصل اجتماعي مع التبديل بين يوزر ورابط
-        const networks = [
-            { id: 'x', name: 'منصة X (تويتر)', icon: 'fa-brands fa-x-twitter', placeholderUser: 'username', placeholderLink: 'https://x.com/username' },
-            { id: 'instagram', name: 'انستغرام', icon: 'fa-brands fa-instagram', placeholderUser: 'username', placeholderLink: 'https://instagram.com/username' },
-            { id: 'telegram', name: 'تليغرام', icon: 'fa-brands fa-telegram', placeholderUser: 'username', placeholderLink: 'https://t.me/username' },
-            { id: 'snapchat', name: 'سناب شات', icon: 'fa-brands fa-snapchat', placeholderUser: 'username', placeholderLink: 'https://snapchat.com/add/username' },
-            { id: 'tiktok', name: 'تيك توك', icon: 'fa-brands fa-tiktok', placeholderUser: 'username', placeholderLink: 'https://tiktok.com/@username' },
-            { id: 'linkedin', name: 'لينكد إن', icon: 'fa-brands fa-linkedin', placeholderUser: 'username', placeholderLink: 'https://linkedin.com/in/username' },
-            { id: 'youtube', name: 'يوتيوب', icon: 'fa-brands fa-youtube', placeholderUser: 'handle@', placeholderLink: 'https://youtube.com/c/channelname' },
-            { id: 'facebook', name: 'فيسبوك', icon: 'fa-brands fa-facebook', placeholderUser: 'username', placeholderLink: 'https://facebook.com/username' },
-            { id: 'threads', name: 'ثريدز', icon: 'fa-brands fa-threads', placeholderUser: 'username', placeholderLink: 'https://threads.net/@username' },
-            { id: 'pinterest', name: 'بنترست', icon: 'fa-brands fa-pinterest', placeholderUser: 'username', placeholderLink: 'https://pinterest.com/username' },
-            { id: 'whatsapp', name: 'واتساب', icon: 'fa-brands fa-whatsapp', placeholderUser: '965xxxxxxxx', placeholderLink: 'https://wa.me/965xxxxxxxx' }
-        ];
+        const firebaseConfig = {
+            apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
+            authDomain: "electrwni-link.firebaseapp.com",
+            databaseURL: "https://electrwni-link-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "electrwni-link",
+            storageBucket: "electrwni-link.firebasestorage.app",
+            messagingSenderId: "712490301263",
+            appId: "1:712490301263:web:2084210da3f687285ab73a"
+        };
 
-        const container = document.getElementById('networksContainer');
-        networks.forEach(net => {
-            container.innerHTML += `
-                <div class="network-row">
-                    <div class="network-header">
-                        <div class="network-title"><i class="${net.icon}"></i> ${net.name}</div>
-                        <div class="toggle-group">
-                            <button type="button" class="toggle-btn active" onclick="toggleInputType(this, '${net.id}', 'user', '${net.placeholderUser}')">إضافة يوزر</button>
-                            <button type="button" class="toggle-btn" onclick="toggleInputType(this, '${net.id}', 'link', '${net.placeholderLink}')">إضافة رابط</button>
-                        </div>
-                    </div>
-                    <div class="input-wrapper">
-                        <input type="text" id="net_${net.id}" placeholder="أدخل المعرّف ( اليوزر ) هنا...">
-                        <i class="fa-solid fa-at field-icon" id="icon_${net.id}"></i>
-                    </div>
-                </div>
-            `;
-        });
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const auth = firebase.auth();
+        const db = firebase.database();
+        let isSignUpMode = true;
 
-        function toggleInputType(btn, id, type, placeholder) {
-            const row = btn.closest('.network-row');
-            row.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            const inputField = document.getElementById(`net_${id}`);
-            const iconField = document.getElementById(`icon_${id}`);
-            inputField.placeholder = type === 'user' ? "أدخل المعرّف ( اليوزر ) هنا... مثل " + placeholder : "الصق الرابط الكامل هنا... " + placeholder;
-            iconField.className = type === 'user' ? "fa-solid fa-at field-icon" : "fa-solid fa-link field-icon";
-        }
+        function toggleMode(e) {
+            e.preventDefault();
+            isSignUpMode = !isSignUpMode;
+            
+            const nameGrp = document.getElementById('name-group');
+            const platGrp = document.getElementById('platform-group');
+            const planGrp = document.getElementById('plan-group');
+            const title = document.getElementById('auth-title');
+            const btn = document.getElementById('submit-btn');
+            const switchBtn = document.getElementById('switch-mode-btn');
 
-        function selectCategory(card) {
-            document.querySelectorAll('.category-card').forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-        }
-
-        function nextStep(stepNumber) {
-            document.querySelectorAll('.step-content').forEach(content => content.classList.remove('active'));
-            document.querySelectorAll('.step-dot').forEach((dot, index) => {
-                if (index + 1 < stepNumber) dot.className = "step-dot completed";
-                else if (index + 1 === stepNumber) dot.className = "step-dot active";
-                else dot.className = "step-dot";
-            });
-            document.getElementById(`step${stepNumber}`).classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        const usernameInput = document.getElementById('username');
-        const liveUrl = document.getElementById('liveUrl');
-        const availability = document.getElementById('availability');
-
-        usernameInput.addEventListener('input', (e) => {
-            let cleanValue = e.target.value.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '');
-            e.target.value = cleanValue;
-            if(cleanValue) {
-                liveUrl.innerHTML = `electrwni.link/<span>${cleanValue}</span>`;
-                availability.style.display = 'block';
-                if(cleanValue.length < 3) {
-                    availability.textContent = "قصير جداً";
-                    availability.style.color = "#dc2626";
-                } else {
-                    availability.textContent = "متاح للحجز ✓";
-                    availability.style.color = "var(--success)";
-                }
+            if (isSignUpMode) {
+                title.innerText = "إنشاء حساب شريك جديد";
+                btn.innerText = "سجل حسابك الآن";
+                switchBtn.innerText = "لديك حساب بالفعل؟ تسجيل الدخول للمنصة";
+                nameGrp.style.display = 'block';
+                platGrp.style.display = 'block';
+                planGrp.style.display = 'block';
             } else {
-                liveUrl.textContent = 'electrwni.link/username';
-                availability.style.display = 'none';
+                title.innerText = "تسجيل الدخول للمنصة";
+                btn.innerText = "دخول";
+                switchBtn.innerText = "مشترك جديد? إنشاء حساب";
+                nameGrp.style.display = 'none';
+                platGrp.style.display = 'none';
+                planGrp.style.display = 'none';
             }
-        });
+        }
 
-        const passwordInput = document.getElementById('password');
-        const meter = document.getElementById('strengthMeter');
-        const bar = document.getElementById('strengthBar');
+        function handleAuth(e) {
+            e.preventDefault();
+            const email = document.getElementById('user-email').value.trim();
+            const password = document.getElementById('user-password').value;
 
-        passwordInput.addEventListener('input', (e) => {
-            const val = e.target.value;
-            if(val.length > 0) {
-                meter.style.display = 'block';
-                if(val.length < 6) { bar.style.width = '33%'; bar.style.background = '#ef4444'; }
-                else if(val.length >= 6 && val.match(/[A-Z]/) && val.match(/[0-9]/)) { bar.style.width = '100%'; bar.style.background = 'var(--success)'; }
-                else { bar.style.width = '66%'; bar.style.background = '#eab308'; }
-            } else { meter.style.display = 'none'; }
-        });
+            if (isSignUpMode) {
+                const name = document.getElementById('user-name').value.trim();
+                const platform = document.getElementById('user-platform').value.trim();
+                const plan = document.getElementById('user-plan').value;
 
-        document.getElementById('googleBtn').onclick = () => { alert("ارتباط التسجيل السريع بجوجل قيد التهيئة برمجياً!"); };
+                if(!name || !platform) { alert("يرجى تعبئة حقول الهوية والمنصة!"); return; }
 
-        function finishRegistration() {
-            const toast = document.getElementById('toast');
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-                alert("تم التخصيص بنجاح وحفظ الحساب على خوادم إلكتروني!");
-            }, 2500);
+                auth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
+                    const uid = userCredential.user.uid;
+                    db.ref('users/' + uid + '/profile').set({
+                        fullName: name,
+                        platformName: platform,
+                        subscriptionPlan: plan,
+                        createdAt: new Date().toISOString()
+                    }).then(() => {
+                        window.location.href = "dashboard.html";
+                    });
+                }).catch(err => alert("فشل التسجيل: " + err.message));
+
+            } else {
+                auth.signInWithEmailAndPassword(email, password).then(() => {
+                    window.location.href = "dashboard.html";
+                }).catch(err => alert("خطأ في بيانات الدخول: " + err.message));
+            }
         }
     </script>
 </body>
