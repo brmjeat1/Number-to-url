@@ -1,144 +1,287 @@
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إلكتروني | تسجيل مشترك جديد</title>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-    <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #0f172a, #1e293b); color: #fff; margin: 0; padding: 20px; min-height: 100vh; display: flex; justify-content: center; align-items: center; direction: rtl; }
-        .auth-container { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); padding: 30px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); max-width: 450px; width: 100%; }
-        h2 { text-align: center; margin-bottom: 20px; color: #38bdf8; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 6px; font-size: 13px; color: #94a3b8; }
-        input, select { width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #fff; box-sizing: border-box; font-size: 14px; }
-        input:focus, select:focus { border-color: #38bdf8; outline: none; background: rgba(255, 255, 255, 0.15); }
-        select option { background: #1e293b; color: #fff; }
-        button { background: #38bdf8; color: #0f172a; border: none; padding: 13px; border-radius: 8px; cursor: pointer; width: 100%; font-size: 16px; font-weight: 700; margin-top: 10px; transition: 0.3s; }
-        button:hover { background: #0ea5e9; transform: translateY(-1px); }
-        .toggle-link { text-align: center; margin-top: 15px; font-size: 13px; }
-        .toggle-link a { color: #38bdf8; text-decoration: none; }
-    </style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>إنشاء حساب — electrwni.link</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050508;
+      --surface: #0d0d14;
+      --border: #1e1e30;
+      --accent: #6c63ff;
+      --accent2: #ff6584;
+      --text: #e8e8f0;
+      --muted: #6b6b8a;
+      --error: #ff4d6d;
+      --success: #4ecca3;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(108,99,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(108,99,255,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none; z-index: 0;
+    }
+    .orb {
+      position: fixed; border-radius: 50%;
+      filter: blur(80px); pointer-events: none; z-index: 0;
+    }
+    .orb-1 { width: 350px; height: 350px; background: rgba(108,99,255,0.12); top: -80px; left: 50%; transform: translateX(-50%); }
+
+```
+nav {
+  position: relative; z-index: 10;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 20px 40px;
+  border-bottom: 1px solid var(--border);
+}
+.logo { font-family: 'Space Mono', monospace; font-size: 1.1rem; color: var(--accent); text-decoration: none; }
+.logo span { color: var(--accent2); }
+
+.page-wrap {
+  flex: 1; position: relative; z-index: 5;
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px 20px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 44px 40px;
+  width: 100%; max-width: 460px;
+  box-shadow: 0 0 60px rgba(108,99,255,0.08);
+}
+
+.card-header { text-align: center; margin-bottom: 36px; }
+.card-header .icon { font-size: 2.5rem; margin-bottom: 12px; }
+.card-header h1 { font-size: 1.8rem; font-weight: 900; margin-bottom: 8px; }
+.card-header p { color: var(--muted); font-size: 0.95rem; }
+
+.form-group { margin-bottom: 20px; }
+label {
+  display: block;
+  font-size: 0.9rem; font-weight: 700;
+  margin-bottom: 8px; color: var(--text);
+}
+.input-wrap { position: relative; }
+.input-prefix {
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  color: var(--muted); font-family: 'Space Mono', monospace; font-size: 0.85rem;
+}
+input[type=text], input[type=email], input[type=password] {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 13px 16px;
+  color: var(--text);
+  font-family: 'Tajawal', sans-serif;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+input[type=text].with-prefix { padding-right: 120px; }
+input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(108,99,255,0.15);
+}
+input.error { border-color: var(--error); }
+.hint { font-size: 0.8rem; color: var(--muted); margin-top: 6px; }
+.hint.error-msg { color: var(--error); display: none; }
+.hint.error-msg.show { display: block; }
+
+.username-check {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  font-size: 0.85rem;
+}
+
+.btn-submit {
+  width: 100%;
+  background: var(--accent);
+  color: #fff;
+  border: none; border-radius: 10px;
+  padding: 14px;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 1.05rem; font-weight: 700;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: all 0.2s;
+  box-shadow: 0 0 20px rgba(108,99,255,0.3);
+}
+.btn-submit:hover { background: #7d75ff; transform: translateY(-1px); }
+.btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.divider { text-align: center; color: var(--muted); font-size: 0.85rem; margin: 20px 0; position: relative; }
+.divider::before, .divider::after {
+  content: ''; position: absolute; top: 50%;
+  width: 40%; height: 1px; background: var(--border);
+}
+.divider::before { right: 0; }
+.divider::after { left: 0; }
+
+.signin-link { text-align: center; font-size: 0.9rem; color: var(--muted); }
+.signin-link a { color: var(--accent); text-decoration: none; font-weight: 700; }
+.signin-link a:hover { text-decoration: underline; }
+
+.terms { font-size: 0.8rem; color: var(--muted); text-align: center; margin-top: 16px; line-height: 1.5; }
+.terms a { color: var(--accent); text-decoration: none; }
+
+.password-strength { margin-top: 8px; display: flex; gap: 4px; }
+.strength-bar {
+  height: 4px; flex: 1; border-radius: 2px;
+  background: var(--border); transition: background 0.3s;
+}
+.strength-bar.active-weak { background: var(--error); }
+.strength-bar.active-medium { background: #ffa500; }
+.strength-bar.active-strong { background: var(--success); }
+
+@media (max-width: 520px) {
+  .card { padding: 32px 24px; }
+  nav { padding: 16px 20px; }
+}
+```
+
+  </style>
 </head>
 <body>
+  <div class="orb orb-1"></div>
 
-    <div class="auth-container">
-        <h2 id="auth-title">إنشاء حساب شريك جديد</h2>
-        <form id="auth-form" onsubmit="handleAuth(event)">
-            
-            <div class="form-group" id="name-group">
-                <label>اسم المشترك / المؤسسة الشخصية:</label>
-                <input type="text" id="user-name" placeholder="مثال: مشترك إلكتروني رقم 1">
-            </div>
+  <nav>
+    <a href="index.html" class="logo">electrwni<span>.link</span></a>
+    <a href="signin.html" style="color:var(--muted);text-decoration:none;font-size:0.9rem;">لدي حساب → تسجيل الدخول</a>
+  </nav>
 
-            <div class="form-group" id="platform-group">
-                <label>اسم المنصة الرقمية (للبايو):</label>
-                <input type="text" id="user-platform" placeholder="مثال: بوابة التوجيه الرقمي">
-            </div>
+  <div class="page-wrap">
+    <div class="card">
+      <div class="card-header">
+        <div class="icon">✦</div>
+        <h1>أنشئ حسابك</h1>
+        <p>ابدأ في دقيقة واحدة — مجاناً</p>
+      </div>
 
-            <div class="form-group">
-                <label>البريد الإلكتروني:</label>
-                <input type="email" id="user-email" required placeholder="name@example.com">
-            </div>
-
-            <div class="form-group">
-                <label>كلمة المرور:</label>
-                <input type="password" id="user-password" required placeholder="••••••••" minlength="6">
-            </div>
-
-            <div class="form-group" id="plan-group">
-                <label>باقة الاشتراك الحالية:</label>
-                <select id="user-plan">
-                    <option value="Free">الباقة المجانية (Free)</option>
-                    <option value="Pro">الباقة المحترفة (Pro)</option>
-                    <option value="Business">باقة الأعمال (Business)</option>
-                </select>
-            </div>
-
-            <button type="submit" id="submit-btn">سجل حسابك الآن</button>
-        </form>
-
-        <div class="toggle-link">
-            <a href="#" id="switch-mode-btn" onclick="toggleMode(event)">لديك حساب بالفعل؟ تسجيل الدخول للمنصة</a>
-        </div>
+```
+  <form id="signupForm" onsubmit="handleSignup(event)">
+    <div class="form-group">
+      <label for="username">اسم المستخدم (رابط صفحتك)</label>
+      <div class="input-wrap">
+        <span class="input-prefix">electrwni.link/</span>
+        <input type="text" id="username" class="with-prefix" placeholder="noon" autocomplete="off"
+          oninput="checkUsername(this)">
+        <span class="username-check" id="usernameCheck"></span>
+      </div>
+      <div class="hint error-msg" id="usernameError">الاسم يجب أن يحتوي على أحرف إنجليزية وأرقام فقط</div>
     </div>
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
-            authDomain: "electrwni-link.firebaseapp.com",
-            databaseURL: "https://electrwni-link-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "electrwni-link",
-            storageBucket: "electrwni-link.firebasestorage.app",
-            messagingSenderId: "712490301263",
-            appId: "1:712490301263:web:2084210da3f687285ab73a"
-        };
+    <div class="form-group">
+      <label for="displayName">الاسم المعروض</label>
+      <input type="text" id="displayName" placeholder="متجر نون">
+    </div>
 
-        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-        const auth = firebase.auth();
-        const db = firebase.database();
-        let isSignUpMode = true;
+    <div class="form-group">
+      <label for="email">البريد الإلكتروني</label>
+      <input type="email" id="email" placeholder="you@example.com">
+    </div>
 
-        function toggleMode(e) {
-            e.preventDefault();
-            isSignUpMode = !isSignUpMode;
-            
-            const nameGrp = document.getElementById('name-group');
-            const platGrp = document.getElementById('platform-group');
-            const planGrp = document.getElementById('plan-group');
-            const title = document.getElementById('auth-title');
-            const btn = document.getElementById('submit-btn');
-            const switchBtn = document.getElementById('switch-mode-btn');
+    <div class="form-group">
+      <label for="password">كلمة المرور</label>
+      <input type="password" id="password" placeholder="••••••••" oninput="checkStrength(this.value)">
+      <div class="password-strength">
+        <div class="strength-bar" id="s1"></div>
+        <div class="strength-bar" id="s2"></div>
+        <div class="strength-bar" id="s3"></div>
+      </div>
+      <div class="hint">8 أحرف على الأقل</div>
+    </div>
 
-            if (isSignUpMode) {
-                title.innerText = "إنشاء حساب شريك جديد";
-                btn.innerText = "سجل حسابك الآن";
-                switchBtn.innerText = "لديك حساب بالفعل؟ تسجيل الدخول للمنصة";
-                nameGrp.style.display = 'block';
-                platGrp.style.display = 'block';
-                planGrp.style.display = 'block';
-            } else {
-                title.innerText = "تسجيل الدخول للمنصة";
-                btn.innerText = "دخول";
-                switchBtn.innerText = "مشترك جديد? إنشاء حساب";
-                nameGrp.style.display = 'none';
-                platGrp.style.display = 'none';
-                planGrp.style.display = 'none';
-            }
-        }
+    <button type="submit" class="btn-submit" id="submitBtn">إنشاء الحساب ✦</button>
+  </form>
 
-        function handleAuth(e) {
-            e.preventDefault();
-            const email = document.getElementById('user-email').value.trim();
-            const password = document.getElementById('user-password').value;
+  <div class="divider">أو</div>
+  <div class="signin-link">لديك حساب؟ <a href="signin.html">سجل الدخول</a></div>
+  <div class="terms">بإنشاء حساب، أنت توافق على <a href="#">شروط الاستخدام</a> و<a href="#">سياسة الخصوصية</a></div>
+</div>
+```
 
-            if (isSignUpMode) {
-                const name = document.getElementById('user-name').value.trim();
-                const platform = document.getElementById('user-platform').value.trim();
-                const plan = document.getElementById('user-plan').value;
+  </div>
 
-                if(!name || !platform) { alert("يرجى تعبئة حقول الهوية والمنصة!"); return; }
+  <script>
+    const taken = ['admin','noon','test','user','electrwni'];
 
-                auth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
-                    const uid = userCredential.user.uid;
-                    db.ref('users/' + uid + '/profile').set({
-                        fullName: name,
-                        platformName: platform,
-                        subscriptionPlan: plan,
-                        createdAt: new Date().toISOString()
-                    }).then(() => {
-                        window.location.href = "dashboard.html";
-                    });
-                }).catch(err => alert("فشل التسجيل: " + err.message));
+    function checkUsername(input) {
+      const val = input.value.trim().toLowerCase();
+      const check = document.getElementById('usernameCheck');
+      const err = document.getElementById('usernameError');
+      if (!val) { check.textContent = ''; return; }
+      if (!/^[a-z0-9_-]+$/.test(val)) {
+        input.classList.add('error');
+        err.classList.add('show');
+        check.textContent = '';
+        return;
+      }
+      input.classList.remove('error');
+      err.classList.remove('show');
+      if (taken.includes(val)) {
+        check.textContent = '❌';
+        check.style.color = 'var(--error)';
+      } else if (val.length >= 3) {
+        check.textContent = '✅';
+        check.style.color = 'var(--success)';
+      } else {
+        check.textContent = '';
+      }
+    }
 
-            } else {
-                auth.signInWithEmailAndPassword(email, password).then(() => {
-                    window.location.href = "dashboard.html";
-                }).catch(err => alert("خطأ في بيانات الدخول: " + err.message));
-            }
-        }
-    </script>
+    function checkStrength(val) {
+      const bars = [document.getElementById('s1'), document.getElementById('s2'), document.getElementById('s3')];
+      bars.forEach(b => { b.className = 'strength-bar'; });
+      if (!val) return;
+      let score = 0;
+      if (val.length >= 8) score++;
+      if (/[A-Z]/.test(val) || /[0-9]/.test(val)) score++;
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+      const cls = score === 1 ? 'active-weak' : score === 2 ? 'active-medium' : 'active-strong';
+      for (let i = 0; i < score; i++) bars[i].classList.add(cls);
+    }
+
+    function handleSignup(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim().toLowerCase();
+      const displayName = document.getElementById('displayName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!username || !displayName || !email || !password) {
+        alert('يرجى تعبئة جميع الحقول');
+        return;
+      }
+      if (taken.includes(username)) { alert('اسم المستخدم محجوز، اختر اسماً آخر'); return; }
+      if (password.length < 8) { alert('كلمة المرور يجب أن تكون 8 أحرف على الأقل'); return; }
+
+      // Save to localStorage as demo
+      const user = { username, displayName, email, links: [] };
+      localStorage.setItem('elUser', JSON.stringify(user));
+      localStorage.setItem('elLoggedIn', '1');
+
+      document.getElementById('submitBtn').textContent = '✅ تم إنشاء الحساب...';
+      document.getElementById('submitBtn').disabled = true;
+      setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
+    }
+  </script>
+
 </body>
 </html>
