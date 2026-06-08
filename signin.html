@@ -1,121 +1,211 @@
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إلكتروني | تسجيل الدخول الذكي</title>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-    <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #0f172a, #1e293b); color: #fff; margin: 0; padding: 20px; min-height: 100vh; display: flex; justify-content: center; align-items: center; direction: rtl; }
-        .auth-container { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); padding: 30px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); max-width: 400px; width: 100%; }
-        h2 { text-align: center; margin-bottom: 20px; color: #10b981; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 6px; font-size: 13px; color: #94a3b8; }
-        input { width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #fff; box-sizing: border-box; font-size: 14px; }
-        input:focus { border-color: #10b981; outline: none; background: rgba(255, 255, 255, 0.15); }
-        button { background: #10b981; color: #0f172a; border: none; padding: 13px; border-radius: 8px; cursor: pointer; width: 100%; font-size: 16px; font-weight: 700; margin-top: 10px; transition: 0.3s; }
-        button:hover { background: #059669; transform: translateY(-1px); }
-        .toggle-link { text-align: center; margin-top: 15px; font-size: 13px; }
-        .toggle-link a { color: #10b981; text-decoration: none; }
-    </style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>تسجيل الدخول — electrwni.link</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050508; --surface: #0d0d14; --border: #1e1e30;
+      --accent: #6c63ff; --accent2: #ff6584;
+      --text: #e8e8f0; --muted: #6b6b8a; --error: #ff4d6d;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; display: flex; flex-direction: column;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(108,99,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(108,99,255,0.04) 1px, transparent 1px);
+      background-size: 40px 40px; pointer-events: none; z-index: 0;
+    }
+    .orb {
+      position: fixed; border-radius: 50%;
+      filter: blur(80px); pointer-events: none; z-index: 0;
+    }
+    .orb-1 { width: 350px; height: 350px; background: rgba(108,99,255,0.12); top: -80px; left: 50%; transform: translateX(-50%); }
+
+```
+nav {
+  position: relative; z-index: 10;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 20px 40px; border-bottom: 1px solid var(--border);
+}
+.logo { font-family: 'Space Mono', monospace; font-size: 1.1rem; color: var(--accent); text-decoration: none; }
+.logo span { color: var(--accent2); }
+
+.page-wrap {
+  flex: 1; position: relative; z-index: 5;
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px 20px;
+}
+
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 20px; padding: 44px 40px;
+  width: 100%; max-width: 420px;
+  box-shadow: 0 0 60px rgba(108,99,255,0.08);
+}
+
+.card-header { text-align: center; margin-bottom: 36px; }
+.card-header .icon { font-size: 2.5rem; margin-bottom: 12px; }
+.card-header h1 { font-size: 1.8rem; font-weight: 900; margin-bottom: 8px; }
+.card-header p { color: var(--muted); font-size: 0.95rem; }
+
+.form-group { margin-bottom: 20px; }
+label { display: block; font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; }
+
+input[type=email], input[type=password] {
+  width: 100%; background: var(--bg);
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 13px 16px; color: var(--text);
+  font-family: 'Tajawal', sans-serif; font-size: 1rem;
+  outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+}
+input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(108,99,255,0.15);
+}
+
+.forgot { text-align: left; margin-top: 6px; }
+.forgot a { font-size: 0.82rem; color: var(--accent); text-decoration: none; }
+
+.error-banner {
+  background: rgba(255,77,109,0.1);
+  border: 1px solid rgba(255,77,109,0.3);
+  border-radius: 10px; padding: 12px 16px;
+  font-size: 0.9rem; color: var(--error);
+  margin-bottom: 16px; display: none;
+}
+.error-banner.show { display: block; }
+
+.btn-submit {
+  width: 100%; background: var(--accent); color: #fff;
+  border: none; border-radius: 10px; padding: 14px;
+  font-family: 'Tajawal', sans-serif; font-size: 1.05rem; font-weight: 700;
+  cursor: pointer; margin-top: 8px; transition: all 0.2s;
+  box-shadow: 0 0 20px rgba(108,99,255,0.3);
+}
+.btn-submit:hover { background: #7d75ff; transform: translateY(-1px); }
+
+.divider { text-align: center; color: var(--muted); font-size: 0.85rem; margin: 20px 0; position: relative; }
+.divider::before, .divider::after {
+  content: ''; position: absolute; top: 50%;
+  width: 42%; height: 1px; background: var(--border);
+}
+.divider::before { right: 0; }
+.divider::after { left: 0; }
+
+.signup-link { text-align: center; font-size: 0.9rem; color: var(--muted); }
+.signup-link a { color: var(--accent); text-decoration: none; font-weight: 700; }
+
+/* Demo hint */
+.demo-hint {
+  background: rgba(108,99,255,0.08);
+  border: 1px dashed rgba(108,99,255,0.3);
+  border-radius: 10px; padding: 12px 16px;
+  font-size: 0.82rem; color: var(--muted);
+  margin-bottom: 20px; text-align: center; line-height: 1.5;
+}
+.demo-hint strong { color: var(--accent); }
+
+@media (max-width: 520px) {
+  .card { padding: 32px 24px; }
+  nav { padding: 16px 20px; }
+}
+```
+
+  </style>
 </head>
 <body>
+  <div class="orb orb-1"></div>
 
-    <div class="auth-container">
-        <h2 id="auth-title">تسجيل حساب بالاسم التجاري</h2>
-        <form id="auth-form" onsubmit="handleUsernameAuth(event)">
-            
-            <div class="form-group">
-                <label>اسم المستخدم للمنصة (Username بالإنجليزية):</label>
-                <input type="text" id="user-username" required placeholder="مثال: store1">
-            </div>
+  <nav>
+    <a href="index.html" class="logo">electrwni<span>.link</span></a>
+    <a href="signup.html" style="color:var(--muted);text-decoration:none;font-size:0.9rem;">حساب جديد →</a>
+  </nav>
 
-            <div class="form-group" id="fullName-group">
-                <label>الاسم الظهوري الكامل للمشترك:</label>
-                <input type="text" id="user-fullname" placeholder="مثال: منصة إلكتروني">
-            </div>
+  <div class="page-wrap">
+    <div class="card">
+      <div class="card-header">
+        <div class="icon">🔐</div>
+        <h1>أهلاً بعودتك</h1>
+        <p>سجّل الدخول لإدارة صفحتك</p>
+      </div>
 
-            <div class="form-group">
-                <label>كلمة المرور السريّة:</label>
-                <input type="password" id="user-password" required placeholder="••••••••" minlength="6">
-            </div>
+```
+  <div class="demo-hint">
+    للتجربة: اضغط <strong>دخول سريع</strong> بدون بيانات
+  </div>
 
-            <button type="submit" id="submit-btn">إنشاء الحساب الفوري</button>
-        </form>
+  <div class="error-banner" id="errorBanner">البريد الإلكتروني أو كلمة المرور غير صحيحة</div>
 
-        <div class="toggle-link">
-            <a href="#" id="switch-mode-btn" onclick="toggleUsernameMode(event)">لديك اسم مستخدم؟ دخول</a>
-        </div>
+  <form id="signinForm" onsubmit="handleSignin(event)">
+    <div class="form-group">
+      <label for="email">البريد الإلكتروني</label>
+      <input type="email" id="email" placeholder="you@example.com">
     </div>
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
-            authDomain: "electrwni-link.firebaseapp.com",
-            databaseURL: "https://electrwni-link-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "electrwni-link",
-            storageBucket: "electrwni-link.firebasestorage.app",
-            messagingSenderId: "712490301263",
-            appId: "1:712490301263:web:2084210da3f687285ab73a"
-        };
+    <div class="form-group">
+      <label for="password">كلمة المرور</label>
+      <input type="password" id="password" placeholder="••••••••">
+      <div class="forgot"><a href="#">نسيت كلمة المرور؟</a></div>
+    </div>
 
-        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-        const auth = firebase.auth();
-        const db = firebase.database();
-        let isSignUpMode = true;
+    <button type="submit" class="btn-submit">تسجيل الدخول</button>
+    <button type="button" class="btn-submit" onclick="quickLogin()"
+      style="margin-top:10px; background:transparent; border:1px solid var(--border); color:var(--text); box-shadow:none;">
+      ⚡ دخول سريع (تجريبي)
+    </button>
+  </form>
 
-        function toggleUsernameMode(e) {
-            e.preventDefault();
-            isSignUpMode = !isSignUpMode;
-            
-            const nameGrp = document.getElementById('fullName-group');
-            const title = document.getElementById('auth-title');
-            const btn = document.getElementById('submit-btn');
-            const switchBtn = document.getElementById('switch-mode-btn');
+  <div class="divider">أو</div>
+  <div class="signup-link">ليس لديك حساب؟ <a href="signup.html">أنشئ حساباً الآن</a></div>
+</div>
+```
 
-            if (isSignUpMode) {
-                title.innerText = "تسجيل حساب بالاسم التجاري";
-                btn.innerText = "إنشاء الحساب الفوري";
-                switchBtn.innerText = "لديك اسم مستخدم؟ دخول";
-                nameGrp.style.display = 'block';
-            } else {
-                title.innerText = "تسجيل الدخول بالـ Username";
-                btn.innerText = "تسجيل الدخول كشريك";
-                switchBtn.innerText = "مشترك جديد؟ سجل اسمك";
-                nameGrp.style.display = 'none';
-            }
-        }
+  </div>
 
-        function handleUsernameAuth(e) {
-            e.preventDefault();
-            const username = document.getElementById('user-username').value.trim().toLowerCase();
-            const password = document.getElementById('user-password').value;
-            
-            const dynamicEmail = `${username}@electrwni.link`;
+  <script>
+    function handleSignin(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const stored = JSON.parse(localStorage.getItem('elUser') || '{}');
 
-            if (isSignUpMode) {
-                const fullname = document.getElementById('user-fullname').value.trim();
-                if(!fullname) { alert("يرجى كتابة الاسم الظهوري!"); return; }
+      if (!email || !password) { alert('يرجى تعبئة جميع الحقول'); return; }
+      if (stored.email && stored.email === email) {
+        localStorage.setItem('elLoggedIn', '1');
+        window.location.href = 'dashboard.html';
+      } else {
+        document.getElementById('errorBanner').classList.add('show');
+      }
+    }
 
-                auth.createUserWithEmailAndPassword(dynamicEmail, password).then((userCredential) => {
-                    const uid = userCredential.user.uid;
-                    db.ref('users/' + uid + '/profile').set({
-                        username: username,
-                        fullName: fullname,
-                        createdAt: new Date().toISOString()
-                    }).then(() => {
-                        window.location.href = "dashboard.html";
-                    });
-                }).catch(err => alert("اسم المستخدم مأخوذ أو حدث خطأ: " + err.message));
+    function quickLogin() {
+      // Demo user
+      if (!localStorage.getItem('elUser')) {
+        localStorage.setItem('elUser', JSON.stringify({
+          username: 'demo',
+          displayName: 'حساب تجريبي',
+          email: 'demo@electrwni.link',
+          links: [
+            { id: 1, num: 1, label: 'العروض اليومية', url: 'https://example.com/deals', clicks: 42 },
+            { id: 2, num: 2, label: 'تواصل معنا', url: 'https://wa.me/966500000000', clicks: 18 },
+            { id: 3, num: 3, label: 'متجرنا', url: 'https://example.com/store', clicks: 73 },
+          ]
+        }));
+      }
+      localStorage.setItem('elLoggedIn', '1');
+      window.location.href = 'dashboard.html';
+    }
+  </script>
 
-            } else {
-                auth.signInWithEmailAndPassword(dynamicEmail, password).then(() => {
-                    window.location.href = "dashboard.html";
-                }).catch(err => alert("فشل الدخول، تحقق من اسم المستخدم أو كلمة المرور"));
-            }
-        }
-    </script>
 </body>
 </html>
