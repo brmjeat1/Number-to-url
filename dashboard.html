@@ -1,649 +1,312 @@
-<!DOCTYPE html>
+<!-- استدعاء مكتبات Firebase في لوحة التحكم -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
-<html lang="ar" dir="rtl" data-theme="light">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>لوحة التحكم — electrwni.link</title>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <!-- QR Code library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <style>
-    :root{--bg:#f0f4ff;--bg2:#e8eeff;--surface:rgba(255,255,255,0.85);--surface-solid:#fff;--border:rgba(100,130,255,0.2);--border-strong:rgba(100,130,255,0.4);--accent:#3d5af1;--accent2:#e8436a;--accent-light:rgba(61,90,241,0.1);--text:#0f1535;--text2:#3a4270;--muted:#7b84b0;--glass:rgba(255,255,255,0.7);--success:#0ab87a;--error:#e8436a;--shadow:0 8px 32px rgba(61,90,241,0.1);}
-    [data-theme="dark"]{--bg:#050810;--bg2:#080d1a;--surface:rgba(15,20,50,0.85);--surface-solid:#0f1535;--border:rgba(100,130,255,0.2);--border-strong:rgba(100,130,255,0.4);--accent:#6c8fff;--accent2:#ff6584;--accent-light:rgba(108,143,255,0.1);--text:#e8eeff;--text2:#a0aad0;--muted:#5a6490;--glass:rgba(15,20,50,0.7);--success:#4ecca3;--error:#ff6584;--shadow:0 8px 32px rgba(0,0,0,0.3);}
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;transition:background .3s,color .3s;}
-    body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 700px 500px at 10% 0%,rgba(61,90,241,0.05),transparent);}
+<script>
+  // إعدادات Firebase الخاصة بمشروعك
+  const firebaseConfig = {
+    apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
+    authDomain: "electrwni-link.firebaseapp.com",
+    databaseURL: "https://electrwni-link-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "electrwni-link",
+    storageBucket: "electrwni-link.firebasestorage.app",
+    messagingSenderId: "712490301263",
+    appId: "1:712490301263:web:2084210da3f687285ab73a",
+    measurementId: "G-LCCGHWKH87"
+  };
+  
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
 
-```
-/* ===== SIDEBAR ===== */
-.sidebar{width:250px;flex-shrink:0;background:var(--glass);backdrop-filter:blur(20px);border-left:1px solid var(--border);position:fixed;top:0;right:0;bottom:0;z-index:100;display:flex;flex-direction:column;padding:0;}
-.sidebar-logo{padding:20px 22px 18px;border-bottom:1px solid var(--border);font-family:'Space Mono',monospace;font-size:1rem;color:var(--accent);}
-.sidebar-logo em{color:var(--accent2);font-style:normal;}
-.nav-section{padding:12px 0;}
-.nav-label{padding:6px 22px;font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
-.nav-item{display:flex;align-items:center;gap:10px;padding:11px 22px;cursor:pointer;font-size:0.92rem;color:var(--text2);transition:all .15s;text-decoration:none;border-right:3px solid transparent;}
-.nav-item:hover{color:var(--text);background:rgba(61,90,241,0.05);}
-.nav-item.active{color:var(--accent);border-right-color:var(--accent);background:var(--accent-light);font-weight:700;}
-.nav-icon{font-size:1rem;width:22px;text-align:center;flex-shrink:0;}
-.sidebar-bottom{margin-top:auto;padding:16px 22px;border-top:1px solid var(--border);}
-.user-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
-.uavatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:900;color:#fff;flex-shrink:0;}
-.uname{font-size:0.9rem;font-weight:700;}
-.uhandle{font-size:0.72rem;color:var(--muted);font-family:'Space Mono',monospace;}
-.logout-btn{width:100%;background:transparent;border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--muted);font-family:'Tajawal',sans-serif;font-size:0.82rem;cursor:pointer;transition:all .2s;}
-.logout-btn:hover{border-color:var(--error);color:var(--error);}
-.theme-toggle{position:absolute;top:20px;left:22px;width:34px;height:34px;border-radius:8px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:0.9rem;cursor:pointer;transition:all .2s;}
+  let user = null;
+  let editLinkId = null;
+  let selNum = null;
+  let currentUsername = localStorage.getItem('elUserUsername') || 'demo';
 
-/* ===== MAIN ===== */
-.main{flex:1;margin-right:250px;position:relative;z-index:5;min-height:100vh;}
-.topbar{padding:18px 28px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--glass);backdrop-filter:blur(16px);z-index:50;}
-.topbar-left h1{font-size:1.3rem;font-weight:900;}
-.topbar-left p{font-size:0.8rem;color:var(--muted);margin-top:2px;}
-.content{padding:24px 28px;}
+  // إدارة الثيم والمظهر
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  document.getElementById('themeBtn').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+  function toggleTheme(){
+    const c = document.documentElement.getAttribute('data-theme');
+    const n = c === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', n);
+    localStorage.setItem('theme', n);
+    document.getElementById('themeBtn').textContent = n === 'dark' ? '☀️' : '🌙';
+  }
 
-/* BUTTONS */
-.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:9px;font-family:'Tajawal',sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;border:none;transition:all .2s;}
-.btn-primary{background:var(--accent);color:#fff;box-shadow:0 4px 14px rgba(61,90,241,0.25);}
-.btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px);}
-.btn-ghost{background:var(--surface);color:var(--text);border:1px solid var(--border);}
-.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
-.btn-danger{background:transparent;color:var(--error);border:1px solid rgba(232,67,106,0.3);padding:6px 12px;font-size:0.8rem;}
-.btn-danger:hover{background:rgba(232,67,106,0.08);}
-.btn-sm{padding:6px 12px;font-size:0.8rem;}
-.btn-qr{background:var(--accent-light);color:var(--accent);border:1px solid var(--border-strong);padding:6px 10px;font-size:0.78rem;border-radius:7px;}
-.btn-qr:hover{background:var(--accent);color:#fff;}
+  // جلب البيانات وحفظها سحابياً من Firebase بدلاً من الذاكرة المحلية
+  async function fetchUserFromCloud(){
+    const doc = await db.collection('users').doc(currentUsername).get();
+    if(doc.exists){
+      user = doc.data();
+    } else {
+      window.location.href = 'signup.html';
+    }
+  }
 
-/* CARDS */
-.card{background:var(--surface);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:16px;padding:22px;box-shadow:var(--shadow);}
+  async function saveUserToCloud(updatedData){
+    await db.collection('users').doc(currentUsername).set(updatedData, { merge: true });
+    user = updatedData;
+  }
 
-/* STATS */
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px;}
-.stat-card{background:var(--surface);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow);}
-.stat-label{font-size:0.75rem;font-weight:700;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;}
-.stat-val{font-size:1.9rem;font-weight:900;font-family:'Space Mono',monospace;line-height:1;}
-.stat-val.c-accent{color:var(--accent);}
-.stat-val.c-success{color:var(--success);}
-.stat-val.c-accent2{color:var(--accent2);}
+  async function init(){
+    if(!localStorage.getItem('elLoggedIn')){ window.location.href='signin.html'; return; }
+    
+    // جلب البيانات حياً من السيرفر السحابي لمنع حلقة الطرد
+    await fetchUserFromCloud();
+    
+    if(!user){ window.location.href='signup.html'; return; }
+    if(!user.links) user.links = [];
+    if(!user.socials) user.socials = [];
 
-/* BIO LINK BAR */
-.bio-bar{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1.5px solid var(--border-strong);border-radius:12px;padding:12px 16px;margin-bottom:22px;}
-.bio-bar-label{font-size:0.78rem;font-weight:700;color:var(--muted);white-space:nowrap;}
-.bio-bar-url{flex:1;font-family:'Space Mono',monospace;font-size:0.88rem;color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.bio-bar-actions{display:flex;gap:6px;flex-shrink:0;}
-.icon-btn{width:32px;height:32px;border-radius:7px;background:var(--surface);border:1px solid var(--border);cursor:pointer;font-size:0.9rem;transition:all .2s;display:flex;align-items:center;justify-content:center;}
-.icon-btn:hover{border-color:var(--accent);background:var(--accent-light);}
+    const handle = 'electrwni.link/' + user.username;
+    document.getElementById('sbName').textContent = user.displayName || user.username;
+    document.getElementById('sbHandle').textContent = handle;
+    document.getElementById('sbAvatar').textContent = (user.displayName || user.username)[0].toUpperCase();
+    document.getElementById('bioUrl').textContent = handle;
+    document.getElementById('previewNavBtn').href = 'page.html#' + user.username;
 
-/* LINKS TABLE */
-.links-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
-.links-header h2{font-size:1rem;font-weight:700;}
-table.links-table{width:100%;border-collapse:collapse;}
-.links-table th{text-align:right;padding:10px 14px;font-size:0.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);background:var(--bg2);}
-.links-table td{padding:14px;border-bottom:1px solid rgba(100,130,255,0.08);font-size:0.88rem;vertical-align:middle;}
-.links-table tr:last-child td{border-bottom:none;}
-.links-table tr:hover td{background:rgba(61,90,241,0.02);}
-.num-badge{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;background:var(--accent-light);border:1px solid var(--border-strong);font-family:'Space Mono',monospace;font-size:1.1rem;font-weight:700;color:var(--accent);}
-.td-label{font-weight:700;}
-.td-url{font-size:0.78rem;color:var(--muted);direction:ltr;text-align:right;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.td-desc{font-size:0.8rem;color:var(--text2);max-width:150px;}
-.clicks-badge{font-family:'Space Mono',monospace;font-size:0.82rem;font-weight:700;color:var(--success);}
-.td-actions{display:flex;gap:6px;align-items:center;}
+    // تعبئة حقول الملف الشخصي
+    document.getElementById('pfName').value = user.displayName || '';
+    document.getElementById('pfUser').value = user.username || '';
+    document.getElementById('pfBio').value = user.bio || '';
+    document.getElementById('pfEmail').value = user.email || '';
+    document.getElementById('pfAvatar').value = user.avatar || '';
 
-/* SOCIALS TABLE */
-.social-icon{font-size:1.2rem;width:34px;height:34px;border-radius:8px;background:var(--bg2);border:1px solid var(--border);display:inline-flex;align-items:center;justify-content:center;}
-.platform-label{font-size:0.78rem;font-weight:700;color:var(--muted);}
+    document.getElementById('sPlatform').addEventListener('change', function(){
+      const wa = this.value === 'whatsapp';
+      const web = this.value === 'website';
+      document.getElementById('sInputLabel').textContent = wa ? 'رقم الهاتف (مع كود الدولة)' : web ? 'الرابط الكامل' : 'اسم المستخدم';
+      document.getElementById('sUsername').placeholder = wa ? '+966xxxxxxxxx' : web ? 'https://example.com' : '@username';
+    });
 
-/* EMPTY STATE */
-.empty{text-align:center;padding:48px 20px;color:var(--muted);}
-.empty .e-icon{font-size:3rem;opacity:.4;margin-bottom:12px;}
-.empty p{font-size:0.9rem;}
+    render();
+  }
 
-/* PAGES */
-.page{display:none;}
-.page.active{display:block;}
+  function render(){
+    const links = (user.links || []).sort((a,b) => a.num - b.num);
+    const socials = user.socials || [];
+    const totalClicks = links.reduce((s,l) => s + (l.clicks || 0), 0);
+    const topLink = [...links].sort((a,b) => (b.clicks || 0) - (a.clicks || 0))[0];
 
-/* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(10,15,40,0.5);backdrop-filter:blur(6px);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
-.modal-overlay.open{opacity:1;pointer-events:all;}
-.modal{background:var(--surface-solid);border:1px solid var(--border);border-radius:22px;padding:36px;width:100%;max-width:500px;margin:20px;transform:translateY(12px);transition:transform .2s;max-height:90vh;overflow-y:auto;}
-.modal-overlay.open .modal{transform:translateY(0);}
-.modal h3{font-size:1.25rem;font-weight:900;margin-bottom:24px;}
-.mgroup{margin-bottom:16px;}
-.mgroup label{display:block;font-size:0.82rem;font-weight:700;margin-bottom:6px;color:var(--text2);}
-.mgroup input,.mgroup textarea,.mgroup select{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:9px;padding:11px 13px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:0.92rem;outline:none;transition:border-color .2s;}
-.mgroup input:focus,.mgroup select:focus{border-color:var(--accent);}
-.mgroup textarea{resize:vertical;min-height:72px;}
-.num-picker{display:flex;flex-wrap:wrap;gap:8px;}
-.npick{width:44px;height:44px;border-radius:8px;background:var(--bg2);border:1.5px solid var(--border);color:var(--text2);font-family:'Space Mono',monospace;font-size:1.1rem;cursor:pointer;transition:all .15s;}
-.npick:hover{border-color:var(--accent);color:var(--accent);}
-.npick.sel{background:var(--accent);border-color:var(--accent);color:#fff;}
-.npick.taken{opacity:.3;cursor:not-allowed;}
-.mactions{display:flex;gap:10px;margin-top:22px;}
+    // لوحة الإحصائيات الفورية
+    document.getElementById('stLinks').textContent = links.length;
+    document.getElementById('stClicks').textContent = totalClicks;
+    document.getElementById('stTop').textContent = topLink ? '#' + topLink.num : '—';
+    document.getElementById('stSocials').textContent = socials.length;
+    document.getElementById('aTotal').textContent = totalClicks;
+    document.getElementById('aTopLink').textContent = topLink ? topLink.label : '—';
+    document.getElementById('aTopClicks').textContent = topLink ? topLink.clicks || 0 : 0;
+    document.getElementById('aActive').textContent = links.filter(l => (l.clicks || 0) > 0).length;
 
-/* QR MODAL */
-.qr-modal-inner{text-align:center;}
-.qr-wrap{display:inline-block;background:#fff;padding:16px;border-radius:12px;margin:20px 0;position:relative;}
-#qrNumOverlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Space Mono',monospace;font-size:1.6rem;font-weight:700;color:#000;background:rgba(255,255,255,0.92);padding:4px 10px;border-radius:6px;border:2px solid #000;}
-.qr-actions{display:flex;gap:10px;justify-content:center;}
+    // بناء جدول الروابط الرقمية
+    const tbody = document.getElementById('linksTbody');
+    if(!links.length){
+      tbody.innerHTML = '';
+      document.getElementById('linksEmpty').style.display = 'block';
+      document.querySelector('.links-table').style.display = 'none';
+    } else {
+      document.getElementById('linksEmpty').style.display = 'none';
+      document.querySelector('.links-table').style.display = '';
+      tbody.innerHTML = links.map(l => `
+        <tr>
+          <td><span class="num-badge">${l.num}</span></td>
+          <td class="td-label">${l.label}</td>
+          <td class="td-desc">${l.desc || '—'}</td>
+          <td class="td-url" title="${l.url}">${l.url}</td>
+          <td><span class="clicks-badge">↗ ${l.clicks || 0}</span></td>
+          <td><button class="btn btn-qr" onclick="showQR(${l.id})">█ QR</button></td>
+          <td class="td-actions">
+            <button class="btn btn-ghost btn-sm" onclick="editLink(${l.id})">تعديل</button>
+            <button class="btn btn-danger" onclick="deleteLink(${l.id})">حذف</button>
+          </td>
+        </tr>
+      `).join('');
+    }
 
-/* TOAST */
-.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--surface-solid);border:1px solid var(--accent);border-radius:10px;padding:11px 22px;font-size:0.88rem;z-index:999;opacity:0;transition:all .3s;white-space:nowrap;box-shadow:var(--shadow);}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-
-/* Profile page */
-.pf-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.pf-field label{display:block;font-size:0.82rem;font-weight:700;margin-bottom:6px;color:var(--text2);}
-.pf-field input{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:9px;padding:11px 13px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:0.92rem;outline:none;transition:border-color .2s;}
-.pf-field input:focus{border-color:var(--accent);}
-
-@media(max-width:900px){.sidebar{display:none;}.main{margin-right:0;}.stats-row{grid-template-columns:1fr 1fr;}.pf-grid{grid-template-columns:1fr;}}
-@media(max-width:600px){.stats-row{grid-template-columns:1fr 1fr;}.content{padding:16px;}}
-```
-
-  </style>
-</head>
-<body>
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
-    <div class="sidebar-logo">electrwni<em>.link</em></div>
-    <div class="nav-section">
-      <div class="nav-label">الروابط</div>
-      <a class="nav-item active" onclick="showPage('links',this)" href="#">
-        <span class="nav-icon">🔗</span> إدارة الروابط
-      </a>
-      <a class="nav-item" onclick="showPage('analytics',this)" href="#">
-        <span class="nav-icon">📊</span> الإحصائيات
-      </a>
-    </div>
-    <div class="nav-section">
-      <div class="nav-label">الصفحة</div>
-      <a class="nav-item" onclick="showPage('socials',this)" href="#">
-        <span class="nav-icon">🌐</span> شبكات التواصل
-      </a>
-      <a class="nav-item" onclick="showPage('profile',this)" href="#">
-        <span class="nav-icon">🪪</span> ملفي الشخصي
-      </a>
-      <a class="nav-item" id="previewNavBtn" href="#" target="_blank">
-        <span class="nav-icon">👁</span> معاينة صفحتي
-      </a>
-    </div>
-    <div class="sidebar-bottom">
-      <div class="user-row">
-        <div class="uavatar" id="sbAvatar">؟</div>
-        <div>
-          <div class="uname" id="sbName">—</div>
-          <div class="uhandle" id="sbHandle">—</div>
+    // شريط تقدم الإحصائيات البيانية
+    const maxC = Math.max(...links.map(l => l.clicks || 0), 1);
+    document.getElementById('analyticsBody').innerHTML = links.length ? links.map(l => `
+      <div style="margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+          <span class="num-badge">${l.num}</span>
+          <span style="font-weight:700;flex:1;">${l.label}</span>
+          <span class="clicks-badge">↗ ${l.clicks || 0} ضغطة</span>
+        </div>
+        <div style="height:6px;background:var(--border);border-radius:3px;">
+          <div style="height:100%;width:${Math.round(((l.clicks || 0) / maxC) * 100)}%;background:var(--accent);border-radius:3px;transition:width .6s;"></div>
         </div>
       </div>
-      <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
-    </div>
-  </aside>
+    `).join('') : '<div class="empty"><div class="e-icon">📊</div><p>لا توجد بيانات بعد</p></div>';
 
-  <!-- Main -->
-
-  <main class="main">
-    <div class="topbar">
-      <div class="topbar-left">
-        <h1 id="pageTitle">إدارة الروابط</h1>
-        <p id="pageSub">أضف وعدّل روابطك المرقّمة</p>
-      </div>
-      <button class="btn btn-primary" id="topAction" onclick="openLinkModal()">+ إضافة رابط</button>
-    </div>
-
-```
-<div class="content">
-
-  <!-- LINKS PAGE -->
-  <div class="page active" id="page-links">
-    <div class="stats-row">
-      <div class="stat-card"><div class="stat-label">الروابط</div><div class="stat-val c-accent" id="stLinks">0</div></div>
-      <div class="stat-card"><div class="stat-label">إجمالي الضغطات</div><div class="stat-val c-success" id="stClicks">0</div></div>
-      <div class="stat-card"><div class="stat-label">الأكثر ضغطاً</div><div class="stat-val c-accent2" id="stTop">#—</div></div>
-      <div class="stat-card"><div class="stat-label">شبكات التواصل</div><div class="stat-val c-accent" id="stSocials">0</div></div>
-    </div>
-
-    <div class="bio-bar">
-      <span class="bio-bar-label">رابط صفحتك:</span>
-      <span class="bio-bar-url" id="bioUrl">electrwni.link/demo</span>
-      <div class="bio-bar-actions">
-        <button class="icon-btn" onclick="copyLink()" title="نسخ">📋</button>
-        <button class="icon-btn" onclick="openPageInNew()" title="فتح">↗</button>
-        <button class="icon-btn" onclick="shareLink()" title="مشاركة">🔗</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="links-header">
-        <h2>سجل الروابط</h2>
-        <button class="btn btn-primary btn-sm" onclick="openLinkModal()">+ إضافة</button>
-      </div>
-      <table class="links-table" id="linksTable">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>الاسم</th>
-            <th>الوصف</th>
-            <th>الرابط</th>
-            <th>المشاهدات</th>
-            <th>باركود</th>
-            <th>إجراءات</th>
-          </tr>
-        </thead>
-        <tbody id="linksTbody"></tbody>
-      </table>
-      <div class="empty" id="linksEmpty" style="display:none;">
-        <div class="e-icon">🔗</div>
-        <p>لا توجد روابط بعد<br>أضف رابطك الأول</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ANALYTICS PAGE -->
-  <div class="page" id="page-analytics">
-    <div class="stats-row">
-      <div class="stat-card"><div class="stat-label">إجمالي الضغطات</div><div class="stat-val c-accent" id="aTotal">0</div></div>
-      <div class="stat-card"><div class="stat-label">أعلى رابط</div><div class="stat-val c-success" id="aTopLink">—</div></div>
-      <div class="stat-card"><div class="stat-label">أعلى عدد</div><div class="stat-val c-accent2" id="aTopClicks">0</div></div>
-      <div class="stat-card"><div class="stat-label">الروابط النشطة</div><div class="stat-val c-accent" id="aActive">0</div></div>
-    </div>
-    <div class="card">
-      <h2 style="margin-bottom:18px;font-size:1rem;">أداء كل رابط</h2>
-      <div id="analyticsBody"></div>
-    </div>
-  </div>
-
-  <!-- SOCIALS PAGE -->
-  <div class="page" id="page-socials">
-    <div class="card" style="margin-bottom:18px;">
-      <div class="links-header">
-        <h2>شبكات التواصل الاجتماعي</h2>
-        <button class="btn btn-primary btn-sm" onclick="openSocialModal()">+ إضافة شبكة</button>
-      </div>
-      <p style="font-size:0.85rem;color:var(--muted);margin-bottom:16px;">تظهر في صفحتك العامة كأيقونات يمكن للزوار الضغط عليها مباشرة.</p>
-      <table class="links-table" id="socialsTable">
-        <thead><tr><th>الشبكة</th><th>اسم المستخدم / الرابط</th><th>الإجراءات</th></tr></thead>
-        <tbody id="socialsTbody"></tbody>
-      </table>
-      <div class="empty" id="socialsEmpty" style="display:none;">
-        <div class="e-icon">🌐</div>
-        <p>لا توجد شبكات بعد</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- PROFILE PAGE -->
-  <div class="page" id="page-profile">
-    <div class="card">
-      <h2 style="margin-bottom:22px;font-size:1rem;">معلومات الملف الشخصي</h2>
-      <div class="pf-grid">
-        <div class="pf-field"><label>الاسم المعروض</label><input type="text" id="pfName" placeholder="اسم مشروعك"></div>
-        <div class="pf-field"><label>اسم المستخدم</label><input type="text" id="pfUser" dir="ltr" placeholder="username"></div>
-        <div class="pf-field" style="grid-column:span 2;"><label>وصف مختصر</label><input type="text" id="pfBio" placeholder="وصف صفحتك..."></div>
-        <div class="pf-field"><label>البريد الإلكتروني</label><input type="email" id="pfEmail" placeholder="you@example.com"></div>
-        <div class="pf-field"><label>رابط الصورة (اختياري)</label><input type="text" id="pfAvatar" dir="ltr" placeholder="https://..."></div>
-      </div>
-      <button class="btn btn-primary" style="margin-top:20px;" onclick="saveProfile()">حفظ التغييرات</button>
-    </div>
-  </div>
-
-</div>
-```
-
-  </main>
-
-  <!-- Link Modal -->
-
-  <div class="modal-overlay" id="linkModal" onclick="closeIfOverlay(event,'linkModal')">
-    <div class="modal">
-      <h3 id="linkModalTitle">إضافة رابط</h3>
-      <div class="mgroup">
-        <label>اختر رقم الرابط (1-9)</label>
-        <div class="num-picker" id="numPicker"></div>
-      </div>
-      <div class="mgroup">
-        <label>اسم الرابط</label>
-        <input type="text" id="mLabel" placeholder="مثال: العروض اليومية">
-      </div>
-      <div class="mgroup">
-        <label>الوصف (اختياري)</label>
-        <input type="text" id="mDesc" placeholder="وصف مختصر للرابط">
-      </div>
-      <div class="mgroup">
-        <label>الرابط (URL)</label>
-        <input type="text" id="mUrl" placeholder="https://..." dir="ltr">
-      </div>
-      <div class="mactions">
-        <button class="btn btn-primary" style="flex:1;" onclick="saveLink()">حفظ</button>
-        <button class="btn btn-ghost" onclick="closeLinkModal()">إلغاء</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Social Modal -->
-
-  <div class="modal-overlay" id="socialModal" onclick="closeIfOverlay(event,'socialModal')">
-    <div class="modal">
-      <h3>إضافة شبكة تواصل</h3>
-      <div class="mgroup">
-        <label>الشبكة</label>
-        <select id="sPlatform">
-          <option value="instagram">📷 إنستقرام</option>
-          <option value="tiktok">🎵 تيك توك</option>
-          <option value="twitter">✖ تويتر / X</option>
-          <option value="youtube">▶ يوتيوب</option>
-          <option value="snapchat">👻 سناب شات</option>
-          <option value="whatsapp">💬 واتساب</option>
-          <option value="telegram">✈ تيليقرام</option>
-          <option value="linkedin">💼 لينكدإن</option>
-          <option value="facebook">👤 فيسبوك</option>
-          <option value="website">🌐 موقع إلكتروني</option>
-        </select>
-      </div>
-      <div class="mgroup">
-        <label id="sInputLabel">اسم المستخدم</label>
-        <input type="text" id="sUsername" placeholder="@username" dir="ltr">
-      </div>
-      <div class="mactions">
-        <button class="btn btn-primary" style="flex:1;" onclick="saveSocial()">إضافة</button>
-        <button class="btn btn-ghost" onclick="document.getElementById('socialModal').classList.remove('open')">إلغاء</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- QR Modal -->
-
-  <div class="modal-overlay" id="qrModal" onclick="closeIfOverlay(event,'qrModal')">
-    <div class="modal" style="max-width:380px;">
-      <h3 id="qrTitle">باركود الرابط</h3>
-      <div class="qr-modal-inner">
-        <div class="qr-wrap">
-          <div id="qrCanvas"></div>
-          <div id="qrNumOverlay"></div>
-        </div>
-        <div class="qr-actions">
-          <button class="btn btn-primary" onclick="downloadQR()">⬇ تحميل</button>
-          <button class="btn btn-ghost" onclick="document.getElementById('qrModal').classList.remove('open')">إغلاق</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="toast" id="toast"></div>
-
-  <script>
-    let user = null;
-    let editLinkId = null;
-    let selNum = null;
-
-    // Theme
-    const savedTheme = localStorage.getItem('theme')||'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    document.getElementById('themeBtn').textContent = savedTheme==='dark'?'☀️':'🌙';
-    function toggleTheme(){const c=document.documentElement.getAttribute('data-theme');const n=c==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);localStorage.setItem('theme',n);document.getElementById('themeBtn').textContent=n==='dark'?'☀️':'🌙';}
-
-    function getUser(){return JSON.parse(localStorage.getItem('elUser')||'null');}
-    function saveUser(u){localStorage.setItem('elUser',JSON.stringify(u));user=u;}
-
-    function init(){
-      if(!localStorage.getItem('elLoggedIn')){window.location.href='signin.html';return;}
-      user=getUser();
-      if(!user){window.location.href='signup.html';return;}
-      if(!user.links)user.links=[];
-      if(!user.socials)user.socials=[];
-
-      const handle='electrwni.link/'+user.username;
-      document.getElementById('sbName').textContent=user.displayName||user.username;
-      document.getElementById('sbHandle').textContent=handle;
-      document.getElementById('sbAvatar').textContent=(user.displayName||user.username)[0].toUpperCase();
-      document.getElementById('bioUrl').textContent=handle;
-      document.getElementById('previewNavBtn').href='page.html#'+user.username;
-
-      // Profile fields
-      document.getElementById('pfName').value=user.displayName||'';
-      document.getElementById('pfUser').value=user.username||'';
-      document.getElementById('pfBio').value=user.bio||'';
-      document.getElementById('pfEmail').value=user.email||'';
-      document.getElementById('pfAvatar').value=user.avatar||'';
-
-      // Social modal platform change
-      document.getElementById('sPlatform').addEventListener('change', function(){
-        const wa=this.value==='whatsapp';
-        const web=this.value==='website';
-        document.getElementById('sInputLabel').textContent=wa?'رقم الهاتف (مع كود الدولة)':web?'الرابط الكامل':'اسم المستخدم';
-        document.getElementById('sUsername').placeholder=wa?'+966xxxxxxxxx':web?'https://example.com':'@username';
-      });
-
-      render();
+    // جدول حسابات التواصل الاجتماعي
+    const st = document.getElementById('socialsTbody');
+    const icons = {instagram:'📷', tiktok:'🎵', twitter:'✖', youtube:'▶', snapchat:'👻', whatsapp:'💬', telegram:'✈', linkedin:'💼', facebook:'👤', website:'🌐'};
+    const names = {instagram:'إنستقرام', tiktok:'تيك توك', twitter:'تويتر/X', youtube:'يوتيوب', snapchat:'سناب شات', whatsapp:'واتساب', telegram:'تيليقرام', linkedin:'لينكدإن', facebook:'فيسبوك', website:'موقع إلكتروني'};
+    if(!socials.length){
+      st.innerHTML = '';
+      document.getElementById('socialsEmpty').style.display = 'block';
+    } else {
+      document.getElementById('socialsEmpty').style.display = 'none';
+      st.innerHTML = socials.map(s => `
+        <tr>
+          <td><span class="social-icon">${icons[s.platform] || '🌐'}</span> <span style="font-weight:700;margin-right:8px;">${names[s.platform] || s.platform}</span></td>
+          <td style="font-family:'Space Mono',monospace;font-size:0.85rem;direction:ltr;text-align:right;color:var(--accent);">${s.username}</td>
+          <td><button class="btn btn-danger" onclick="deleteSocial('${s.id}')">حذف</button></td>
+        </tr>
+      `).join('');
     }
+  }
 
-    function render(){
-      user=getUser();
-      const links=(user.links||[]).sort((a,b)=>a.num-b.num);
-      const socials=user.socials||[];
-      const totalClicks=links.reduce((s,l)=>s+(l.clicks||0),0);
-      const topLink=links.sort((a,b)=>(b.clicks||0)-(a.clicks||0))[0];
+  function showPage(name, el){
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    if(el) el.classList.add('active');
+    const cfg = {links:['إدارة الروابط','أضف وعدّل روابطك المرقّمة',true], analytics:['الإحصائيات','أداء روابطك وزياراتك',false], socials:['شبكات التواصل','روابط حساباتك على المنصات',false], profile:['الملف الشخصي','تعديل معلوماتك وهويتك',false]};
+    const c = cfg[name];
+    document.getElementById('pageTitle').textContent = c[0];
+    document.getElementById('pageSub').textContent = c[1];
+    document.getElementById('topAction').style.display = c[2] ? '' : 'none';
+    return false;
+  }
 
-      // Stats
-      document.getElementById('stLinks').textContent=links.length;
-      document.getElementById('stClicks').textContent=totalClicks;
-      document.getElementById('stTop').textContent=topLink?'#'+topLink.num:'—';
-      document.getElementById('stSocials').textContent=socials.length;
-      document.getElementById('aTotal').textContent=totalClicks;
-      document.getElementById('aTopLink').textContent=topLink?topLink.label:'—';
-      document.getElementById('aTopClicks').textContent=topLink?topLink.clicks||0:0;
-      document.getElementById('aActive').textContent=links.filter(l=>(l.clicks||0)>0).length;
-
-      // Links table
-      const linksS=links.sort((a,b)=>a.num-b.num);
-      const tbody=document.getElementById('linksTbody');
-      if(!linksS.length){
-        tbody.innerHTML='';
-        document.getElementById('linksEmpty').style.display='block';
-        document.querySelector('.links-table').style.display='none';
-      } else {
-        document.getElementById('linksEmpty').style.display='none';
-        document.querySelector('.links-table').style.display='';
-        tbody.innerHTML=linksS.map(l=>`
-          <tr>
-            <td><span class="num-badge">${l.num}</span></td>
-            <td class="td-label">${l.label}</td>
-            <td class="td-desc">${l.desc||'—'}</td>
-            <td class="td-url" title="${l.url}">${l.url}</td>
-            <td><span class="clicks-badge">↗ ${l.clicks||0}</span></td>
-            <td><button class="btn btn-qr" onclick="showQR(${l.id})">█ QR</button></td>
-            <td class="td-actions">
-              <button class="btn btn-ghost btn-sm" onclick="editLink(${l.id})">تعديل</button>
-              <button class="btn btn-danger" onclick="deleteLink(${l.id})">حذف</button>
-            </td>
-          </tr>
-        `).join('');
-      }
-
-      // Analytics
-      const maxC=Math.max(...links.map(l=>l.clicks||0),1);
-      document.getElementById('analyticsBody').innerHTML=linksS.length?linksS.map(l=>`
-        <div style="margin-bottom:14px;">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
-            <span class="num-badge">${l.num}</span>
-            <span style="font-weight:700;flex:1;">${l.label}</span>
-            <span class="clicks-badge">↗ ${l.clicks||0} ضغطة</span>
-          </div>
-          <div style="height:6px;background:var(--border);border-radius:3px;">
-            <div style="height:100%;width:${Math.round(((l.clicks||0)/maxC)*100)}%;background:var(--accent);border-radius:3px;transition:width .6s;"></div>
-          </div>
-        </div>
-      `).join(''):'<div class="empty"><div class="e-icon">📊</div><p>لا توجد بيانات بعد</p></div>';
-
-      // Socials table
-      const st=document.getElementById('socialsTbody');
-      const icons={instagram:'📷',tiktok:'🎵',twitter:'✖',youtube:'▶',snapchat:'👻',whatsapp:'💬',telegram:'✈',linkedin:'💼',facebook:'👤',website:'🌐'};
-      const names={instagram:'إنستقرام',tiktok:'تيك توك',twitter:'تويتر/X',youtube:'يوتيوب',snapchat:'سناب شات',whatsapp:'واتساب',telegram:'تيليقرام',linkedin:'لينكدإن',facebook:'فيسبوك',website:'موقع إلكتروني'};
-      if(!socials.length){
-        st.innerHTML='';
-        document.getElementById('socialsEmpty').style.display='block';
-      } else {
-        document.getElementById('socialsEmpty').style.display='none';
-        st.innerHTML=socials.map(s=>`
-          <tr>
-            <td><span class="social-icon">${icons[s.platform]||'🌐'}</span> <span style="font-weight:700;margin-right:8px;">${names[s.platform]||s.platform}</span></td>
-            <td style="font-family:'Space Mono',monospace;font-size:0.85rem;direction:ltr;text-align:right;color:var(--accent);">${s.username}</td>
-            <td><button class="btn btn-danger" onclick="deleteSocial('${s.id}')">حذف</button></td>
-          </tr>
-        `).join('');
-      }
+  function openLinkModal(id = null){
+    editLinkId = id; selNum = null;
+    const links = user.links || [];
+    const taken = links.filter(l => l.id !== id).map(l => l.num);
+    let html = '';
+    for(let i = 1; i <= 9; i++){
+      const t = taken.includes(i);
+      html += `<button class="npick${t ? ' taken' : ''}" ${t ? 'disabled' : ''} onclick="pickNum(${i},this)">${i}</button>`;
     }
+    document.getElementById('numPicker').innerHTML = html;
+    if(id){
+      const lnk = links.find(l => l.id === id);
+      document.getElementById('linkModalTitle').textContent = 'تعديل الرابط';
+      document.getElementById('mLabel').value = lnk.label;
+      document.getElementById('mDesc').value = lnk.desc || '';
+      document.getElementById('mUrl').value = lnk.url;
+      selNum = lnk.num;
+      setTimeout(() => {
+        document.querySelectorAll('.npick').forEach(b => {
+          if(parseInt(b.textContent) === lnk.num) b.classList.add('sel');
+        });
+      }, 50);
+    } else {
+      document.getElementById('linkModalTitle').textContent = 'إضافة رابط جديد';
+      document.getElementById('mLabel').value = '';
+      document.getElementById('mDesc').value = '';
+      document.getElementById('mUrl').value = '';
+    }
+    document.getElementById('linkModal').classList.add('open');
+  }
+  
+  function closeLinkModal(){ document.getElementById('linkModal').classList.remove('open'); }
+  function pickNum(n,btn){ document.querySelectorAll('.npick').forEach(b => b.classList.remove('sel')); btn.classList.add('sel'); selNum = n; }
+  
+  async function saveLink(){
+    const label = document.getElementById('mLabel').value.trim();
+    const desc = document.getElementById('mDesc').value.trim();
+    const url = document.getElementById('mUrl').value.trim();
+    if(!selNum){ toast('اختر رقماً'); return; }
+    if(!label){ toast('أدخل اسم الرابط'); return; }
+    if(!url || !url.startsWith('http')){ toast('أدخل رابطاً صحيحاً (يبدأ بـ http)'); return; }
+    
+    if(!user.links) user.links = [];
+    if(editLinkId){
+      const i = user.links.findIndex(l => l.id === editLinkId);
+      user.links[i] = {...user.links[i], num:selNum, label, desc, url};
+      toast('✅ تم تحديث الرابط');
+    } else {
+      user.links.push({id:Date.now(), num:selNum, label, desc, url, clicks:0});
+      toast('✅ تم إضافة الرابط');
+    }
+    await saveUserToCloud(user); closeLinkModal(); render();
+  }
 
-    // ===== PAGES =====
-    function showPage(name, el){
-      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-      document.getElementById('page-'+name).classList.add('active');
-      if(el) el.classList.add('active');
-      const cfg={links:['إدارة الروابط','أضف وعدّل روابطك المرقّمة',true],analytics:['الإحصائيات','أداء روابطك وزياراتك',false],socials:['شبكات التواصل','روابط حساباتك على المنصات',false],profile:['الملف الشخصي','تعديل معلوماتك وهويتك',false]};
-      const c=cfg[name];
-      document.getElementById('pageTitle').textContent=c[0];
-      document.getElementById('pageSub').textContent=c[1];
-      document.getElementById('topAction').style.display=c[2]?'':'none';
-      return false;
-    }
+  async function deleteLink(id){
+    if(!confirm('حذف هذا الرابط؟')) return;
+    user.links = user.links.filter(l => l.id !== id);
+    await saveUserToCloud(user); render(); toast('🗑 تم الحذف');
+  }
 
-    // ===== LINK MODAL =====
-    function openLinkModal(id=null){
-      editLinkId=id; selNum=null;
-      user=getUser();
-      const links=user.links||[];
-      const taken=links.filter(l=>l.id!==id).map(l=>l.num);
-      let html='';
-      for(let i=1;i<=9;i++){
-        const t=taken.includes(i);
-        html+=`<button class="npick${t?' taken':''}" ${t?'disabled':''} onclick="pickNum(${i},this)">${i}</button>`;
-      }
-      document.getElementById('numPicker').innerHTML=html;
-      if(id){
-        const lnk=links.find(l=>l.id===id);
-        document.getElementById('linkModalTitle').textContent='تعديل الرابط';
-        document.getElementById('mLabel').value=lnk.label;
-        document.getElementById('mDesc').value=lnk.desc||'';
-        document.getElementById('mUrl').value=lnk.url;
-        selNum=lnk.num;
-        setTimeout(()=>{
-          document.querySelectorAll('.npick').forEach(b=>{
-            if(parseInt(b.textContent)===lnk.num)b.classList.add('sel');
-          });
-        },50);
-      } else {
-        document.getElementById('linkModalTitle').textContent='إضافة رابط جديد';
-        document.getElementById('mLabel').value='';
-        document.getElementById('mDesc').value='';
-        document.getElementById('mUrl').value='';
-      }
-      document.getElementById('linkModal').classList.add('open');
-    }
-    function closeLinkModal(){document.getElementById('linkModal').classList.remove('open');}
-    function pickNum(n,btn){
-      document.querySelectorAll('.npick').forEach(b=>b.classList.remove('sel'));
-      btn.classList.add('sel'); selNum=n;
-    }
-    function saveLink(){
-      const label=document.getElementById('mLabel').value.trim();
-      const desc=document.getElementById('mDesc').value.trim();
-      const url=document.getElementById('mUrl').value.trim();
-      if(!selNum){toast('اختر رقماً');return;}
-      if(!label){toast('أدخل اسم الرابط');return;}
-      if(!url||!url.startsWith('http')){toast('أدخل رابطاً صحيحاً (يبدأ بـ http)');return;}
-      user=getUser();
-      if(!user.links)user.links=[];
-      if(editLinkId){
-        const i=user.links.findIndex(l=>l.id===editLinkId);
-        user.links[i]={...user.links[i],num:selNum,label,desc,url};
-        toast('✅ تم تحديث الرابط');
-      } else {
-        user.links.push({id:Date.now(),num:selNum,label,desc,url,clicks:0});
-        toast('✅ تم إضافة الرابط');
-      }
-      saveUser(user); closeLinkModal(); render();
-    }
-    function editLink(id){openLinkModal(id);}
-    function deleteLink(id){
-      if(!confirm('حذف هذا الرابط؟'))return;
-      user=getUser();
-      user.links=user.links.filter(l=>l.id!==id);
-      saveUser(user); render(); toast('🗑 تم الحذف');
-    }
+  function openSocialModal(){ document.getElementById('socialModal').classList.add('open'); }
+  
+  async function saveSocial(){
+    const p = document.getElementById('sPlatform').value;
+    const u = document.getElementById('sUsername').value.trim();
+    if(!u){ toast('أدخل اسم المستخدم أو الرابط'); return; }
+    if(!user.socials) user.socials = [];
+    user.socials.push({id:Date.now() + '', platform:p, username:u});
+    await saveUserToCloud(user);
+    document.getElementById('socialModal').classList.remove('open');
+    document.getElementById('sUsername').value = '';
+    render(); toast('✅ تمت الإضافة');
+  }
 
-    // ===== SOCIALS =====
-    function openSocialModal(){document.getElementById('socialModal').classList.add('open');}
-    function saveSocial(){
-      const p=document.getElementById('sPlatform').value;
-      const u=document.getElementById('sUsername').value.trim();
-      if(!u){toast('أدخل اسم المستخدم أو الرابط');return;}
-      user=getUser();
-      if(!user.socials)user.socials=[];
-      user.socials.push({id:Date.now()+'',platform:p,username:u});
-      saveUser(user);
-      document.getElementById('socialModal').classList.remove('open');
-      document.getElementById('sUsername').value='';
-      render(); toast('✅ تمت الإضافة');
-    }
-    function deleteSocial(id){
-      user=getUser();
-      user.socials=user.socials.filter(s=>s.id!==id);
-      saveUser(user); render(); toast('🗑 تم الحذف');
-    }
+  async function deleteSocial(id){
+    user.socials = user.socials.filter(s => s.id !== id);
+    await saveUserToCloud(user); render(); toast('🗑 تم الحذف');
+  }
 
-    // ===== QR CODE =====
-    function showQR(id){
-      user=getUser();
-      const lnk=user.links.find(l=>l.id===id);
-      if(!lnk)return;
-      document.getElementById('qrTitle').textContent='باركود رابط #'+lnk.num+': '+lnk.label;
-      document.getElementById('qrCanvas').innerHTML='';
-      document.getElementById('qrNumOverlay').textContent=lnk.num;
-      new QRCode(document.getElementById('qrCanvas'),{
-        text: lnk.url,
-        width:200, height:200,
-        colorDark:'#000000', colorLight:'#ffffff',
-        correctLevel:QRCode.CorrectLevel.H
-      });
-      document.getElementById('qrModal').classList.add('open');
+  function showQR(id){
+    const lnk = user.links.find(l => l.id === id);
+    if(!lnk) return;
+    document.getElementById('qrTitle').textContent = 'باركود رابط #' + lnk.num + ': ' + lnk.label;
+    document.getElementById('qrCanvas').innerHTML = '';
+    document.getElementById('qrNumOverlay').textContent = lnk.num;
+    new QRCode(document.getElementById('qrCanvas'), {
+      text: lnk.url,
+      width:200, height:200,
+      colorDark:'#000000', colorLight:'#ffffff',
+      correctLevel:QRCode.CorrectLevel.H
+    });
+    document.getElementById('qrModal').classList.add('open');
+  }
+
+  function downloadQR(){
+    const canvas = document.querySelector('#qrCanvas canvas');
+    if(!canvas){ alert('جاري تجهيز الباركود...'); return; }
+    const link = document.createElement('a');
+    link.download = 'barcode-electrwni.png';
+    link.href = canvas.toDataURL();
+    link.click();
+    toast('✅ تم تحميل الباركود');
+  }
+
+  async function saveProfile(){
+    const newUsername = document.getElementById('pfUser').value.trim().toLowerCase();
+    
+    user.displayName = document.getElementById('pfName').value.trim();
+    user.bio = document.getElementById('pfBio').value.trim();
+    user.email = document.getElementById('pfEmail').value.trim();
+    user.avatar = document.getElementById('pfAvatar').value.trim();
+    
+    if(newUsername !== currentUsername){
+      // نقل الحساب إلى معرف يوزرنيم جديد سحابياً عند التغيير
+      await db.collection('users').doc(newUsername).set(user);
+      await db.collection('users').doc(currentUsername).delete();
+      currentUsername = newUsername;
+      localStorage.setItem('elUserUsername', newUsername);
+    } else {
+      await saveUserToCloud(user);
     }
-    function downloadQR(){
-      const canvas=document.querySelector('#qrCanvas canvas');
-      if(!canvas){alert('جاهز الباركود...');return;}
-      const link=document.createElement('a');
-      link.download='barcode-electrwni.png';
-      link.href=canvas.toDataURL();
-      link.click();
-      toast('✅ تم تحميل الباركود');
-    }
+    
+    document.getElementById('sbName').textContent = user.displayName;
+    document.getElementById('sbHandle').textContent = 'electrwni.link/' + user.username;
+    document.getElementById('bioUrl').textContent = 'electrwni.link/' + user.username;
+    document.getElementById('previewNavBtn').href = 'page.html#' + user.username;
+    toast('✅ تم حفظ التغييرات سحابياً');
+  }
 
-    // ===== PROFILE =====
-    function saveProfile(){
-      user=getUser();
-      user.displayName=document.getElementById('pfName').value.trim();
-      user.username=document.getElementById('pfUser').value.trim().toLowerCase();
-      user.bio=document.getElementById('pfBio').value.trim();
-      user.email=document.getElementById('pfEmail').value.trim();
-      user.avatar=document.getElementById('pfAvatar').value.trim();
-      saveUser(user);
-      document.getElementById('sbName').textContent=user.displayName;
-      document.getElementById('sbHandle').textContent='electrwni.link/'+user.username;
-      document.getElementById('bioUrl').textContent='electrwni.link/'+user.username;
-      document.getElementById('previewNavBtn').href='page.html#'+user.username;
-      toast('✅ تم حفظ التغييرات');
-    }
+  function copyLink(){ navigator.clipboard.writeText('https://' + document.getElementById('bioUrl').textContent).then(() => toast('📋 تم نسخ الرابط')); }
+  function openPageInNew(){ window.open('page.html#' + user.username, '_blank'); }
+  function shareLink(){ if(navigator.share) navigator.share({title:'صفحة بايو', url:'https://' + document.getElementById('bioUrl').textContent}); else copyLink(); }
+  function logout(){ localStorage.removeItem('elLoggedIn'); localStorage.removeItem('elUserUsername'); window.location.href='signin.html'; }
+  function closeIfOverlay(e,id){ if(e.target.id === id) document.getElementById(id).classList.remove('open'); }
+  function toast(msg){ const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2600); }
 
-    // ===== UTILS =====
-    function copyLink(){navigator.clipboard.writeText('https://'+document.getElementById('bioUrl').textContent).then(()=>toast('📋 تم نسخ الرابط'));}
-    function openPageInNew(){window.open('page.html#'+user.username,'_blank');}
-    function shareLink(){if(navigator.share)navigator.share({title:'صفحة بايو',url:'https://'+document.getElementById('bioUrl').textContent});else copyLink();}
-    function logout(){localStorage.removeItem('elLoggedIn');window.location.href='signin.html';}
-    function closeIfOverlay(e,id){if(e.target.id===id)document.getElementById(id).classList.remove('open');}
-    function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
-
-    init();
-  </script>
-
-</body>
-</html>
+  init();
+</script>
