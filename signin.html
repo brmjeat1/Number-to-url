@@ -1,4 +1,3 @@
-<!-- استدعاء مكتبات Firebase في صفحة تسجيل الدخول -->
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
@@ -15,55 +14,75 @@
     measurementId: "G-LCCGHWKH87"
   };
   
-  firebase.initializeApp(firebaseConfig);
+  // تشغيل Firebase بأمان
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
   const db = firebase.firestore();
 
-  // إعدادات المظهر
+  // إعدادات المظهر بأمان (حتى لا تعطل الصفحة إذا لم يُعثر على الزر)
   const th = localStorage.getItem('theme') || 'light';
   document.documentElement.setAttribute('data-theme', th);
-  document.getElementById('themeBtn').textContent = th === 'dark' ? '☀️' : '🌙';
+  
+  const tBtn = document.getElementById('themeBtn');
+  if(tBtn) tBtn.textContent = th === 'dark' ? '☀️' : '🌙';
+
   function toggleTheme(){
     const c = document.documentElement.getAttribute('data-theme');
     const n = c === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', n);
     localStorage.setItem('theme', n);
-    document.getElementById('themeBtn').textContent = n === 'dark' ? '☀️' : '🌙';
+    const btn = document.getElementById('themeBtn');
+    if(btn) btn.textContent = n === 'dark' ? '☀️' : '🌙';
   }
 
-  // دالة تسجيل الدخول عبر Firebase Firestore السحابية
+  // دالة تسجيل الدخول المحدثة والمصلحة
   async function handleSignin(e){
-    e.preventDefault();
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
+    if(e && e.preventDefault) e.preventDefault();
+    
+    const emailEl = document.getElementById('email');
+    const passEl = document.getElementById('password');
+    
+    if(!emailEl || !passEl) {
+      alert('خطأ في التعرف على حقول الإدخال بالصفحة');
+      return;
+    }
+
+    const email = emailEl.value.trim();
+    const password = passEl.value;
     
     if(!email || !password){ alert('يرجى تعبئة جميع الحقول'); return; }
     
     try {
-      // البحث في قاعدة البيانات عن يوزر يملك هذا الإيميل والباسوورد
+      // البحث في Firestore عن الحساب
       const snapshot = await db.collection('users')
                                  .where('email', '==', email)
                                  .where('password', '==', password)
                                  .get();
                                  
       if(!snapshot.empty) {
-        // إذا وُجد الحساب، نقوم بحفظ الـ Username لتسجيل الدخول والتوجه للوحة
         const userDoc = snapshot.docs[0];
         const userData = userDoc.data();
         
         localStorage.setItem('elLoggedIn', '1');
-        localStorage.setItem('elUserUsername', userData.username); // حفظ معرف اليوزر المستهدف
+        localStorage.setItem('elUserUsername', userData.username || 'demo'); 
         
         window.location.href = 'dashboard.html';
       } else {
-        document.getElementById('errBanner').classList.add('show');
+        const errB = document.getElementById('errBanner');
+        if(errB) {
+          errB.classList.add('show');
+        } else {
+          alert('خطأ: البريد الإلكتروني أو كلمة المرور غير صحيحة');
+        }
       }
     } catch (error) {
       console.error("خطأ أثناء تسجيل الدخول:", error);
-      alert("حدث خطأ أثناء الاتصال بالسيرفر، تحقق من اتصالك.");
+      alert("حدث خطأ أثناء الاتصال بالسيرفر السحابي.");
     }
   }
 
-  // الحساب التجريبي السريع يحفظ محلياً وسحابياً للتجربة الفورية
+  // دالة الدخول السريع التجريبي المصلحة
   async function quickLogin(){
     const demoUser = {
       username: 'demo',
@@ -83,15 +102,34 @@
     };
 
     try {
-      // رفع الحساب التجريبي إلى السيرفر لضمان عمله في كل مكان
-      await db.collection('users').doc('demo').set(demoUser);
-      localStorage.setItem('elLoggedIn', '1');
-      localStorage.setItem('elUserUsername', 'demo');
-      window.location.href = 'dashboard.html';
+      await db.collection('users').doc('demo').set(demoUser, { merge: true });
     } catch(e) {
-      localStorage.setItem('elLoggedIn', '1');
-      localStorage.setItem('elUserUsername', 'demo');
-      window.location.href = 'dashboard.html';
+      console.warn("تم التخطّي لحفظ محلي نتيجة لقواعد الحماية:", e);
     }
+    
+    localStorage.setItem('elLoggedIn', '1');
+    localStorage.setItem('elUserUsername', 'demo');
+    window.location.href = 'dashboard.html';
   }
+
+  // 🚀 ربط تلقائي وذكي فور تحميل الصفحة لضمان تشغيل الأزرار والفورم بدون أخطاء
+  window.addEventListener('DOMContentLoaded', () => {
+    // ربط استمارة تسجيل الدخول تلقائياً
+    const form = document.querySelector('form');
+    if(form) {
+      form.addEventListener('submit', handleSignin);
+    }
+    
+    // البحث عن زر الدخول السريع وربطه تلقائياً برمجياً في حال لم يكن مفعلاً بالـ HTML
+    const allBtns = document.querySelectorAll('button');
+    allBtns.forEach(btn => {
+      if(btn.textContent.includes('تجريبي') || btn.textContent.includes('السريع') || btn.getAttribute('onclick')?.includes('quickLogin')) {
+        btn.removeAttribute('onclick');
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          quickLogin();
+        });
+      }
+    });
+  });
 </script>
