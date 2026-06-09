@@ -1,136 +1,50 @@
 <!DOCTYPE html>
 
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="light">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>تسجيل الدخول — electrwni.link</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #050508; --surface: #0d0d14; --border: #1e1e30;
-      --accent: #6c63ff; --accent2: #ff6584;
-      --text: #e8e8f0; --muted: #6b6b8a; --error: #ff4d6d;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Tajawal', sans-serif;
-      background: var(--bg); color: var(--text);
-      min-height: 100vh; display: flex; flex-direction: column;
-    }
-    body::before {
-      content: ''; position: fixed; inset: 0;
-      background-image:
-        linear-gradient(rgba(108,99,255,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(108,99,255,0.04) 1px, transparent 1px);
-      background-size: 40px 40px; pointer-events: none; z-index: 0;
-    }
-    .orb {
-      position: fixed; border-radius: 50%;
-      filter: blur(80px); pointer-events: none; z-index: 0;
-    }
-    .orb-1 { width: 350px; height: 350px; background: rgba(108,99,255,0.12); top: -80px; left: 50%; transform: translateX(-50%); }
-
-```
-nav {
-  position: relative; z-index: 10;
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 20px 40px; border-bottom: 1px solid var(--border);
-}
-.logo { font-family: 'Space Mono', monospace; font-size: 1.1rem; color: var(--accent); text-decoration: none; }
-.logo span { color: var(--accent2); }
-
-.page-wrap {
-  flex: 1; position: relative; z-index: 5;
-  display: flex; align-items: center; justify-content: center;
-  padding: 40px 20px;
-}
-
-.card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 20px; padding: 44px 40px;
-  width: 100%; max-width: 420px;
-  box-shadow: 0 0 60px rgba(108,99,255,0.08);
-}
-
-.card-header { text-align: center; margin-bottom: 36px; }
-.card-header .icon { font-size: 2.5rem; margin-bottom: 12px; }
-.card-header h1 { font-size: 1.8rem; font-weight: 900; margin-bottom: 8px; }
-.card-header p { color: var(--muted); font-size: 0.95rem; }
-
-.form-group { margin-bottom: 20px; }
-label { display: block; font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; }
-
-input[type=email], input[type=password] {
-  width: 100%; background: var(--bg);
-  border: 1px solid var(--border); border-radius: 10px;
-  padding: 13px 16px; color: var(--text);
-  font-family: 'Tajawal', sans-serif; font-size: 1rem;
-  outline: none; transition: border-color 0.2s, box-shadow 0.2s;
-}
-input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(108,99,255,0.15);
-}
-
-.forgot { text-align: left; margin-top: 6px; }
-.forgot a { font-size: 0.82rem; color: var(--accent); text-decoration: none; }
-
-.error-banner {
-  background: rgba(255,77,109,0.1);
-  border: 1px solid rgba(255,77,109,0.3);
-  border-radius: 10px; padding: 12px 16px;
-  font-size: 0.9rem; color: var(--error);
-  margin-bottom: 16px; display: none;
-}
-.error-banner.show { display: block; }
-
-.btn-submit {
-  width: 100%; background: var(--accent); color: #fff;
-  border: none; border-radius: 10px; padding: 14px;
-  font-family: 'Tajawal', sans-serif; font-size: 1.05rem; font-weight: 700;
-  cursor: pointer; margin-top: 8px; transition: all 0.2s;
-  box-shadow: 0 0 20px rgba(108,99,255,0.3);
-}
-.btn-submit:hover { background: #7d75ff; transform: translateY(-1px); }
-
-.divider { text-align: center; color: var(--muted); font-size: 0.85rem; margin: 20px 0; position: relative; }
-.divider::before, .divider::after {
-  content: ''; position: absolute; top: 50%;
-  width: 42%; height: 1px; background: var(--border);
-}
-.divider::before { right: 0; }
-.divider::after { left: 0; }
-
-.signup-link { text-align: center; font-size: 0.9rem; color: var(--muted); }
-.signup-link a { color: var(--accent); text-decoration: none; font-weight: 700; }
-
-/* Demo hint */
-.demo-hint {
-  background: rgba(108,99,255,0.08);
-  border: 1px dashed rgba(108,99,255,0.3);
-  border-radius: 10px; padding: 12px 16px;
-  font-size: 0.82rem; color: var(--muted);
-  margin-bottom: 20px; text-align: center; line-height: 1.5;
-}
-.demo-hint strong { color: var(--accent); }
-
-@media (max-width: 520px) {
-  .card { padding: 32px 24px; }
-  nav { padding: 16px 20px; }
-}
-```
-
+    :root{--bg:#f0f4ff;--bg2:#e8eeff;--surface:rgba(255,255,255,0.85);--border:rgba(100,130,255,0.2);--border-strong:rgba(100,130,255,0.4);--accent:#3d5af1;--accent2:#e8436a;--accent-light:rgba(61,90,241,0.1);--text:#0f1535;--text2:#3a4270;--muted:#7b84b0;--glass:rgba(255,255,255,0.7);--error:#e8436a;}
+    [data-theme="dark"]{--bg:#050810;--bg2:#080d1a;--surface:rgba(15,20,50,0.85);--border:rgba(100,130,255,0.2);--border-strong:rgba(100,130,255,0.4);--accent:#6c8fff;--accent2:#ff6584;--accent-light:rgba(108,143,255,0.1);--text:#e8eeff;--text2:#a0aad0;--muted:#5a6490;--glass:rgba(15,20,50,0.7);--error:#ff6584;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;transition:background .4s,color .4s;}
+    body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 600px 500px at 30% 10%,rgba(61,90,241,0.07),transparent);}
+    nav{position:relative;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px 40px;border-bottom:1px solid var(--border);background:var(--glass);backdrop-filter:blur(16px);}
+    .logo{font-family:'Space Mono',monospace;font-size:1.1rem;color:var(--accent);text-decoration:none;}
+    .logo em{color:var(--accent2);font-style:normal;}
+    .theme-toggle{width:36px;height:36px;border-radius:8px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:1rem;cursor:pointer;transition:all .2s;}
+    .page-wrap{flex:1;position:relative;z-index:5;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+    .card{background:var(--surface);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:24px;padding:44px 40px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(61,90,241,0.12);}
+    .card-header{text-align:center;margin-bottom:32px;}
+    .card-header .icon{font-size:2.5rem;margin-bottom:10px;}
+    .card-header h1{font-size:1.8rem;font-weight:900;margin-bottom:6px;}
+    .card-header p{color:var(--muted);font-size:0.9rem;}
+    .demo-hint{background:var(--accent-light);border:1px dashed var(--border-strong);border-radius:10px;padding:12px 16px;font-size:0.82rem;color:var(--muted);text-align:center;margin-bottom:20px;line-height:1.5;}
+    .demo-hint strong{color:var(--accent);}
+    .form-group{margin-bottom:18px;}
+    label{display:block;font-size:0.85rem;font-weight:700;margin-bottom:7px;color:var(--text2);}
+    input[type=email],input[type=password]{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:0.97rem;outline:none;transition:border-color .2s,box-shadow .2s;}
+    input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light);}
+    .error-banner{background:rgba(232,67,106,0.1);border:1px solid rgba(232,67,106,0.3);border-radius:10px;padding:11px 14px;font-size:0.88rem;color:var(--error);margin-bottom:14px;display:none;}
+    .error-banner.show{display:block;}
+    .btn-submit{width:100%;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:14px;font-family:'Tajawal',sans-serif;font-size:1.05rem;font-weight:700;cursor:pointer;margin-top:6px;transition:all .2s;box-shadow:0 4px 20px rgba(61,90,241,0.3);}
+    .btn-submit:hover{filter:brightness(1.1);transform:translateY(-1px);}
+    .btn-quick{width:100%;background:transparent;border:1.5px solid var(--border);border-radius:10px;padding:12px;font-family:'Tajawal',sans-serif;font-size:0.97rem;color:var(--text2);cursor:pointer;margin-top:10px;transition:all .2s;}
+    .btn-quick:hover{border-color:var(--accent);color:var(--accent);}
+    .forgot{text-align:left;margin-top:5px;}<br>
+    .forgot a{font-size:0.8rem;color:var(--accent);text-decoration:none;}
+    .alt-link{text-align:center;font-size:0.88rem;color:var(--muted);margin-top:18px;}
+    .alt-link a{color:var(--accent);text-decoration:none;font-weight:700;}
   </style>
 </head>
 <body>
-  <div class="orb orb-1"></div>
-
   <nav>
-    <a href="index.html" class="logo">electrwni<span>.link</span></a>
-    <a href="signup.html" style="color:var(--muted);text-decoration:none;font-size:0.9rem;">حساب جديد →</a>
+    <a href="index.html" class="logo">electrwni<em>.link</em></a>
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
   </nav>
-
   <div class="page-wrap">
     <div class="card">
       <div class="card-header">
@@ -138,74 +52,60 @@ input:focus {
         <h1>أهلاً بعودتك</h1>
         <p>سجّل الدخول لإدارة صفحتك</p>
       </div>
-
-```
-  <div class="demo-hint">
-    للتجربة: اضغط <strong>دخول سريع</strong> بدون بيانات
-  </div>
-
-  <div class="error-banner" id="errorBanner">البريد الإلكتروني أو كلمة المرور غير صحيحة</div>
-
-  <form id="signinForm" onsubmit="handleSignin(event)">
-    <div class="form-group">
-      <label for="email">البريد الإلكتروني</label>
-      <input type="email" id="email" placeholder="you@example.com">
+      <div class="demo-hint">للتجربة السريعة: اضغط <strong>دخول تجريبي</strong></div>
+      <div class="error-banner" id="errBanner">البريد أو كلمة المرور غير صحيحة</div>
+      <form id="signinForm" onsubmit="handleSignin(event)">
+        <div class="form-group">
+          <label>البريد الإلكتروني</label>
+          <input type="email" id="email" placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+          <label>كلمة المرور</label>
+          <input type="password" id="password" placeholder="••••••••">
+          <div class="forgot"><a href="#">نسيت كلمة المرور؟</a></div>
+        </div>
+        <button type="submit" class="btn-submit">تسجيل الدخول</button>
+        <button type="button" class="btn-quick" onclick="quickLogin()"> دخول تجريبي</button>
+      </form>
+      <div class="alt-link">ليس لديك حساب؟ <a href="signup.html">أنشئ حساباً</a></div>
     </div>
-
-    <div class="form-group">
-      <label for="password">كلمة المرور</label>
-      <input type="password" id="password" placeholder="••••••••">
-      <div class="forgot"><a href="#">نسيت كلمة المرور؟</a></div>
-    </div>
-
-    <button type="submit" class="btn-submit">تسجيل الدخول</button>
-    <button type="button" class="btn-submit" onclick="quickLogin()"
-      style="margin-top:10px; background:transparent; border:1px solid var(--border); color:var(--text); box-shadow:none;">
-      ⚡ دخول سريع (تجريبي)
-    </button>
-  </form>
-
-  <div class="divider">أو</div>
-  <div class="signup-link">ليس لديك حساب؟ <a href="signup.html">أنشئ حساباً الآن</a></div>
-</div>
-```
-
   </div>
-
   <script>
-    function handleSignin(e) {
-      e.preventDefault();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-      const stored = JSON.parse(localStorage.getItem('elUser') || '{}');
+    const th = localStorage.getItem('theme')||'light';
+    document.documentElement.setAttribute('data-theme',th);
+    document.getElementById('themeBtn').textContent = th==='dark'?'☀️':'🌙';
+    function toggleTheme(){const c=document.documentElement.getAttribute('data-theme');const n=c==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);localStorage.setItem('theme',n);document.getElementById('themeBtn').textContent=n==='dark'?'☀️':'🌙';}
 
-      if (!email || !password) { alert('يرجى تعبئة جميع الحقول'); return; }
-      if (stored.email && stored.email === email) {
-        localStorage.setItem('elLoggedIn', '1');
-        window.location.href = 'dashboard.html';
-      } else {
-        document.getElementById('errorBanner').classList.add('show');
-      }
-    }
+```
+function handleSignin(e){
+  e.preventDefault();
+  const email=document.getElementById('email').value.trim();
+  const password=document.getElementById('password').value;
+  if(!email||!password){alert('يرجى تعبئة جميع الحقول');return;}
+  const stored=JSON.parse(localStorage.getItem('elUser')||'{}');
+  if(stored.email&&stored.email===email){localStorage.setItem('elLoggedIn','1');window.location.href='dashboard.html';}
+  else{document.getElementById('errBanner').classList.add('show');}
+}
+function quickLogin(){
+  if(!localStorage.getItem('elUser')){
+    localStorage.setItem('elUser',JSON.stringify({
+      username:'demo',displayName:'حساب تجريبي',email:'demo@electrwni.link',bio:'منصة تجريبية لـ electrwni.link',
+      links:[
+        {id:1,num:1,label:'العروض',url:'https://example.com/deals',desc:'أحدث العروض',clicks:42},
+        {id:2,num:2,label:'تواصل معنا',url:'https://wa.me/966500000000',desc:'واتساب مباشر',clicks:18},
+        {id:3,num:3,label:'المتجر',url:'https://example.com',desc:'متجرنا الرئيسي',clicks:73},
+      ],
+      socials:[
+        {id:'ig',platform:'instagram',username:'demo_ig'},
+        {id:'tt',platform:'tiktok',username:'demo_tt'},
+      ]
+    }));
+  }
+  localStorage.setItem('elLoggedIn','1');
+  window.location.href='dashboard.html';
+}
+```
 
-    function quickLogin() {
-      // Demo user
-      if (!localStorage.getItem('elUser')) {
-        localStorage.setItem('elUser', JSON.stringify({
-          username: 'demo',
-          displayName: 'حساب تجريبي',
-          email: 'demo@electrwni.link',
-          links: [
-            { id: 1, num: 1, label: 'العروض اليومية', url: 'https://example.com/deals', clicks: 42 },
-            { id: 2, num: 2, label: 'تواصل معنا', url: 'https://wa.me/966500000000', clicks: 18 },
-            { id: 3, num: 3, label: 'متجرنا', url: 'https://example.com/store', clicks: 73 },
-          ]
-        }));
-      }
-      localStorage.setItem('elLoggedIn', '1');
-      window.location.href = 'dashboard.html';
-    }
   </script>
-
 </body>
 </html>
