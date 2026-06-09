@@ -1,230 +1,230 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-theme="dark">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>electrwni.link</title>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  
-  <!-- تفعيل وتطبيق ملف التنسيق المشترك للموقع -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>جاري التحميل... — electrwni.link</title>
   <link rel="stylesheet" href="style.css">
-
-  <style>
-    /* تنسيقات خاصة فقط بصفحة اللينك بايو وحقل الأرقام لضمان عدم تعارضها */
-    body {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .page-wrap {
-      position: relative;
-      z-index: 5;
-      width: 100%;
-      max-width: 420px;
-      padding: 40px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .not-found { text-align: center; padding: 80px 20px; }
-    .not-found .big { font-size: 4rem; margin-bottom: 16px; }
-    .not-found h2 { font-size: 1.6rem; font-weight: 900; margin-bottom: 8px; }
-    .not-found p { color: var(--muted); }
-    .not-found a { color: var(--accent); text-decoration: none; }
-
-    /* PROFILE */
-    .profile { text-align: center; margin-bottom: 32px; width: 100%; }
-    .avatar { width: 90px; height: 90px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); margin: 0 auto 14px; display: flex; align-items: center; justify-content: center; font-size: 2.6rem; font-weight: 900; color: #fff; box-shadow: 0 8px 32px rgba(108, 99, 255, 0.25); }
-    .avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-    .pname { font-size: 1.6rem; font-weight: 900; margin-bottom: 6px; }
-    .pbio { font-size: 0.92rem; color: var(--text); opacity: 0.8; line-height: 1.5; max-width: 300px; margin: 0 auto 10px; }
-    .phandle { display: inline-block; font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); background: rgba(108,99,255,0.1); border: 1px solid rgba(108,99,255,0.3); border-radius: 100px; padding: 4px 14px; }
-
-    /* SOCIAL ICONS */
-    .socials-row { display: flex; gap: 10px; justify-content: center; margin-bottom: 28px; flex-wrap: wrap; }
-    .social-btn { width: 44px; height: 44px; border-radius: 12px; background: var(--surface2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; text-decoration: none; transition: all .15s; }
-    .social-btn:hover { border-color: var(--accent); background: rgba(108,99,255,0.1); transform: translateY(-2px); }
-
-    /* NUMBER INPUT */
-    .input-box { width: 100%; background: var(--surface); border: 1.5px solid var(--border); border-radius: 22px; padding: 28px 24px; margin-bottom: 22px; }
-    .input-label { text-align: center; font-size: 0.88rem; color: var(--muted); margin-bottom: 16px; line-height: 1.6; }
-    .input-label strong { color: var(--text); }
-    .big-row { display: flex; gap: 10px; }
-    .big-in { flex: 1; font-family: var(--font-mono); font-size: 2.8rem; font-weight: 700; text-align: center; background: var(--surface2); border: 2px solid var(--border); border-radius: 14px; padding: 14px; color: var(--text); outline: none; transition: all .2s; -moz-appearance: textfield; }
-    .big-in::-webkit-outer-spin-button, .big-in::-webkit-inner-spin-button { -webkit-appearance: none; }
-    .big-in:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(108,99,255,0.15); }
-    .big-in.shake { animation: shake .4s; }
-    @keyframes shake { 0%, 100% { transform: translateX(0) } 25% { transform: translateX(-8px) } 75% { transform: translateX(8px) } }
-    .go-btn { background: var(--accent); border: none; border-radius: 14px; width: 68px; color: #fff; font-size: 1.6rem; cursor: pointer; transition: all .2s; box-shadow: 0 4px 16px var(--glow); }
-    .go-btn:hover { filter: brightness(1.1); transform: scale(1.05); }
-    .quick-row { display: flex; gap: 8px; justify-content: center; margin-top: 14px; flex-wrap: wrap; }
-    .qbtn { width: 44px; height: 44px; border-radius: 10px; background: var(--surface2); border: 1.5px solid var(--border); color: var(--muted); font-family: var(--font-mono); font-size: 1rem; cursor: pointer; transition: all .15s; }
-    .qbtn:hover { border-color: var(--accent); color: var(--accent); }
-    .error-msg { text-align: center; color: var(--error); font-size: 0.88rem; padding: 8px; display: none; }
-    .error-msg.show { display: block; }
-
-    /* LINKS LIST */
-    .links-list { width: 100%; display: flex; flex-direction: column; gap: 8px; }
-    .link-row { display: flex; align-items: center; gap: 12px; background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 14px 16px; cursor: pointer; transition: all .2s; text-decoration: none; color: var(--text); }
-    .link-row:hover { border-color: var(--accent); transform: translateX(-2px); }
-    .link-num-badge { width: 38px; height: 38px; border-radius: 9px; background: rgba(108,99,255,0.1); border: 1px solid rgba(108,99,255,0.3); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 1.1rem; font-weight: 700; color: var(--accent); flex-shrink: 0; }
-    .link-info { flex: 1; }
-    .link-lbl { font-weight: 700; font-size: 0.95rem; }
-    .link-desc { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
-    .link-arrow { color: var(--muted); font-size: 0.9rem; }
-    
-    .page-footer { text-align: center; padding: 20px; font-size: 0.75rem; color: var(--muted); position: relative; z-index: 5; }
-    .page-footer a { color: var(--accent); font-family: var(--font-mono); text-decoration: none; }
-  </style>
 </head>
-<!-- إضافة تفعيل خلفية الشبكة الأنيقة من الـ CSS المشترك للموقع -->
-<body class="grid-bg animate-fade-in">
+<body>
 
-  <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" style="position:fixed; top:16px; left:16px; z-index:100; width:36px; height:36px; border-radius:50%; background:var(--surface); border:1px solid var(--border); cursor:pointer;">🌙</button>
+  <button id="themeBtn" class="theme-toggle" onclick="toggleTheme()">☀️</button>
 
-  <div class="page-wrap">
-    <!-- رسالة الخطأ في حال عدم وجود حساب -->
-    <div class="not-found" id="notFound" style="display:none;">
-      <div class="big">🔍</div>
-      <h2>الصفحة غير موجودة</h2>
-      <p>تحقق من الرابط أو <a href="signup.html">أنشئ صفحتك الحالية</a></p>
-    </div>
-
-    <!-- المحتوى الرئيسي لروابط المستفيد -->
-    <div id="mainContent" style="width: 100%;">
-      <div class="profile">
-        <div class="avatar" id="profileAvatar"><span id="avatarText">؟</span></div>
-        <div class="pname gradient-text" id="profileName"></div> <!-- تفعيل النص المتدرج لاسم المستخدم -->
-        <div class="pbio" id="profileBio"></div>
-        <div class="phandle" id="profileHandle"></div>
+  <div class="container" id="mainContent">
+    <div class="profile-card">
+      <div class="avatar" id="profileAvatar">
+        <span id="avatarText"></span>
       </div>
-
+      <h1 class="profile-title" id="profileName"></h1>
+      <p class="profile-username" id="profileHandle"></p>
+      <p class="profile-bio" id="profileBio"></p>
+      
       <div class="socials-row" id="socialsRow"></div>
-
-      <div class="input-box">
-        <div class="input-label">اكتب <strong>رقم الرابط</strong> وانتقل فوراً</div>
-        <div class="big-row">
-          <input class="big-in" type="number" id="numIn" placeholder="0" min="1" max="999"
-            oninput="handleIn()" onkeydown="if(event.key==='Enter')goNav()">
-          <button class="go-btn" onclick="goNav()">→</button>
-        </div>
-        <div class="quick-row" id="quickBtns"></div>
-        <div class="error-msg" id="errMsg">❌ هذا الرقم غير موجود</div>
-      </div>
-
-      <div class="links-list" id="linksList"></div>
     </div>
+
+    <div class="num-box">
+      <input type="number" id="numIn" placeholder="00" oninput="handleIn()" pattern="[0-9]*" inputmode="numeric">
+      <button class="go-btn" onclick="goNav()">اذهب</button>
+      <div id="errMsg" class="err-msg">الرقم غير مسجل لهذا المستخدم!</div>
+    </div>
+
+    <div class="quick-buttons" id="quickBtns"></div>
+
+    <div class="links-list" id="linksList"></div>
+
+    <footer class="footer">
+      بواسطة <a href="https://electrwni.link" target="_blank">electrwni.link</a>
+    </footer>
   </div>
 
-  <div class="page-footer">بُنيت بـ <a href="index.html">electrwni.link</a></div>
+  <div class="container" id="notFound" style="display: none; text-align: center; padding-top: 80px;">
+    <div style="font-size: 64px; margin-bottom: 20px;">🔍</div>
+    <h2 style="margin-bottom: 10px;">الحساب غير موجود!</h2>
+    <p style="color: #666; margin-bottom: 30px;">تأكد من كتابة اسم المستخدم بشكل صحيح في الرابط.</p>
+    <a href="https://electrwni.link" class="go-btn" style="text-decoration: none; display: inline-block;">العودة للرئيسية</a>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
   <script>
-    // إعدادات الثيم والتبديل
-    const th=localStorage.getItem('theme')||'dark';
-    document.documentElement.setAttribute('data-theme',th);
-    document.getElementById('themeBtn').textContent=th==='dark'?'☀️':'🌙';
-    function toggleTheme(){const c=document.documentElement.getAttribute('data-theme');const n=c==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);localStorage.setItem('theme',n);document.getElementById('themeBtn').textContent=n==='dark'?'☀️':'🌙';}
+    // ⚠️ تنبيه هام جداً: استبدل هذه القيم ببيانات مشروعك الحقيقية 
+    // لكي يتصل الموقع بقاعدة بيانات حسابك في Firebase بنجاح.
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    
+    // بدء تشغيل Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-    // دالة استخراج اسم المستخدم الذكية من الرابط بـ 3 طرق مختلفة
+    // إدارة الثيم والمظهر
+    const th = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', th);
+    document.getElementById('themeBtn').textContent = th === 'dark' ? '☀️' : '🌙';
+    
+    function toggleTheme(){
+      const c = document.documentElement.getAttribute('data-theme');
+      const n = c === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', n);
+      localStorage.setItem('theme', n);
+      document.getElementById('themeBtn').textContent = n === 'dark' ? '☀️' : '🌙';
+    }
+
+    // استخراج اسم المستخدم تلقائياً من الرابط (سواء u= أو هاشتاج #)
     function getUsername(){
-      const hash=location.hash.replace('#','').split('?')[0];
-      if(hash)return hash;
-      const qp=new URLSearchParams(location.search).get('u');
-      if(qp)return qp;
-      const path=location.pathname.replace(/\//g,'');
-      if(path&&path!=='page.html')return path;
+      const hash = location.hash.replace('#','').split('?')[0];
+      if(hash) return hash;
+      const qp = new URLSearchParams(location.search).get('u');
+      if(qp) return qp;
+      const path = location.pathname.replace(/\//g,'');
+      if(path && path !== 'page.html') return path;
       return null;
     }
 
-    const socIcons={instagram:'📷',tiktok:'🎵',twitter:'✖',youtube:'▶',snapchat:'👻',whatsapp:'💬',telegram:'✈',linkedin:'💼',facebook:'👤',website:'🌐'};
-    const socUrls={
-      instagram:u=>'https://instagram.com/'+u.replace('@',''),
-      tiktok:u=>'https://tiktok.com/@'+u.replace('@',''),
-      twitter:u=>'https://x.com/'+u.replace('@',''),
-      youtube:u=>u.startsWith('http')?u:'https://youtube.com/@'+u.replace('@',''),
-      snapchat:u=>'https://snapchat.com/add/'+u.replace('@',''),
-      whatsapp:u=>'https://wa.me/'+u.replace(/\D/g,''),
-      telegram:u=>'https://t.me/'+u.replace('@',''),
-      linkedin:u=>u.startsWith('http')?u:'https://linkedin.com/in/'+u.replace('@',''),
-      facebook:u=>u.startsWith('http')?u:'https://facebook.com/'+u.replace('@',''),
-      website:u=>u.startsWith('http')?u:'https://'+u,
+    // أيقونات ورموز مواقع التواصل الاجتماعي
+    const socIcons = {instagram:'📷', tiktok:'🎵', twitter:'✖', youtube:'▶', snapchat:'👻', whatsapp:'💬', telegram:'✈', linkedin:'💼', facebook:'👤', website:'🌐'};
+    const socUrls = {
+      instagram: u => 'https://instagram.com/'+u.replace('@',''),
+      tiktok: u => 'https://tiktok.com/@'+u.replace('@',''),
+      twitter: u => 'https://x.com/'+u.replace('@',''),
+      youtube: u => u.startsWith('http')?u:'https://youtube.com/@'+u.replace('@',''),
+      snapchat: u => 'https://snapchat.com/add/'+u.replace('@',''),
+      whatsapp: u => 'https://wa.me/'+u.replace(/\D/g,''),
+      telegram: u => 'https://t.me/'+u.replace('@',''),
+      linkedin: u => u.startsWith('http')?u:'https://linkedin.com/in/'+u.replace('@',''),
+      facebook: u => u.startsWith('http')?u:'https://facebook.com/'+u.replace('@',''),
+      website: u => u.startsWith('http')?u:'https://'+u,
     };
 
-    function init(){
-      const username=getUsername();
-      
-      // ⚠️ تنبيه: هنا يتم الجلب مؤقتاً من ذاكرة المتصفح المحلية
-      // في الخطوة القادمة، سنستبدل هذا الجزء البرمجي بجلب البيانات الحية من قاعدة بيانات Firebase للزوار
-      const user=JSON.parse(localStorage.getItem('elUser')||'null');
+    let globalUserLinks = []; // مصفوفة لتخزين الروابط محلياً لتسريع توجيه الأرقام
 
-      if(!user||!username||(user.username!==username)){
-        document.getElementById('mainContent').style.display='none';
-        document.getElementById('notFound').style.display='block';
+    // تشغيل الصفحة وجلب البيانات سحابياً
+    async function init(){
+      const username = getUsername();
+      
+      if(!username){
+        showNotFound();
         return;
       }
 
-      document.title=(user.displayName||username)+' — electrwni.link';
-      const links=(user.links||[]).sort((a,b)=>a.num-b.num);
-      const socials=user.socials||[];
+      try {
+        // جلب مستند اليوزر ديناميكياً من جدول الـ users في Firestore
+        const userDoc = await db.collection('users').doc(username).get();
 
-      // صورة الحساب
-      if(user.avatar){
-        document.getElementById('avatarText').style.display='none';
-        const img=document.createElement('img');
-        img.src=user.avatar;
-        img.onerror=()=>{img.remove();document.getElementById('avatarText').style.display='';};
-        document.getElementById('profileAvatar').appendChild(img);
-      } else {
-        document.getElementById('avatarText').textContent=(user.displayName||username)[0].toUpperCase();
+        if (!userDoc.exists) {
+          showNotFound();
+          return;
+        }
+
+        const user = userDoc.data();
+        document.title = (user.displayName || username) + ' — electrwni.link';
+        globalUserLinks = (user.links || []).sort((a,b) => a.num - b.num);
+        const socials = user.socials || [];
+
+        // معالجة صورة الحساب الشخصية (Avatar)
+        if(user.avatar){
+          document.getElementById('avatarText').style.display = 'none';
+          const img = document.createElement('img');
+          img.src = user.avatar;
+          img.onerror = () => { img.remove(); document.getElementById('avatarText').style.display = ''; };
+          document.getElementById('profileAvatar').appendChild(img);
+        } else {
+          document.getElementById('avatarText').textContent = (user.displayName || username)[0].toUpperCase();
+        }
+
+        // عرض نصوص الحساب الأساسية في الواجهة
+        document.getElementById('profileName').textContent = user.displayName || username;
+        document.getElementById('profileBio').textContent = user.bio || '';
+        document.getElementById('profileHandle').textContent = 'electrwni.link/' + username;
+
+        // بناء صف أزرار التواصل الاجتماعي
+        const sr = document.getElementById('socialsRow');
+        sr.innerHTML = socials.map(s => {
+          const url = (socUrls[s.platform] || ((u)=>u))(s.username);
+          return `<a class="social-btn" href="${url}" target="_blank" rel="noopener" title="${s.username}">${socIcons[s.platform] || '🌐'}</a>`;
+        }).join('');
+
+        // بناء مفاتيح الأرقام للاختصارات السريعة
+        document.getElementById('quickBtns').innerHTML = globalUserLinks.map(l =>
+          `<button class="qbtn" onclick="quickGo(${l.num})">${l.num}</button>`
+        ).join('');
+
+        // بناء قائمة الروابط الكلاسيكية للزوار في الأسفل
+        document.getElementById('linksList').innerHTML = globalUserLinks.map(l =>
+          `<a class="link-row" href="${l.url}" onclick="trackClick('${username}', ${l.id}, event)">
+            <div class="link-num-badge">${l.num}</div>
+            <div class="link-info">
+              <div class="link-lbl">${l.label}</div>
+              ${l.desc ? `<div class="link-desc">${l.desc}</div>` : ''}
+            </div>
+            <div class="link-arrow">→</div>
+          </a>`
+        ).join('');
+
+      } catch (error) {
+        console.error("خطأ في جلب بيانات Firestore:", error);
+        showNotFound();
       }
-
-      document.getElementById('profileName').textContent=user.displayName||username;
-      document.getElementById('profileBio').textContent=user.bio||'';
-      document.getElementById('profileHandle').textContent='electrwni.link/'+username;
-
-      // أزرار التواصل الاجتماعي
-      const sr=document.getElementById('socialsRow');
-      sr.innerHTML=socials.map(s=>{
-        const url=(socUrls[s.platform]||((u)=>u))(s.username);
-        return `<a class="social-btn" href="${url}" target="_blank" rel="noopener" title="${s.username}">${socIcons[s.platform]||'🌐'}</a>`;
-      }).join('');
-
-      // أزرار الاختصارات السريعة للأرقام
-      document.getElementById('quickBtns').innerHTML=links.map(l=>
-        `<button class="qbtn" onclick="quickGo(${l.num})">${l.num}</button>`
-      ).join('');
-
-      // بناء قائمة الروابط الكاملة
-      document.getElementById('linksList').innerHTML=links.map(l=>
-        `<a class="link-row" href="${l.url}" onclick="track(${l.id},event)">
-          <div class="link-num-badge">${l.num}</div>
-          <div class="link-info">
-            <div class="link-lbl">${l.label}</div>
-            ${l.desc?`<div class="link-desc">${l.desc}</div>`:''}
-          </div>
-          <div class="link-arrow">→</div>
-        </a>`
-      ).join('');
     }
 
+    // عرض واجهة الحساب غير موجود
+    function showNotFound() {
+      document.getElementById('mainContent').style.display = 'none';
+      document.getElementById('notFound').style.display = 'block';
+    }
+
+    // التوجيه عند إدخال الأرقام
     function handleIn(){
       document.getElementById('errMsg').classList.remove('show');
-      const v=document.getElementById('numIn').value;
-      if(v.length===2)setTimeout(goNav,350); // تحويل فوري سريع إذا كتب رقمين
+      const v = document.getElementById('numIn').value;
+      if(v.length === 2) setTimeout(goNav, 350); 
     }
-    function goNav(){navigate(parseInt(document.getElementById('numIn').value));}
-    function quickGo(n){document.getElementById('numIn').value=n;goNav();}
+    
+    function goNav(){ navigate(parseInt(document.getElementById('numIn').value)); }
+    function quickGo(n){ document.getElementById('numIn').value = n; goNav(); }
     
     function navigate(n){
-      const user=JSON.parse(localStorage.getItem('elUser')||'null');
-      if(!user||!user.links)return;
-      const lnk=user.links.find(l=>l.num===n);
-      if(lnk){window.location.href=lnk.url;}
-      else{const inp=document.getElementById('numIn');inp.classList.add('shake');document.getElementById('errMsg').classList.add('show');setTimeout(()=>inp.classList.remove('shake'),400);}
+      if(!globalUserLinks) return;
+      const lnk = globalUserLinks.find(l => l.num === n);
+      if(lnk){
+        const username = getUsername();
+        trackClick(username, lnk.id, null);
+        window.location.href = lnk.url;
+      } else {
+        const inp = document.getElementById('numIn');
+        inp.classList.add('shake');
+        document.getElementById('errMsg').classList.add('show');
+        setTimeout(() => inp.classList.remove('shake'), 400);
+      }
     }
     
+    // دالة احترافية لزيادة عدد الضغطات تلقائياً وحساب الإحصائيات في السيرفر
+    async function trackClick(username, linkId, event) {
+      try {
+        const userRef = db.collection('users').doc(username);
+        db.runTransaction(async (transaction) => {
+          const sfDoc = await transaction.get(userRef);
+          if (!sfDoc.exists) return;
+          
+          let links = sfDoc.data().links || [];
+          const i = links.findIndex(l => l.id === linkId);
+          if (i !== -1) {
+            links[i].clicks = (links[i].clicks || 0) + 1;
+            transaction.update(userRef, { links: links });
+          }
+        });
+      } catch (e) {
+        console.error("فشل تحديث الإحصائيات:", e);
+      }
+    }
+    
+    // بدء التنفيذ الذاتي عند تشغيل المتصفح
     init();
   </script>
 </body>
