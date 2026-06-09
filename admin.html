@@ -1,250 +1,124 @@
 <!DOCTYPE html>
 
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="light">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>لوحة الإدارة — electrwni.link</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #050508; --surface: #0d0d14; --surface2: #111118;
-      --border: #1e1e30; --accent: #6c63ff; --accent2: #ff6584;
-      --text: #e8e8f0; --muted: #6b6b8a;
-      --success: #4ecca3; --warning: #ffa500; --error: #ff4d6d;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Tajawal', sans-serif;
-      background: var(--bg); color: var(--text);
-      min-height: 100vh;
-    }
-    body::before {
-      content: ''; position: fixed; inset: 0;
-      background-image:
-        linear-gradient(rgba(108,99,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(108,99,255,0.03) 1px, transparent 1px);
-      background-size: 40px 40px; pointer-events: none; z-index: 0;
-    }
+    :root{--bg:#f0f4ff;--bg2:#e8eeff;--surface:rgba(255,255,255,0.9);--surface-solid:#fff;--border:rgba(100,130,255,0.18);--border-strong:rgba(100,130,255,0.35);--accent:#3d5af1;--accent2:#e8436a;--accent-light:rgba(61,90,241,0.09);--text:#0f1535;--text2:#3a4270;--muted:#7b84b0;--glass:rgba(255,255,255,0.7);--success:#0ab87a;--error:#e8436a;--shadow:0 6px 28px rgba(61,90,241,0.09);}
+    [data-theme="dark"]{--bg:#050810;--bg2:#080d1a;--surface:rgba(15,20,50,0.9);--surface-solid:#0f1535;--border:rgba(100,130,255,0.18);--border-strong:rgba(100,130,255,0.35);--accent:#6c8fff;--accent2:#ff6584;--accent-light:rgba(108,143,255,0.09);--text:#e8eeff;--text2:#a0aad0;--muted:#5a6490;--glass:rgba(15,20,50,0.7);--success:#4ecca3;--error:#ff6584;--shadow:0 6px 28px rgba(0,0,0,0.25);}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s;}
+    body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 700px 500px at 60% 0%,rgba(61,90,241,0.06),transparent);}
 
 ```
-/* Auth Gate */
-.auth-gate {
-  min-height: 100vh; display: flex; align-items: center; justify-content: center;
-  position: relative; z-index: 5;
-}
-.auth-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 20px; padding: 44px 40px; max-width: 380px; width: 100%; margin: 20px;
-}
-.auth-card h1 { font-size: 1.5rem; font-weight: 900; margin-bottom: 6px; }
-.auth-card p { color: var(--muted); font-size: 0.9rem; margin-bottom: 28px; }
-.auth-card input {
-  width: 100%; background: var(--bg); border: 1px solid var(--border);
-  border-radius: 10px; padding: 13px 16px; color: var(--text);
-  font-family: 'Tajawal', sans-serif; font-size: 1rem; outline: none;
-  margin-bottom: 12px; transition: border-color 0.2s;
-}
-.auth-card input:focus { border-color: var(--accent); }
-.auth-card button {
-  width: 100%; background: var(--accent); color: #fff; border: none;
-  border-radius: 10px; padding: 13px; font-family: 'Tajawal', sans-serif;
-  font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
-}
-.auth-card button:hover { background: #7d75ff; }
+/* AUTH GATE */
+.auth-gate{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;z-index:5;}
+.auth-card{background:var(--surface);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:24px;padding:44px 40px;max-width:380px;width:100%;margin:20px;box-shadow:var(--shadow);}
+.auth-card h1{font-size:1.6rem;font-weight:900;margin-bottom:6px;}
+.auth-card p{color:var(--muted);font-size:0.88rem;margin-bottom:28px;}
+.auth-card input{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:1rem;outline:none;margin-bottom:12px;transition:border-color .2s;}
+.auth-card input:focus{border-color:var(--accent);}
+.auth-card button{width:100%;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:13px;font-family:'Tajawal',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(61,90,241,0.25);}
+.auth-card button:hover{filter:brightness(1.1);}
 
-/* Main admin UI */
-#adminUI { display: none; }
+/* ADMIN UI */
+#adminUI{display:none;}
+header{position:sticky;top:0;z-index:100;background:var(--glass);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;padding:14px 32px;}
+.hlogo{font-family:'Space Mono',monospace;font-size:1rem;color:var(--accent);}
+.hlogo em{color:var(--accent2);font-style:normal;}
+.hbadge{background:rgba(232,67,106,0.12);border:1px solid rgba(232,67,106,0.3);border-radius:6px;padding:3px 10px;font-size:0.72rem;font-weight:700;color:var(--error);}
+.spacer{flex:1;}
+.theme-toggle{width:34px;height:34px;border-radius:8px;background:var(--surface);border:1px solid var(--border);cursor:pointer;font-size:0.9rem;transition:all .2s;}
+.hbtn{background:transparent;border:1px solid var(--border);border-radius:8px;padding:7px 14px;color:var(--muted);font-family:'Tajawal',sans-serif;font-size:0.82rem;cursor:pointer;transition:all .2s;}
+.hbtn:hover{border-color:var(--error);color:var(--error);}
 
-header {
-  position: sticky; top: 0; z-index: 100;
-  background: rgba(5,5,8,0.95); backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 16px;
-  padding: 16px 32px;
-}
-.header-logo { font-family: 'Space Mono', monospace; font-size: 1rem; color: var(--accent); }
-.header-logo span { color: var(--accent2); }
-.header-badge {
-  background: rgba(255,77,109,0.15); border: 1px solid rgba(255,77,109,0.3);
-  border-radius: 6px; padding: 3px 10px;
-  font-size: 0.75rem; color: var(--error); font-weight: 700;
-}
-header .spacer { flex: 1; }
-.logout-btn {
-  background: transparent; border: 1px solid var(--border);
-  border-radius: 8px; padding: 8px 16px; color: var(--muted);
-  font-family: 'Tajawal', sans-serif; font-size: 0.85rem; cursor: pointer;
-  transition: all 0.2s;
-}
-.logout-btn:hover { border-color: var(--error); color: var(--error); }
+.wrap{max-width:1180px;margin:0 auto;padding:28px 24px;position:relative;z-index:5;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;}
+.stat-card{background:var(--surface);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow);}
+.slabel{font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.sval{font-size:1.9rem;font-weight:900;font-family:'Space Mono',monospace;}
+.sval.ca{color:var(--accent);}
+.sval.cs{color:var(--success);}
+.sval.cb{color:var(--accent2);}
 
-.admin-wrap {
-  max-width: 1200px; margin: 0 auto; padding: 32px;
-  position: relative; z-index: 5;
-}
+.section{background:var(--surface);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:16px;margin-bottom:22px;overflow:hidden;box-shadow:var(--shadow);}
+.sec-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border);}
+.sec-head h2{font-size:0.95rem;font-weight:700;}
+.search-in{background:var(--bg2);border:1.5px solid var(--border);border-radius:8px;padding:7px 13px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:0.88rem;outline:none;width:200px;transition:border-color .2s;}
+.search-in:focus{border-color:var(--accent);}
 
-.stats-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
-  margin-bottom: 32px;
-}
-.stat-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 14px; padding: 20px;
-}
-.stat-label { font-size: 0.78rem; color: var(--muted); margin-bottom: 6px; }
-.stat-value { font-size: 1.8rem; font-weight: 900; font-family: 'Space Mono', monospace; }
-.stat-value.accent { color: var(--accent); }
-.stat-value.success { color: var(--success); }
-.stat-value.accent2 { color: var(--accent2); }
-.stat-value.warning { color: var(--warning); }
+table{width:100%;border-collapse:collapse;}
+th{text-align:right;padding:10px 20px;font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);background:var(--bg2);}
+td{padding:13px 20px;border-bottom:1px solid rgba(100,130,255,0.07);font-size:0.87rem;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(61,90,241,0.02);}
+.mono{font-family:'Space Mono',monospace;font-size:0.8rem;color:var(--accent);}
+.badge{display:inline-block;padding:3px 9px;border-radius:5px;font-size:0.72rem;font-weight:700;}
+.b-on{background:rgba(10,184,122,0.12);color:var(--success);}
+.b-off{background:rgba(123,132,176,0.12);color:var(--muted);}
+.act-btn{background:transparent;border:1px solid var(--border);border-radius:6px;padding:4px 11px;font-family:'Tajawal',sans-serif;font-size:0.78rem;color:var(--muted);cursor:pointer;transition:all .2s;margin-left:4px;}
+.act-btn:hover{border-color:var(--error);color:var(--error);}
+.empty-row td{text-align:center;color:var(--muted);padding:36px;}
 
-.section { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 24px; overflow: hidden; }
-.section-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 20px 24px; border-bottom: 1px solid var(--border);
-}
-.section-header h2 { font-size: 1rem; font-weight: 700; }
-
-table { width: 100%; border-collapse: collapse; }
-th {
-  text-align: right; padding: 12px 24px;
-  font-size: 0.8rem; color: var(--muted); font-weight: 700;
-  border-bottom: 1px solid var(--border);
-  background: var(--surface2);
-}
-td { padding: 14px 24px; border-bottom: 1px solid rgba(30,30,48,0.5); font-size: 0.9rem; }
-tr:last-child td { border-bottom: none; }
-tr:hover td { background: rgba(255,255,255,0.01); }
-
-.badge {
-  display: inline-block; padding: 3px 10px; border-radius: 6px;
-  font-size: 0.75rem; font-weight: 700;
-}
-.badge-active { background: rgba(78,204,163,0.15); color: var(--success); }
-.badge-inactive { background: rgba(107,107,138,0.15); color: var(--muted); }
-
-.mono { font-family: 'Space Mono', monospace; font-size: 0.82rem; color: var(--accent); }
-
-.action-btn {
-  background: transparent; border: 1px solid var(--border);
-  border-radius: 6px; padding: 5px 12px;
-  font-family: 'Tajawal', sans-serif; font-size: 0.8rem;
-  color: var(--muted); cursor: pointer; transition: all 0.2s;
-  margin-left: 4px;
-}
-.action-btn:hover { border-color: var(--error); color: var(--error); }
-
-.btn {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 8px 16px; border-radius: 8px;
-  font-family: 'Tajawal', sans-serif; font-size: 0.85rem; font-weight: 700;
-  cursor: pointer; border: none; transition: all 0.2s;
-}
-.btn-primary { background: var(--accent); color: #fff; }
-.btn-primary:hover { background: #7d75ff; }
-
-.search-input {
-  background: var(--bg); border: 1px solid var(--border);
-  border-radius: 8px; padding: 8px 14px; color: var(--text);
-  font-family: 'Tajawal', sans-serif; font-size: 0.9rem;
-  outline: none; width: 220px; transition: border-color 0.2s;
-}
-.search-input:focus { border-color: var(--accent); }
-
-.empty-row td { text-align: center; color: var(--muted); padding: 40px; }
-
-@media (max-width: 900px) {
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  header { padding: 14px 20px; }
-  .admin-wrap { padding: 20px; }
-}
+@media(max-width:860px){.stats-grid{grid-template-columns:repeat(2,1fr);}header{padding:12px 18px;}.wrap{padding:18px 14px;}}
 ```
 
   </style>
 </head>
 <body>
-
-  <!-- Auth Gate -->
-
+  <!-- AUTH GATE -->
   <div class="auth-gate" id="authGate">
     <div class="auth-card">
       <h1>🔒 لوحة الإدارة</h1>
-      <p>هذه الصفحة للمشرفين فقط</p>
+      <p>هذه الصفحة للمسؤولين فقط</p>
       <input type="password" id="adminPass" placeholder="كلمة المرور" onkeydown="if(event.key==='Enter')checkAdmin()">
       <button onclick="checkAdmin()">دخول</button>
     </div>
   </div>
 
-  <!-- Admin UI -->
+  <!-- ADMIN UI -->
 
   <div id="adminUI">
     <header>
-      <div class="header-logo">electrwni<span>.link</span></div>
-      <div class="header-badge">ADMIN</div>
+      <div class="hlogo">electrwni<em>.link</em></div>
+      <div class="hbadge">ADMIN</div>
       <div class="spacer"></div>
-      <button class="logout-btn" onclick="adminLogout()">خروج</button>
+      <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
+      <button class="hbtn" onclick="adminLogout()">خروج</button>
     </header>
 
 ```
-<div class="admin-wrap">
+<div class="wrap">
   <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-label">إجمالي المستخدمين</div>
-      <div class="stat-value accent" id="aUsers">1</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">إجمالي الروابط</div>
-      <div class="stat-value success" id="aLinks">0</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">إجمالي الضغطات</div>
-      <div class="stat-value accent2" id="aClicks">0</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">المستخدمون النشطون</div>
-      <div class="stat-value warning" id="aActive">0</div>
-    </div>
+    <div class="stat-card"><div class="slabel">المستخدمون</div><div class="sval ca" id="aU">1</div></div>
+    <div class="stat-card"><div class="slabel">الروابط الكلية</div><div class="sval cs" id="aL">0</div></div>
+    <div class="stat-card"><div class="slabel">الضغطات الكلية</div><div class="sval cb" id="aC">0</div></div>
+    <div class="stat-card"><div class="slabel">شبكات التواصل</div><div class="sval ca" id="aS">0</div></div>
   </div>
 
-  <!-- Users Table -->
   <div class="section">
-    <div class="section-header">
+    <div class="sec-head">
       <h2>المستخدمون</h2>
-      <input class="search-input" id="searchInput" placeholder="بحث..." oninput="renderUsers()">
+      <input class="search-in" id="searchIn" placeholder="بحث..." oninput="renderUsers()">
     </div>
     <table>
       <thead>
-        <tr>
-          <th>المستخدم</th>
-          <th>الاسم المعروض</th>
-          <th>البريد</th>
-          <th>الروابط</th>
-          <th>الضغطات</th>
-          <th>الحالة</th>
-          <th>الإجراءات</th>
-        </tr>
+        <tr><th>المستخدم</th><th>الاسم</th><th>البريد</th><th>الروابط</th><th>الشبكات</th><th>الضغطات</th><th>الحالة</th><th>إجراءات</th></tr>
       </thead>
-      <tbody id="usersTable"></tbody>
+      <tbody id="usersBody"></tbody>
     </table>
   </div>
 
-  <!-- Links Table -->
   <div class="section">
-    <div class="section-header">
-      <h2>جميع الروابط</h2>
-    </div>
+    <div class="sec-head"><h2>كل الروابط</h2></div>
     <table>
       <thead>
-        <tr>
-          <th>المستخدم</th>
-          <th>الرقم</th>
-          <th>الاسم</th>
-          <th>الرابط</th>
-          <th>الضغطات</th>
-        </tr>
+        <tr><th>المستخدم</th><th>الرقم</th><th>الاسم</th><th>الوصف</th><th>الرابط</th><th>الضغطات</th></tr>
       </thead>
-      <tbody id="linksTable"></tbody>
+      <tbody id="linksBody"></tbody>
     </table>
   </div>
 </div>
@@ -253,109 +127,81 @@ tr:hover td { background: rgba(255,255,255,0.01); }
   </div>
 
   <script>
-    const ADMIN_PASS = 'admin123'; // في الإنتاج: يُخزن بشكل آمن في الخادم
+    const PASS='admin123';
+    const th=localStorage.getItem('theme')||'light';
+    document.documentElement.setAttribute('data-theme',th);
 
-    function checkAdmin() {
-      const pass = document.getElementById('adminPass').value;
-      if (pass === ADMIN_PASS) {
-        sessionStorage.setItem('adminAuth', '1');
-        document.getElementById('authGate').style.display = 'none';
-        document.getElementById('adminUI').style.display = 'block';
+    function checkAdmin(){
+      if(document.getElementById('adminPass').value===PASS){
+        sessionStorage.setItem('adminAuth','1');
+        document.getElementById('authGate').style.display='none';
+        document.getElementById('adminUI').style.display='block';
+        document.getElementById('themeBtn').textContent=localStorage.getItem('theme')==='dark'?'☀️':'🌙';
         loadAdmin();
-      } else {
-        alert('كلمة المرور غير صحيحة');
-      }
+      } else { alert('كلمة المرور غير صحيحة'); }
     }
+    function adminLogout(){sessionStorage.removeItem('adminAuth');location.reload();}
+    function toggleTheme(){const c=document.documentElement.getAttribute('data-theme');const n=c==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);localStorage.setItem('theme',n);document.getElementById('themeBtn').textContent=n==='dark'?'☀️':'🌙';}
 
-    function adminLogout() {
-      sessionStorage.removeItem('adminAuth');
-      location.reload();
+    function getAllUsers(){const u=localStorage.getItem('elUser');return u?[JSON.parse(u)]:[];}
+    function loadAdmin(){
+      const users=getAllUsers();
+      const links=users.flatMap(u=>(u.links||[]).map(l=>({...l,username:u.username})));
+      const socials=users.flatMap(u=>(u.socials||[]).map(s=>({...s,username:u.username})));
+      const clicks=links.reduce((s,l)=>s+(l.clicks||0),0);
+      document.getElementById('aU').textContent=users.length;
+      document.getElementById('aL').textContent=links.length;
+      document.getElementById('aC').textContent=clicks;
+      document.getElementById('aS').textContent=socials.length;
+      renderUsers(); renderLinks();
     }
-
-    function getAllUsers() {
-      // In production: API call. For demo: localStorage
-      const u = localStorage.getItem('elUser');
-      return u ? [JSON.parse(u)] : [];
-    }
-
-    function loadAdmin() {
-      const users = getAllUsers();
-      const allLinks = users.flatMap(u => (u.links||[]).map(l => ({...l, username: u.username})));
-      const totalClicks = allLinks.reduce((s,l)=>s+(l.clicks||0),0);
-      const active = users.filter(u=>(u.links||[]).length>0).length;
-
-      document.getElementById('aUsers').textContent = users.length;
-      document.getElementById('aLinks').textContent = allLinks.length;
-      document.getElementById('aClicks').textContent = totalClicks;
-      document.getElementById('aActive').textContent = active;
-
-      renderUsers();
-      renderLinks();
-    }
-
-    function renderUsers() {
-      const search = document.getElementById('searchInput').value.toLowerCase();
-      const users = getAllUsers().filter(u =>
-        !search || u.username.includes(search) || (u.displayName||'').includes(search) || (u.email||'').includes(search)
-      );
-      const tb = document.getElementById('usersTable');
-      if (!users.length) {
-        tb.innerHTML = `<tr><td colspan="7" class="empty-row">لا يوجد مستخدمون</td></tr>`;
-        return;
-      }
-      tb.innerHTML = users.map(u => {
-        const links = u.links || [];
-        const clicks = links.reduce((s,l)=>s+(l.clicks||0),0);
-        return `
-          <tr>
-            <td><span class="mono">@${u.username}</span></td>
-            <td>${u.displayName || '—'}</td>
-            <td style="color:var(--muted); font-size:0.82rem;">${u.email || '—'}</td>
-            <td><span class="mono">${links.length}</span></td>
-            <td><span class="mono">${clicks}</span></td>
-            <td><span class="badge ${links.length ? 'badge-active' : 'badge-inactive'}">${links.length ? 'نشط' : 'جديد'}</span></td>
-            <td>
-              <button class="action-btn" onclick="viewUser('${u.username}')">عرض</button>
-              <button class="action-btn" onclick="deleteUser('${u.username}')">حذف</button>
-            </td>
-          </tr>
-        `;
+    function renderUsers(){
+      const q=(document.getElementById('searchIn').value||'').toLowerCase();
+      const users=getAllUsers().filter(u=>!q||u.username.includes(q)||(u.displayName||'').includes(q)||(u.email||'').includes(q));
+      const tb=document.getElementById('usersBody');
+      if(!users.length){tb.innerHTML='<tr><td colspan="8" class="empty-row">لا يوجد مستخدمون</td></tr>';return;}
+      tb.innerHTML=users.map(u=>{
+        const lks=u.links||[];const scs=u.socials||[];
+        const clks=lks.reduce((s,l)=>s+(l.clicks||0),0);
+        return `<tr>
+          <td><span class="mono">@${u.username}</span></td>
+          <td>${u.displayName||'—'}</td>
+          <td style="color:var(--muted);font-size:.8rem;">${u.email||'—'}</td>
+          <td><span class="mono">${lks.length}</span></td>
+          <td><span class="mono">${scs.length}</span></td>
+          <td><span class="mono" style="color:var(--success);">${clks}</span></td>
+          <td><span class="badge ${lks.length?'b-on':'b-off'}">${lks.length?'نشط':'جديد'}</span></td>
+          <td>
+            <button class="act-btn" onclick="window.open('page.html#${u.username}','_blank')">عرض</button>
+            <button class="act-btn" onclick="delUser('${u.username}')">حذف</button>
+          </td>
+        </tr>`;
       }).join('');
     }
-
-    function renderLinks() {
-      const users = getAllUsers();
-      const allLinks = users.flatMap(u => (u.links||[]).map(l => ({...l, username: u.username})));
-      const tb = document.getElementById('linksTable');
-      if (!allLinks.length) {
-        tb.innerHTML = `<tr><td colspan="5" class="empty-row">لا توجد روابط</td></tr>`;
-        return;
-      }
-      tb.innerHTML = allLinks.sort((a,b)=>(b.clicks||0)-(a.clicks||0)).map(l => `
+    function renderLinks(){
+      const users=getAllUsers();
+      const links=users.flatMap(u=>(u.links||[]).map(l=>({...l,username:u.username})));
+      const tb=document.getElementById('linksBody');
+      if(!links.length){tb.innerHTML='<tr><td colspan="6" class="empty-row">لا توجد روابط</td></tr>';return;}
+      tb.innerHTML=links.sort((a,b)=>(b.clicks||0)-(a.clicks||0)).map(l=>`
         <tr>
           <td><span class="mono">@${l.username}</span></td>
-          <td><span class="mono" style="color:var(--accent);">${l.num}</span></td>
-          <td>${l.label}</td>
-          <td style="direction:ltr; text-align:right; color:var(--muted); font-size:0.8rem; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${l.url}</td>
+          <td><span class="mono" style="color:var(--accent);font-size:1.1rem;">${l.num}</span></td>
+          <td style="font-weight:700;">${l.label}</td>
+          <td style="color:var(--muted);font-size:.8rem;">${l.desc||'—'}</td>
+          <td style="direction:ltr;text-align:right;color:var(--muted);font-size:.78rem;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${l.url}</td>
           <td><span class="mono" style="color:var(--success);">${l.clicks||0}</span></td>
         </tr>
       `).join('');
     }
+    function delUser(u){if(!confirm('حذف المستخدم @'+u+'؟'))return;localStorage.removeItem('elUser');loadAdmin();}
 
-    function viewUser(username) {
-      window.open('page.html?u=' + username, '_blank');
-    }
-
-    function deleteUser(username) {
-      if (!confirm(`هل تريد حذف المستخدم @${username}؟`)) return;
-      localStorage.removeItem('elUser');
-      loadAdmin();
-    }
-
-    // Auto-check auth on load
-    if (sessionStorage.getItem('adminAuth') === '1') {
-      document.getElementById('authGate').style.display = 'none';
-      document.getElementById('adminUI').style.display = 'block';
+    if(sessionStorage.getItem('adminAuth')==='1'){
+      document.getElementById('authGate').style.display='none';
+      document.getElementById('adminUI').style.display='block';
+      const t=localStorage.getItem('theme')||'light';
+      document.documentElement.setAttribute('data-theme',t);
+      document.getElementById('themeBtn') && (document.getElementById('themeBtn').textContent=t==='dark'?'☀️':'🌙');
       loadAdmin();
     }
   </script>
