@@ -48,15 +48,16 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
   <script>
-    // ⚠️ تنبيه هام جداً: استبدل هذه القيم ببيانات مشروعك الحقيقية 
-    // لكي يتصل الموقع بقاعدة بيانات حسابك في Firebase بنجاح.
+    // تم دمج مفاتيح مشروعك الحقيقية هنا بنجاح ليرتبط السيرفر تلقائياً بالزوار
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_AUTH_DOMAIN",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_STORAGE_BUCKET",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
+      authDomain: "electrwni-link.firebaseapp.com",
+      databaseURL: "https://electrwni-link-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "electrwni-link",
+      storageBucket: "electrwni-link.firebasestorage.app",
+      messagingSenderId: "712490301263",
+      appId: "1:712490301263:web:2084210da3f687285ab73a",
+      measurementId: "G-LCCGHWKH87"
     };
     
     // بدء تشغيل Firebase
@@ -204,7 +205,7 @@
       }
     }
     
-    // دالة احترافية لزيادة عدد الضغطات تلقائياً وحساب الإحصائيات في السيرفر
+    // دالة زيادة عدد الضغطات تلقائياً وحساب الإحصائيات في السيرفر
     async function trackClick(username, linkId, event) {
       try {
         const userRef = db.collection('users').doc(username);
