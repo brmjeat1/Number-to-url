@@ -58,7 +58,7 @@
         <h1>أنشئ حسابك</h1>
         <p>ابدأ في دقيقة — مجاناً</p>
       </div>
-      <form id="signupForm" onsubmit="handleSignup(event)">
+      <form id="signupForm">
         <div class="form-group">
           <label>اسم المستخدم (رابط صفحتك)</label>
           <div class="input-wrap">
@@ -90,56 +90,134 @@
       <div class="alt-link">لديك حساب؟ <a href="signin.html">سجل الدخول</a></div>
     </div>
   </div>
+
+  <!-- Firebase -->
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
   <script>
-    // Theme
-    const t = localStorage.getItem('theme')||'light';
-    document.documentElement.setAttribute('data-theme',t);
-    document.getElementById('themeBtn').textContent = t==='dark'?'☀️':'🌙';
-    function toggleTheme(){const c=document.documentElement.getAttribute('data-theme');const n=c==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);localStorage.setItem('theme',n);document.getElementById('themeBtn').textContent=n==='dark'?'☀️':'🌙';}
+    // إعداد Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
+      authDomain: "electrwni-link.firebaseapp.com",
+      databaseURL: "https://electrwni-link-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "electrwni-link",
+      storageBucket: "electrwni-link.firebasestorage.app",
+      messagingSenderId: "712490301263",
+      appId: "1:712490301263:web:2084210da3f687285ab73a"
+    };
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-```
-const taken=['admin','root','api','www','app','demo','test'];
-function checkUsername(inp){
-  const v=inp.value.trim().toLowerCase();
-  const c=document.getElementById('ucheck');
-  const e=document.getElementById('unErr');
-  if(!v){c.textContent='';return;}
-  if(!/^[a-z0-9_-]+$/.test(v)){inp.classList.add('error-inp');e.classList.add('show');c.textContent='';return;}
-  inp.classList.remove('error-inp');e.classList.remove('show');
-  if(taken.includes(v)){c.textContent='❌';c.style.color='var(--error)';}
-  else if(v.length>=3){c.textContent='✅';c.style.color='var(--success)';}
-  else{c.textContent='';}
-}
-function checkStr(v){
-  const bars=[document.getElementById('sb1'),document.getElementById('sb2'),document.getElementById('sb3')];
-  bars.forEach(b=>b.className='sbar');
-  if(!v)return;
-  let s=0;
-  if(v.length>=8)s++;
-  if(/[A-Z]/.test(v)||/[0-9]/.test(v))s++;
-  if(/[^A-Za-z0-9]/.test(v))s++;
-  const cls=s===1?'weak':s===2?'mid':'strong';
-  for(let i=0;i<s;i++)bars[i].classList.add(cls);
-}
-function handleSignup(e){
-  e.preventDefault();
-  const username=document.getElementById('username').value.trim().toLowerCase();
-  const displayName=document.getElementById('displayName').value.trim();
-  const email=document.getElementById('email').value.trim();
-  const password=document.getElementById('password').value;
-  if(!username||!displayName||!email||!password){alert('يرجى تعبئة جميع الحقول');return;}
-  if(taken.includes(username)){alert('اسم المستخدم محجوز');return;}
-  if(!/^[a-z0-9_-]+$/.test(username)){alert('اسم المستخدم يحتوي على رموز غير مسموحة');return;}
-  if(password.length<8){alert('كلمة المرور يجب أن تكون 8 أحرف على الأقل');return;}
-  const user={username,displayName,email,bio:'',links:[],socials:[]};
-  localStorage.setItem('elUser',JSON.stringify(user));
-  localStorage.setItem('elLoggedIn','1');
-  document.getElementById('subBtn').textContent='✅ جاري الإنشاء...';
-  document.getElementById('subBtn').disabled=true;
-  setTimeout(()=>window.location.href='dashboard.html',900);
-}
-```
+    // المظهر
+    const t = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    document.getElementById('themeBtn').textContent = t === 'dark' ? '☀️' : '🌙';
+    function toggleTheme() {
+      const c = document.documentElement.getAttribute('data-theme');
+      const n = c === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', n);
+      localStorage.setItem('theme', n);
+      document.getElementById('themeBtn').textContent = n === 'dark' ? '☀️' : '🌙';
+    }
 
+    const taken = ['admin','root','api','www','app','demo','test'];
+
+    function checkUsername(inp) {
+      const v = inp.value.trim().toLowerCase();
+      const c = document.getElementById('ucheck');
+      const e = document.getElementById('unErr');
+      if (!v) { c.textContent = ''; return; }
+      if (!/^[a-z0-9_-]+$/.test(v)) {
+        inp.classList.add('error-inp'); e.classList.add('show'); c.textContent = ''; return;
+      }
+      inp.classList.remove('error-inp'); e.classList.remove('show');
+      if (taken.includes(v)) { c.textContent = '❌'; c.style.color = 'var(--error)'; }
+      else if (v.length >= 3) { c.textContent = '✅'; c.style.color = 'var(--success)'; }
+      else { c.textContent = ''; }
+    }
+
+    function checkStr(v) {
+      const bars = [document.getElementById('sb1'), document.getElementById('sb2'), document.getElementById('sb3')];
+      bars.forEach(b => b.className = 'sbar');
+      if (!v) return;
+      let s = 0;
+      if (v.length >= 8) s++;
+      if (/[A-Z]/.test(v) || /[0-9]/.test(v)) s++;
+      if (/[^A-Za-z0-9]/.test(v)) s++;
+      const cls = s === 1 ? 'weak' : s === 2 ? 'mid' : 'strong';
+      for (let i = 0; i < s; i++) bars[i].classList.add(cls);
+    }
+
+    // ====== تسجيل الحساب مع Firebase ======
+    async function handleSignup(e) {
+      e.preventDefault();
+      const username    = document.getElementById('username').value.trim().toLowerCase();
+      const displayName = document.getElementById('displayName').value.trim();
+      const email       = document.getElementById('email').value.trim();
+      const password    = document.getElementById('password').value;
+
+      if (!username || !displayName || !email || !password) { alert('يرجى تعبئة جميع الحقول'); return; }
+      if (taken.includes(username)) { alert('اسم المستخدم محجوز'); return; }
+      if (!/^[a-z0-9_-]+$/.test(username)) { alert('اسم المستخدم يحتوي على رموز غير مسموحة'); return; }
+      if (password.length < 8) { alert('كلمة المرور يجب أن تكون 8 أحرف على الأقل'); return; }
+
+      const btn = document.getElementById('subBtn');
+      btn.textContent = '⏳ جاري الإنشاء...';
+      btn.disabled = true;
+
+      try {
+        // تحقق إذا اسم المستخدم مأخوذ في Firestore
+        const existingUser = await db.collection('users').doc(username).get();
+        if (existingUser.exists) {
+          alert('اسم المستخدم مأخوذ، اختر اسماً آخر');
+          btn.textContent = 'إنشاء الحساب ✦';
+          btn.disabled = false;
+          return;
+        }
+
+        // تحقق إذا الإيميل مسجل مسبقاً
+        const emailCheck = await db.collection('users').where('email', '==', email).get();
+        if (!emailCheck.empty) {
+          alert('هذا البريد الإلكتروني مسجل مسبقاً');
+          btn.textContent = 'إنشاء الحساب ✦';
+          btn.disabled = false;
+          return;
+        }
+
+        // إنشاء المستخدم في Firestore
+        const userData = {
+          username,
+          displayName,
+          email,
+          password,   // ملاحظة: للإنتاج يُفضل استخدام Firebase Auth بدل تخزين كلمة السر
+          bio: '',
+          links: [],
+          socials: [],
+          createdAt: new Date().toISOString()
+        };
+
+        await db.collection('users').doc(username).set(userData);
+
+        // حفظ الجلسة
+        localStorage.setItem('elLoggedIn', '1');
+        localStorage.setItem('elUserUsername', username);
+
+        btn.textContent = '✅ تم الإنشاء!';
+        setTimeout(() => window.location.href = 'dashboard.html', 800);
+
+      } catch (err) {
+        console.error('خطأ في الإنشاء:', err);
+        alert('حدث خطأ أثناء إنشاء الحساب: ' + err.message);
+        btn.textContent = 'إنشاء الحساب ✦';
+        btn.disabled = false;
+      }
+    }
+
+    document.getElementById('signupForm').addEventListener('submit', handleSignup);
   </script>
+
 </body>
 </html>
