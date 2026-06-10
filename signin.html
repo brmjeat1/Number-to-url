@@ -53,11 +53,11 @@
       <form id="signinForm">
         <div class="form-group">
           <label>البريد الإلكتروني</label>
-          <input type="email" id="email" placeholder="you@example.com" required>
+          <input type="email" id="email" placeholder="you@example.com" required autocomplete="email">
         </div>
         <div class="form-group">
           <label>كلمة المرور</label>
-          <input type="password" id="password" placeholder="••••••••" required>
+          <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
         </div>
         <button type="submit" class="btn-submit" id="signinBtn">تسجيل الدخول ✦</button>
         <button type="button" class="btn-quick" id="quickBtn">الدخول السريع (حساب تجريبي) ⚡</button>
@@ -74,7 +74,6 @@
     const firebaseConfig = {
       apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
       authDomain: "electrwni-link.firebaseapp.com",
-      databaseURL: "https://electrwni-link-default-rtdb.asia-southeast1.firebasedatabase.app",
       projectId: "electrwni-link",
       storageBucket: "electrwni-link.firebasestorage.app",
       messagingSenderId: "712490301263",
@@ -83,7 +82,6 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // المظهر
     const th = localStorage.getItem('theme') || 'light';
     document.documentElement.setAttribute('data-theme', th);
     document.getElementById('themeBtn').textContent = th === 'dark' ? '☀️' : '🌙';
@@ -95,70 +93,54 @@
       document.getElementById('themeBtn').textContent = n === 'dark' ? '☀️' : '🌙';
     }
 
-    function showError() {
-      document.getElementById('errBanner').classList.add('show');
-    }
-
-    // ====== تسجيل الدخول من Firestore ======
     async function handleSignin(e) {
       e.preventDefault();
-      const email    = document.getElementById('email').value.trim();
+      document.getElementById('errBanner').classList.remove('show');
+      const email    = document.getElementById('email').value.trim().toLowerCase();
       const password = document.getElementById('password').value;
-
-      if (!email || !password) { alert('يرجى تعبئة جميع الحقول'); return; }
+      if (!email || !password) return;
 
       const btn = document.getElementById('signinBtn');
-      btn.textContent = '⏳ جاري التحقق...';
-      btn.disabled = true;
-      document.getElementById('errBanner').classList.remove('show');
+      btn.textContent = '⏳ جاري التحقق...'; btn.disabled = true;
 
       try {
-        const snapshot = await db.collection('users')
+        const snap = await db.collection('users')
           .where('email', '==', email)
           .where('password', '==', password)
           .get();
 
-        if (!snapshot.empty) {
-          const userData = snapshot.docs[0].data();
+        if (!snap.empty) {
+          const userData = snap.docs[0].data();
           localStorage.setItem('elLoggedIn', '1');
           localStorage.setItem('elUserUsername', userData.username);
           window.location.href = 'dashboard.html';
         } else {
-          showError();
-          btn.textContent = 'تسجيل الدخول ✦';
-          btn.disabled = false;
+          document.getElementById('errBanner').classList.add('show');
+          btn.textContent = 'تسجيل الدخول ✦'; btn.disabled = false;
         }
       } catch (err) {
-        console.error('خطأ:', err);
-        alert('حدث خطأ أثناء الاتصال بالسيرفر: ' + err.message);
-        btn.textContent = 'تسجيل الدخول ✦';
-        btn.disabled = false;
+        document.getElementById('errBanner').textContent = 'خطأ في الاتصال: ' + err.message;
+        document.getElementById('errBanner').classList.add('show');
+        btn.textContent = 'تسجيل الدخول ✦'; btn.disabled = false;
       }
     }
 
-    // ====== الدخول التجريبي ======
     async function quickLogin() {
       const demoData = {
-        username: 'demo',
-        displayName: 'حساب تجريبي',
-        email: 'demo@electrwni.link',
-        password: 'demo1234',
-        bio: 'منصة تجريبية لـ electrwni.link',
+        username: 'demo', displayName: 'حساب تجريبي',
+        email: 'demo@electrwni.link', password: 'demo1234',
+        bio: 'هذه صفحة تجريبية لـ electrwni.link',
         links: [
-          {id:1,num:1,label:'العروض',url:'https://example.com/deals',desc:'أحدث العروض',clicks:42},
-          {id:2,num:2,label:'تواصل معنا',url:'https://wa.me/966500000000',desc:'واتساب مباشر',clicks:18},
-          {id:3,num:3,label:'المتجر',url:'https://example.com',desc:'متجرنا الرئيسي',clicks:73},
+          {id:1, num:1, label:'العروض', url:'https://example.com/deals', desc:'أحدث العروض', clicks:42},
+          {id:2, num:2, label:'تواصل معنا', url:'https://wa.me/966500000000', desc:'واتساب مباشر', clicks:18},
+          {id:3, num:3, label:'المتجر', url:'https://example.com', desc:'متجرنا الرئيسي', clicks:73},
         ],
         socials: [
-          {id:'ig',platform:'instagram',username:'demo_ig'},
-          {id:'tt',platform:'tiktok',username:'demo_tt'},
+          {id:'ig', platform:'instagram', username:'demo_ig'},
+          {id:'tt', platform:'tiktok', username:'demo_tt'},
         ]
       };
-      try {
-        await db.collection('users').doc('demo').set(demoData, { merge: true });
-      } catch(e) {
-        console.warn('تجاوز قواعد الحماية:', e);
-      }
+      try { await db.collection('users').doc('demo').set(demoData, { merge: true }); } catch(e) {}
       localStorage.setItem('elLoggedIn', '1');
       localStorage.setItem('elUserUsername', 'demo');
       window.location.href = 'dashboard.html';
