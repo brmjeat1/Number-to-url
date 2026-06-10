@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl" data-theme="light">
 <head>
   <meta charset="UTF-8"/>
@@ -29,6 +30,7 @@
     .err-banner.show{display:block;}
     .btn-submit{width:100%;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:14px;font-family:'Tajawal',sans-serif;font-size:1.05rem;font-weight:700;cursor:pointer;margin-top:4px;transition:all .2s;box-shadow:0 4px 20px rgba(61,90,241,0.3);}
     .btn-submit:hover{filter:brightness(1.1);transform:translateY(-1px);}
+    .btn-submit:disabled{opacity:.5;cursor:not-allowed;transform:none;}
     .btn-quick{width:100%;background:transparent;color:var(--text2);border:1.5px dashed var(--border);border-radius:10px;padding:12px;font-family:'Tajawal',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;margin-top:12px;transition:all .2s;}
     .btn-quick:hover{background:var(--bg2);color:var(--accent);}
     .alt-link{text-align:center;font-size:0.88rem;color:var(--muted);margin-top:20px;}
@@ -36,12 +38,10 @@
   </style>
 </head>
 <body>
-
   <nav>
     <a href="index.html" class="logo">electrwni<em>.link</em></a>
     <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
   </nav>
-
   <div class="page-wrap">
     <div class="card">
       <div class="card-header">
@@ -49,9 +49,7 @@
         <h1>تسجيل الدخول</h1>
         <p>مرحباً بك مجدداً في لوحتك الرقمية</p>
       </div>
-
       <div class="err-banner" id="errBanner">البريد الإلكتروني أو كلمة المرور غير صحيحة!</div>
-
       <form id="signinForm">
         <div class="form-group">
           <label>البريد الإلكتروني</label>
@@ -61,19 +59,18 @@
           <label>كلمة المرور</label>
           <input type="password" id="password" placeholder="••••••••" required>
         </div>
-        <button type="submit" class="btn-submit">تسجيل الدخول ✦</button>
+        <button type="submit" class="btn-submit" id="signinBtn">تسجيل الدخول ✦</button>
         <button type="button" class="btn-quick" id="quickBtn">الدخول السريع (حساب تجريبي) ⚡</button>
       </form>
-
       <div class="alt-link">ليس لديك حساب؟ <a href="signup.html">أنشئ حساباً جديداً</a></div>
     </div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
   <script>
-    // إعدادات Firebase الخاصة بمشروعك
     const firebaseConfig = {
       apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
       authDomain: "electrwni-link.firebaseapp.com",
@@ -81,113 +78,95 @@
       projectId: "electrwni-link",
       storageBucket: "electrwni-link.firebasestorage.app",
       messagingSenderId: "712490301263",
-      appId: "1:712490301263:web:2084210da3f687285ab73a",
-      measurementId: "G-LCCGHWKH87"
+      appId: "1:712490301263:web:2084210da3f687285ab73a"
     };
-    
-    // تشغيل Firebase بأمان
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // إعدادات المظهر بأمان
+    // المظهر
     const th = localStorage.getItem('theme') || 'light';
     document.documentElement.setAttribute('data-theme', th);
-    
-    const tBtn = document.getElementById('themeBtn');
-    if(tBtn) tBtn.textContent = th === 'dark' ? '☀️' : '🌙';
-
-    function toggleTheme(){
+    document.getElementById('themeBtn').textContent = th === 'dark' ? '☀️' : '🌙';
+    function toggleTheme() {
       const c = document.documentElement.getAttribute('data-theme');
       const n = c === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', n);
       localStorage.setItem('theme', n);
-      const btn = document.getElementById('themeBtn');
-      if(btn) btn.textContent = n === 'dark' ? '☀️' : '🌙';
+      document.getElementById('themeBtn').textContent = n === 'dark' ? '☀️' : '🌙';
     }
 
-    // دالة تسجيل الدخول المحدثة والمصلحة
-    async function handleSignin(e){
-      if(e && e.preventDefault) e.preventDefault();
-      
-      const emailEl = document.getElementById('email');
-      const passEl = document.getElementById('password');
-      
-      if(!emailEl || !passEl) return;
+    function showError() {
+      document.getElementById('errBanner').classList.add('show');
+    }
 
-      const email = emailEl.value.trim();
-      const password = passEl.value;
-      
-      if(!email || !password){ alert('يرجى تعبئة جميع الحقول'); return; }
-      
+    // ====== تسجيل الدخول من Firestore ======
+    async function handleSignin(e) {
+      e.preventDefault();
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!email || !password) { alert('يرجى تعبئة جميع الحقول'); return; }
+
+      const btn = document.getElementById('signinBtn');
+      btn.textContent = '⏳ جاري التحقق...';
+      btn.disabled = true;
+      document.getElementById('errBanner').classList.remove('show');
+
       try {
-        // البحث في Firestore عن الحساب
         const snapshot = await db.collection('users')
-                                   .where('email', '==', email)
-                                   .where('password', '==', password)
-                                   .get();
-                                   
-        if(!snapshot.empty) {
-          const userDoc = snapshot.docs[0];
-          const userData = userDoc.data();
-          
+          .where('email', '==', email)
+          .where('password', '==', password)
+          .get();
+
+        if (!snapshot.empty) {
+          const userData = snapshot.docs[0].data();
           localStorage.setItem('elLoggedIn', '1');
-          localStorage.setItem('elUserUsername', userData.username || 'demo'); 
-          
+          localStorage.setItem('elUserUsername', userData.username);
           window.location.href = 'dashboard.html';
         } else {
-          const errB = document.getElementById('errBanner');
-          if(errB) {
-            errB.classList.add('show');
-          } else {
-            alert('خطأ: البريد الإلكتروني أو كلمة المرور غير صحيحة');
-          }
+          showError();
+          btn.textContent = 'تسجيل الدخول ✦';
+          btn.disabled = false;
         }
-      } catch (error) {
-        console.error("خطأ أثناء تسجيل الدخول:", error);
-        alert("حدث خطأ أثناء الاتصال بالسيرفر السحابي.");
+      } catch (err) {
+        console.error('خطأ:', err);
+        alert('حدث خطأ أثناء الاتصال بالسيرفر: ' + err.message);
+        btn.textContent = 'تسجيل الدخول ✦';
+        btn.disabled = false;
       }
     }
 
-    // دالة الدخول السريع التجريبي المصلحة
-    async function quickLogin(){
-      const demoUser = {
+    // ====== الدخول التجريبي ======
+    async function quickLogin() {
+      const demoData = {
         username: 'demo',
         displayName: 'حساب تجريبي',
         email: 'demo@electrwni.link',
-        password: 'demo',
+        password: 'demo1234',
         bio: 'منصة تجريبية لـ electrwni.link',
         links: [
-          {id:1, num:1, label:'العروض', url:'https://example.com/deals', desc:'أحدث العروض', clicks:42},
-          {id:2, num:2, label:'تواصل معنا', url:'https://wa.me/966500000000', desc:'واتساب مباشر', clicks:18},
-          {id:3, num:3, label:'المتجر', url:'https://example.com', desc:'متجرنا الرئيسي', clicks:73},
+          {id:1,num:1,label:'العروض',url:'https://example.com/deals',desc:'أحدث العروض',clicks:42},
+          {id:2,num:2,label:'تواصل معنا',url:'https://wa.me/966500000000',desc:'واتساب مباشر',clicks:18},
+          {id:3,num:3,label:'المتجر',url:'https://example.com',desc:'متجرنا الرئيسي',clicks:73},
         ],
         socials: [
-          {id:'ig', platform:'instagram', username:'demo_ig'},
-          {id:'tt', platform:'tiktok', username:'demo_tt'},
+          {id:'ig',platform:'instagram',username:'demo_ig'},
+          {id:'tt',platform:'tiktok',username:'demo_tt'},
         ]
       };
-
       try {
-        await db.collection('users').doc('demo').set(demoUser, { merge: true });
+        await db.collection('users').doc('demo').set(demoData, { merge: true });
       } catch(e) {
-        console.warn("تم التخطّي نتيجة لقواعد الحماية:", e);
+        console.warn('تجاوز قواعد الحماية:', e);
       }
-      
       localStorage.setItem('elLoggedIn', '1');
       localStorage.setItem('elUserUsername', 'demo');
       window.location.href = 'dashboard.html';
     }
 
-    // ربط مستمعي الأحداث للفورم والأزرار
-    window.addEventListener('DOMContentLoaded', () => {
-      const form = document.getElementById('signinForm');
-      if(form) form.addEventListener('submit', handleSignin);
-
-      const qBtn = document.getElementById('quickBtn');
-      if(qBtn) qBtn.addEventListener('click', quickLogin);
-    });
+    document.getElementById('signinForm').addEventListener('submit', handleSignin);
+    document.getElementById('quickBtn').addEventListener('click', quickLogin);
   </script>
+
 </body>
 </html>
