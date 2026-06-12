@@ -1,514 +1,854 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-theme="dark">
+<html lang="ar" dir="rtl" data-theme="light">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>جاري التحميل... — electrwni.link</title>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    :root{--bg:#f0f4ff;--bg2:#e8eeff;--surface:rgba(255,255,255,0.85);--border:rgba(100,130,255,0.2);--accent:#3d5af1;--accent2:#e8436a;--accent-light:rgba(61,90,241,0.12);--text:#0f1535;--text2:#3a4270;--muted:#7b84b0;--card:rgba(255,255,255,0.9);--success:#0ab87a;}
-    [data-theme="dark"]{--bg:#060912;--bg2:#0c1020;--surface:rgba(15,20,50,0.85);--border:rgba(100,130,255,0.18);--accent:#6c8fff;--accent2:#ff6584;--accent-light:rgba(108,143,255,0.12);--text:#e8eeff;--text2:#a0aad0;--muted:#5a6490;--card:rgba(15,22,55,0.92);--success:#4ecca3;}
-    *{margin:0;padding:0;box-sizing:border-box;}
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>لوحة التحكم — electrwni.link</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{--bg:#f0f4ff;--bg2:#e8eeff;--surface:rgba(255,255,255,0.9);--surface-solid:#ffffff;--border:rgba(100,130,255,0.18);--accent:#3d5af1;--accent2:#e8436a;--accent-light:rgba(61,90,241,0.1);--text:#0f1535;--text2:#3a4270;--muted:#7b84b0;--glass:rgba(255,255,255,0.72);--success:#0ab87a;--error:#e8436a;--sidebar:230px;--shadow:0 4px 20px rgba(61,90,241,0.08);}
+[data-theme="dark"]{--bg:#050810;--bg2:#0a0f20;--surface:rgba(12,18,45,0.9);--surface-solid:#0c1228;--border:rgba(100,130,255,0.16);--accent:#6c8fff;--accent2:#ff6584;--accent-light:rgba(108,143,255,0.1);--text:#e8eeff;--text2:#a0aad0;--muted:#5a6490;--glass:rgba(12,18,45,0.75);--success:#4ecca3;--error:#ff6584;--shadow:0 4px 20px rgba(0,0,0,0.35);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 700px 500px at 80% 0%,rgba(61,90,241,0.06),transparent);}
 
-    body{
-      font-family:'Tajawal',sans-serif;
-      background:var(--bg);
-      color:var(--text);
-      min-height:100vh;
-      transition:background .4s,color .4s;
-    }
+.sidebar{width:var(--sidebar);min-height:100vh;background:var(--glass);backdrop-filter:blur(20px);border-left:1px solid var(--border);display:flex;flex-direction:column;position:fixed;right:0;top:0;z-index:50;}
+.sb-top{padding:20px 16px 14px;border-bottom:1px solid var(--border);}
+.sb-logo{font-family:'Space Mono',monospace;font-size:0.9rem;color:var(--accent);text-decoration:none;display:block;margin-bottom:14px;}
+.sb-logo em{color:var(--accent2);font-style:normal;}
+.sb-avatar{width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:900;color:#fff;margin-bottom:9px;overflow:hidden;}
+.sb-avatar img{width:100%;height:100%;object-fit:cover;}
+.sb-name{font-weight:700;font-size:0.93rem;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-handle{font-size:0.7rem;color:var(--muted);font-family:'Space Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-nav{flex:1;padding:10px 8px;display:flex;flex-direction:column;gap:2px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:0.88rem;font-weight:700;color:var(--text2);border:none;background:none;width:100%;text-align:right;font-family:'Tajawal',sans-serif;}
+.nav-item:hover{background:var(--accent-light);color:var(--accent);}
+.nav-item.active{background:var(--accent-light);color:var(--accent);}
+.nav-item .ni{font-size:1.05rem;width:20px;text-align:center;}
+.sb-bottom{padding:10px 8px;border-top:1px solid var(--border);}
+.sb-url-box{font-size:0.68rem;font-family:'Space Mono',monospace;color:var(--accent);padding:7px 10px;background:var(--accent-light);border-radius:8px;margin-bottom:8px;cursor:pointer;word-break:break-all;border:1px solid var(--border);}
+.sb-btns{display:flex;gap:5px;}
+.sb-btn{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 3px;font-size:0.7rem;font-weight:700;color:var(--text2);cursor:pointer;font-family:'Tajawal',sans-serif;}
+.sb-btn:hover{border-color:var(--accent);color:var(--accent);}
+.sb-btn.danger:hover{border-color:var(--error);color:var(--error);}
 
-    /* BG GLOW */
-    body::before{
-      content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
-      background:
-        radial-gradient(ellipse 600px 600px at 50% -10%,rgba(108,143,255,0.18),transparent),
-        radial-gradient(ellipse 400px 400px at 80% 80%,rgba(255,101,132,0.1),transparent);
-    }
+.main{margin-right:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh;position:relative;z-index:5;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 26px;border-bottom:1px solid var(--border);background:var(--glass);backdrop-filter:blur(16px);position:sticky;top:0;z-index:40;}
+.page-title-h{font-size:1.1rem;font-weight:900;}
+.page-sub-h{font-size:0.77rem;color:var(--muted);margin-top:2px;}
+.topbar-right{display:flex;align-items:center;gap:9px;}
+.theme-toggle{width:35px;height:35px;border-radius:8px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:0.95rem;cursor:pointer;}
 
-    .page-wrap{
-      position:relative;z-index:5;
-      max-width:500px;
-      margin:0 auto;
-      padding:28px 18px 60px;
-    }
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 16px;border-radius:8px;font-family:'Tajawal',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;border:none;text-decoration:none;}
+.btn-primary{background:var(--accent);color:#fff;box-shadow:0 3px 12px rgba(61,90,241,0.28);}
+.btn-primary:hover{filter:brightness(1.08);}
+.btn-ghost{background:var(--surface);color:var(--text2);border:1px solid var(--border);}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+.btn-danger{background:rgba(232,67,106,0.08);color:var(--error);border:1px solid rgba(232,67,106,0.2);}
+.btn-danger:hover{background:rgba(232,67,106,0.15);}
+.btn-sm{padding:5px 11px;font-size:0.78rem;}
 
-    /* THEME BTN */
-    .theme-btn{
-      position:fixed;top:16px;left:16px;z-index:100;
-      width:38px;height:38px;border-radius:10px;
-      background:var(--card);border:1px solid var(--border);
-      color:var(--text);font-size:1rem;cursor:pointer;
-      backdrop-filter:blur(12px);transition:all .2s;
-    }
+.content{padding:24px;}
+.page{display:none;}
+.page.active{display:block;}
 
-    /* PROFILE CARD */
-    .profile-card{
-      background:var(--card);
-      backdrop-filter:blur(20px);
-      border:1px solid var(--border);
-      border-radius:24px;
-      padding:32px 24px 28px;
-      text-align:center;
-      margin-bottom:18px;
-      box-shadow:0 20px 60px rgba(0,0,0,0.2);
-    }
+.welcome-banner{background:linear-gradient(135deg,var(--accent),#6a3de8 60%,var(--accent2));border-radius:18px;padding:22px 26px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;gap:20px;box-shadow:0 8px 32px rgba(61,90,241,0.25);flex-wrap:wrap;}
+.wb-text h2{font-size:1.05rem;font-weight:900;color:#fff;margin-bottom:5px;}
+.wb-text p{font-size:0.82rem;color:rgba(255,255,255,0.8);line-height:1.5;}
+.wb-link{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:10px;padding:8px 16px;font-family:'Space Mono',monospace;font-size:0.75rem;color:#fff;white-space:nowrap;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:7px;}
+.wb-link:hover{background:rgba(255,255,255,0.25);}
+.wb-btns{display:flex;flex-direction:column;gap:7px;flex-shrink:0;}
 
-    .avatar-wrap{
-      position:relative;
-      display:inline-block;
-      margin-bottom:16px;
-    }
-    .avatar{
-      width:96px;height:96px;
-      border-radius:50%;
-      background:linear-gradient(135deg,var(--accent),var(--accent2));
-      display:flex;align-items:center;justify-content:center;
-      font-size:2.4rem;font-weight:900;color:#fff;
-      border:3px solid var(--border);
-      overflow:hidden;
-      margin:0 auto;
-    }
-    .avatar img{width:100%;height:100%;object-fit:cover;}
-    .online-dot{
-      position:absolute;bottom:4px;right:4px;
-      width:14px;height:14px;border-radius:50%;
-      background:var(--success);
-      border:2px solid var(--bg);
-      animation:pulse 2s infinite;
-    }
-    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(10,184,122,.5);}50%{box-shadow:0 0 0 5px rgba(10,184,122,0);}}
-    .active-badge{
-      display:inline-flex;align-items:center;gap:5px;
-      font-size:0.72rem;color:var(--success);font-weight:700;
-      background:rgba(10,184,122,0.1);border:1px solid rgba(10,184,122,0.25);
-      border-radius:100px;padding:3px 10px;margin-top:8px;
-    }
-    .active-badge .d{width:6px;height:6px;border-radius:50%;background:var(--success);animation:pulse 2s infinite;}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
+.stat-card{background:var(--surface);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);}
+.stat-label{font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+.stat-val{font-size:1.8rem;font-weight:900;font-family:'Space Mono',monospace;color:var(--accent);}
 
-    /* FEATURED ROTATING LINKS */
-    .featured-section{margin-bottom:18px;}
-    .featured-title{font-size:0.78rem;font-weight:700;color:var(--muted);text-align:center;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;}
-    .featured-grid{display:flex;gap:8px;}
-    .featured-card{
-      flex:1;background:var(--card);backdrop-filter:blur(16px);
-      border:1px solid var(--border);border-radius:14px;
-      padding:12px 8px;text-align:center;text-decoration:none;color:var(--text);
-      transition:all .2s;
-    }
-    .featured-card:hover{border-color:var(--accent);transform:translateY(-2px);}
-    .featured-card .fnum{
-      font-family:'Space Mono',monospace;font-weight:700;color:var(--accent);
-      font-size:1.1rem;margin-bottom:4px;
-    }
-    .featured-card .flabel{font-size:0.75rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.section-box{background:var(--surface);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:22px;}
+.sec-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);}
+.sec-hd h2{font-size:0.92rem;font-weight:700;}
 
-    .profile-name{font-size:1.5rem;font-weight:900;margin-bottom:4px;}
-    .profile-handle{
-      font-family:'Space Mono',monospace;font-size:0.75rem;
-      color:var(--accent);margin-bottom:10px;
-    }
-    .profile-bio{font-size:0.88rem;color:var(--text2);line-height:1.6;max-width:320px;margin:0 auto 18px;}
+.link-mgr-card{display:grid;grid-template-columns:58px 1fr 100px 130px;border-bottom:1px solid var(--border);}
+.link-mgr-card:last-child{border-bottom:none;}
+.link-mgr-card:hover{background:rgba(61,90,241,0.025);}
+.lmc-num{display:flex;align-items:center;justify-content:center;border-left:1px solid var(--border);background:var(--accent-light);}
+.num-big{font-family:'Space Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--accent);}
+.lmc-body{padding:13px 16px;min-width:0;}
+.lmc-label{font-size:0.93rem;font-weight:700;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.lmc-url{font-size:0.73rem;color:var(--accent);direction:ltr;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;}
+.lmc-desc{font-size:0.76rem;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.lmc-stats{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 8px;border-left:1px solid var(--border);}
+.clicks-num{font-family:'Space Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--success);line-height:1;transition:transform .25s;}
+.clicks-num.bump{transform:scale(1.3);}
+.clicks-lbl{font-size:0.62rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-top:3px;}
+.lmc-actions{display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;}
+.btn-qr{background:var(--bg2);color:var(--text2);border:1px solid var(--border);padding:6px 11px;border-radius:7px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:'Space Mono',monospace;white-space:nowrap;}
+.btn-qr:hover{border-color:var(--accent);color:var(--accent);}
 
-    /* SOCIALS ROW */
-    .socials-row{
-      display:flex;flex-wrap:wrap;gap:8px;justify-content:center;
-      margin-bottom:4px;
-    }
-    .social-pill{
-      display:inline-flex;align-items:center;gap:6px;
-      padding:7px 14px;border-radius:100px;
-      background:var(--bg2);border:1px solid var(--border);
-      font-size:0.82rem;font-weight:700;color:var(--text2);
-      text-decoration:none;transition:all .2s;
-    }
-    .social-pill:hover{background:var(--accent-light);border-color:var(--accent);color:var(--accent);}
-    .social-pill .si{font-size:1rem;}
+.empty{text-align:center;padding:40px 20px;color:var(--muted);}
+.e-icon{font-size:2.2rem;margin-bottom:10px;}
+.e-hint{font-size:0.82rem;margin-top:5px;}
 
-    /* LOCATION */
-    .location-pill{
-      display:inline-flex;align-items:center;gap:6px;
-      padding:6px 14px;border-radius:100px;
-      background:var(--bg2);border:1px solid var(--border);
-      font-size:0.8rem;color:var(--muted);
-      text-decoration:none;margin-top:10px;transition:all .2s;
-    }
-    .location-pill:hover{border-color:var(--accent2);color:var(--accent2);}
+.period-tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;}
+.ptab{padding:6px 16px;border-radius:8px;font-size:0.8rem;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-family:'Tajawal',sans-serif;}
+.ptab.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.ana-row{margin-bottom:18px;}
+.ana-row-top{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.ana-num{min-width:36px;height:36px;border-radius:9px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-weight:700;color:var(--accent);font-size:1rem;}
+.ana-label{font-weight:700;flex:1;font-size:.88rem;}
+.ana-clicks{font-family:'Space Mono',monospace;font-size:.82rem;color:var(--success);font-weight:700;}
+.bar-track{height:7px;background:var(--border);border-radius:4px;}
+.bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;transition:width .7s;}
 
-    /* NUMBER BOX */
-    .num-section{
-      background:var(--card);
-      backdrop-filter:blur(20px);
-      border:1px solid var(--border);
-      border-radius:20px;
-      padding:22px 20px;
-      margin-bottom:18px;
-      box-shadow:0 8px 32px rgba(0,0,0,0.12);
-    }
-    .num-label{
-      font-size:0.78rem;font-weight:700;
-      color:var(--muted);text-align:center;
-      letter-spacing:1px;text-transform:uppercase;
-      margin-bottom:14px;
-    }
-    .num-row{display:flex;gap:10px;}
-    .num-input{
-      flex:1;font-family:'Space Mono',monospace;
-      font-size:2.8rem;font-weight:700;text-align:center;
-      background:var(--bg2);border:2px solid var(--border);
-      border-radius:14px;padding:14px 10px;
-      color:var(--text);outline:none;
-      transition:border-color .2s,box-shadow .2s;
-      -moz-appearance:textfield;
-    }
-    .num-input::-webkit-outer-spin-button,.num-input::-webkit-inner-spin-button{-webkit-appearance:none;}
-    .num-input:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-light);}
-    .num-input.shake{animation:shake .3s;}
-    @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-    .go-btn{
-      width:72px;background:var(--accent);color:#fff;
-      border:none;border-radius:14px;font-size:1.6rem;
-      cursor:pointer;transition:all .2s;
-      box-shadow:0 4px 16px rgba(61,90,241,0.3);
-    }
-    .go-btn:hover{filter:brightness(1.1);transform:scale(1.04);}
-    .err-msg{
-      font-size:0.8rem;color:var(--accent2);text-align:center;
-      margin-top:10px;display:none;font-weight:700;
-    }
-    .err-msg.show{display:block;}
-    .quick-btns{
-      display:flex;gap:8px;justify-content:center;
-      margin-top:12px;flex-wrap:wrap;
-    }
-    .qbtn{
-      width:44px;height:44px;border-radius:10px;
-      background:var(--bg2);border:1px solid var(--border);
-      color:var(--muted);font-family:'Space Mono',monospace;
-      font-size:1rem;cursor:pointer;transition:all .15s;
-    }
-    .qbtn:hover{background:var(--accent-light);border-color:var(--accent);color:var(--accent);}
+.profile-form{padding:22px;}
+.form-group{margin-bottom:15px;}
+.form-group label{display:block;font-size:0.81rem;font-weight:700;margin-bottom:6px;color:var(--text2);}
+.form-group input,.form-group textarea,.form-group select{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:0.92rem;outline:none;}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--accent);}
+.form-group textarea{resize:vertical;min-height:72px;}
 
-    /* LINKS LIST */
-    .links-section{display:flex;flex-direction:column;gap:10px;}
-    .link-card{
-      display:flex;align-items:center;gap:14px;
-      background:var(--card);backdrop-filter:blur(16px);
-      border:1px solid var(--border);border-radius:16px;
-      padding:14px 16px;text-decoration:none;color:var(--text);
-      transition:all .22s;
-      box-shadow:0 2px 12px rgba(0,0,0,0.08);
-    }
-    .link-card:hover{
-      border-color:var(--accent);
-      transform:translateY(-2px);
-      box-shadow:0 8px 28px rgba(61,90,241,0.15);
-    }
-    .link-num{
-      min-width:42px;height:42px;border-radius:11px;
-      background:var(--accent-light);border:1px solid var(--border);
-      display:flex;align-items:center;justify-content:center;
-      font-family:'Space Mono',monospace;font-size:1.2rem;font-weight:700;
-      color:var(--accent);flex-shrink:0;
-    }
-    .link-info{flex:1;min-width:0;}
-    .link-label{font-size:0.95rem;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .link-desc{font-size:0.78rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .link-arrow{color:var(--muted);font-size:1.1rem;flex-shrink:0;}
+.links-table{width:100%;border-collapse:collapse;}
+.links-table th{text-align:right;padding:9px 16px;font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);background:var(--bg2);}
+.links-table td{padding:11px 16px;border-bottom:1px solid rgba(100,130,255,0.07);font-size:.85rem;vertical-align:middle;}
+.links-table tr:last-child td{border-bottom:none;}
 
-    /* NOT FOUND */
-    .not-found{text-align:center;padding:80px 20px;}
-    .not-found .nf-icon{font-size:4rem;margin-bottom:16px;}
-    .not-found h2{font-size:1.4rem;font-weight:900;margin-bottom:8px;}
-    .not-found p{color:var(--muted);margin-bottom:24px;}
-    .not-found a{display:inline-block;padding:12px 28px;background:var(--accent);color:#fff;border-radius:10px;text-decoration:none;font-weight:700;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface-solid);border:1px solid var(--border);border-radius:22px;padding:0;width:100%;max-width:520px;box-shadow:0 28px 70px rgba(0,0,0,0.28);max-height:92vh;overflow-y:auto;}
+.modal-head{padding:24px 26px 14px;}
+.modal-head h3{font-size:1.15rem;font-weight:900;margin-bottom:4px;}
+.modal-head p{font-size:0.8rem;color:var(--muted);}
+.modal-body{padding:0 26px;display:flex;flex-direction:column;gap:16px;}
+.modal-foot{padding:18px 26px 24px;display:flex;gap:9px;}
+.modal-foot .btn{flex:1;justify-content:center;padding:12px;}
 
-    /* LOADING */
-    .loading-wrap{min-height:60vh;display:flex;align-items:center;justify-content:center;}
-    .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
-    @keyframes spin{to{transform:rotate(360deg)}}
+/* رقم section: number pad + manual input */
+.num-section{background:var(--bg2);border:1.5px solid var(--border);border-radius:14px;padding:16px;}
+.num-section-label{font-size:0.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
+.num-display-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.num-input-box{font-family:'Space Mono',monospace;font-size:2.6rem;font-weight:700;color:var(--accent);width:84px;height:74px;background:var(--surface-solid);border:2px solid var(--accent);border-radius:12px;text-align:center;outline:none;flex-shrink:0;-moz-appearance:textfield;}
+.num-input-box::-webkit-outer-spin-button,.num-input-box::-webkit-inner-spin-button{-webkit-appearance:none;}
+.num-input-box.empty-num{border-style:dashed;border-color:var(--border);color:var(--muted);}
+.num-input-box.taken-num{border-color:var(--error);color:var(--error);}
+.num-display-info{flex:1;}
+.num-status{font-size:0.82rem;font-weight:700;margin-bottom:4px;}
+.num-status.free{color:var(--success);}
+.num-status.taken{color:var(--error);}
+.num-status.none{color:var(--muted);}
+.num-pad{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;}
+.npick{height:44px;border-radius:9px;background:var(--surface-solid);border:1.5px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:1.05rem;font-weight:700;cursor:pointer;}
+.npick:hover:not(:disabled){background:var(--accent-light);border-color:var(--accent);color:var(--accent);}
+.npick.sel{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 4px 14px rgba(61,90,241,0.35);}
+.npick.taken{opacity:0.35;cursor:not-allowed;background:rgba(232,67,106,0.05);border-color:rgba(232,67,106,0.3);color:var(--error);}
+.npick-clear{height:44px;border-radius:9px;background:transparent;border:1.5px dashed var(--border);color:var(--muted);font-size:0.8rem;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif;width:100%;margin-top:7px;}
+.npick-clear:hover{border-color:var(--error);color:var(--error);}
 
-    /* FOOTER */
-    .page-footer{text-align:center;margin-top:28px;font-size:0.75rem;color:var(--muted);}
-    .page-footer a{color:var(--accent);text-decoration:none;font-family:'Space Mono',monospace;}
-  </style>
+.field-box{background:var(--bg2);border:1.5px solid var(--border);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px;}
+.field-item label{display:block;font-size:0.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;}
+.field-item input,.field-item textarea{width:100%;background:var(--surface-solid);border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:0.92rem;outline:none;}
+.field-item input:focus,.field-item textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light);}
+.field-item textarea{resize:vertical;min-height:60px;}
+.field-divider{height:1px;background:var(--border);}
+.views-display{display:flex;align-items:center;justify-content:space-between;background:var(--surface-solid);border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;}
+.views-display .vn{font-family:'Space Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--success);}
+
+.instructions-box{background:linear-gradient(135deg,var(--accent-light),rgba(232,67,106,0.05));border:1px solid var(--border);border-radius:12px;padding:14px 16px;font-size:0.8rem;line-height:1.7;color:var(--text2);}
+.instructions-box strong{color:var(--text);font-weight:700;}
+.link-preview-row{display:flex;align-items:center;gap:8px;background:var(--surface-solid);border:1px solid var(--border);border-radius:8px;padding:8px 12px;margin-top:8px;}
+.link-preview-num{font-family:'Space Mono',monospace;font-size:1.1rem;font-weight:700;color:var(--accent);min-width:24px;}
+.link-preview-url{font-size:0.75rem;color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:ltr;}
+.link-preview-open{font-size:0.72rem;color:var(--accent);text-decoration:none;white-space:nowrap;}
+.ntl-btn{font-size:0.72rem;padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text2);text-decoration:none;font-family:'Tajawal',sans-serif;}
+.ntl-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+.qr-center{text-align:center;}
+#qrCanvas{display:inline-block;position:relative;}
+.qr-num-ov{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Space Mono',monospace;font-size:1.6rem;font-weight:700;color:#fff;background:rgba(0,0,0,0.6);border-radius:8px;padding:4px 10px;pointer-events:none;}
+
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--text);color:var(--bg);padding:10px 22px;border-radius:10px;font-weight:700;font-size:0.88rem;opacity:0;transition:all .28s;z-index:999;pointer-events:none;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+@media(max-width:700px){
+  .sidebar{width:100%;min-height:auto;position:fixed;bottom:0;top:auto;right:0;left:0;flex-direction:row;border-left:none;border-top:1px solid var(--border);}
+  .sb-top,.sb-bottom{display:none;}
+  .sb-nav{flex-direction:row;padding:4px;}
+  .nav-item{flex-direction:column;gap:2px;font-size:0.62rem;padding:6px 4px;}
+  .nav-item .ni{font-size:1.2rem;width:auto;}
+  .main{margin-right:0;margin-bottom:68px;}
+  .stats-row{grid-template-columns:repeat(2,1fr);}
+  .link-mgr-card{grid-template-columns:50px 1fr 70px 96px;}
+  .welcome-banner{flex-direction:column;}
+}
+</style>
 </head>
 <body>
-  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
 
-  <div class="page-wrap" id="mainContent">
-    <div class="loading-wrap"><div class="spinner"></div></div>
+<aside class="sidebar">
+  <div class="sb-top">
+    <a href="index.html" class="sb-logo">electrwni<em>.link</em></a>
+    <div class="sb-avatar" id="sbAvatar">U</div>
+    <div class="sb-name" id="sbName">جاري التحميل...</div>
+    <div class="sb-handle" id="sbHandle">electrwni.link/...</div>
   </div>
+  <nav class="sb-nav">
+    <button class="nav-item active" onclick="showPage('links',this)"><span class="ni">🔗</span> مدير الروابط</button>
+    <button class="nav-item" onclick="showPage('analytics',this)"><span class="ni">📊</span> الإحصائيات</button>
+    <button class="nav-item" onclick="showPage('socials',this)"><span class="ni">🌐</span> التواصل</button>
+    <button class="nav-item" onclick="showPage('profile',this)"><span class="ni">👤</span> ملفي</button>
+  </nav>
+  <div class="sb-bottom">
+    <div class="sb-url-box" id="bioUrl" onclick="copyLink()">electrwni.link/...</div>
+    <div class="sb-btns">
+      <button class="sb-btn" onclick="openPageInNew()">👥 صفحة جمهورك</button>
+      <button class="sb-btn" onclick="shareLink()">📤 شارك</button>
+      <button class="sb-btn danger" onclick="logout()">خروج</button>
+    </div>
+  </div>
+</aside>
 
-  <div class="page-wrap" id="notFoundContent" style="display:none;">
-    <div class="not-found">
-      <div class="nf-icon">🔍</div>
-      <h2>الحساب غير موجود</h2>
-      <p>تأكد من كتابة اسم المستخدم بشكل صحيح في الرابط.</p>
-      <a href="index.html">العودة للرئيسية</a>
+<main class="main">
+  <div class="topbar">
+    <div>
+      <div class="page-title-h" id="pageTitle">مدير الروابط</div>
+      <div class="page-sub-h" id="pageSub">أضف وعدّل روابطك المرقّمة</div>
+    </div>
+    <div class="topbar-right">
+      <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
+      <button class="btn btn-primary" id="topAction" onclick="openLinkModal()">+ رابط جديد</button>
+      <a href="page.html" id="previewNavBtn" target="_blank" class="btn btn-ghost">👥 صفحة جمهورك</a>
     </div>
   </div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
-      authDomain: "electrwni-link.firebaseapp.com",
-      projectId: "electrwni-link",
-      storageBucket: "electrwni-link.firebasestorage.app",
-      messagingSenderId: "712490301263",
-      appId: "1:712490301263:web:2084210da3f687285ab73a"
-    };
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+  <div class="content">
 
-    // Theme
-    const th = localStorage.getItem('theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', th);
-    document.getElementById('themeBtn').textContent = th === 'dark' ? '☀️' : '🌙';
-    function toggleTheme() {
-      const c = document.documentElement.getAttribute('data-theme');
-      const n = c === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', n);
-      localStorage.setItem('theme', n);
-      document.getElementById('themeBtn').textContent = n === 'dark' ? '☀️' : '🌙';
-    }
+    <!-- LINKS PAGE -->
+    <div class="page active" id="page-links">
+      <div class="welcome-banner">
+        <div class="wb-text">
+          <h2>🎉 صفحتك الشخصية جاهزة لمشاركتها لمتابعيك!</h2>
+          <p>شارك الرابط أدناه في بايو حسابك — متابعوك يكتبون رقماً ويصلون فوراً</p>
+        </div>
+        <div class="wb-btns">
+          <a class="wb-link" id="wbPageLink" href="#" target="_blank">👥 <span id="wbLinkText">electrwni.link/...</span></a>
+          <button class="wb-link" onclick="copyWelcomeLink()" style="border:none;cursor:pointer;">📋 نسخ الرابط</button>
+        </div>
+      </div>
 
-    function hashCode(s) {
-      let h = 0;
-      for (let i = 0; i < s.length; i++) h = (h << 5) - h + s.charCodeAt(i) | 0;
-      return h;
-    }
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-label">الروابط</div><div class="stat-val" id="stLinks">0</div></div>
+        <div class="stat-card"><div class="stat-label">مجموع الضغطات</div><div class="stat-val" id="stClicks">0</div></div>
+        <div class="stat-card"><div class="stat-label">الأعلى تفاعلاً</div><div class="stat-val" id="stTop">—</div></div>
+        <div class="stat-card"><div class="stat-label">حسابات التواصل</div><div class="stat-val" id="stSocials">0</div></div>
+      </div>
 
-    function getUsername() {
-      const hash = location.hash.replace('#','').split('?')[0];
-      if (hash) return hash;
-      return new URLSearchParams(location.search).get('u');
-    }
+      <div class="section-box">
+        <div class="sec-hd">
+          <h2>روابطي المرقّمة <span style="color:var(--success);font-size:.7rem;font-weight:700;">● مباشر</span></h2>
+          <button class="btn btn-primary btn-sm" onclick="openLinkModal()">+ إضافة رابط</button>
+        </div>
+        <div id="linksEmpty" class="empty">
+          <div class="e-icon">🔗</div>
+          <p>لا توجد روابط بعد</p>
+          <p class="e-hint">اضغط "+ إضافة رابط" لإنشاء أول رابط مرقّم</p>
+        </div>
+        <div id="linksGrid"></div>
+      </div>
+    </div>
 
-    const socIcons  = {instagram:'📷',tiktok:'🎵',twitter:'✖',youtube:'▶',snapchat:'👻',whatsapp:'💬',telegram:'✈',linkedin:'💼',facebook:'👤',website:'🌐'};
-    const socNames  = {instagram:'إنستقرام',tiktok:'تيك توك',twitter:'تويتر',youtube:'يوتيوب',snapchat:'سناب',whatsapp:'واتساب',telegram:'تيليقرام',linkedin:'لينكدإن',facebook:'فيسبوك',website:'الموقع'};
-    const socUrls   = {
-      instagram: u => 'https://instagram.com/'  + u.replace('@',''),
-      tiktok:    u => 'https://tiktok.com/@'    + u.replace('@',''),
-      twitter:   u => 'https://x.com/'          + u.replace('@',''),
-      youtube:   u => u.startsWith('http') ? u : 'https://youtube.com/@' + u.replace('@',''),
-      snapchat:  u => 'https://snapchat.com/add/'+ u.replace('@',''),
-      whatsapp:  u => 'https://wa.me/'           + u.replace(/\D/g,''),
-      telegram:  u => 'https://t.me/'            + u.replace('@',''),
-      linkedin:  u => u.startsWith('http') ? u : 'https://linkedin.com/in/' + u.replace('@',''),
-      facebook:  u => u.startsWith('http') ? u : 'https://facebook.com/'   + u.replace('@',''),
-      website:   u => u.startsWith('http') ? u : 'https://' + u,
-    };
+    <!-- ANALYTICS PAGE -->
+    <div class="page" id="page-analytics">
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-label">إجمالي الضغطات</div><div class="stat-val" id="aTotal">0</div></div>
+        <div class="stat-card"><div class="stat-label">أعلى رابط</div><div class="stat-val" style="font-size:1rem;padding-top:8px;" id="aTopLink">—</div></div>
+        <div class="stat-card"><div class="stat-label">مدخلات جديدة</div><div class="stat-val" id="aNew">0</div></div>
+        <div class="stat-card"><div class="stat-label">روابط نشطة</div><div class="stat-val" id="aActive">0</div></div>
+      </div>
+      <div class="section-box">
+        <div class="sec-hd"><h2>أداء الروابط</h2></div>
+        <div style="padding:16px 20px 8px;">
+          <div class="period-tabs">
+            <button class="ptab active" onclick="setPeriod('all',this)">الكل</button>
+            <button class="ptab" onclick="setPeriod('today',this)">اليوم</button>
+            <button class="ptab" onclick="setPeriod('week',this)">الأسبوع</button>
+            <button class="ptab" onclick="setPeriod('month',this)">الشهر</button>
+            <button class="ptab" onclick="setPeriod('year',this)">السنة</button>
+          </div>
+          <div id="analyticsBody"></div>
+        </div>
+      </div>
+    </div>
 
-    let userLinks = [];
-    let pageUsername = '';
+    <!-- SOCIALS PAGE -->
+    <div class="page" id="page-socials">
+      <div class="section-box">
+        <div class="sec-hd">
+          <h2>حسابات التواصل</h2>
+          <button class="btn btn-primary btn-sm" onclick="openSocialModal()">+ إضافة</button>
+        </div>
+        <div id="socialsEmpty" class="empty"><div class="e-icon">🌐</div><p>لا توجد حسابات مضافة</p></div>
+        <table class="links-table" id="socialsTableEl" style="display:none;">
+          <thead><tr><th>المنصة</th><th>المعرّف</th><th>حذف</th></tr></thead>
+          <tbody id="socialsTbody"></tbody>
+        </table>
+      </div>
+    </div>
 
-    async function init() {
-      const username = getUsername();
-      if (!username) { showNotFound(); return; }
-      pageUsername = username;
-
-      try {
-        const doc = await db.collection('users').doc(username).get();
-        if (!doc.exists) { showNotFound(); return; }
-        const user = doc.data();
-        userLinks = (user.links || []).sort((a,b) => a.num - b.num);
-        renderPage(user);
-      } catch(e) {
-        showNotFound();
-      }
-    }
-
-    function renderPage(user) {
-      const socials  = user.socials || [];
-      const links    = userLinks;
-      document.title = (user.displayName || user.username) + ' — electrwni.link';
-
-      // Build avatar
-      let avatarHTML = '';
-      if (user.avatar) {
-        avatarHTML = `<img src="${user.avatar}" alt="avatar" onerror="this.parentElement.innerHTML='${(user.displayName||user.username)[0].toUpperCase()}'">`;
-      } else {
-        avatarHTML = (user.displayName || user.username)[0].toUpperCase();
-      }
-
-      // Build socials
-      const socialsHTML = socials.map(s => {
-        const url = (socUrls[s.platform] || (u=>u))(s.username);
-        return `<a class="social-pill" href="${url}" target="_blank" rel="noopener">
-          <span class="si">${socIcons[s.platform]||'🌐'}</span>
-          <span>${socNames[s.platform]||s.platform}</span>
-        </a>`;
-      }).join('');
-
-      // Location pill
-      const locationHTML = user.location
-        ? `<a class="location-pill" href="https://maps.google.com/?q=${encodeURIComponent(user.location)}" target="_blank">
-            📍 ${user.location}
-          </a>`
-        : '';
-
-      // Quick buttons
-      const quickHTML = links.map(l =>
-        `<button class="qbtn" onclick="quickGo(${l.num})">${l.num}</button>`
-      ).join('');
-
-      // Featured rotating links (changes every 2 hours)
-      let featuredHTML = '';
-      if (links.length >= 2) {
-        const slot = Math.floor(Date.now() / (2*60*60*1000)); // يتغير كل ساعتين
-        const shuffled = [...links].sort((a,b) => {
-          const ha = hashCode(a.id + '-' + slot);
-          const hb = hashCode(b.id + '-' + slot);
-          return ha - hb;
-        });
-        const picked = shuffled.slice(0, Math.min(3, links.length));
-        featuredHTML = `
-          <div class="featured-section">
-            <div class="featured-title">✨ روابط مميزة</div>
-            <div class="featured-grid">
-              ${picked.map(l => `
-                <a class="featured-card" href="${l.url}" onclick="trackClick('${user.username}',${l.id},event)">
-                  <div class="fnum">${l.num}</div>
-                  <div class="flabel">${l.label}</div>
-                </a>
-              `).join('')}
+    <!-- PROFILE PAGE -->
+    <div class="page" id="page-profile">
+      <div class="section-box">
+        <div class="sec-hd"><h2>الملف الشخصي</h2></div>
+        <div class="profile-form">
+          <div class="form-group" style="text-align:center;">
+            <label>صورة البروفايل</label>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+              <div id="avatarPreview" style="width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:900;color:#fff;overflow:hidden;border:3px solid var(--border);">U</div>
+              <input type="file" id="pfAvatarFile" accept="image/*" style="display:none;" onchange="onAvatarFile(this)">
+              <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('pfAvatarFile').click()">📷 رفع صورة</button>
             </div>
-          </div>`;
-      }
-
-      // Build link cards
-      const linksHTML = links.map(l =>
-        `<a class="link-card" href="${l.url}" onclick="trackClick('${user.username}',${l.id},event)">
-          <div class="link-num">${l.num}</div>
-          <div class="link-info">
-            <div class="link-label">${l.label}</div>
-            ${l.desc ? `<div class="link-desc">${l.desc}</div>` : ''}
           </div>
-          <div class="link-arrow">→</div>
-        </a>`
-      ).join('');
+          <div class="form-group"><label>الاسم المعروض</label><input type="text" id="pfName"></div>
+          <div class="form-group"><label>اسم المستخدم</label><input type="text" id="pfUser" dir="ltr"></div>
+          <div class="form-group"><label>النبذة التعريفية</label><textarea id="pfBio"></textarea></div>
+          <div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="pfEmail" dir="ltr"></div>
+          <div class="form-group"><label>الموقع / المدينة (اختياري)</label><input type="text" id="pfLocation"></div>
+          <button class="btn btn-primary" onclick="saveProfile()">حفظ التغييرات ✓</button>
+        </div>
+      </div>
+    </div>
 
-      document.getElementById('mainContent').innerHTML = `
-        <!-- PROFILE CARD -->
-        <div class="profile-card">
-          <div class="avatar-wrap">
-            <div class="avatar">${avatarHTML}</div>
-            <div class="online-dot"></div>
+  </div>
+</main>
+
+<!-- LINK MODAL -->
+<div class="modal-overlay" id="linkModal" onclick="closeIfOverlay(event,'linkModal')">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="linkModalTitle">إضافة رابط جديد</h3>
+      <p id="linkModalSub">اختر رقماً ثم أدخل الرابط والمعلومات</p>
+    </div>
+    <div class="modal-body">
+
+      <!-- رقم -->
+      <div class="num-section">
+        <div class="num-section-label">١. الرقم</div>
+        <div class="num-display-row">
+          <input type="text" class="num-input-box empty-num" id="numTypeInput" maxlength="1" inputmode="numeric" placeholder="—" oninput="onNumTyped(this)">
+          <div class="num-display-info">
+            <div class="num-status none" id="numStatus">اكتب رقماً أو اختر من الأسفل</div>
+            <div class="num-taken-links" id="numTakenLinks"></div>
           </div>
-          <h1 class="profile-name">${user.displayName || user.username}</h1>
-          <div class="profile-handle">electrwni.link/${user.username}</div>
-          ${user.bio ? `<p class="profile-bio">${user.bio}</p>` : ''}
-          <div class="socials-row">${socialsHTML}</div>
-          ${locationHTML}
-          <div><span class="active-badge"><span class="d"></span> نشط الآن</span></div>
         </div>
+        <div class="num-pad" id="numPicker"></div>
+        <button class="npick-clear" onclick="clearNum()">✕ مسح الاختيار</button>
+      </div>
 
-        ${featuredHTML}
-
-        <!-- NUMBER BOX -->
-        <div class="num-section">
-          <div class="num-label">اكتب رقم للانتقال فوراً</div>
-          <div class="num-row">
-            <input class="num-input" type="number" id="numIn" placeholder="0" min="1" max="9" inputmode="numeric">
-            <button class="go-btn" onclick="goNav()">→</button>
-          </div>
-          <div class="err-msg" id="errMsg">⚠ الرقم غير مسجل لهذا الحساب</div>
-          <div class="quick-btns">${quickHTML}</div>
+      <!-- رابط + وصف -->
+      <div class="field-box">
+        <div class="field-item">
+          <label>٢. الرابط</label>
+          <input type="text" id="mUrl" placeholder="example.com أو https://example.com" dir="ltr" oninput="updatePreview()">
         </div>
-
-        <!-- LINKS -->
-        <div class="links-section">${linksHTML}</div>
-
-        <div class="page-footer">
-          بواسطة <a href="index.html">electrwni.link</a>
+        <div class="field-divider"></div>
+        <div class="field-item">
+          <label>٣. الوصف / الاسم</label>
+          <input type="text" id="mDesc" placeholder="مثال: عروض اليوم" oninput="updatePreview()">
         </div>
-      `;
+        <div class="field-divider"></div>
+        <div class="field-item" id="viewsField" style="display:none;">
+          <label>٤. المشاهدات</label>
+          <div class="views-display"><span>إجمالي الضغطات على هذا الرابط</span><span class="vn" id="viewsCount">0</span></div>
+        </div>
+      </div>
 
-      // Attach input listener
-      document.getElementById('numIn').addEventListener('keydown', e => { if(e.key==='Enter') goNav(); });
-      document.getElementById('numIn').addEventListener('input', () => {
-        document.getElementById('errMsg').classList.remove('show');
-        const v = document.getElementById('numIn').value;
-        if (v.length >= 1) setTimeout(goNav, 400);
-      });
-    }
+      <!-- تعليمات -->
+      <div class="instructions-box" id="instructionsBox" style="display:none;">
+        <strong>📋 تعليمات هذا الرقم:</strong><br>
+        متابعوك يكتبون الرقم <strong id="instr_num">—</strong> في صفحتك وينتقلون مباشرة إلى:
+        <div class="link-preview-row">
+          <div class="link-preview-num" id="instr_num2">—</div>
+          <div class="link-preview-url" id="instr_url">—</div>
+          <a class="link-preview-open" id="instr_open" href="#" target="_blank">فتح ↗</a>
+        </div>
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+          <a class="ntl-btn" id="instr_biopage" href="#" target="_blank">🪪 صفحة البايو الخاصة بك</a>
+        </div>
+      </div>
 
-    function goNav() { navigate(parseInt(document.getElementById('numIn').value)); }
-    function quickGo(n) { document.getElementById('numIn').value = n; navigate(n); }
+      <!-- تحذير الرقم المسجل -->
+      <div id="takenWarning" style="display:none;background:rgba(232,67,106,0.08);border:1px solid rgba(232,67,106,0.25);border-radius:12px;padding:14px 16px;">
+        <div style="font-weight:700;font-size:0.85rem;color:var(--error);margin-bottom:6px;">⚠ هذا الرقم مسجّل مسبقاً برابط آخر</div>
+        <div style="font-size:0.78rem;color:var(--text2);">الرقم <strong id="tw_num">—</strong> مرتبط حالياً بـ "<strong id="tw_label">—</strong>" — حفظه الآن سيستبدل ذلك الرابط.</div>
+        <div style="margin-top:8px;display:flex;gap:7px;flex-wrap:wrap;">
+          <a class="ntl-btn" id="tw_open" href="#" target="_blank">فتح الرابط الحالي ↗</a>
+        </div>
+      </div>
 
-    function navigate(n) {
-      if (!n) return;
-      const lnk = userLinks.find(l => l.num === n);
-      if (lnk) {
-        trackClick(pageUsername, lnk.id, null);
-        window.location.href = lnk.url;
-      } else {
-        const inp = document.getElementById('numIn');
-        inp.classList.add('shake');
-        document.getElementById('errMsg').classList.add('show');
-        setTimeout(() => inp.classList.remove('shake'), 400);
-      }
-    }
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-primary" onclick="saveLink()">حفظ الرابط ✓</button>
+      <button class="btn btn-ghost" onclick="closeLinkModal()">إلغاء</button>
+    </div>
+  </div>
+</div>
 
-    async function trackClick(username, linkId, event) {
-      if (event) event.preventDefault();
-      try {
-        const ref = db.collection('users').doc(username);
-        await db.runTransaction(async tx => {
-          const doc = await tx.get(ref);
-          if (!doc.exists) return;
-          let links = doc.data().links || [];
-          
-          // Track total clicks
-          const i = links.findIndex(l => l.id === linkId);
-          if (i !== -1) {
-            links[i].clicks = (links[i].clicks || 0) + 1;
-            
-            // Track clicks by period
-            const now = new Date();
-            const todayKey = now.toISOString().slice(0,10); // YYYY-MM-DD
-            const weekKey  = getWeekKey(now);
-            const monthKey = now.toISOString().slice(0,7);  // YYYY-MM
-            const yearKey  = now.getFullYear().toString();
+<!-- SOCIAL MODAL -->
+<div class="modal-overlay" id="socialModal" onclick="closeIfOverlay(event,'socialModal')">
+  <div class="modal" style="max-width:440px;">
+    <div class="modal-head"><h3>إضافة حساب تواصل</h3></div>
+    <div class="modal-body">
+      <div class="form-group"><label>المنصة</label>
+        <select id="sPlatform">
+          <option value="instagram">📷 إنستقرام</option>
+          <option value="tiktok">🎵 تيك توك</option>
+          <option value="twitter">✖ تويتر/X</option>
+          <option value="snapchat">👻 سناب شات</option>
+          <option value="youtube">▶ يوتيوب</option>
+          <option value="whatsapp">💬 واتساب</option>
+          <option value="telegram">✈ تيليقرام</option>
+          <option value="linkedin">💼 لينكدإن</option>
+          <option value="facebook">👤 فيسبوك</option>
+          <option value="website">🌐 موقع إلكتروني</option>
+        </select>
+      </div>
+      <div class="form-group"><label id="sInputLabel">اسم المستخدم</label>
+        <input type="text" id="sUsername" placeholder="@username">
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-primary" onclick="saveSocial()">إضافة</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('socialModal').classList.remove('open')">إلغاء</button>
+    </div>
+  </div>
+</div>
 
-            if (!links[i].clicksByDay)   links[i].clicksByDay   = {};
-            if (!links[i].clicksByWeek)  links[i].clicksByWeek  = {};
-            if (!links[i].clicksByMonth) links[i].clicksByMonth = {};
-            if (!links[i].clicksByYear)  links[i].clicksByYear  = {};
+<!-- QR MODAL -->
+<div class="modal-overlay" id="qrModal" onclick="closeIfOverlay(event,'qrModal')">
+  <div class="modal" style="max-width:320px;">
+    <div class="modal-head"><h3 id="qrTitle">الباركود</h3></div>
+    <div class="modal-body" style="text-align:center;">
+      <div style="position:relative;display:inline-block;" id="qrCanvas"></div>
+      <div class="qr-num-ov" id="qrNumOverlay"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-primary" onclick="downloadQR()">⬇ تحميل</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('qrModal').classList.remove('open')">إغلاق</button>
+    </div>
+  </div>
+</div>
 
-            links[i].clicksByDay[todayKey]   = (links[i].clicksByDay[todayKey]   || 0) + 1;
-            links[i].clicksByWeek[weekKey]   = (links[i].clicksByWeek[weekKey]   || 0) + 1;
-            links[i].clicksByMonth[monthKey] = (links[i].clicksByMonth[monthKey] || 0) + 1;
-            links[i].clicksByYear[yearKey]   = (links[i].clicksByYear[yearKey]   || 0) + 1;
+<div class="toast" id="toast"></div>
 
-            tx.update(ref, { links });
-          }
-        });
-      } catch(e) { console.error('track error', e); }
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
+  authDomain: "electrwni-link.firebaseapp.com",
+  projectId: "electrwni-link",
+  storageBucket: "electrwni-link.firebasestorage.app",
+  messagingSenderId: "712490301263",
+  appId: "1:712490301263:web:2084210da3f687285ab73a"
+};
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-      // Navigate after tracking
-      const lnk = userLinks.find(l => l.id === linkId);
-      if (lnk) window.location.href = lnk.url;
-    }
+// Theme — persisted
+const savedTheme = localStorage.getItem('theme') || 'light';
+document.documentElement.setAttribute('data-theme', savedTheme);
+document.getElementById('themeBtn').textContent = savedTheme==='dark'?'☀️':'🌙';
+function toggleTheme(){
+  const c=document.documentElement.getAttribute('data-theme');
+  const n=c==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',n);
+  localStorage.setItem('theme',n);
+  document.getElementById('themeBtn').textContent=n==='dark'?'☀️':'🌙';
+}
 
-    function getWeekKey(date) {
-      const d = new Date(date);
-      d.setHours(0,0,0,0);
-      d.setDate(d.getDate() + 3 - (d.getDay()+6)%7);
-      const week1 = new Date(d.getFullYear(), 0, 4);
-      const wn = 1 + Math.round(((d-week1)/86400000 - 3 + (week1.getDay()+6)%7)/7);
-      return d.getFullYear() + '-W' + String(wn).padStart(2,'0');
-    }
+let user=null, editLinkId=null, selNum=null;
+let currentUsername=localStorage.getItem('elUserUsername')||'';
+let currentPeriod='all';
+let prevClicksMap={};
 
-    function showNotFound() {
-      document.getElementById('mainContent').style.display = 'none';
-      document.getElementById('notFoundContent').style.display = 'block';
-    }
+async function init(){
+  if(!localStorage.getItem('elLoggedIn')||!currentUsername){window.location.href='signin.html';return;}
+  const ref=db.collection('users').doc(currentUsername);
+  try{
+    const doc=await ref.get();
+    if(!doc.exists){window.location.href='signin.html';return;}
+    user=doc.data();
+    if(!user.links)user.links=[];
+    if(!user.socials)user.socials=[];
+    renderSidebar(); render();
+  }catch(e){toast('خطأ: '+e.message);return;}
 
-    init();
-  </script>
+  // مباشر: استماع فوري للتحديثات (الضغطات تظهر مباشرة بدون تحديث الصفحة)
+  ref.onSnapshot(doc=>{
+    if(!doc.exists)return;
+    const fresh=doc.data();
+    if(!fresh.links)fresh.links=[];
+    if(!fresh.socials)fresh.socials=[];
+    user=fresh;
+    render();
+  });
+}
+
+function renderSidebar(){
+  const handle='electrwni.link/'+user.username;
+  document.getElementById('sbAvatar').innerHTML = user.avatar
+    ? `<img src="${user.avatar}">`
+    : (user.displayName||user.username)[0].toUpperCase();
+  document.getElementById('sbName').textContent=user.displayName||user.username;
+  document.getElementById('sbHandle').textContent=handle;
+  document.getElementById('bioUrl').textContent=handle;
+  document.getElementById('previewNavBtn').href='page.html#'+user.username;
+  document.getElementById('wbLinkText').textContent=handle;
+  document.getElementById('wbPageLink').href='page.html#'+user.username;
+  document.getElementById('pfName').value=user.displayName||'';
+  document.getElementById('pfUser').value=user.username||'';
+  document.getElementById('pfBio').value=user.bio||'';
+  document.getElementById('pfEmail').value=user.email||'';
+  document.getElementById('pfAvatar').value=user.avatar||'';
+  document.getElementById('pfLocation').value=user.location||'';
+  const av=document.getElementById('avatarPreview');
+  if(user.avatar){ av.innerHTML=`<img src="${user.avatar}" style="width:100%;height:100%;object-fit:cover;">`; }
+  else{ av.innerHTML=(user.displayName||user.username)[0].toUpperCase(); }
+}
+
+async function saveToCloud(){await db.collection('users').doc(currentUsername).set(user,{merge:true});}
+
+function render(){
+  const links=(user.links||[]).sort((a,b)=>a.num-b.num);
+  const socials=user.socials||[];
+  const totalClicks=links.reduce((s,l)=>s+(l.clicks||0),0);
+  const topLink=[...links].sort((a,b)=>(b.clicks||0)-(a.clicks||0))[0];
+  document.getElementById('stLinks').textContent=links.length;
+  document.getElementById('stClicks').textContent=totalClicks;
+  document.getElementById('stTop').textContent=topLink?'#'+topLink.num:'—';
+  document.getElementById('stSocials').textContent=socials.length;
+  document.getElementById('aTotal').textContent=totalClicks;
+  document.getElementById('aTopLink').textContent=topLink?topLink.label:'—';
+  document.getElementById('aNew').textContent=topLink?(topLink.clicks||0):0;
+  document.getElementById('aActive').textContent=links.filter(l=>(l.clicks||0)>0).length;
+
+  const grid=document.getElementById('linksGrid');
+  if(!links.length){
+    document.getElementById('linksEmpty').style.display='block';
+    grid.innerHTML='';
+  }else{
+    document.getElementById('linksEmpty').style.display='none';
+    grid.innerHTML=links.map(l=>{
+      const bumped = prevClicksMap[l.id]!==undefined && prevClicksMap[l.id]!==(l.clicks||0);
+      return `
+      <div class="link-mgr-card">
+        <div class="lmc-num"><span class="num-big">${l.num}</span></div>
+        <div class="lmc-body">
+          <div class="lmc-label">${l.label}</div>
+          <div class="lmc-url">${l.url}</div>
+          ${l.desc?`<div class="lmc-desc">📝 ${l.desc}</div>`:''}
+        </div>
+        <div class="lmc-stats">
+          <div class="clicks-num${bumped?' bump':''}">${l.clicks||0}</div>
+          <div class="clicks-lbl">مشاهدة</div>
+        </div>
+        <div class="lmc-actions">
+          <button class="btn-qr" onclick="showQR(${l.id})">█ QR</button>
+          <button class="btn btn-ghost btn-sm" onclick="openLinkModal(${l.id})">تعديل</button>
+        </div>
+      </div>`;
+    }).join('');
+    links.forEach(l=>prevClicksMap[l.id]=l.clicks||0);
+    setTimeout(()=>document.querySelectorAll('.clicks-num.bump').forEach(e=>e.classList.remove('bump')),400);
+  }
+  renderAnalytics(); renderSocials();
+}
+
+function getWeekKey(d){const x=new Date(d);x.setHours(0,0,0,0);x.setDate(x.getDate()+3-(x.getDay()+6)%7);const w1=new Date(x.getFullYear(),0,4);const wn=1+Math.round(((x-w1)/86400000-3+(w1.getDay()+6)%7)/7);return x.getFullYear()+'-W'+String(wn).padStart(2,'0');}
+function getClicksForPeriod(link,period){const now=new Date();if(period==='all')return link.clicks||0;if(period==='today')return(link.clicksByDay||{})[now.toISOString().slice(0,10)]||0;if(period==='week')return(link.clicksByWeek||{})[getWeekKey(now)]||0;if(period==='month')return(link.clicksByMonth||{})[now.toISOString().slice(0,7)]||0;if(period==='year')return(link.clicksByYear||{})[now.getFullYear().toString()]||0;return 0;}
+function setPeriod(p,el){currentPeriod=p;document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderAnalytics();}
+function renderAnalytics(){
+  const links=(user.links||[]).sort((a,b)=>a.num-b.num);
+  const vals=links.map(l=>getClicksForPeriod(l,currentPeriod));
+  const maxC=Math.max(...vals,1);
+  const body=document.getElementById('analyticsBody');
+  if(!links.length){body.innerHTML='<div class="empty"><div class="e-icon">📊</div><p>لا توجد بيانات</p></div>';return;}
+  body.innerHTML=links.map((l,i)=>`
+    <div class="ana-row">
+      <div class="ana-row-top">
+        <div class="ana-num">${l.num}</div>
+        <div class="ana-label">${l.label}</div>
+        <div class="ana-clicks">↗ ${vals[i]} ضغطة</div>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.round((vals[i]/maxC)*100)}%"></div></div>
+    </div>
+  `).join('');
+}
+
+function renderSocials(){
+  const socials=user.socials||[];
+  const icons={instagram:'📷',tiktok:'🎵',twitter:'✖',youtube:'▶',snapchat:'👻',whatsapp:'💬',telegram:'✈',linkedin:'💼',facebook:'👤',website:'🌐'};
+  const names={instagram:'إنستقرام',tiktok:'تيك توك',twitter:'تويتر/X',youtube:'يوتيوب',snapchat:'سناب شات',whatsapp:'واتساب',telegram:'تيليقرام',linkedin:'لينكدإن',facebook:'فيسبوك',website:'موقع'};
+  if(!socials.length){document.getElementById('socialsEmpty').style.display='block';document.getElementById('socialsTableEl').style.display='none';}
+  else{
+    document.getElementById('socialsEmpty').style.display='none';
+    document.getElementById('socialsTableEl').style.display='';
+    document.getElementById('socialsTbody').innerHTML=socials.map(s=>`<tr><td>${icons[s.platform]||'🌐'} <strong>${names[s.platform]||s.platform}</strong></td><td style="font-family:'Space Mono',monospace;font-size:.82rem;direction:ltr;text-align:right;color:var(--accent);">${s.username}</td><td><button class="btn btn-danger btn-sm" onclick="deleteSocial('${s.id}')">حذف</button></td></tr>`).join('');
+  }
+}
+
+function showPage(name,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(el)el.classList.add('active');
+  const cfg={links:['مدير الروابط','أضف وعدّل روابطك المرقّمة',true],analytics:['الإحصائيات','أداء روابطك عبر الزمن',false],socials:['شبكات التواصل','روابط حساباتك الاجتماعية',false],profile:['الملف الشخصي','تعديل معلوماتك وهويتك',false]};
+  const c=cfg[name];
+  document.getElementById('pageTitle').textContent=c[0];
+  document.getElementById('pageSub').textContent=c[1];
+  document.getElementById('topAction').style.display=c[2]?'':'none';
+}
+
+// ══ LINK MODAL ══
+function openLinkModal(id=null){
+  editLinkId=id; selNum=null;
+  const links=user.links||[];
+  const takenLinks=links.filter(l=>l.id!==id);
+
+  let html='';
+  for(let i=1;i<=9;i++){
+    const t=takenLinks.find(l=>l.num===i);
+    html+=`<button class="npick${t?' taken':''}" ${t?'disabled':''} onclick="pickNum(${i},this)">${i}</button>`;
+  }
+  document.getElementById('numPicker').innerHTML=html;
+
+  const ni=document.getElementById('numTypeInput');
+  ni.value=''; ni.className='num-input-box empty-num';
+  document.getElementById('numStatus').textContent='اكتب رقماً أو اختر من الأسفل';
+  document.getElementById('numStatus').className='num-status none';
+  document.getElementById('numTakenLinks').innerHTML='';
+  document.getElementById('instructionsBox').style.display='none';
+  document.getElementById('takenWarning').style.display='none';
+  document.getElementById('viewsField').style.display='none';
+
+  if(id){
+    const lnk=links.find(l=>l.id===id);
+    document.getElementById('linkModalTitle').textContent='تعديل الرابط';
+    document.getElementById('linkModalSub').textContent='عدّل الرقم أو المعلومات ثم احفظ';
+    document.getElementById('mDesc').value=lnk.label||lnk.desc||'';
+    document.getElementById('mUrl').value=lnk.url;
+    document.getElementById('viewsField').style.display='';
+    document.getElementById('viewsCount').textContent=lnk.clicks||0;
+    selNum=lnk.num;
+    ni.value=lnk.num;
+    setTimeout(()=>{
+      document.querySelectorAll('.npick').forEach(b=>{if(parseInt(b.textContent)===lnk.num)b.classList.add('sel');});
+      checkNumStatus(lnk.num,takenLinks);
+      updatePreview();
+    },30);
+  }else{
+    document.getElementById('linkModalTitle').textContent='إضافة رابط جديد';
+    document.getElementById('linkModalSub').textContent='اختر رقماً ثم أدخل الرابط والمعلومات';
+    document.getElementById('mDesc').value='';
+    document.getElementById('mUrl').value='';
+  }
+  document.getElementById('linkModal').classList.add('open');
+}
+
+function closeLinkModal(){document.getElementById('linkModal').classList.remove('open');}
+
+function onNumTyped(inp){
+  let v=inp.value.replace(/[^0-9]/g,'');
+  if(v.length>1) v=v.slice(-1);
+  if(v==='0') v='';
+  inp.value=v;
+  if(!v){clearNum();return;}
+  const n=parseInt(v);
+  if(n<1||n>9){inp.value='';return;}
+  selNum=n;
+  document.querySelectorAll('.npick').forEach(b=>b.classList.toggle('sel',parseInt(b.textContent)===n));
+  const takenLinks=(user.links||[]).filter(l=>l.id!==editLinkId);
+  checkNumStatus(n,takenLinks);
+  updatePreview();
+}
+
+function pickNum(n,btn){
+  document.querySelectorAll('.npick').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  selNum=n;
+  document.getElementById('numTypeInput').value=n;
+  const takenLinks=(user.links||[]).filter(l=>l.id!==editLinkId);
+  checkNumStatus(n,takenLinks);
+  updatePreview();
+}
+
+function checkNumStatus(n,takenLinks){
+  const ni=document.getElementById('numTypeInput');
+  ni.className='num-input-box';
+  const taken=takenLinks.find(l=>l.num===n);
+  const statusEl=document.getElementById('numStatus');
+  const tw=document.getElementById('takenWarning');
+  if(taken){
+    ni.classList.add('taken-num');
+    statusEl.textContent='⚠ الرقم '+n+' مسجّل برابط آخر';
+    statusEl.className='num-status taken';
+    tw.style.display='block';
+    document.getElementById('tw_num').textContent=n;
+    document.getElementById('tw_label').textContent=taken.label;
+    document.getElementById('tw_open').href=taken.url;
+  }else{
+    statusEl.textContent='✓ الرقم '+n+' متاح';
+    statusEl.className='num-status free';
+    tw.style.display='none';
+  }
+}
+
+function clearNum(){
+  selNum=null;
+  document.querySelectorAll('.npick').forEach(b=>b.classList.remove('sel'));
+  const ni=document.getElementById('numTypeInput');
+  ni.value=''; ni.className='num-input-box empty-num';
+  document.getElementById('numStatus').textContent='اكتب رقماً أو اختر من الأسفل';
+  document.getElementById('numStatus').className='num-status none';
+  document.getElementById('instructionsBox').style.display='none';
+  document.getElementById('takenWarning').style.display='none';
+}
+
+function normalizeUrl(u){
+  u=u.trim();
+  if(!u) return '';
+  if(!/^https?:\/\//i.test(u)) u='https://'+u;
+  return u;
+}
+
+function updatePreview(){
+  if(!selNum) return;
+  const url=normalizeUrl(document.getElementById('mUrl').value);
+  const label=document.getElementById('mDesc').value.trim();
+  const bioUrl='https://electrwni.link/'+currentUsername;
+  const box=document.getElementById('instructionsBox');
+  if(url||label){
+    box.style.display='block';
+    document.getElementById('instr_num').textContent=selNum;
+    document.getElementById('instr_num2').textContent=selNum;
+    document.getElementById('instr_url').textContent=url||'(لم يُدخل الرابط بعد)';
+    const openEl=document.getElementById('instr_open');
+    if(url){openEl.href=url;openEl.style.display='';}else{openEl.style.display='none';}
+    document.getElementById('instr_biopage').href=bioUrl;
+  }else{
+    box.style.display='none';
+  }
+}
+
+async function saveLink(){
+  const descVal=document.getElementById('mDesc').value.trim();
+  const url=normalizeUrl(document.getElementById('mUrl').value);
+  if(!selNum){toast('⚠ اختر رقماً أولاً');return;}
+  if(!url){toast('⚠ أدخل الرابط');return;}
+  if(!descVal){toast('⚠ أدخل وصفاً أو اسماً للرابط');return;}
+  if(!user.links)user.links=[];
+
+  // إن كان الرقم مأخوذاً برابط آخر، استبدله
+  const existingWithNum=user.links.find(l=>l.num===selNum && l.id!==editLinkId);
+
+  if(editLinkId){
+    const i=user.links.findIndex(l=>l.id===editLinkId);
+    user.links[i]={...user.links[i],num:selNum,label:descVal,desc:'',url};
+    if(existingWithNum) user.links=user.links.filter(l=>l.id!==existingWithNum.id || l.id===editLinkId);
+    toast('✅ تم تحديث الرابط');
+  }else{
+    if(existingWithNum) user.links=user.links.filter(l=>l.id!==existingWithNum.id);
+    user.links.push({id:Date.now(),num:selNum,label:descVal,desc:'',url,clicks:0});
+    toast('✅ تم إضافة الرابط');
+  }
+  await saveToCloud(); closeLinkModal(); render();
+}
+
+async function deleteLink(id){
+  if(!confirm('حذف هذا الرابط؟'))return;
+  user.links=user.links.filter(l=>l.id!==id);
+  await saveToCloud(); render(); toast('🗑 تم الحذف');
+}
+
+// Socials
+function openSocialModal(){document.getElementById('sUsername').value='';document.getElementById('socialModal').classList.add('open');}
+document.getElementById('sPlatform').addEventListener('change',function(){
+  const wa=this.value==='whatsapp',web=this.value==='website';
+  document.getElementById('sInputLabel').textContent=wa?'رقم الهاتف (مع كود الدولة)':web?'الرابط الكامل':'اسم المستخدم';
+  document.getElementById('sUsername').placeholder=wa?'+966xxxxxxxxx':web?'example.com':'@username';
+});
+async function saveSocial(){
+  const p=document.getElementById('sPlatform').value;
+  const u=document.getElementById('sUsername').value.trim();
+  if(!u){toast('⚠ أدخل اسم المستخدم');return;}
+  if(!user.socials)user.socials=[];
+  user.socials.push({id:Date.now()+'',platform:p,username:u});
+  await saveToCloud();
+  document.getElementById('socialModal').classList.remove('open');
+  render(); toast('✅ تمت الإضافة');
+}
+async function deleteSocial(id){
+  user.socials=user.socials.filter(s=>s.id!==id);
+  await saveToCloud(); render(); toast('🗑 تم الحذف');
+}
+
+// QR
+function showQR(id){
+  const lnk=user.links.find(l=>l.id===id);
+  if(!lnk)return;
+  document.getElementById('qrTitle').textContent='باركود رابط #'+lnk.num+': '+lnk.label;
+  const c=document.getElementById('qrCanvas');
+  c.innerHTML='';
+  document.getElementById('qrNumOverlay').textContent=lnk.num;
+  new QRCode(c,{text:lnk.url,width:200,height:200,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.H});
+  document.getElementById('qrModal').classList.add('open');
+}
+function downloadQR(){
+  const c=document.querySelector('#qrCanvas canvas');
+  if(!c){toast('⏳ انتظر');return;}
+  const a=document.createElement('a');a.download='qr-electrwni.png';a.href=c.toDataURL();a.click();toast('✅ تم التحميل');
+}
+
+function onAvatarFile(inp){
+  const file=inp.files[0];
+  if(!file) return;
+  if(file.size > 700*1024){ toast('⚠ الصورة كبيرة، اختر صورة أصغر من 700KB'); return; }
+  const reader=new FileReader();
+  reader.onload=e=>{
+    user.avatar=e.target.result;
+    document.getElementById('avatarPreview').innerHTML=`<img src="${user.avatar}" style="width:100%;height:100%;object-fit:cover;">`;
+  };
+  reader.readAsDataURL(file);
+}
+
+// Profile
+async function saveProfile(){
+  const newU=document.getElementById('pfUser').value.trim().toLowerCase();
+  user.displayName=document.getElementById('pfName').value.trim();
+  user.bio=document.getElementById('pfBio').value.trim();
+  user.email=document.getElementById('pfEmail').value.trim().toLowerCase();
+  user.location=document.getElementById('pfLocation').value.trim();
+  if(newU&&newU!==currentUsername){
+    user.username=newU;
+    await db.collection('users').doc(newU).set(user);
+    await db.collection('users').doc(currentUsername).delete();
+    currentUsername=newU;
+    localStorage.setItem('elUserUsername',newU);
+    location.reload();
+    return;
+  }else{await saveToCloud();}
+  renderSidebar(); toast('✅ تم حفظ التغييرات');
+}
+
+// Helpers
+function copyLink(){navigator.clipboard.writeText('https://'+document.getElementById('bioUrl').textContent).then(()=>toast('📋 تم نسخ الرابط'));}
+function copyWelcomeLink(){navigator.clipboard.writeText('https://electrwni.link/'+user.username).then(()=>toast('📋 تم نسخ رابط صفحتك'));}
+function openPageInNew(){window.open('page.html#'+user.username,'_blank');}
+function shareLink(){if(navigator.share)navigator.share({title:user.displayName,url:'https://electrwni.link/'+user.username});else copyLink();}
+function logout(){localStorage.removeItem('elLoggedIn');localStorage.removeItem('elUserUsername');window.location.href='signin.html';}
+function closeIfOverlay(e,id){if(e.target.id===id)document.getElementById(id).classList.remove('open');}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
+
+init();
+</script>
 </body>
 </html>
