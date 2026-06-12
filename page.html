@@ -1,744 +1,514 @@
 <!DOCTYPE html>
-
-<html lang="ar" dir="rtl" data-theme="light">
+<html lang="ar" dir="rtl" data-theme="dark">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>لوحة التحكم — electrwni.link</title>
+  <title>جاري التحميل... — electrwni.link</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
-    :root{--bg:#f0f4ff;--bg2:#e8eeff;--surface:rgba(255,255,255,0.9);--surface-solid:#ffffff;--border:rgba(100,130,255,0.18);--accent:#3d5af1;--accent2:#e8436a;--accent-light:rgba(61,90,241,0.1);--text:#0f1535;--text2:#3a4270;--muted:#7b84b0;--glass:rgba(255,255,255,0.72);--success:#0ab87a;--error:#e8436a;--sidebar:230px;--shadow:0 4px 20px rgba(61,90,241,0.08);}
-    [data-theme="dark"]{--bg:#050810;--bg2:#0a0f20;--surface:rgba(12,18,45,0.9);--surface-solid:#0c1228;--border:rgba(100,130,255,0.16);--accent:#6c8fff;--accent2:#ff6584;--accent-light:rgba(108,143,255,0.1);--text:#e8eeff;--text2:#a0aad0;--muted:#5a6490;--glass:rgba(12,18,45,0.75);--success:#4ecca3;--error:#ff6584;--shadow:0 4px 20px rgba(0,0,0,0.35);}
+    :root{--bg:#f0f4ff;--bg2:#e8eeff;--surface:rgba(255,255,255,0.85);--border:rgba(100,130,255,0.2);--accent:#3d5af1;--accent2:#e8436a;--accent-light:rgba(61,90,241,0.12);--text:#0f1535;--text2:#3a4270;--muted:#7b84b0;--card:rgba(255,255,255,0.9);--success:#0ab87a;}
+    [data-theme="dark"]{--bg:#060912;--bg2:#0c1020;--surface:rgba(15,20,50,0.85);--border:rgba(100,130,255,0.18);--accent:#6c8fff;--accent2:#ff6584;--accent-light:rgba(108,143,255,0.12);--text:#e8eeff;--text2:#a0aad0;--muted:#5a6490;--card:rgba(15,22,55,0.92);--success:#4ecca3;}
     *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;transition:background .3s,color .3s;}
-    body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 700px 500px at 80% 0%,rgba(61,90,241,0.06),transparent);}
 
-```
-/* ═══ SIDEBAR ═══ */
-.sidebar{width:var(--sidebar);min-height:100vh;background:var(--glass);backdrop-filter:blur(20px);border-left:1px solid var(--border);display:flex;flex-direction:column;position:fixed;right:0;top:0;z-index:50;}
-.sb-top{padding:20px 16px 14px;border-bottom:1px solid var(--border);}
-.sb-logo{font-family:'Space Mono',monospace;font-size:0.9rem;color:var(--accent);text-decoration:none;display:block;margin-bottom:14px;}
-.sb-logo em{color:var(--accent2);font-style:normal;}
-.sb-avatar{width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:900;color:#fff;margin-bottom:9px;}
-.sb-name{font-weight:700;font-size:0.93rem;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.sb-handle{font-size:0.7rem;color:var(--muted);font-family:'Space Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.sb-nav{flex:1;padding:10px 8px;display:flex;flex-direction:column;gap:2px;}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:0.88rem;font-weight:700;color:var(--text2);transition:all .18s;border:none;background:none;width:100%;text-align:right;font-family:'Tajawal',sans-serif;}
-.nav-item:hover{background:var(--accent-light);color:var(--accent);}
-.nav-item.active{background:var(--accent-light);color:var(--accent);}
-.nav-item .ni{font-size:1.05rem;width:20px;text-align:center;}
-.sb-bottom{padding:10px 8px;border-top:1px solid var(--border);}
-.sb-url-box{font-size:0.68rem;font-family:'Space Mono',monospace;color:var(--accent);padding:7px 10px;background:var(--accent-light);border-radius:8px;margin-bottom:8px;cursor:pointer;word-break:break-all;border:1px solid var(--border);transition:opacity .2s;}
-.sb-url-box:hover{opacity:0.75;}
-.sb-btns{display:flex;gap:5px;}
-.sb-btn{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 3px;font-size:0.7rem;font-weight:700;color:var(--text2);cursor:pointer;font-family:'Tajawal',sans-serif;transition:all .18s;}
-.sb-btn:hover{border-color:var(--accent);color:var(--accent);}
-.sb-btn.danger:hover{border-color:var(--error);color:var(--error);}
+    body{
+      font-family:'Tajawal',sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      transition:background .4s,color .4s;
+    }
 
-/* ═══ MAIN ═══ */
-.main{margin-right:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh;position:relative;z-index:5;}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 26px;border-bottom:1px solid var(--border);background:var(--glass);backdrop-filter:blur(16px);position:sticky;top:0;z-index:40;}
-.page-title-h{font-size:1.1rem;font-weight:900;}
-.page-sub-h{font-size:0.77rem;color:var(--muted);margin-top:2px;}
-.topbar-right{display:flex;align-items:center;gap:9px;}
-.theme-toggle{width:35px;height:35px;border-radius:8px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:0.95rem;cursor:pointer;transition:all .2s;}
+    /* BG GLOW */
+    body::before{
+      content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:
+        radial-gradient(ellipse 600px 600px at 50% -10%,rgba(108,143,255,0.18),transparent),
+        radial-gradient(ellipse 400px 400px at 80% 80%,rgba(255,101,132,0.1),transparent);
+    }
 
-.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 16px;border-radius:8px;font-family:'Tajawal',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;border:none;transition:all .18s;}
-.btn-primary{background:var(--accent);color:#fff;box-shadow:0 3px 12px rgba(61,90,241,0.28);}
-.btn-primary:hover{filter:brightness(1.08);transform:translateY(-1px);}
-.btn-ghost{background:var(--surface);color:var(--text2);border:1px solid var(--border);}
-.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
-.btn-danger{background:rgba(232,67,106,0.08);color:var(--error);border:1px solid rgba(232,67,106,0.2);}
-.btn-danger:hover{background:rgba(232,67,106,0.15);}
-.btn-sm{padding:5px 11px;font-size:0.78rem;}
+    .page-wrap{
+      position:relative;z-index:5;
+      max-width:500px;
+      margin:0 auto;
+      padding:28px 18px 60px;
+    }
 
-.content{padding:24px;}
-.page{display:none;}
-.page.active{display:block;}
+    /* THEME BTN */
+    .theme-btn{
+      position:fixed;top:16px;left:16px;z-index:100;
+      width:38px;height:38px;border-radius:10px;
+      background:var(--card);border:1px solid var(--border);
+      color:var(--text);font-size:1rem;cursor:pointer;
+      backdrop-filter:blur(12px);transition:all .2s;
+    }
 
-/* ═══ STATS ROW ═══ */
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
-.stat-card{background:var(--surface);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);}
-.stat-label{font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
-.stat-val{font-size:1.8rem;font-weight:900;font-family:'Space Mono',monospace;color:var(--accent);}
+    /* PROFILE CARD */
+    .profile-card{
+      background:var(--card);
+      backdrop-filter:blur(20px);
+      border:1px solid var(--border);
+      border-radius:24px;
+      padding:32px 24px 28px;
+      text-align:center;
+      margin-bottom:18px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.2);
+    }
 
-/* ═══ SECTION BOX ═══ */
-.section-box{background:var(--surface);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:22px;}
-.sec-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);}
-.sec-hd h2{font-size:0.92rem;font-weight:700;}
+    .avatar-wrap{
+      position:relative;
+      display:inline-block;
+      margin-bottom:16px;
+    }
+    .avatar{
+      width:96px;height:96px;
+      border-radius:50%;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      display:flex;align-items:center;justify-content:center;
+      font-size:2.4rem;font-weight:900;color:#fff;
+      border:3px solid var(--border);
+      overflow:hidden;
+      margin:0 auto;
+    }
+    .avatar img{width:100%;height:100%;object-fit:cover;}
+    .online-dot{
+      position:absolute;bottom:4px;right:4px;
+      width:14px;height:14px;border-radius:50%;
+      background:var(--success);
+      border:2px solid var(--bg);
+      animation:pulse 2s infinite;
+    }
+    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(10,184,122,.5);}50%{box-shadow:0 0 0 5px rgba(10,184,122,0);}}
+    .active-badge{
+      display:inline-flex;align-items:center;gap:5px;
+      font-size:0.72rem;color:var(--success);font-weight:700;
+      background:rgba(10,184,122,0.1);border:1px solid rgba(10,184,122,0.25);
+      border-radius:100px;padding:3px 10px;margin-top:8px;
+    }
+    .active-badge .d{width:6px;height:6px;border-radius:50%;background:var(--success);animation:pulse 2s infinite;}
 
-/* ═══ LINK CARDS (مدير الروابط) ═══ */
-.links-grid{display:flex;flex-direction:column;gap:0;}
-.link-mgr-card{
-  display:grid;
-  grid-template-columns:54px 1fr auto;
-  gap:0;
-  border-bottom:1px solid var(--border);
-  transition:background .15s;
-}
-.link-mgr-card:last-child{border-bottom:none;}
-.link-mgr-card:hover{background:rgba(61,90,241,0.03);}
+    /* FEATURED ROTATING LINKS */
+    .featured-section{margin-bottom:18px;}
+    .featured-title{font-size:0.78rem;font-weight:700;color:var(--muted);text-align:center;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;}
+    .featured-grid{display:flex;gap:8px;}
+    .featured-card{
+      flex:1;background:var(--card);backdrop-filter:blur(16px);
+      border:1px solid var(--border);border-radius:14px;
+      padding:12px 8px;text-align:center;text-decoration:none;color:var(--text);
+      transition:all .2s;
+    }
+    .featured-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+    .featured-card .fnum{
+      font-family:'Space Mono',monospace;font-weight:700;color:var(--accent);
+      font-size:1.1rem;margin-bottom:4px;
+    }
+    .featured-card .flabel{font-size:0.75rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
-.lmc-num{
-  display:flex;align-items:center;justify-content:center;
-  border-left:1px solid var(--border);
-  background:var(--accent-light);
-}
-.num-big{
-  font-family:'Space Mono',monospace;font-size:1.5rem;font-weight:700;
-  color:var(--accent);
-}
+    .profile-name{font-size:1.5rem;font-weight:900;margin-bottom:4px;}
+    .profile-handle{
+      font-family:'Space Mono',monospace;font-size:0.75rem;
+      color:var(--accent);margin-bottom:10px;
+    }
+    .profile-bio{font-size:0.88rem;color:var(--text2);line-height:1.6;max-width:320px;margin:0 auto 18px;}
 
-.lmc-body{padding:14px 16px;min-width:0;}
-.lmc-label{font-size:0.95rem;font-weight:700;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.lmc-url{
-  font-size:0.75rem;color:var(--muted);
-  direction:ltr;text-align:right;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  margin-bottom:6px;
-}
-.lmc-desc{font-size:0.78rem;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    /* SOCIALS ROW */
+    .socials-row{
+      display:flex;flex-wrap:wrap;gap:8px;justify-content:center;
+      margin-bottom:4px;
+    }
+    .social-pill{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:7px 14px;border-radius:100px;
+      background:var(--bg2);border:1px solid var(--border);
+      font-size:0.82rem;font-weight:700;color:var(--text2);
+      text-decoration:none;transition:all .2s;
+    }
+    .social-pill:hover{background:var(--accent-light);border-color:var(--accent);color:var(--accent);}
+    .social-pill .si{font-size:1rem;}
 
-.lmc-stats{
-  display:flex;flex-direction:column;align-items:flex-end;justify-content:center;
-  padding:12px 16px;gap:8px;border-right:1px solid var(--border);
-  min-width:120px;
-}
-.clicks-num{
-  font-family:'Space Mono',monospace;font-size:1.4rem;font-weight:700;
-  color:var(--success);line-height:1;
-}
-.clicks-label{font-size:0.65rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+    /* LOCATION */
+    .location-pill{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:6px 14px;border-radius:100px;
+      background:var(--bg2);border:1px solid var(--border);
+      font-size:0.8rem;color:var(--muted);
+      text-decoration:none;margin-top:10px;transition:all .2s;
+    }
+    .location-pill:hover{border-color:var(--accent2);color:var(--accent2);}
 
-.lmc-actions{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:10px 12px;gap:6px;min-width:90px;
-}
-.act-row{display:flex;gap:5px;}
-.btn-qr{
-  background:var(--bg2);color:var(--text2);border:1px solid var(--border);
-  padding:4px 9px;border-radius:7px;font-size:0.72rem;font-weight:700;
-  cursor:pointer;font-family:'Space Mono',monospace;transition:all .18s;
-  white-space:nowrap;
-}
-.btn-qr:hover{border-color:var(--accent);color:var(--accent);}
+    /* NUMBER BOX */
+    .num-section{
+      background:var(--card);
+      backdrop-filter:blur(20px);
+      border:1px solid var(--border);
+      border-radius:20px;
+      padding:22px 20px;
+      margin-bottom:18px;
+      box-shadow:0 8px 32px rgba(0,0,0,0.12);
+    }
+    .num-label{
+      font-size:0.78rem;font-weight:700;
+      color:var(--muted);text-align:center;
+      letter-spacing:1px;text-transform:uppercase;
+      margin-bottom:14px;
+    }
+    .num-row{display:flex;gap:10px;}
+    .num-input{
+      flex:1;font-family:'Space Mono',monospace;
+      font-size:2.8rem;font-weight:700;text-align:center;
+      background:var(--bg2);border:2px solid var(--border);
+      border-radius:14px;padding:14px 10px;
+      color:var(--text);outline:none;
+      transition:border-color .2s,box-shadow .2s;
+      -moz-appearance:textfield;
+    }
+    .num-input::-webkit-outer-spin-button,.num-input::-webkit-inner-spin-button{-webkit-appearance:none;}
+    .num-input:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-light);}
+    .num-input.shake{animation:shake .3s;}
+    @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+    .go-btn{
+      width:72px;background:var(--accent);color:#fff;
+      border:none;border-radius:14px;font-size:1.6rem;
+      cursor:pointer;transition:all .2s;
+      box-shadow:0 4px 16px rgba(61,90,241,0.3);
+    }
+    .go-btn:hover{filter:brightness(1.1);transform:scale(1.04);}
+    .err-msg{
+      font-size:0.8rem;color:var(--accent2);text-align:center;
+      margin-top:10px;display:none;font-weight:700;
+    }
+    .err-msg.show{display:block;}
+    .quick-btns{
+      display:flex;gap:8px;justify-content:center;
+      margin-top:12px;flex-wrap:wrap;
+    }
+    .qbtn{
+      width:44px;height:44px;border-radius:10px;
+      background:var(--bg2);border:1px solid var(--border);
+      color:var(--muted);font-family:'Space Mono',monospace;
+      font-size:1rem;cursor:pointer;transition:all .15s;
+    }
+    .qbtn:hover{background:var(--accent-light);border-color:var(--accent);color:var(--accent);}
 
-/* EMPTY STATE */
-.empty{text-align:center;padding:40px 20px;color:var(--muted);}
-.e-icon{font-size:2.2rem;margin-bottom:10px;}
-.e-hint{font-size:0.82rem;margin-top:5px;}
+    /* LINKS LIST */
+    .links-section{display:flex;flex-direction:column;gap:10px;}
+    .link-card{
+      display:flex;align-items:center;gap:14px;
+      background:var(--card);backdrop-filter:blur(16px);
+      border:1px solid var(--border);border-radius:16px;
+      padding:14px 16px;text-decoration:none;color:var(--text);
+      transition:all .22s;
+      box-shadow:0 2px 12px rgba(0,0,0,0.08);
+    }
+    .link-card:hover{
+      border-color:var(--accent);
+      transform:translateY(-2px);
+      box-shadow:0 8px 28px rgba(61,90,241,0.15);
+    }
+    .link-num{
+      min-width:42px;height:42px;border-radius:11px;
+      background:var(--accent-light);border:1px solid var(--border);
+      display:flex;align-items:center;justify-content:center;
+      font-family:'Space Mono',monospace;font-size:1.2rem;font-weight:700;
+      color:var(--accent);flex-shrink:0;
+    }
+    .link-info{flex:1;min-width:0;}
+    .link-label{font-size:0.95rem;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .link-desc{font-size:0.78rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .link-arrow{color:var(--muted);font-size:1.1rem;flex-shrink:0;}
 
-/* ═══ ANALYTICS ═══ */
-.period-tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;}
-.ptab{
-  padding:6px 16px;border-radius:8px;font-size:0.8rem;font-weight:700;
-  cursor:pointer;border:1px solid var(--border);background:var(--surface);
-  color:var(--text2);transition:all .18s;font-family:'Tajawal',sans-serif;
-}
-.ptab.active{background:var(--accent);color:#fff;border-color:var(--accent);}
-.ana-bar-wrap{padding:4px 0;}
-.ana-row{margin-bottom:18px;}
-.ana-row-top{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-.ana-num{min-width:36px;height:36px;border-radius:9px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-weight:700;color:var(--accent);font-size:1rem;}
-.ana-label{font-weight:700;flex:1;font-size:0.9rem;}
-.ana-clicks{font-family:'Space Mono',monospace;font-size:0.85rem;color:var(--success);font-weight:700;}
-.bar-track{height:7px;background:var(--border);border-radius:4px;}
-.bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;transition:width .7s cubic-bezier(.4,0,.2,1);}
+    /* NOT FOUND */
+    .not-found{text-align:center;padding:80px 20px;}
+    .not-found .nf-icon{font-size:4rem;margin-bottom:16px;}
+    .not-found h2{font-size:1.4rem;font-weight:900;margin-bottom:8px;}
+    .not-found p{color:var(--muted);margin-bottom:24px;}
+    .not-found a{display:inline-block;padding:12px 28px;background:var(--accent);color:#fff;border-radius:10px;text-decoration:none;font-weight:700;}
 
-/* ═══ SOCIALS ═══ */
-/* ═══ PROFILE ═══ */
-.profile-form{padding:22px;}
-.form-group{margin-bottom:15px;}
-.form-group label{display:block;font-size:0.81rem;font-weight:700;margin-bottom:6px;color:var(--text2);}
-.form-group input,.form-group textarea,.form-group select{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:0.92rem;outline:none;transition:border-color .2s;}
-.form-group input:focus,.form-group textarea:focus{border-color:var(--accent);}
-.form-group textarea{resize:vertical;min-height:72px;}
+    /* LOADING */
+    .loading-wrap{min-height:60vh;display:flex;align-items:center;justify-content:center;}
+    .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ═══ MODAL ═══ */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(7px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;}
-.modal-overlay.open{display:flex;}
-.modal{background:var(--surface-solid);border:1px solid var(--border);border-radius:20px;padding:28px;width:100%;max-width:460px;box-shadow:0 24px 60px rgba(0,0,0,0.25);max-height:90vh;overflow-y:auto;}
-.modal h3{font-size:1.1rem;font-weight:900;margin-bottom:18px;}
-.modal-actions{display:flex;gap:9px;margin-top:18px;}
-.modal-actions .btn{flex:1;justify-content:center;}
-
-.num-picker-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:14px;}
-.npick{height:44px;border-radius:9px;background:var(--bg2);border:1.5px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:1.1rem;font-weight:700;cursor:pointer;transition:all .14s;}
-.npick:hover:not(:disabled){background:var(--accent-light);border-color:var(--accent);color:var(--accent);}
-.npick.sel{background:var(--accent);border-color:var(--accent);color:#fff;}
-.npick.taken{opacity:0.28;cursor:not-allowed;}
-
-/* QR */
-.qr-center{text-align:center;}
-#qrCanvas{display:inline-block;position:relative;}
-.qr-num-ov{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Space Mono',monospace;font-size:1.6rem;font-weight:700;color:#fff;background:rgba(0,0,0,0.6);border-radius:8px;padding:4px 10px;pointer-events:none;}
-
-/* TOAST */
-.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--text);color:var(--bg);padding:10px 22px;border-radius:10px;font-weight:700;font-size:0.88rem;opacity:0;transition:all .28s;z-index:999;pointer-events:none;}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-
-/* TABLE */
-.links-table{width:100%;border-collapse:collapse;}
-.links-table th{text-align:right;padding:9px 16px;font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);background:var(--bg2);}
-.links-table td{padding:11px 16px;border-bottom:1px solid rgba(100,130,255,0.07);font-size:0.85rem;vertical-align:middle;}
-.links-table tr:last-child td{border-bottom:none;}
-
-/* MOBILE */
-@media(max-width:700px){
-  .sidebar{width:100%;min-height:auto;position:fixed;bottom:0;top:auto;right:0;left:0;flex-direction:row;border-left:none;border-top:1px solid var(--border);}
-  .sb-top,.sb-bottom{display:none;}
-  .sb-nav{flex-direction:row;padding:4px;}
-  .nav-item{flex-direction:column;gap:2px;font-size:0.62rem;padding:6px 4px;}
-  .nav-item .ni{font-size:1.2rem;width:auto;}
-  .main{margin-right:0;margin-bottom:68px;}
-  .stats-row{grid-template-columns:repeat(2,1fr);}
-  .lmc-stats{min-width:80px;}
-  .lmc-actions{min-width:70px;}
-}
-```
-
+    /* FOOTER */
+    .page-footer{text-align:center;margin-top:28px;font-size:0.75rem;color:var(--muted);}
+    .page-footer a{color:var(--accent);text-decoration:none;font-family:'Space Mono',monospace;}
   </style>
 </head>
 <body>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
 
-<!-- ═══ SIDEBAR ═══ -->
-
-<aside class="sidebar">
-  <div class="sb-top">
-    <a href="index.html" class="sb-logo">electrwni<em>.link</em></a>
-    <div class="sb-avatar" id="sbAvatar">U</div>
-    <div class="sb-name" id="sbName">جاري التحميل...</div>
-    <div class="sb-handle" id="sbHandle">electrwni.link/...</div>
+  <div class="page-wrap" id="mainContent">
+    <div class="loading-wrap"><div class="spinner"></div></div>
   </div>
-  <nav class="sb-nav">
-    <button class="nav-item active" onclick="showPage('links',this)"><span class="ni">🔗</span> مدير الروابط</button>
-    <button class="nav-item" onclick="showPage('analytics',this)"><span class="ni">📊</span> الإحصائيات</button>
-    <button class="nav-item" onclick="showPage('socials',this)"><span class="ni">🌐</span> التواصل</button>
-    <button class="nav-item" onclick="showPage('profile',this)"><span class="ni">👤</span> ملفي</button>
-  </nav>
-  <div class="sb-bottom">
-    <div class="sb-url-box" id="bioUrl" onclick="copyLink()">electrwni.link/...</div>
-    <div class="sb-btns">
-      <button class="sb-btn" onclick="openPageInNew()">🔗 عرض</button>
-      <button class="sb-btn" onclick="shareLink()">📤 شارك</button>
-      <button class="sb-btn danger" onclick="logout()">خروج</button>
-    </div>
-  </div>
-</aside>
 
-<!-- ═══ MAIN ═══ -->
-
-<main class="main">
-  <div class="topbar">
-    <div>
-      <div class="page-title-h" id="pageTitle">مدير الروابط</div>
-      <div class="page-sub-h" id="pageSub">أضف وعدّل روابطك المرقّمة</div>
-    </div>
-    <div class="topbar-right">
-      <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
-      <button class="btn btn-primary" id="topAction" onclick="openLinkModal()">+ رابط جديد</button>
-      <a href="page.html" id="previewNavBtn" target="_blank" class="btn btn-ghost">معاينة ↗</a>
+  <div class="page-wrap" id="notFoundContent" style="display:none;">
+    <div class="not-found">
+      <div class="nf-icon">🔍</div>
+      <h2>الحساب غير موجود</h2>
+      <p>تأكد من كتابة اسم المستخدم بشكل صحيح في الرابط.</p>
+      <a href="index.html">العودة للرئيسية</a>
     </div>
   </div>
 
-  <div class="content">
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
+      authDomain: "electrwni-link.firebaseapp.com",
+      projectId: "electrwni-link",
+      storageBucket: "electrwni-link.firebasestorage.app",
+      messagingSenderId: "712490301263",
+      appId: "1:712490301263:web:2084210da3f687285ab73a"
+    };
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-```
-<!-- ══ PAGE: LINKS ══ -->
-<div class="page active" id="page-links">
-  <div class="stats-row">
-    <div class="stat-card"><div class="stat-label">الروابط</div><div class="stat-val" id="stLinks">0</div></div>
-    <div class="stat-card"><div class="stat-label">مجموع الضغطات</div><div class="stat-val" id="stClicks">0</div></div>
-    <div class="stat-card"><div class="stat-label">الأعلى تفاعلاً</div><div class="stat-val" id="stTop">—</div></div>
-    <div class="stat-card"><div class="stat-label">التواصل</div><div class="stat-val" id="stSocials">0</div></div>
-  </div>
+    // Theme
+    const th = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', th);
+    document.getElementById('themeBtn').textContent = th === 'dark' ? '☀️' : '🌙';
+    function toggleTheme() {
+      const c = document.documentElement.getAttribute('data-theme');
+      const n = c === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', n);
+      localStorage.setItem('theme', n);
+      document.getElementById('themeBtn').textContent = n === 'dark' ? '☀️' : '🌙';
+    }
 
-  <div class="section-box">
-    <div class="sec-hd">
-      <h2>روابطي المرقّمة</h2>
-      <button class="btn btn-primary btn-sm" onclick="openLinkModal()">+ إضافة</button>
-    </div>
-    <div id="linksEmpty" class="empty">
-      <div class="e-icon">🔗</div>
-      <p>لا توجد روابط بعد</p>
-      <p class="e-hint">اضغط "+ إضافة" لإنشاء أول رابط</p>
-    </div>
-    <div class="links-grid" id="linksGrid"></div>
-  </div>
-</div>
+    function hashCode(s) {
+      let h = 0;
+      for (let i = 0; i < s.length; i++) h = (h << 5) - h + s.charCodeAt(i) | 0;
+      return h;
+    }
 
-<!-- ══ PAGE: ANALYTICS ══ -->
-<div class="page" id="page-analytics">
-  <div class="stats-row">
-    <div class="stat-card"><div class="stat-label">إجمالي الضغطات</div><div class="stat-val" id="aTotal">0</div></div>
-    <div class="stat-card"><div class="stat-label">أعلى رابط</div><div class="stat-val" style="font-size:1rem;padding-top:8px;" id="aTopLink">—</div></div>
-    <div class="stat-card"><div class="stat-label">ضغطات الأعلى</div><div class="stat-val" id="aTopClicks">0</div></div>
-    <div class="stat-card"><div class="stat-label">روابط نشطة</div><div class="stat-val" id="aActive">0</div></div>
-  </div>
+    function getUsername() {
+      const hash = location.hash.replace('#','').split('?')[0];
+      if (hash) return hash;
+      return new URLSearchParams(location.search).get('u');
+    }
 
-  <div class="section-box">
-    <div class="sec-hd"><h2>أداء الروابط</h2></div>
-    <div style="padding:16px 20px 8px;">
-      <div class="period-tabs">
-        <button class="ptab active" onclick="setPeriod('all',this)">الكل</button>
-        <button class="ptab" onclick="setPeriod('today',this)">اليوم</button>
-        <button class="ptab" onclick="setPeriod('week',this)">الأسبوع</button>
-        <button class="ptab" onclick="setPeriod('month',this)">الشهر</button>
-        <button class="ptab" onclick="setPeriod('year',this)">السنة</button>
-      </div>
-      <div class="ana-bar-wrap" id="analyticsBody"></div>
-    </div>
-  </div>
-</div>
+    const socIcons  = {instagram:'📷',tiktok:'🎵',twitter:'✖',youtube:'▶',snapchat:'👻',whatsapp:'💬',telegram:'✈',linkedin:'💼',facebook:'👤',website:'🌐'};
+    const socNames  = {instagram:'إنستقرام',tiktok:'تيك توك',twitter:'تويتر',youtube:'يوتيوب',snapchat:'سناب',whatsapp:'واتساب',telegram:'تيليقرام',linkedin:'لينكدإن',facebook:'فيسبوك',website:'الموقع'};
+    const socUrls   = {
+      instagram: u => 'https://instagram.com/'  + u.replace('@',''),
+      tiktok:    u => 'https://tiktok.com/@'    + u.replace('@',''),
+      twitter:   u => 'https://x.com/'          + u.replace('@',''),
+      youtube:   u => u.startsWith('http') ? u : 'https://youtube.com/@' + u.replace('@',''),
+      snapchat:  u => 'https://snapchat.com/add/'+ u.replace('@',''),
+      whatsapp:  u => 'https://wa.me/'           + u.replace(/\D/g,''),
+      telegram:  u => 'https://t.me/'            + u.replace('@',''),
+      linkedin:  u => u.startsWith('http') ? u : 'https://linkedin.com/in/' + u.replace('@',''),
+      facebook:  u => u.startsWith('http') ? u : 'https://facebook.com/'   + u.replace('@',''),
+      website:   u => u.startsWith('http') ? u : 'https://' + u,
+    };
 
-<!-- ══ PAGE: SOCIALS ══ -->
-<div class="page" id="page-socials">
-  <div class="section-box">
-    <div class="sec-hd">
-      <h2>حسابات التواصل</h2>
-      <button class="btn btn-primary btn-sm" onclick="openSocialModal()">+ إضافة</button>
-    </div>
-    <div id="socialsEmpty" class="empty"><div class="e-icon">🌐</div><p>لا توجد حسابات مضافة</p></div>
-    <table class="links-table" id="socialsTableEl" style="display:none;">
-      <thead><tr><th>المنصة</th><th>المعرّف</th><th>حذف</th></tr></thead>
-      <tbody id="socialsTbody"></tbody>
-    </table>
-  </div>
-</div>
+    let userLinks = [];
+    let pageUsername = '';
 
-<!-- ══ PAGE: PROFILE ══ -->
-<div class="page" id="page-profile">
-  <div class="section-box">
-    <div class="sec-hd"><h2>الملف الشخصي</h2></div>
-    <div class="profile-form">
-      <div class="form-group"><label>الاسم المعروض</label><input type="text" id="pfName" placeholder="اسمك أو اسم مشروعك"></div>
-      <div class="form-group"><label>اسم المستخدم</label><input type="text" id="pfUser" placeholder="username" dir="ltr"></div>
-      <div class="form-group"><label>النبذة التعريفية</label><textarea id="pfBio" placeholder="صف نفسك أو مشروعك..."></textarea></div>
-      <div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="pfEmail" dir="ltr"></div>
-      <div class="form-group"><label>رابط الصورة الشخصية (اختياري)</label><input type="url" id="pfAvatar" placeholder="https://..." dir="ltr"></div>
-      <div class="form-group"><label>الموقع / المدينة (اختياري)</label><input type="text" id="pfLocation" placeholder="مثال: الرياض، المملكة العربية السعودية"></div>
-      <button class="btn btn-primary" onclick="saveProfile()">حفظ التغييرات ✓</button>
-    </div>
-  </div>
-</div>
-```
+    async function init() {
+      const username = getUsername();
+      if (!username) { showNotFound(); return; }
+      pageUsername = username;
 
-  </div><!-- /content -->
-</main>
+      try {
+        const doc = await db.collection('users').doc(username).get();
+        if (!doc.exists) { showNotFound(); return; }
+        const user = doc.data();
+        userLinks = (user.links || []).sort((a,b) => a.num - b.num);
+        renderPage(user);
+      } catch(e) {
+        showNotFound();
+      }
+    }
 
-<!-- ══ MODAL: LINK ══ -->
+    function renderPage(user) {
+      const socials  = user.socials || [];
+      const links    = userLinks;
+      document.title = (user.displayName || user.username) + ' — electrwni.link';
 
-<div class="modal-overlay" id="linkModal" onclick="closeIfOverlay(event,'linkModal')">
-  <div class="modal">
-    <h3 id="linkModalTitle">إضافة رابط جديد</h3>
-    <div class="form-group"><label>اختر الرقم (1-9)</label>
-      <div class="num-picker-grid" id="numPicker"></div>
-    </div>
-    <div class="form-group"><label>اسم الرابط *</label><input type="text" id="mLabel" placeholder="مثال: العروض"></div>
-    <div class="form-group"><label>الوصف (اختياري)</label><input type="text" id="mDesc" placeholder="وصف قصير يظهر للزائر"></div>
-    <div class="form-group"><label>الرابط * (يبدأ بـ https://)</label><input type="url" id="mUrl" placeholder="https://example.com" dir="ltr"></div>
-    <div class="modal-actions">
-      <button class="btn btn-primary" onclick="saveLink()">حفظ الرابط</button>
-      <button class="btn btn-ghost" onclick="closeLinkModal()">إلغاء</button>
-    </div>
-  </div>
-</div>
+      // Build avatar
+      let avatarHTML = '';
+      if (user.avatar) {
+        avatarHTML = `<img src="${user.avatar}" alt="avatar" onerror="this.parentElement.innerHTML='${(user.displayName||user.username)[0].toUpperCase()}'">`;
+      } else {
+        avatarHTML = (user.displayName || user.username)[0].toUpperCase();
+      }
 
-<!-- ══ MODAL: SOCIAL ══ -->
+      // Build socials
+      const socialsHTML = socials.map(s => {
+        const url = (socUrls[s.platform] || (u=>u))(s.username);
+        return `<a class="social-pill" href="${url}" target="_blank" rel="noopener">
+          <span class="si">${socIcons[s.platform]||'🌐'}</span>
+          <span>${socNames[s.platform]||s.platform}</span>
+        </a>`;
+      }).join('');
 
-<div class="modal-overlay" id="socialModal" onclick="closeIfOverlay(event,'socialModal')">
-  <div class="modal">
-    <h3>إضافة حساب تواصل</h3>
-    <div class="form-group"><label>المنصة</label>
-      <select id="sPlatform">
-        <option value="instagram">📷 إنستقرام</option>
-        <option value="tiktok">🎵 تيك توك</option>
-        <option value="twitter">✖ تويتر/X</option>
-        <option value="snapchat">👻 سناب شات</option>
-        <option value="youtube">▶ يوتيوب</option>
-        <option value="whatsapp">💬 واتساب</option>
-        <option value="telegram">✈ تيليقرام</option>
-        <option value="linkedin">💼 لينكدإن</option>
-        <option value="facebook">👤 فيسبوك</option>
-        <option value="website">🌐 موقع إلكتروني</option>
-      </select>
-    </div>
-    <div class="form-group"><label id="sInputLabel">اسم المستخدم</label>
-      <input type="text" id="sUsername" placeholder="@username">
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-primary" onclick="saveSocial()">إضافة</button>
-      <button class="btn btn-ghost" onclick="document.getElementById('socialModal').classList.remove('open')">إلغاء</button>
-    </div>
-  </div>
-</div>
+      // Location pill
+      const locationHTML = user.location
+        ? `<a class="location-pill" href="https://maps.google.com/?q=${encodeURIComponent(user.location)}" target="_blank">
+            📍 ${user.location}
+          </a>`
+        : '';
 
-<!-- ══ MODAL: QR ══ -->
+      // Quick buttons
+      const quickHTML = links.map(l =>
+        `<button class="qbtn" onclick="quickGo(${l.num})">${l.num}</button>`
+      ).join('');
 
-<div class="modal-overlay" id="qrModal" onclick="closeIfOverlay(event,'qrModal')">
-  <div class="modal" style="max-width:320px;">
-    <h3 id="qrTitle">الباركود</h3>
-    <div class="qr-center">
-      <div style="position:relative;display:inline-block;" id="qrCanvas"></div>
-      <div class="qr-num-ov" id="qrNumOverlay"></div>
-    </div>
-    <div class="modal-actions" style="margin-top:14px;">
-      <button class="btn btn-primary" onclick="downloadQR()">⬇ تحميل</button>
-      <button class="btn btn-ghost" onclick="document.getElementById('qrModal').classList.remove('open')">إغلاق</button>
-    </div>
-  </div>
-</div>
+      // Featured rotating links (changes every 2 hours)
+      let featuredHTML = '';
+      if (links.length >= 2) {
+        const slot = Math.floor(Date.now() / (2*60*60*1000)); // يتغير كل ساعتين
+        const shuffled = [...links].sort((a,b) => {
+          const ha = hashCode(a.id + '-' + slot);
+          const hb = hashCode(b.id + '-' + slot);
+          return ha - hb;
+        });
+        const picked = shuffled.slice(0, Math.min(3, links.length));
+        featuredHTML = `
+          <div class="featured-section">
+            <div class="featured-title">✨ روابط مميزة</div>
+            <div class="featured-grid">
+              ${picked.map(l => `
+                <a class="featured-card" href="${l.url}" onclick="trackClick('${user.username}',${l.id},event)">
+                  <div class="fnum">${l.num}</div>
+                  <div class="flabel">${l.label}</div>
+                </a>
+              `).join('')}
+            </div>
+          </div>`;
+      }
 
-<!-- TOAST -->
-
-<div class="toast" id="toast"></div>
-
-<!-- ══ FIREBASE + JS ══ -->
-
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
-  authDomain: "electrwni-link.firebaseapp.com",
-  projectId: "electrwni-link",
-  storageBucket: "electrwni-link.firebasestorage.app",
-  messagingSenderId: "712490301263",
-  appId: "1:712490301263:web:2084210da3f687285ab73a"
-};
-if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-// ── Theme ──
-const savedTheme = localStorage.getItem('theme') || 'light';
-document.documentElement.setAttribute('data-theme', savedTheme);
-document.getElementById('themeBtn').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-function toggleTheme() {
-  const c = document.documentElement.getAttribute('data-theme');
-  const n = c === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', n);
-  localStorage.setItem('theme', n);
-  document.getElementById('themeBtn').textContent = n === 'dark' ? '☀️' : '🌙';
-}
-
-// ── State ──
-let user = null;
-let editLinkId = null;
-let selNum = null;
-let currentUsername = localStorage.getItem('elUserUsername') || '';
-let currentPeriod = 'all';
-
-// ── Init ──
-async function init() {
-  if (!localStorage.getItem('elLoggedIn') || !currentUsername) {
-    window.location.href = 'signin.html'; return;
-  }
-  try {
-    const doc = await db.collection('users').doc(currentUsername).get();
-    if (!doc.exists) { window.location.href = 'signin.html'; return; }
-    user = doc.data();
-    if (!user.links) user.links = [];
-    if (!user.socials) user.socials = [];
-    renderSidebar();
-    render();
-  } catch(e) { toast('خطأ: ' + e.message); }
-}
-
-function renderSidebar() {
-  const handle = 'electrwni.link/' + user.username;
-  document.getElementById('sbAvatar').textContent  = (user.displayName||user.username)[0].toUpperCase();
-  document.getElementById('sbName').textContent    = user.displayName || user.username;
-  document.getElementById('sbHandle').textContent  = handle;
-  document.getElementById('bioUrl').textContent    = handle;
-  document.getElementById('previewNavBtn').href    = 'page.html#' + user.username;
-  document.getElementById('pfName').value     = user.displayName || '';
-  document.getElementById('pfUser').value     = user.username    || '';
-  document.getElementById('pfBio').value      = user.bio         || '';
-  document.getElementById('pfEmail').value    = user.email       || '';
-  document.getElementById('pfAvatar').value   = user.avatar      || '';
-  document.getElementById('pfLocation').value = user.location    || '';
-}
-
-async function saveToCloud() {
-  await db.collection('users').doc(currentUsername).set(user, { merge: true });
-}
-
-// ── Render ──
-function render() {
-  const links = (user.links||[]).sort((a,b) => a.num - b.num);
-  const socials = user.socials||[];
-  const totalClicks = links.reduce((s,l) => s+(l.clicks||0), 0);
-  const topLink = [...links].sort((a,b) => (b.clicks||0)-(a.clicks||0))[0];
-
-  document.getElementById('stLinks').textContent  = links.length;
-  document.getElementById('stClicks').textContent = totalClicks;
-  document.getElementById('stTop').textContent    = topLink ? '#'+topLink.num : '—';
-  document.getElementById('stSocials').textContent = socials.length;
-  document.getElementById('aTotal').textContent   = totalClicks;
-  document.getElementById('aTopLink').textContent = topLink ? topLink.label : '—';
-  document.getElementById('aTopClicks').textContent = topLink ? (topLink.clicks||0) : 0;
-  document.getElementById('aActive').textContent  = links.filter(l=>(l.clicks||0)>0).length;
-
-  // ── Link Cards ──
-  const grid = document.getElementById('linksGrid');
-  if (!links.length) {
-    document.getElementById('linksEmpty').style.display = 'block';
-    grid.innerHTML = '';
-  } else {
-    document.getElementById('linksEmpty').style.display = 'none';
-    grid.innerHTML = links.map(l => `
-      <div class="link-mgr-card">
-        <div class="lmc-num"><span class="num-big">${l.num}</span></div>
-        <div class="lmc-body">
-          <div class="lmc-label">${l.label}</div>
-          <div class="lmc-url">${l.url}</div>
-          ${l.desc ? `<div class="lmc-desc">📝 ${l.desc}</div>` : ''}
-        </div>
-        <div class="lmc-stats">
-          <div>
-            <div class="clicks-num">${l.clicks||0}</div>
-            <div class="clicks-label">مشاهدة</div>
+      // Build link cards
+      const linksHTML = links.map(l =>
+        `<a class="link-card" href="${l.url}" onclick="trackClick('${user.username}',${l.id},event)">
+          <div class="link-num">${l.num}</div>
+          <div class="link-info">
+            <div class="link-label">${l.label}</div>
+            ${l.desc ? `<div class="link-desc">${l.desc}</div>` : ''}
           </div>
-        </div>
-        <div class="lmc-actions">
-          <div class="act-row">
-            <button class="btn btn-ghost btn-sm" onclick="openLinkModal(${l.id})">تعديل</button>
-            <button class="btn btn-danger btn-sm" onclick="deleteLink(${l.id})">حذف</button>
+          <div class="link-arrow">→</div>
+        </a>`
+      ).join('');
+
+      document.getElementById('mainContent').innerHTML = `
+        <!-- PROFILE CARD -->
+        <div class="profile-card">
+          <div class="avatar-wrap">
+            <div class="avatar">${avatarHTML}</div>
+            <div class="online-dot"></div>
           </div>
-          <button class="btn-qr" onclick="showQR(${l.id})">█ QR</button>
+          <h1 class="profile-name">${user.displayName || user.username}</h1>
+          <div class="profile-handle">electrwni.link/${user.username}</div>
+          ${user.bio ? `<p class="profile-bio">${user.bio}</p>` : ''}
+          <div class="socials-row">${socialsHTML}</div>
+          ${locationHTML}
+          <div><span class="active-badge"><span class="d"></span> نشط الآن</span></div>
         </div>
-      </div>
-    `).join('');
-  }
 
-  renderAnalytics();
-  renderSocials();
-}
+        ${featuredHTML}
 
-// ── Analytics by period ──
-function getWeekKey(date) {
-  const d = new Date(date);
-  d.setHours(0,0,0,0);
-  d.setDate(d.getDate()+3-(d.getDay()+6)%7);
-  const w1 = new Date(d.getFullYear(),0,4);
-  const wn = 1+Math.round(((d-w1)/86400000-3+(w1.getDay()+6)%7)/7);
-  return d.getFullYear()+'-W'+String(wn).padStart(2,'0');
-}
+        <!-- NUMBER BOX -->
+        <div class="num-section">
+          <div class="num-label">اكتب رقم للانتقال فوراً</div>
+          <div class="num-row">
+            <input class="num-input" type="number" id="numIn" placeholder="0" min="1" max="9" inputmode="numeric">
+            <button class="go-btn" onclick="goNav()">→</button>
+          </div>
+          <div class="err-msg" id="errMsg">⚠ الرقم غير مسجل لهذا الحساب</div>
+          <div class="quick-btns">${quickHTML}</div>
+        </div>
 
-function getClicksForPeriod(link, period) {
-  const now = new Date();
-  if (period === 'all')   return link.clicks || 0;
-  if (period === 'today') return (link.clicksByDay  || {})[now.toISOString().slice(0,10)] || 0;
-  if (period === 'week')  return (link.clicksByWeek || {})[getWeekKey(now)] || 0;
-  if (period === 'month') return (link.clicksByMonth|| {})[now.toISOString().slice(0,7)] || 0;
-  if (period === 'year')  return (link.clicksByYear || {})[now.getFullYear().toString()]  || 0;
-  return 0;
-}
+        <!-- LINKS -->
+        <div class="links-section">${linksHTML}</div>
 
-function setPeriod(p, el) {
-  currentPeriod = p;
-  document.querySelectorAll('.ptab').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
-  renderAnalytics();
-}
+        <div class="page-footer">
+          بواسطة <a href="index.html">electrwni.link</a>
+        </div>
+      `;
 
-function renderAnalytics() {
-  const links = (user.links||[]).sort((a,b) => a.num - b.num);
-  const vals  = links.map(l => getClicksForPeriod(l, currentPeriod));
-  const maxC  = Math.max(...vals, 1);
-  const body  = document.getElementById('analyticsBody');
-  if (!links.length) { body.innerHTML = '<div class="empty"><div class="e-icon">📊</div><p>لا توجد بيانات</p></div>'; return; }
-  body.innerHTML = links.map((l,i) => `
-    <div class="ana-row">
-      <div class="ana-row-top">
-        <div class="ana-num">${l.num}</div>
-        <div class="ana-label">${l.label}</div>
-        <div class="ana-clicks">↗ ${vals[i]} ضغطة</div>
-      </div>
-      <div class="bar-track">
-        <div class="bar-fill" style="width:${Math.round((vals[i]/maxC)*100)}%"></div>
-      </div>
-    </div>
-  `).join('');
-}
+      // Attach input listener
+      document.getElementById('numIn').addEventListener('keydown', e => { if(e.key==='Enter') goNav(); });
+      document.getElementById('numIn').addEventListener('input', () => {
+        document.getElementById('errMsg').classList.remove('show');
+        const v = document.getElementById('numIn').value;
+        if (v.length >= 1) setTimeout(goNav, 400);
+      });
+    }
 
-function renderSocials() {
-  const socials = user.socials||[];
-  const icons = {instagram:'📷',tiktok:'🎵',twitter:'✖',youtube:'▶',snapchat:'👻',whatsapp:'💬',telegram:'✈',linkedin:'💼',facebook:'👤',website:'🌐'};
-  const names = {instagram:'إنستقرام',tiktok:'تيك توك',twitter:'تويتر/X',youtube:'يوتيوب',snapchat:'سناب شات',whatsapp:'واتساب',telegram:'تيليقرام',linkedin:'لينكدإن',facebook:'فيسبوك',website:'موقع'};
-  if (!socials.length) {
-    document.getElementById('socialsEmpty').style.display = 'block';
-    document.getElementById('socialsTableEl').style.display = 'none';
-  } else {
-    document.getElementById('socialsEmpty').style.display = 'none';
-    document.getElementById('socialsTableEl').style.display = '';
-    document.getElementById('socialsTbody').innerHTML = socials.map(s => `
-      <tr>
-        <td>${icons[s.platform]||'🌐'} <strong>${names[s.platform]||s.platform}</strong></td>
-        <td style="font-family:'Space Mono',monospace;font-size:.82rem;direction:ltr;text-align:right;color:var(--accent);">${s.username}</td>
-        <td><button class="btn btn-danger btn-sm" onclick="deleteSocial('${s.id}')">حذف</button></td>
-      </tr>
-    `).join('');
-  }
-}
+    function goNav() { navigate(parseInt(document.getElementById('numIn').value)); }
+    function quickGo(n) { document.getElementById('numIn').value = n; navigate(n); }
 
-// ── Pages ──
-function showPage(name, el) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
-  if (el) el.classList.add('active');
-  const cfg = {
-    links:     ['مدير الروابط','أضف وعدّل روابطك المرقّمة',true],
-    analytics: ['الإحصائيات','أداء روابطك عبر الزمن',false],
-    socials:   ['شبكات التواصل','روابط حساباتك الاجتماعية',false],
-    profile:   ['الملف الشخصي','تعديل معلوماتك وهويتك',false]
-  };
-  const c = cfg[name];
-  document.getElementById('pageTitle').textContent = c[0];
-  document.getElementById('pageSub').textContent   = c[1];
-  document.getElementById('topAction').style.display = c[2] ? '' : 'none';
-}
+    function navigate(n) {
+      if (!n) return;
+      const lnk = userLinks.find(l => l.num === n);
+      if (lnk) {
+        trackClick(pageUsername, lnk.id, null);
+        window.location.href = lnk.url;
+      } else {
+        const inp = document.getElementById('numIn');
+        inp.classList.add('shake');
+        document.getElementById('errMsg').classList.add('show');
+        setTimeout(() => inp.classList.remove('shake'), 400);
+      }
+    }
 
-// ── Link CRUD ──
-function openLinkModal(id=null) {
-  editLinkId = id; selNum = null;
-  const links = user.links||[];
-  const taken = links.filter(l => l.id!==id).map(l => l.num);
-  let html = '';
-  for (let i=1; i<=9; i++) {
-    const t = taken.includes(i);
-    html += `<button class="npick${t?' taken':''}" ${t?'disabled':''} onclick="pickNum(${i},this)">${i}</button>`;
-  }
-  document.getElementById('numPicker').innerHTML = html;
-  if (id) {
-    const lnk = links.find(l => l.id===id);
-    document.getElementById('linkModalTitle').textContent = 'تعديل الرابط';
-    document.getElementById('mLabel').value = lnk.label;
-    document.getElementById('mDesc').value  = lnk.desc||'';
-    document.getElementById('mUrl').value   = lnk.url;
-    selNum = lnk.num;
-    setTimeout(() => { document.querySelectorAll('.npick').forEach(b => { if(parseInt(b.textContent)===lnk.num) b.classList.add('sel'); }); }, 30);
-  } else {
-    document.getElementById('linkModalTitle').textContent = 'إضافة رابط جديد';
-    document.getElementById('mLabel').value = '';
-    document.getElementById('mDesc').value  = '';
-    document.getElementById('mUrl').value   = '';
-  }
-  document.getElementById('linkModal').classList.add('open');
-}
-function closeLinkModal() { document.getElementById('linkModal').classList.remove('open'); }
-function pickNum(n,btn) { document.querySelectorAll('.npick').forEach(b=>b.classList.remove('sel')); btn.classList.add('sel'); selNum=n; }
+    async function trackClick(username, linkId, event) {
+      if (event) event.preventDefault();
+      try {
+        const ref = db.collection('users').doc(username);
+        await db.runTransaction(async tx => {
+          const doc = await tx.get(ref);
+          if (!doc.exists) return;
+          let links = doc.data().links || [];
+          
+          // Track total clicks
+          const i = links.findIndex(l => l.id === linkId);
+          if (i !== -1) {
+            links[i].clicks = (links[i].clicks || 0) + 1;
+            
+            // Track clicks by period
+            const now = new Date();
+            const todayKey = now.toISOString().slice(0,10); // YYYY-MM-DD
+            const weekKey  = getWeekKey(now);
+            const monthKey = now.toISOString().slice(0,7);  // YYYY-MM
+            const yearKey  = now.getFullYear().toString();
 
-async function saveLink() {
-  const label = document.getElementById('mLabel').value.trim();
-  const desc  = document.getElementById('mDesc').value.trim();
-  const url   = document.getElementById('mUrl').value.trim();
-  if (!selNum) { toast('⚠ اختر رقماً'); return; }
-  if (!label)  { toast('⚠ أدخل اسم الرابط'); return; }
-  if (!url.startsWith('http')) { toast('⚠ الرابط يجب أن يبدأ بـ https://'); return; }
-  if (!user.links) user.links = [];
-  if (editLinkId) {
-    const i = user.links.findIndex(l => l.id===editLinkId);
-    user.links[i] = {...user.links[i], num:selNum, label, desc, url};
-    toast('✅ تم تحديث الرابط');
-  } else {
-    user.links.push({id:Date.now(), num:selNum, label, desc, url, clicks:0});
-    toast('✅ تم إضافة الرابط');
-  }
-  await saveToCloud(); closeLinkModal(); render();
-}
+            if (!links[i].clicksByDay)   links[i].clicksByDay   = {};
+            if (!links[i].clicksByWeek)  links[i].clicksByWeek  = {};
+            if (!links[i].clicksByMonth) links[i].clicksByMonth = {};
+            if (!links[i].clicksByYear)  links[i].clicksByYear  = {};
 
-async function deleteLink(id) {
-  if (!confirm('حذف هذا الرابط؟')) return;
-  user.links = user.links.filter(l => l.id!==id);
-  await saveToCloud(); render(); toast('🗑 تم الحذف');
-}
+            links[i].clicksByDay[todayKey]   = (links[i].clicksByDay[todayKey]   || 0) + 1;
+            links[i].clicksByWeek[weekKey]   = (links[i].clicksByWeek[weekKey]   || 0) + 1;
+            links[i].clicksByMonth[monthKey] = (links[i].clicksByMonth[monthKey] || 0) + 1;
+            links[i].clicksByYear[yearKey]   = (links[i].clicksByYear[yearKey]   || 0) + 1;
 
-// ── Social CRUD ──
-function openSocialModal() { document.getElementById('sUsername').value=''; document.getElementById('socialModal').classList.add('open'); }
-document.getElementById('sPlatform').addEventListener('change', function() {
-  const wa = this.value==='whatsapp', web = this.value==='website';
-  document.getElementById('sInputLabel').textContent = wa?'رقم الهاتف (مع كود الدولة)':web?'الرابط الكامل':'اسم المستخدم';
-  document.getElementById('sUsername').placeholder = wa?'+966xxxxxxxxx':web?'https://example.com':'@username';
-});
-async function saveSocial() {
-  const p = document.getElementById('sPlatform').value;
-  const u = document.getElementById('sUsername').value.trim();
-  if (!u) { toast('⚠ أدخل اسم المستخدم'); return; }
-  if (!user.socials) user.socials=[];
-  user.socials.push({id:Date.now()+'', platform:p, username:u});
-  await saveToCloud();
-  document.getElementById('socialModal').classList.remove('open');
-  render(); toast('✅ تمت الإضافة');
-}
-async function deleteSocial(id) {
-  user.socials = user.socials.filter(s=>s.id!==id);
-  await saveToCloud(); render(); toast('🗑 تم الحذف');
-}
+            tx.update(ref, { links });
+          }
+        });
+      } catch(e) { console.error('track error', e); }
 
-// ── QR ──
-function showQR(id) {
-  const lnk = user.links.find(l=>l.id===id);
-  if (!lnk) return;
-  document.getElementById('qrTitle').textContent = 'باركود رابط #'+lnk.num+': '+lnk.label;
-  const c = document.getElementById('qrCanvas');
-  c.innerHTML = '';
-  document.getElementById('qrNumOverlay').textContent = lnk.num;
-  new QRCode(c,{text:lnk.url,width:200,height:200,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.H});
-  document.getElementById('qrModal').classList.add('open');
-}
-function downloadQR() {
-  const c = document.querySelector('#qrCanvas canvas');
-  if (!c) { toast('⏳ انتظر لحظة'); return; }
-  const a = document.createElement('a');
-  a.download = 'qr-electrwni.png'; a.href = c.toDataURL(); a.click();
-  toast('✅ تم التحميل');
-}
+      // Navigate after tracking
+      const lnk = userLinks.find(l => l.id === linkId);
+      if (lnk) window.location.href = lnk.url;
+    }
 
-// ── Profile ──
-async function saveProfile() {
-  const newUsername = document.getElementById('pfUser').value.trim().toLowerCase();
-  user.displayName = document.getElementById('pfName').value.trim();
-  user.bio         = document.getElementById('pfBio').value.trim();
-  user.email       = document.getElementById('pfEmail').value.trim().toLowerCase();
-  user.avatar      = document.getElementById('pfAvatar').value.trim();
-  user.location    = document.getElementById('pfLocation').value.trim();
+    function getWeekKey(date) {
+      const d = new Date(date);
+      d.setHours(0,0,0,0);
+      d.setDate(d.getDate() + 3 - (d.getDay()+6)%7);
+      const week1 = new Date(d.getFullYear(), 0, 4);
+      const wn = 1 + Math.round(((d-week1)/86400000 - 3 + (week1.getDay()+6)%7)/7);
+      return d.getFullYear() + '-W' + String(wn).padStart(2,'0');
+    }
 
-  if (newUsername && newUsername !== currentUsername) {
-    user.username = newUsername;
-    await db.collection('users').doc(newUsername).set(user);
-    await db.collection('users').doc(currentUsername).delete();
-    currentUsername = newUsername;
-    localStorage.setItem('elUserUsername', newUsername);
-  } else {
-    await saveToCloud();
-  }
-  renderSidebar(); toast('✅ تم حفظ التغييرات');
-}
+    function showNotFound() {
+      document.getElementById('mainContent').style.display = 'none';
+      document.getElementById('notFoundContent').style.display = 'block';
+    }
 
-// ── Helpers ──
-function copyLink() {
-  navigator.clipboard.writeText('https://'+document.getElementById('bioUrl').textContent).then(()=>toast('📋 تم نسخ الرابط'));
-}
-function openPageInNew() { window.open('page.html#'+user.username,'_blank'); }
-function shareLink() {
-  if (navigator.share) navigator.share({title:user.displayName, url:'https://'+document.getElementById('bioUrl').textContent});
-  else copyLink();
-}
-function logout() { localStorage.removeItem('elLoggedIn'); localStorage.removeItem('elUserUsername'); window.location.href='signin.html'; }
-function closeIfOverlay(e,id) { if(e.target.id===id) document.getElementById(id).classList.remove('open'); }
-function toast(msg) {
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2600);
-}
-
-init();
-</script>
-
+    init();
+  </script>
 </body>
 </html>
