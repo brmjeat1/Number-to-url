@@ -1,154 +1,165 @@
 <!DOCTYPE html>
-
 <html lang="ar" dir="rtl" data-theme="light">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>تسجيل الدخول — electrwni.link</title>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    :root{--bg:#f0f4ff;--bg2:#e8eeff;--surface:rgba(255,255,255,0.85);--border:rgba(100,130,255,0.2);--accent:#3d5af1;--accent2:#e8436a;--accent-light:rgba(61,90,241,0.1);--text:#0f1535;--text2:#3a4270;--muted:#7b84b0;--glass:rgba(255,255,255,0.7);--error:#e8436a;}
-    [data-theme="dark"]{--bg:#050810;--bg2:#080d1a;--surface:rgba(15,20,50,0.85);--border:rgba(100,130,255,0.2);--accent:#6c8fff;--accent2:#ff6584;--accent-light:rgba(108,143,255,0.1);--text:#e8eeff;--text2:#a0aad0;--muted:#5a6490;--glass:rgba(15,20,50,0.7);--error:#ff6584;}
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;transition:background .4s,color .4s;}
-    body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 600px 500px at 30% 10%,rgba(61,90,241,0.07),transparent),radial-gradient(ellipse 500px 400px at 70% 90%,rgba(232,67,106,0.05),transparent);}
-    nav{position:relative;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px 40px;border-bottom:1px solid var(--border);background:var(--glass);backdrop-filter:blur(16px);}
-    .logo{font-family:'Space Mono',monospace;font-size:1.1rem;color:var(--accent);text-decoration:none;}
-    .logo em{color:var(--accent2);font-style:normal;}
-    .theme-toggle{width:36px;height:36px;border-radius:8px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:1rem;cursor:pointer;transition:all .2s;}
-    .page-wrap{flex:1;position:relative;z-index:5;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
-    .card{background:var(--surface);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:24px;padding:44px 40px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(61,90,241,0.12);}
-    .card-header{text-align:center;margin-bottom:32px;}
-    .card-header .icon{font-size:2.5rem;margin-bottom:10px;}
-    .card-header h1{font-size:1.8rem;font-weight:900;margin-bottom:6px;}
-    .card-header p{color:var(--muted);font-size:0.9rem;}
-    .form-group{margin-bottom:20px;}
-    label{display:block;font-size:0.85rem;font-weight:700;margin-bottom:7px;color:var(--text2);}
-    input[type=email],input[type=password]{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:0.97rem;outline:none;transition:border-color .2s,box-shadow .2s;}
-    input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light);}
-    .err-banner{background:rgba(232,67,106,0.1);border:1px solid rgba(232,67,106,0.2);color:var(--error);padding:12px;border-radius:10px;font-size:0.88rem;margin-bottom:20px;display:none;text-align:center;font-weight:700;}
-    .err-banner.show{display:block;}
-    .btn-submit{width:100%;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:14px;font-family:'Tajawal',sans-serif;font-size:1.05rem;font-weight:700;cursor:pointer;margin-top:4px;transition:all .2s;box-shadow:0 4px 20px rgba(61,90,241,0.3);}
-    .btn-submit:hover{filter:brightness(1.1);transform:translateY(-1px);}
-    .btn-submit:disabled{opacity:.5;cursor:not-allowed;transform:none;}
-    .btn-quick{width:100%;background:transparent;color:var(--text2);border:1.5px dashed var(--border);border-radius:10px;padding:12px;font-family:'Tajawal',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;margin-top:12px;transition:all .2s;}
-    .btn-quick:hover{background:var(--bg2);color:var(--accent);}
-    .alt-link{text-align:center;font-size:0.88rem;color:var(--muted);margin-top:20px;}
-    .alt-link a{color:var(--accent);text-decoration:none;font-weight:700;}
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>تسجيل الدخول — electrwni.link</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f0f4ff;--bg2:#e8eeff;--surface:rgba(255,255,255,0.85);--border:rgba(100,130,255,0.2);--accent:#3d5af1;--accent2:#e8436a;--accent-light:rgba(61,90,241,0.1);--text:#0f1535;--text2:#3a4270;--muted:#7b84b0;--glass:rgba(255,255,255,0.7);--error:#e8436a;--success:#0ab87a;}
+[data-theme="dark"]{--bg:#050810;--bg2:#080d1a;--surface:rgba(15,20,50,0.85);--border:rgba(100,130,255,0.2);--accent:#6c8fff;--accent2:#ff6584;--accent-light:rgba(108,143,255,0.1);--text:#e8eeff;--text2:#a0aad0;--muted:#5a6490;--glass:rgba(15,20,50,0.7);--error:#ff6584;--success:#4ecca3;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 600px 500px at 30% 10%,rgba(61,90,241,0.07),transparent),radial-gradient(ellipse 500px 400px at 70% 90%,rgba(232,67,106,0.05),transparent);}
+nav{position:relative;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px 40px;border-bottom:1px solid var(--border);background:var(--glass);backdrop-filter:blur(10px);}
+.logo{font-family:'Space Mono',monospace;font-size:1.1rem;color:var(--accent);text-decoration:none;}
+.logo em{color:var(--accent2);font-style:normal;}
+.theme-toggle{width:36px;height:36px;border-radius:8px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:1rem;cursor:pointer;}
+.page-wrap{flex:1;position:relative;z-index:5;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+.card{background:var(--surface);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:24px;padding:40px 36px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(61,90,241,0.12);}
+.card-header{text-align:center;margin-bottom:28px;}
+.card-header .icon{font-size:2.4rem;margin-bottom:8px;}
+.card-header h1{font-size:1.7rem;font-weight:900;margin-bottom:6px;}
+.card-header p{color:var(--muted);font-size:0.88rem;}
+.form-group{margin-bottom:18px;}
+label{display:block;font-size:0.84rem;font-weight:700;margin-bottom:6px;color:var(--text2);}
+input[type=email],input[type=password]{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:0.96rem;outline:none;}
+input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light);}
+.err-banner{background:rgba(232,67,106,0.1);border:1px solid rgba(232,67,106,0.2);color:var(--error);padding:11px;border-radius:10px;font-size:0.85rem;margin-bottom:16px;display:none;text-align:center;font-weight:700;line-height:1.6;}
+.err-banner.show{display:block;}
+.err-banner a{color:var(--error);text-decoration:underline;font-weight:900;}
+.info-banner{background:rgba(10,184,122,0.08);border:1px solid rgba(10,184,122,0.2);color:var(--success);padding:11px;border-radius:10px;font-size:0.85rem;margin-bottom:16px;display:none;text-align:center;font-weight:700;}
+.info-banner.show{display:block;}
+.btn-submit{width:100%;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:13px;font-family:'Tajawal',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;margin-top:4px;box-shadow:0 4px 20px rgba(61,90,241,0.3);}
+.btn-submit:hover{filter:brightness(1.1);}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;}
+.btn-quick{width:100%;background:transparent;color:var(--text2);border:1.5px dashed var(--border);border-radius:10px;padding:11px;font-family:'Tajawal',sans-serif;font-size:0.92rem;font-weight:700;cursor:pointer;margin-top:12px;}
+.btn-quick:hover{background:var(--bg2);color:var(--accent);}
+.alt-link{text-align:center;font-size:0.86rem;color:var(--muted);margin-top:18px;}
+.alt-link a{color:var(--accent);text-decoration:none;font-weight:700;}
+</style>
 </head>
 <body>
-  <nav>
-    <a href="index.html" class="logo">electrwni<em>.link</em></a>
-    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
-  </nav>
-  <div class="page-wrap">
-    <div class="card">
-      <div class="card-header">
-        <div class="icon">🔑</div>
-        <h1>تسجيل الدخول</h1>
-        <p>مرحباً بك مجدداً في لوحتك الرقمية</p>
-      </div>
-      <div class="err-banner" id="errBanner">البريد الإلكتروني أو كلمة المرور غير صحيحة!</div>
-      <form id="signinForm">
-        <div class="form-group">
-          <label>البريد الإلكتروني</label>
-          <input type="email" id="email" placeholder="you@example.com" required autocomplete="email">
-        </div>
-        <div class="form-group">
-          <label>كلمة المرور</label>
-          <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
-        </div>
-        <button type="submit" class="btn-submit" id="signinBtn">تسجيل الدخول ✦</button>
-        <button type="button" class="btn-quick" id="quickBtn">الدخول السريع (حساب تجريبي) ⚡</button>
-      </form>
-      <div class="alt-link">ليس لديك حساب؟ <a href="signup.html">أنشئ حساباً جديداً</a></div>
-    </div>
+<nav><a href="index.html" class="logo">electrwni<em>.link</em></a><button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button></nav>
+<div class="page-wrap">
+  <div class="card">
+    <div class="card-header"><div class="icon">🔑</div><h1>تسجيل الدخول</h1><p>مرحباً بك مجدداً في لوحتك الرقمية</p></div>
+    <div class="err-banner" id="errBanner"></div>
+    <div class="info-banner" id="infoBanner"></div>
+    <form id="signinForm">
+      <div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="email" placeholder="you@example.com" required autocomplete="email" dir="ltr"></div>
+      <div class="form-group"><label>كلمة المرور</label><input type="password" id="password" placeholder="••••••••" required autocomplete="current-password"></div>
+      <button type="submit" class="btn-submit" id="signinBtn">تسجيل الدخول ✦</button>
+      <button type="button" class="btn-quick" id="quickBtn">الدخول السريع (حساب تجريبي) ⚡</button>
+    </form>
+    <div class="alt-link">ليس لديك حساب؟ <a href="signup.html">أنشئ حساباً جديداً</a></div>
   </div>
+</div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
+  authDomain: "electrwni-link.firebaseapp.com",
+  projectId: "electrwni-link",
+  storageBucket: "electrwni-link.firebasestorage.app",
+  messagingSenderId: "712490301263",
+  appId: "1:712490301263:web:2084210da3f687285ab73a"
+};
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
 
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+const th = localStorage.getItem('theme') || 'light';
+document.documentElement.setAttribute('data-theme', th);
+document.getElementById('themeBtn').textContent = th==='dark'?'☀️':'🌙';
+function toggleTheme(){const c=document.documentElement.getAttribute('data-theme');const n=c==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);localStorage.setItem('theme',n);document.getElementById('themeBtn').textContent=n==='dark'?'☀️':'🌙';}
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
-      authDomain: "electrwni-link.firebaseapp.com",
-      projectId: "electrwni-link",
-      storageBucket: "electrwni-link.firebasestorage.app",
-      messagingSenderId: "712490301263",
-      appId: "1:712490301263:web:2084210da3f687285ab73a"
-    };
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+function showErr(html){const b=document.getElementById('errBanner');b.innerHTML=html;b.classList.add('show');document.getElementById('infoBanner').classList.remove('show');}
+function showInfo(msg){const b=document.getElementById('infoBanner');b.textContent=msg;b.classList.add('show');document.getElementById('errBanner').classList.remove('show');}
 
-    const th = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', th);
-    document.getElementById('themeBtn').textContent = th === 'dark' ? '☀️' : '🌙';
-    function toggleTheme() {
-      const c = document.documentElement.getAttribute('data-theme');
-      const n = c === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', n);
-      localStorage.setItem('theme', n);
-      document.getElementById('themeBtn').textContent = n === 'dark' ? '☀️' : '🌙';
-    }
+let pendingUser=null; // مستخدم لم يؤكد بريده بعد (لإعادة إرسال التأكيد)
 
-    async function handleSignin(e) {
-      e.preventDefault();
-      document.getElementById('errBanner').classList.remove('show');
-      const email    = document.getElementById('email').value.trim().toLowerCase();
-      const password = document.getElementById('password').value;
-      if (!email || !password) return;
+async function handleSignin(e){
+  e.preventDefault();
+  document.getElementById('errBanner').classList.remove('show');
+  document.getElementById('infoBanner').classList.remove('show');
 
-      const btn = document.getElementById('signinBtn');
-      btn.textContent = '⏳ جاري التحقق...'; btn.disabled = true;
+  const email=document.getElementById('email').value.trim().toLowerCase();
+  const password=document.getElementById('password').value;
+  if(!email||!password)return;
 
-      try {
-        const snap = await db.collection('users')
-          .where('email', '==', email)
-          .where('password', '==', password)
-          .get();
+  const btn=document.getElementById('signinBtn');
+  btn.textContent='⏳ جاري التحقق...'; btn.disabled=true;
 
-        if (!snap.empty) {
-          const userData = snap.docs[0].data();
-          localStorage.setItem('elLoggedIn', '1');
-          localStorage.setItem('elUserUsername', userData.username);
-          window.location.href = 'dashboard.html';
-        } else {
-          document.getElementById('errBanner').classList.add('show');
-          btn.textContent = 'تسجيل الدخول ✦'; btn.disabled = false;
-        }
-      } catch (err) {
-        document.getElementById('errBanner').textContent = 'خطأ في الاتصال: ' + err.message;
-        document.getElementById('errBanner').classList.add('show');
-        btn.textContent = 'تسجيل الدخول ✦'; btn.disabled = false;
-      }
-    }
+  try{
+    const cred=await auth.signInWithEmailAndPassword(email,password);
 
-    async function quickLogin() {
-      const demoData = {
-        username: 'demo', displayName: 'حساب تجريبي',
-        email: 'demo@electrwni.link', password: 'demo1234',
-        bio: 'هذه صفحة تجريبية لـ electrwni.link',
-        links: [
-          {id:1, num:1, label:'العروض', url:'https://example.com/deals', desc:'أحدث العروض', clicks:42},
-          {id:2, num:2, label:'تواصل معنا', url:'https://wa.me/966500000000', desc:'واتساب مباشر', clicks:18},
-          {id:3, num:3, label:'المتجر', url:'https://example.com', desc:'متجرنا الرئيسي', clicks:73},
-        ],
-        socials: [
-          {id:'ig', platform:'instagram', username:'demo_ig'},
-          {id:'tt', platform:'tiktok', username:'demo_tt'},
-        ]
+    // تحقق من تفعيل البريد
+    if(!cred.user.emailVerified){
+      pendingUser=cred.user;
+      await auth.signOut();
+      showErr('⚠ لم تؤكد بريدك الإلكتروني بعد. تحقق من رسالة التأكيد في بريدك. <a href="#" id="resendLink">إعادة إرسال الرابط</a>');
+      document.getElementById('resendLink').onclick=async(ev)=>{
+        ev.preventDefault();
+        try{
+          await auth.signInWithEmailAndPassword(email,password);
+          await auth.currentUser.sendEmailVerification();
+          await auth.signOut();
+          showInfo('✅ تم إرسال رابط التأكيد مرة أخرى — تحقق من بريدك');
+        }catch(e2){showErr('تعذر إعادة الإرسال: '+e2.message);}
       };
-      try { await db.collection('users').doc('demo').set(demoData, { merge: true }); } catch(e) {}
-      localStorage.setItem('elLoggedIn', '1');
-      localStorage.setItem('elUserUsername', 'demo');
-      window.location.href = 'dashboard.html';
+      btn.textContent='تسجيل الدخول ✦'; btn.disabled=false;
+      return;
     }
 
-    document.getElementById('signinForm').addEventListener('submit', handleSignin);
-    document.getElementById('quickBtn').addEventListener('click', quickLogin);
-  </script>
+    // البحث عن بيانات المستخدم في Firestore بواسطة authUid
+    const snap=await db.collection('users').where('authUid','==',cred.user.uid).limit(1).get();
+    if(snap.empty){
+      showErr('لم يتم العثور على بيانات حسابك. تواصل مع الدعم.');
+      await auth.signOut();
+      btn.textContent='تسجيل الدخول ✦'; btn.disabled=false;
+      return;
+    }
+    const userData=snap.docs[0].data();
+    localStorage.setItem('elLoggedIn','1');
+    localStorage.setItem('elUserUsername',userData.username);
+    window.location.href='dashboard.html';
 
+  }catch(err){
+    let msg='البريد الإلكتروني أو كلمة المرور غير صحيحة';
+    if(err.code==='auth/too-many-requests')msg='عدد محاولات كبير، حاول لاحقاً';
+    if(err.code==='auth/user-not-found'||err.code==='auth/wrong-password'||err.code==='auth/invalid-credential')msg='البريد الإلكتروني أو كلمة المرور غير صحيحة';
+    showErr(msg);
+    btn.textContent='تسجيل الدخول ✦'; btn.disabled=false;
+  }
+}
+
+// ── حساب تجريبي: مباشر بدون Firebase Auth ──
+async function quickLogin(){
+  const demoData={
+    username:'demo', displayName:'حساب تجريبي', email:'demo@electrwni.link',
+    bio:'هذه صفحة تجريبية لـ electrwni.link', phone:'+96500000000',
+    links:[
+      {id:1,num:1,label:'العروض',url:'https://example.com/deals',desc:'',clicks:42},
+      {id:2,num:2,label:'تواصل معنا',url:'https://wa.me/96500000000',desc:'',clicks:18},
+      {id:3,num:3,label:'المتجر',url:'https://example.com',desc:'',clicks:73},
+    ],
+    socials:[
+      {id:'ig',platform:'instagram',username:'demo_ig'},
+      {id:'tt',platform:'tiktok',username:'demo_tt'},
+    ]
+  };
+  try{ await db.collection('users').doc('demo').set(demoData,{merge:true}); }catch(e){}
+  localStorage.setItem('elLoggedIn','1');
+  localStorage.setItem('elUserUsername','demo');
+  window.location.href='dashboard.html';
+}
+
+document.getElementById('signinForm').addEventListener('submit',handleSignin);
+document.getElementById('quickBtn').addEventListener('click',quickLogin);
+</script>
 </body>
 </html>
