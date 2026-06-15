@@ -3,55 +3,88 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>تسجيل الدخول — electrwni.link</title>
+<title>لوحة الإدارة — electrwni.link</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f0f4ff;--bg2:#e8eeff;--surface:rgba(255,255,255,0.85);--border:rgba(100,130,255,0.2);--accent:#3d5af1;--accent2:#c9a961;--accent-light:rgba(61,90,241,0.1);--text:#0f1535;--text2:#3a4270;--muted:#7b84b0;--glass:rgba(255,255,255,0.7);--error:#e8436a;--success:#0ab87a;}
-[data-theme="dark"]{--bg:#050810;--bg2:#080d1a;--surface:rgba(15,20,50,0.85);--border:rgba(100,130,255,0.2);--accent:#6c8fff;--accent2:#d9c08a;--accent-light:rgba(108,143,255,0.1);--text:#e8eeff;--text2:#a0aad0;--muted:#5a6490;--glass:rgba(15,20,50,0.7);--error:#ff6584;--success:#4ecca3;}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
-body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 600px 500px at 30% 10%,rgba(61,90,241,0.07),transparent),radial-gradient(ellipse 500px 400px at 70% 90%,rgba(232,67,106,0.05),transparent);}
-nav{position:relative;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:16px 40px;border-bottom:1px solid var(--border);background:var(--glass);backdrop-filter:blur(10px);}
-.logo{font-family:'Space Mono',monospace;font-size:1.1rem;color:var(--accent);text-decoration:none;}
-.logo em{color:var(--accent2);font-style:normal;}
-.theme-toggle{width:36px;height:36px;border-radius:8px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:1rem;cursor:pointer;}
-.page-wrap{flex:1;position:relative;z-index:5;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
-.card{background:var(--surface);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:24px;padding:40px 36px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(61,90,241,0.12);}
-.card-header{text-align:center;margin-bottom:28px;}
-.card-header .icon{font-size:2.4rem;margin-bottom:8px;}
-.card-header h1{font-size:1.7rem;font-weight:900;margin-bottom:6px;}
-.card-header p{color:var(--muted);font-size:0.88rem;}
-.form-group{margin-bottom:18px;}
-label{display:block;font-size:0.84rem;font-weight:700;margin-bottom:6px;color:var(--text2);}
-input[type=email],input[type=password]{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:0.96rem;outline:none;}
-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light);}
-.err-banner{background:rgba(232,67,106,0.1);border:1px solid rgba(232,67,106,0.2);color:var(--error);padding:11px;border-radius:10px;font-size:0.85rem;margin-bottom:16px;display:none;text-align:center;font-weight:700;line-height:1.6;}
-.err-banner.show{display:block;}
-.err-banner a{color:var(--error);text-decoration:underline;font-weight:900;}
-.info-banner{background:rgba(10,184,122,0.08);border:1px solid rgba(10,184,122,0.2);color:var(--success);padding:11px;border-radius:10px;font-size:0.85rem;margin-bottom:16px;display:none;text-align:center;font-weight:700;}
-.info-banner.show{display:block;}
-.btn-submit{width:100%;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:13px;font-family:'Tajawal',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;margin-top:4px;box-shadow:0 4px 20px rgba(61,90,241,0.3);}
-.btn-submit:hover{filter:brightness(1.1);}
-.btn-submit:disabled{opacity:.5;cursor:not-allowed;}
-.btn-quick{width:100%;background:transparent;color:var(--text2);border:1.5px dashed var(--border);border-radius:10px;padding:11px;font-family:'Tajawal',sans-serif;font-size:0.92rem;font-weight:700;cursor:pointer;margin-top:12px;}
-.btn-quick:hover{background:var(--bg2);color:var(--accent);}
-.alt-link{text-align:center;font-size:0.86rem;color:var(--muted);margin-top:18px;}
-.alt-link a{color:var(--accent);text-decoration:none;font-weight:700;}
+:root{--bg:#f0f4ff;--text:#0f1535;--text2:#3a4270;--accent:#3d5af1;--accent2:#c9a961;--border:rgba(100,130,255,0.18);--surface:#ffffff;--muted:#7b84b0;--error:#e8436a;}
+[data-theme="dark"]{--bg:#050810;--text:#e8eeff;--text2:#a0aad0;--accent:#6c8fff;--accent2:#d9c08a;--border:rgba(100,130,255,0.16);--surface:rgba(12,18,45,0.9);--muted:#5a6490;--error:#ff6584;}
+*{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation;}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+nav{display:flex;justify-content:space-between;align-items:center;padding:16px 40px;border-bottom:1px solid var(--border);background:var(--surface);}
+.logo{font-family:'Space Mono',monospace;font-size:1.1rem;color:var(--accent);text-decoration:none;font-weight:700;}
+.logo em{color:var(--accent2);}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.btn{padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;font-size:0.85rem;transition:transform .15s;}
+.btn:active{transform:scale(0.96);}
+.btn-primary{background:var(--accent);color:#fff;}
+.container{max-width:1200px;margin:0 auto;padding:40px 20px;}
+h1{font-size:2rem;margin-bottom:10px;}
+.subtitle{color:var(--muted);margin-bottom:30px;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:40px;}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;}
+.stat-num{font-size:2rem;font-weight:900;color:var(--accent);}
+.stat-label{color:var(--muted);font-size:0.85rem;margin-top:6px;}
+.search-box{margin-bottom:20px;}
+input{width:100%;max-width:400px;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'Tajawal',sans-serif;background:var(--surface);color:var(--text);outline:none;}
+input:focus{border-color:var(--accent);}
+table{width:100%;border-collapse:collapse;background:var(--surface);border-radius:12px;overflow:hidden;border:1px solid var(--border);}
+th,td{padding:14px;text-align:right;border-bottom:1px solid var(--border);}
+th{font-weight:900;background:rgba(100,130,255,0.08);}
+tr:last-child td{border:none;}
+.user-link{color:var(--accent);text-decoration:none;font-weight:700;}
+.badge{display:inline-block;padding:4px 10px;border-radius:100px;font-size:0.75rem;font-weight:700;}
+.badge-ok{background:rgba(10,184,122,0.2);color:#0ab87a;}
+.footer{text-align:center;color:var(--muted);font-size:0.8rem;margin-top:60px;padding-top:20px;border-top:1px solid var(--border);}
 </style>
 </head>
 <body>
-<nav><a href="index.html" class="logo">electrwni<em>.link</em></a><button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button></nav>
-<div class="page-wrap">
-  <div class="card">
-    <div class="card-header"><div class="icon">🔑</div><h1>تسجيل الدخول</h1><p>مرحباً بك مجدداً في لوحتك الرقمية</p></div>
-    <div class="err-banner" id="errBanner"></div>
-    <div class="info-banner" id="infoBanner"></div>
-    <form id="signinForm">
-      <div class="form-group"><label>البريد الإلكتروني أو اسم المستخدم</label><input type="email" id="email" placeholder="example@mail.com أو username" required autocomplete="off" dir="ltr"></div>
-      <div class="form-group"><label>كلمة المرور</label><input type="password" id="password" placeholder="••••••••" required autocomplete="current-password"></div>
-      <button type="submit" class="btn-submit" id="signinBtn">تسجيل الدخول ✦</button>
-    </form>
-    <div class="alt-link">ليس لديك حساب؟ <a href="signup.html">أنشئ حساباً جديداً</a></div>
+<nav>
+  <a href="index.html" class="logo">electrwni<em>.link</em></a>
+  <div class="nav-right">
+    <button class="btn btn-primary" onclick="logout()">خروج</button>
+  </div>
+</nav>
+
+<div class="container">
+  <h1>لوحة الإدارة</h1>
+  <p class="subtitle">إدارة المستخدمين والإحصائيات</p>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num" id="totalUsers">0</div>
+      <div class="stat-label">المستخدمين</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="totalLinks">0</div>
+      <div class="stat-label">الروابط</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="totalClicks">0</div>
+      <div class="stat-label">الضغطات</div>
+    </div>
+  </div>
+
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="البحث عن مستخدم..." oninput="filterUsers()">
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>المستخدم</th>
+        <th>الاسم</th>
+        <th>البريد</th>
+        <th>الروابط</th>
+        <th>الضغطات</th>
+        <th>التاريخ</th>
+        <th>الحالة</th>
+      </tr>
+    </thead>
+    <tbody id="usersList"></tbody>
+  </table>
+
+  <div class="footer">
+    <p>© 2026 electrwni.link Admin Panel</p>
   </div>
 </div>
 
@@ -59,95 +92,73 @@ input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light);
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
-  authDomain: "electrwni-link.firebaseapp.com",
-  projectId: "electrwni-link",
-  storageBucket: "electrwni-link.firebasestorage.app",
-  messagingSenderId: "712490301263",
-  appId: "1:712490301263:web:2084210da3f687285ab73a"
-};
-if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+const firebaseConfig={apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",authDomain:"electrwni-link.firebaseapp.com",projectId:"electrwni-link",storageBucket:"electrwni-link.firebasestorage.app",messagingSenderId:"712490301263",appId:"1:712490301263:web:2084210da3f687285ab73a"};
+if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth();
+const db=firebase.firestore();
 
-const th = localStorage.getItem('theme') || 'light';
-document.documentElement.setAttribute('data-theme', th);
-document.getElementById('themeBtn').textContent = th==='dark'?'☀️':'🌙';
-function toggleTheme(){const c=document.documentElement.getAttribute('data-theme');const n=c==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);localStorage.setItem('theme',n);document.getElementById('themeBtn').textContent=n==='dark'?'☀️':'🌙';}
+const ADMIN_PASS='admin123';
+let allUsers=[];
 
-function showErr(html){const b=document.getElementById('errBanner');b.innerHTML=html;b.classList.add('show');document.getElementById('infoBanner').classList.remove('show');}
-function showInfo(msg){const b=document.getElementById('infoBanner');b.textContent=msg;b.classList.add('show');document.getElementById('errBanner').classList.remove('show');}
-
-let pendingUser=null; // مستخدم لم يؤكد بريده بعد (لإعادة إرسال التأكيد)
-
-async function handleSignin(e){
-  e.preventDefault();
-  document.getElementById('errBanner').classList.remove('show');
-  document.getElementById('infoBanner').classList.remove('show');
-
-  let inputVal=document.getElementById('email').value.trim().toLowerCase();
-  const password=document.getElementById('password').value;
-  if(!inputVal||!password)return;
-
-  const btn=document.getElementById('signinBtn');
-  btn.textContent='⏳ جاري التحقق...'; btn.disabled=true;
-
-  try{
-    // إذا لم يكن البريد صيغة email، افترضه username وابحث عن الايميل المرتبط به
-    let actualEmail=inputVal;
-    if(!inputVal.includes('@')){
-      const snap=await db.collection('users').where('username','==',inputVal).limit(1).get();
-      if(snap.empty){
-        showErr('اسم المستخدم أو البريد غير موجود');
-        btn.textContent='تسجيل الدخول ✦'; btn.disabled=false;
-        return;
-      }
-      actualEmail=snap.docs[0].data().email;
-    }
-
-    const cred=await auth.signInWithEmailAndPassword(actualEmail,password);
-
-    // تحقق من تفعيل البريد
-    if(!cred.user.emailVerified){
-      pendingUser=cred.user;
-      await auth.signOut();
-      showErr('⚠ لم تؤكد بريدك الإلكتروني بعد. تحقق من رسالة التأكيد في بريدك. <a href="#" id="resendLink">إعادة إرسال الرابط</a>');
-      document.getElementById('resendLink').onclick=async(ev)=>{
-        ev.preventDefault();
-        try{
-          await auth.signInWithEmailAndPassword(actualEmail,password);
-          await auth.currentUser.sendEmailVerification();
-          await auth.signOut();
-          showInfo('✅ تم إرسال رابط التأكيد مرة أخرى — تحقق من بريدك');
-        }catch(e2){showErr('تعذر إعادة الإرسال: '+e2.message);}
-      };
-      btn.textContent='تسجيل الدخول ✦'; btn.disabled=false;
-      return;
-    }
-
-    // البحث عن بيانات المستخدم في Firestore بواسطة authUid
-    const snap=await db.collection('users').where('authUid','==',cred.user.uid).limit(1).get();
-    if(snap.empty){
-      showErr('لم يتم العثور على بيانات حسابك. تواصل مع الدعم.');
-      await auth.signOut();
-      btn.textContent='تسجيل الدخول ✦'; btn.disabled=false;
-      return;
-    }
-    const userData=snap.docs[0].data();
-    localStorage.setItem('elLoggedIn','1');
-    localStorage.setItem('elUserUsername',userData.username);
-    window.location.href='dashboard.html';
-
-  }catch(err){
-    let msg='البريد الإلكتروني أو اسم المستخدم أو كلمة المرور غير صحيحة';
-    if(err.code==='auth/too-many-requests')msg='عدد محاولات كبير، حاول لاحقاً';
-    showErr(msg);
-    btn.textContent='تسجيل الدخول ✦'; btn.disabled=false;
-  }
+async function checkAuth(){
+  const pass=prompt('كلمة المرور:');
+  if(pass!==ADMIN_PASS){alert('❌ كلمة المرور خاطئة');window.location.href='index.html';return;}
+  loadData();
 }
 
-document.getElementById('signinForm').addEventListener('submit',handleSignin);
+async function loadData(){
+  try{
+    const snap=await db.collection('users').get();
+    allUsers=snap.docs.map(d=>d.data());
+    const totalLinks=allUsers.reduce((s,u)=>s+(u.links||[]).length,0);
+    const totalClicks=allUsers.reduce((s,u)=>s+(u.links||[]).reduce((ss,l)=>ss+(l.clicks||0),0),0);
+    document.getElementById('totalUsers').textContent=allUsers.length;
+    document.getElementById('totalLinks').textContent=totalLinks;
+    document.getElementById('totalClicks').textContent=totalClicks;
+    renderUsers();
+  }catch(e){alert('خطأ: '+e.message);}
+}
+
+function renderUsers(){
+  const html=allUsers.map(u=>{
+    const clicks=(u.links||[]).reduce((s,l)=>s+(l.clicks||0),0);
+    const created=u.createdAt?new Date(u.createdAt).toLocaleDateString('ar-SA'):'—';
+    return `<tr>
+      <td><a href="page.html#${u.username}" target="_blank" class="user-link">${u.username}</a></td>
+      <td>${u.displayName||'—'}</td>
+      <td style="font-family:'Space Mono',monospace;font-size:0.8rem;direction:ltr;text-align:left;">${u.email||'—'}</td>
+      <td>${(u.links||[]).length}</td>
+      <td>${clicks}</td>
+      <td style="font-size:0.82rem;">${created}</td>
+      <td><span class="badge badge-ok">✓ نشط</span></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('usersList').innerHTML=html;
+}
+
+function filterUsers(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  if(!q){renderUsers();return;}
+  const filtered=allUsers.filter(u=>u.username.includes(q)||u.displayName.toLowerCase().includes(q)||u.email.toLowerCase().includes(q));
+  const html=filtered.map(u=>{
+    const clicks=(u.links||[]).reduce((s,l)=>s+(l.clicks||0),0);
+    const created=u.createdAt?new Date(u.createdAt).toLocaleDateString('ar-SA'):'—';
+    return `<tr>
+      <td><a href="page.html#${u.username}" target="_blank" class="user-link">${u.username}</a></td>
+      <td>${u.displayName||'—'}</td>
+      <td style="font-family:'Space Mono',monospace;font-size:0.8rem;direction:ltr;text-align:left;">${u.email||'—'}</td>
+      <td>${(u.links||[]).length}</td>
+      <td>${clicks}</td>
+      <td style="font-size:0.82rem;">${created}</td>
+      <td><span class="badge badge-ok">✓ نشط</span></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('usersList').innerHTML=html||'<tr><td colspan="7" style="text-align:center;color:var(--muted);">لا توجد نتائج</td></tr>';
+}
+
+function logout(){if(confirm('تسجيل خروج؟')){window.location.href='index.html';}}
+
+checkAuth();
 </script>
 </body>
 </html>
