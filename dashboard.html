@@ -5,19 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>لوحة التحكم — electrwni.link</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
 <style>
 /* ========== CSS VARIABLES ========== */
 :root{
   --bg:#f0f4ff;--bg2:#e8eeff;--surface:rgba(255,255,255,0.98);--border:rgba(100,130,255,0.18);
   --accent:#3d5af1;--accent2:#c9a961;--accent-light:rgba(61,90,241,0.1);
   --text:#0f1535;--text2:#3a4270;--muted:#7b84b0;--glass:rgba(255,255,255,0.96);
-  --success:#0ab87a;--error:#e8436a;--warning:#ff9f43;--sidebar:230px;
+  --success:#0ab87a;--error:#e8436a;--warning:#ff9f43;
 }
 [data-theme="dark"]{
   --bg:#050810;--bg2:#0a0f20;--surface:rgba(12,18,45,0.98);--border:rgba(100,130,255,0.16);
   --accent:#6c8fff;--accent2:#d9c08a;--accent-light:rgba(108,143,255,0.1);
   --text:#e8eeff;--text2:#a0aad0;--muted:#5a6490;--glass:rgba(12,18,45,0.96);
-  --success:#4ecca3;--error:#ff6584;--warning:#ffb74d;--sidebar:230px;
+  --success:#4ecca3;--error:#ff6584;--warning:#ffb74d;
 }
 
 /* ========== GLOBAL STYLES ========== */
@@ -29,62 +30,20 @@ body{
 }
 
 /* ========== LAYOUT ========== */
-.container{display:flex;min-height:100vh;}
-.sidebar{
-  width:var(--sidebar);min-height:100vh;background:var(--glass);border-right:1px solid var(--border);
-  position:fixed;left:0;top:0;display:flex;flex-direction:column;padding:20px 16px;overflow-y:auto;z-index:50;
-}
-.main{flex:1;margin-left:var(--sidebar);display:flex;flex-direction:column;}
-.content{flex:1;padding:24px 26px;overflow-y:auto;}
-
-/* ========== SIDEBAR ========== */
-.sb-header{
-  display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:24px;
-  padding-bottom:16px;border-bottom:1px solid var(--border);
-}
-.sb-avatar{
-  width:56px;height:56px;border-radius:50%;
-  background:linear-gradient(135deg,#3d5af1,#6c8fff);
-  display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;
-  font-size:1.4rem;overflow:hidden;margin-bottom:10px;flex-shrink:0;
-}
-.sb-avatar img{width:100%;height:100%;object-fit:cover;}
-.sb-name{font-size:0.95rem;font-weight:900;color:var(--text);}
-.sb-handle{font-family:'Space Mono',monospace;font-size:0.7rem;color:var(--accent);direction:ltr;margin-top:2px;}
-.sb-nav{
-  display:flex;flex-direction:column;gap:8px;flex:1;margin-bottom:16px;
-}
-.nav-item{
-  background:transparent;border:none;color:var(--text2);text-align:right;padding:10px 12px;
-  border-radius:8px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:0.88rem;font-weight:700;
-  transition:background .15s,color .15s,transform .15s;display:flex;align-items:center;gap:8px;
-}
-.nav-item:active{transform:scale(0.96);}
-.nav-item.active,.nav-item:hover{background:var(--accent-light);color:var(--accent);}
-.sb-bottom{display:flex;flex-direction:column;gap:8px;}
-.sb-url-box{
-  background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px;
-  font-family:'Space Mono',monospace;font-size:0.7rem;color:var(--muted);text-align:center;
-  cursor:pointer;direction:ltr;transition:border-color .15s,background .15s;
-}
-.sb-url-box:hover{border-color:var(--accent);background:var(--accent-light);}
-.sb-btn{
-  background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 12px;
-  border-radius:8px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:0.78rem;font-weight:700;
-  display:flex;align-items:center;gap:6px;justify-content:center;transition:transform .15s,border-color .15s;
-}
-.sb-btn:active{transform:scale(0.95);}
-.sb-btn.danger{color:var(--error);}
+.container{display:flex;flex-direction:column;min-height:100vh;}
+.main{flex:1;display:flex;flex-direction:column;}
+.content{flex:1;padding:24px 20px;overflow-y:auto;}
 
 /* ========== TOPBAR ========== */
 .topbar{
-  display:flex;align-items:center;justify-content:space-between;padding:14px 26px;
+  display:flex;align-items:center;justify-content:space-between;padding:14px 20px;
   border-bottom:1px solid var(--border);background:linear-gradient(90deg,#3d5af1,#6c8fff);
   position:sticky;top:0;z-index:40;gap:20px;
 }
 .tb-logo{font-family:'Space Mono',monospace;font-size:0.95rem;font-weight:900;color:#fff;letter-spacing:-0.5px;}
 .tb-logo .dark{color:#a8c5ff;}
 .topbar-right{display:flex;align-items:center;gap:8px;}
+
 .btn{
   display:inline-flex;align-items:center;gap:5px;padding:8px 16px;border-radius:8px;
   font-family:'Tajawal',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;border:none;
@@ -95,8 +54,23 @@ body{
 .btn-primary:hover{filter:brightness(0.95);}
 .btn-ghost{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;}
 .btn-ghost:hover{background:rgba(255,255,255,0.25);}
-.btn-danger{background:rgba(232,67,106,0.1);color:var(--error);border:1px solid rgba(232,67,106,0.2);}
 .btn-sm{padding:6px 12px;font-size:0.78rem;}
+.btn-danger{background:rgba(232,67,106,0.1);color:var(--error);border:1px solid rgba(232,67,106,0.2);}
+
+/* ========== NAVIGATION TABS ========== */
+.nav-tabs{
+  display:flex;align-items:center;gap:4px;padding:12px 20px;background:var(--surface);
+  border-bottom:1px solid var(--border);overflow-x:auto;flex-wrap:wrap;
+}
+.nav-tab{
+  background:transparent;border:none;color:var(--text2);text-align:center;padding:8px 14px;
+  border-radius:8px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:0.85rem;
+  font-weight:700;transition:background .15s,color .15s,border-color .15s;
+  border-bottom:2px solid transparent;display:flex;align-items:center;gap:5px;white-space:nowrap;
+}
+.nav-tab:active{transform:scale(0.96);}
+.nav-tab.active{background:var(--accent-light);color:var(--accent);border-bottom-color:var(--accent);}
+.nav-tab:hover{background:var(--accent-light);}
 
 /* ========== PAGES ========== */
 .page{display:none;}
@@ -104,7 +78,7 @@ body{
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 
 /* ========== GRID & CARDS ========== */
-.page-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.page-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-bottom:24px;}
 .stat-card{
   background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;
   text-align:center;cursor:pointer;transition:transform .15s,box-shadow .15s;
@@ -113,10 +87,11 @@ body{
 .stat-card:hover{box-shadow:0 4px 12px rgba(61,90,241,0.1);}
 .stat-val{font-size:1.8rem;font-weight:900;color:var(--accent);}
 .stat-label{font-size:0.75rem;color:var(--muted);font-weight:700;margin-top:8px;}
+
 .section-box{
   background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px;
 }
-.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:10px;flex-wrap:wrap;}
 .sec-hd h2{font-size:0.95rem;font-weight:900;}
 
 /* ========== PROFILE PREVIEW ========== */
@@ -124,7 +99,7 @@ body{
   display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;
   border:1px solid var(--border);border-radius:12px;background:var(--bg2);
 }
-.pp-banner{width:100%;height:140px;border-radius:12px;background:linear-gradient(135deg,#3d5af1,#6c8fff);position:relative;margin-bottom:-30px;}
+.pp-banner{width:100%;height:140px;border-radius:12px;background:linear-gradient(135deg,#3d5af1,#6c8fff);position:relative;margin-bottom:-30px;background-size:cover;background-position:center;}
 .pp-avatar{
   width:60px;height:60px;border-radius:50%;background:#fff;border:4px solid var(--surface);
   display:flex;align-items:center;justify-content:center;color:#3d5af1;font-weight:900;
@@ -139,7 +114,7 @@ body{
 /* ========== FORMS ========== */
 .form-group{margin-bottom:14px;}
 .form-group label{display:block;font-size:0.8rem;font-weight:700;margin-bottom:6px;color:var(--text2);}
-input[type=text],input[type=email],input[type=tel],input[type=number],textarea,select{
+input[type=text],input[type=email],input[type=tel],input[type=number],input[type=file],textarea,select{
   width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:8px;
   padding:10px 12px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:0.88rem;
   outline:none;transition:border-color .15s,box-shadow .15s;
@@ -168,11 +143,14 @@ tr:hover{background:var(--bg2);}
 .modal-head{padding:20px;border-bottom:1px solid var(--border);}
 .modal-head h3{font-size:1rem;font-weight:900;margin-bottom:4px;}
 .modal-body{padding:20px;}
-.modal-foot{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;}
+.modal-foot{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+
+/* ========== CROP MODAL ========== */
+.crop-container{position:relative;width:100%;max-height:400px;overflow:hidden;}
+.crop-container img{max-width:100%;}
 
 /* ========== EMPTY STATE ========== */
 .empty{text-align:center;padding:40px 20px;color:var(--muted);}
-.empty-icon{font-size:2rem;margin-bottom:10px;}
 
 /* ========== TOAST ========== */
 .toast{
@@ -182,58 +160,51 @@ tr:hover{background:var(--bg2);}
 }
 .toast.show{opacity:1;transform:translateY(0);}
 
-/* ========== BADGES & TAGS ========== */
-.badge{display:inline-block;padding:4px 10px;border-radius:100px;font-size:0.75rem;font-weight:700;}
-.badge-success{background:rgba(10,184,122,0.2);color:var(--success);}
-.badge-warning{background:rgba(255,159,67,0.2);color:var(--warning);}
-
 /* ========== RESPONSIVE ========== */
-@media(max-width:900px){
-  .sidebar{width:180px;}.main{margin-left:180px;}.page-grid{grid-template-columns:repeat(2,1fr);}
+@media(max-width:768px){
+  .content{padding:16px 12px;}
+  .page-grid{grid-template-columns:repeat(auto-fit,minmax(110px,1fr));}
+  .nav-tabs{gap:2px;padding:8px 12px;}
+  .nav-tab{padding:6px 10px;font-size:0.8rem;}
+  .sec-hd{flex-direction:column;align-items:flex-start;}
+  table{font-size:0.75rem;}
+  th,td{padding:8px;}
 }
-@media(max-width:600px){
-  .sidebar{display:none;}.main{margin-left:0;}.page-grid{grid-template-columns:1fr;}
-  .topbar{flex-wrap:wrap;}.topbar-right{width:100%;justify-content:space-between;margin-top:8px;}
+
+@media(max-width:480px){
+  .topbar{flex-wrap:wrap;gap:8px;}
+  .topbar-right{width:100%;justify-content:space-between;}
+  .nav-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .nav-tab{padding:6px 8px;font-size:0.75rem;}
+  .page-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
+  .stat-val{font-size:1.4rem;}
+  .section-box{padding:16px;margin-bottom:16px;}
+  table{font-size:0.7rem;}
+  th,td{padding:6px;}
 }
 </style>
 </head>
 <body>
 <div class="container">
-  <!-- ========== SIDEBAR ========== -->
-  <aside class="sidebar">
-    <div class="sb-header">
-      <div class="sb-avatar" id="sbAvatar">U</div>
-      <div class="sb-name" id="sbName">جاري التحميل</div>
-      <div class="sb-handle" id="sbHandle">electrwni.link/...</div>
+  <!-- ========== TOPBAR ========== -->
+  <div class="topbar">
+    <div class="tb-logo"><span style="color:#fff;">Electrwni</span><span class="dark">.link</span></div>
+    <div class="topbar-right">
+      <a href="page.html" target="_blank" class="btn btn-primary btn-sm">👁 صفحتك</a>
     </div>
-    
-    <nav class="sb-nav">
-      <button class="nav-item active" onclick="showPage('links',this)">📋 الروابط</button>
-      <button class="nav-item" onclick="showPage('stats',this)">📊 إحصائيات</button>
-      <button class="nav-item" onclick="showPage('socials',this)">🌐 حسابات</button>
-      <button class="nav-item" onclick="showPage('design',this)">🎨 التصميم</button>
-      <button class="nav-item" onclick="showPage('analytics',this)">📈 التحليلات</button>
-      <button class="nav-item" onclick="showPage('profile',this)">👤 ملفي</button>
-    </nav>
-    
-    <div class="sb-bottom">
-      <div class="sb-url-box" id="bioUrl" onclick="copyLink()">electrwni.link/...</div>
-      <button class="sb-btn" onclick="shareProfile()">📤 شارك</button>
-      <button class="sb-btn danger" onclick="logout()">🚪 خروج</button>
-    </div>
-  </aside>
+  </div>
+
+  <!-- ========== NAVIGATION TABS ========== -->
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('links',this)">📋 الروابط</button>
+    <button class="nav-tab" onclick="showPage('design',this)">🎨 التصميم</button>
+    <button class="nav-tab" onclick="showPage('socials',this)">🌐 حسابات</button>
+    <button class="nav-tab" onclick="showPage('analytics',this)">📈 تحليلات</button>
+    <button class="nav-tab" onclick="showPage('profile',this)">👤 ملفي</button>
+  </div>
 
   <!-- ========== MAIN CONTENT ========== -->
-  <main class="main">
-    <!-- TOPBAR -->
-    <div class="topbar">
-      <div class="tb-logo"><span style="color:#fff;">Electrwni</span><span class="dark">.link</span></div>
-      <div class="topbar-right">
-        <a href="page.html" target="_blank" class="btn btn-primary btn-sm">👁 صفحتك</a>
-      </div>
-    </div>
-
-    <!-- CONTENT -->
+  <div class="main">
     <div class="content">
       <!-- ===== PAGE: LINKS ===== -->
       <div class="page active" id="page-links">
@@ -241,7 +212,7 @@ tr:hover{background:var(--bg2);}
           <div class="stat-card"><div class="stat-val" id="stLinks">0</div><div class="stat-label">الروابط</div></div>
           <div class="stat-card"><div class="stat-val" id="stClicks">0</div><div class="stat-label">الضغطات</div></div>
           <div class="stat-card"><div class="stat-val" id="stSocials">0</div><div class="stat-label">الحسابات</div></div>
-          <div class="stat-card"><div class="stat-val" id="ctr">0%</div><div class="stat-label">معدل التحويل</div></div>
+          <div class="stat-card"><div class="stat-val" id="ctr">0%</div><div class="stat-label">التحويل</div></div>
         </div>
         
         <div class="section-box">
@@ -249,37 +220,10 @@ tr:hover{background:var(--bg2);}
             <h2>روابطي المرقمة</h2>
             <button class="btn btn-primary btn-sm" onclick="openLinkModal()">➕ إضافة</button>
           </div>
-          <div id="linksEmpty" class="empty"><div class="empty-icon">-</div><p>لا توجد روابط بعد</p></div>
+          <div id="linksEmpty" class="empty"><div>-</div><p>لا توجد روابط بعد</p></div>
           <table id="linksTable" style="display:none;">
-            <thead><tr><th>الرقم</th><th>العنوان</th><th>الضغطات</th><th>معدل التحويل</th><th></th></tr></thead>
+            <thead><tr><th>الرقم</th><th>العنوان</th><th>الضغطات</th><th>التحويل</th><th></th></tr></thead>
             <tbody id="linksTbody"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- ===== PAGE: STATISTICS ===== -->
-      <div class="page" id="page-stats">
-        <div class="section-box">
-          <h2 style="margin-bottom:20px;">📊 إحصائيات الروابط</h2>
-          <div id="statsEmpty" class="empty"><p>لا بيانات للعرض</p></div>
-          <table id="statsTable" style="display:none;">
-            <thead><tr><th>الرابط</th><th>اليوم</th><th>هذا الأسبوع</th><th>هذا الشهر</th><th>الإجمالي</th></tr></thead>
-            <tbody id="statsTbody"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- ===== PAGE: SOCIALS ===== -->
-      <div class="page" id="page-socials">
-        <div class="section-box">
-          <div class="sec-hd">
-            <h2>🌐 حسابات التواصل الاجتماعي</h2>
-            <button class="btn btn-primary btn-sm" onclick="openSocialModal()">➕ إضافة</button>
-          </div>
-          <div id="socialsEmpty" class="empty"><p>لم تضف حسابات بعد</p></div>
-          <table id="socialsTable" style="display:none;">
-            <thead><tr><th>المنصة</th><th>الحساب</th><th>الضغطات</th><th></th></tr></thead>
-            <tbody id="socialsTbody"></tbody>
           </table>
         </div>
       </div>
@@ -294,49 +238,57 @@ tr:hover{background:var(--bg2);}
             <div class="pp-info">
               <div class="pp-name" id="ppName">الاسم</div>
               <div class="pp-handle" id="ppHandle">electrwni.link/username</div>
-              <div class="pp-bio" id="ppBio">النبذة الشخصية</div>
+              <div class="pp-bio" id="ppBio">النبذة</div>
             </div>
           </div>
         </div>
 
         <div class="section-box">
           <h2 style="margin-bottom:20px;">🖼️ تخصيص الصفحة</h2>
+          
           <div class="form-group">
             <label>صورة الغلاف (Banner)</label>
-            <input type="file" id="dfBanner" accept="image/*" onchange="onBannerFile(this)">
-            <small style="color:var(--muted);margin-top:4px;display:block;">أفضل حجم: 600×200px</small>
+            <input type="file" id="bannerInput" accept="image/*" onchange="selectBanner(this)">
+            <small style="color:var(--muted);margin-top:4px;display:block;">النسبة: 3:1 (مثالي: 600×200px)</small>
           </div>
+
           <div class="form-group">
             <label>صورة البروفايل</label>
-            <input type="file" id="dfAvatar" accept="image/*" onchange="onAvatarFile(this)">
-            <small style="color:var(--muted);margin-top:4px;display:block;">أفضل حجم: 200×200px</small>
+            <input type="file" id="avatarInput" accept="image/*" onchange="selectAvatar(this)">
+            <small style="color:var(--muted);margin-top:4px;display:block;">النسبة: 1:1 (مثالي: 200×200px)</small>
           </div>
-          <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="saveDesign()">💾 حفظ التصميم</button>
-        </div>
 
-        <div class="section-box">
-          <h2 style="margin-bottom:15px;">🎯 نصائح التصميم</h2>
-          <ul style="margin-right:20px;color:var(--text2);font-size:0.85rem;line-height:1.8;">
-            <li>استخدم صور واضحة وعالية الجودة</li>
-            <li>الألوان المتطابقة تعطي انطباع احترافي</li>
-            <li>تجنب النصوص على الصور</li>
-            <li>اختبر صفحتك على الهواتف الذكية</li>
-          </ul>
+          <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="saveDesign()">💾 حفظ التصميم</button>
         </div>
       </div>
 
-      <!-- ===== PAGE: ADVANCED ANALYTICS ===== -->
+      <!-- ===== PAGE: SOCIALS ===== -->
+      <div class="page" id="page-socials">
+        <div class="section-box">
+          <div class="sec-hd">
+            <h2>🌐 حسابات التواصل</h2>
+            <button class="btn btn-primary btn-sm" onclick="openSocialModal()">➕ إضافة</button>
+          </div>
+          <div id="socialsEmpty" class="empty"><p>لم تضف حسابات بعد</p></div>
+          <table id="socialsTable" style="display:none;">
+            <thead><tr><th>المنصة</th><th>الحساب</th><th></th></tr></thead>
+            <tbody id="socialsTbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== PAGE: ANALYTICS ===== -->
       <div class="page" id="page-analytics">
         <div class="section-box">
           <h2 style="margin-bottom:20px;">📈 التحليلات المتقدمة</h2>
-          <div class="page-grid" style="grid-template-columns:repeat(2,1fr);">
+          <div class="page-grid" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr));">
             <div class="stat-card">
               <div class="stat-val" id="totalClicks">0</div>
               <div class="stat-label">مجموع الضغطات</div>
             </div>
             <div class="stat-card">
               <div class="stat-val" id="avgCTR">0%</div>
-              <div class="stat-label">متوسط معدل التحويل</div>
+              <div class="stat-label">متوسط التحويل</div>
             </div>
             <div class="stat-card">
               <div class="stat-val" id="topLink">-</div>
@@ -344,67 +296,56 @@ tr:hover{background:var(--bg2);}
             </div>
             <div class="stat-card">
               <div class="stat-val" id="totalSocials">0</div>
-              <div class="stat-label">مجموع الحسابات</div>
+              <div class="stat-label">الحسابات</div>
             </div>
           </div>
-        </div>
-
-        <div class="section-box">
-          <h2 style="margin-bottom:15px;">🔥 الروابط الأعلى أداءً</h2>
-          <div id="topLinksChart" class="empty"><p>تحليل الأداء</p></div>
         </div>
       </div>
 
       <!-- ===== PAGE: PROFILE ===== -->
       <div class="page" id="page-profile">
         <div class="section-box">
-          <h2 style="margin-bottom:20px;">👤 معلومات ملفك الشخصي</h2>
-          <div class="form-group">
-            <label>الاسم الكامل</label>
-            <input type="text" id="pfName" placeholder="محمد أحمد">
-          </div>
-          <div class="form-group">
-            <label>اسم المستخدم</label>
-            <input type="text" id="pfUser" dir="ltr" disabled style="opacity:0.6;">
-          </div>
-          <div class="form-group">
-            <label>البريد الإلكتروني</label>
-            <input type="email" id="pfEmail" dir="ltr" disabled style="opacity:0.6;">
-          </div>
-          <div class="form-group">
-            <label>رقم الجوال</label>
-            <input type="tel" id="pfPhone" dir="ltr" placeholder="+965 50000000">
-          </div>
-          <div class="form-group">
-            <label>نبذة شخصية (Bio)</label>
-            <textarea id="pfBio" placeholder="اكتب نبذة قصيرة عنك..."></textarea>
-          </div>
-          <div class="form-group">
-            <label>الموقع الجغرافي</label>
-            <input type="text" id="pfLocation" placeholder="مدينة، دولة">
-          </div>
-          <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="saveProfile()">💾 حفظ البيانات</button>
+          <h2 style="margin-bottom:20px;">👤 معلومات ملفك</h2>
+          <div class="form-group"><label>الاسم الكامل</label><input type="text" id="pfName"></div>
+          <div class="form-group"><label>اسم المستخدم</label><input type="text" id="pfUser" dir="ltr" disabled style="opacity:0.6;"></div>
+          <div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="pfEmail" dir="ltr" disabled style="opacity:0.6;"></div>
+          <div class="form-group"><label>رقم الجوال</label><input type="tel" id="pfPhone" dir="ltr"></div>
+          <div class="form-group"><label>النبذة الشخصية</label><textarea id="pfBio"></textarea></div>
+          <div class="form-group"><label>الموقع الجغرافي</label><input type="text" id="pfLocation"></div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="saveProfile()">💾 حفظ</button>
         </div>
 
         <div class="section-box">
           <h2 style="margin-bottom:15px;">🔒 الأمان</h2>
-          <button class="btn btn-ghost" style="width:100%;">🔑 تغيير كلمة المرور</button>
+          <button class="btn btn-danger" style="width:100%;justify-content:center;" onclick="logout()">🚪 تسجيل الخروج</button>
         </div>
       </div>
     </div>
-  </main>
+  </div>
 </div>
 
-<!-- ========== MODALS ========== -->
-<!-- Link Modal -->
+<!-- ========== CROP MODAL ========== -->
+<div class="modal-overlay" id="cropModal">
+  <div class="modal">
+    <div class="modal-head"><h3>تحديد الصورة</h3></div>
+    <div class="modal-body">
+      <div class="crop-container"><img id="cropImage" src="" style="max-width:100%;"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-primary" onclick="saveCropImage()">✅ حفظ</button>
+      <button class="btn btn-ghost" onclick="closeCropModal()">❌ إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== LINK MODAL ========== -->
 <div class="modal-overlay" id="linkModal" onclick="if(event.target===this)closeLinkModal()">
   <div class="modal">
     <div class="modal-head"><h3>إضافة/تعديل رابط</h3></div>
     <div class="modal-body">
       <div class="form-group"><label>الرقم (1-9)</label><input type="number" id="lNum" min="1" max="9"></div>
-      <div class="form-group"><label>العنوان</label><input type="text" id="lLabel" placeholder="مثال: العروض"></div>
-      <div class="form-group"><label>الرابط</label><input type="url" id="lUrl" dir="ltr" placeholder="https://example.com"></div>
-      <div class="form-group"><label>وصف إضافي (اختياري)</label><textarea id="lDesc" placeholder="صف هذا الرابط..."></textarea></div>
+      <div class="form-group"><label>العنوان</label><input type="text" id="lLabel"></div>
+      <div class="form-group"><label>الرابط</label><input type="url" id="lUrl" dir="ltr"></div>
     </div>
     <div class="modal-foot">
       <button class="btn btn-danger" onclick="deleteCurrentLink()" id="delBtn" style="display:none;">🗑️ حذف</button>
@@ -414,12 +355,12 @@ tr:hover{background:var(--bg2);}
   </div>
 </div>
 
-<!-- Social Modal -->
+<!-- ========== SOCIAL MODAL ========== -->
 <div class="modal-overlay" id="socialModal" onclick="if(event.target===this)document.getElementById('socialModal').classList.remove('open')">
   <div class="modal">
-    <div class="modal-head"><h3>إضافة حساب تواصل</h3><p style="color:var(--muted);font-size:0.8rem;margin-top:4px;">الصق رابط الحساب أو رقم الجوال</p></div>
+    <div class="modal-head"><h3>إضافة حساب تواصل</h3></div>
     <div class="modal-body">
-      <div class="form-group"><label>الرابط أو الرقم</label><input type="text" id="sInput" dir="ltr" placeholder="instagram.com/username"></div>
+      <div class="form-group"><label>الرابط أو الرقم</label><input type="text" id="sInput" dir="ltr" oninput="onSocialInput()"></div>
       <div id="socialPreview" style="display:none;padding:12px;background:var(--bg2);border-radius:8px;"><span id="spUsername" style="font-size:0.85rem;color:var(--accent);font-weight:700;">-</span></div>
     </div>
     <div class="modal-foot">
@@ -433,8 +374,8 @@ tr:hover{background:var(--bg2);}
 
 <!-- ========== FIREBASE ========== -->
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
 <script>
 // ========== FIREBASE CONFIG ==========
@@ -447,10 +388,13 @@ const firebaseConfig={
   appId:"1:712490301263:web:2084210da3f687285ab73a"
 };
 if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth();
 const db=firebase.firestore();
 
-// ========== UTILITY FUNCTIONS ==========
+// ========== STATE ==========
+let user=null,editLinkId=null,cropper=null,cropType=null;
+let currentUsername=localStorage.getItem('elUserUsername')||'';
+
+// ========== UTILITY ==========
 function toast(msg){
   const el=document.getElementById('toast');
   el.textContent=msg;
@@ -458,25 +402,7 @@ function toast(msg){
   setTimeout(()=>el.classList.remove('show'),2500);
 }
 
-function copyLink(){
-  const h='electrwni.link/'+user.username;
-  navigator.clipboard.writeText(h).then(()=>toast('✅ تم نسخ الرابط'));
-}
-
-function shareProfile(){
-  const h='electrwni.link/'+user.username;
-  if(navigator.share){
-    navigator.share({title:'electrwni.link',text:'صفحتي الشخصية',url:h}).catch(()=>{});
-  }else{
-    copyLink();
-  }
-}
-
-// ========== STATE MANAGEMENT ==========
-let user=null,editLinkId=null;
-let currentUsername=localStorage.getItem('elUserUsername')||'';
-
-// ========== INIT & LOAD ==========
+// ========== INIT ========== 
 async function load(){
   if(!localStorage.getItem('elLoggedIn')||!currentUsername){
     window.location.href='signin.html';
@@ -507,22 +433,18 @@ async function load(){
   });
 }
 
-// ========== RENDER FUNCTIONS ==========
+// ========== RENDER ==========
 function renderSidebar(){
   const h='electrwni.link/'+user.username;
-  document.getElementById('sbAvatar').innerHTML=user.avatar?`<img src="${user.avatar}">`:user.displayName[0].toUpperCase();
-  document.getElementById('sbName').textContent=user.displayName||user.username;
-  document.getElementById('sbHandle').textContent=h;
-  document.getElementById('bioUrl').textContent=h;
   document.getElementById('pfName').value=user.displayName||'';
   document.getElementById('pfEmail').value=user.email||'';
   document.getElementById('pfPhone').value=user.phone||'';
   document.getElementById('pfBio').value=user.bio||'';
   document.getElementById('pfLocation').value=user.location||'';
-  document.getElementById('ppAvatar').innerHTML=document.getElementById('sbAvatar').innerHTML;
+  document.getElementById('ppAvatar').innerHTML=user.avatar?`<img src="${user.avatar}">`:user.displayName[0].toUpperCase();
   document.getElementById('ppName').textContent=user.displayName||user.username;
   document.getElementById('ppHandle').textContent=h;
-  document.getElementById('ppBio').textContent=user.bio||'نبذة شخصية';
+  document.getElementById('ppBio').textContent=user.bio||'نبذة';
   if(user.bannerImage)document.querySelector('.pp-banner').style.backgroundImage=`url(${user.bannerImage})`;
   document.getElementById('pfUser').value=user.username;
 }
@@ -537,7 +459,6 @@ function render(){
   document.getElementById('stSocials').textContent=socials.length;
   document.getElementById('ctr').textContent=links.length>0?((totalClicks/(links.length*100))*100).toFixed(1)+'%':'0%';
   
-  // Links Table
   if(!links.length){
     document.getElementById('linksEmpty').style.display='block';
     document.getElementById('linksTable').style.display='none';
@@ -550,21 +471,18 @@ function render(){
     }).join('');
   }
   
-  // Socials Table
   if(!socials.length){
     document.getElementById('socialsEmpty').style.display='block';
     document.getElementById('socialsTable').style.display='none';
   }else{
     document.getElementById('socialsEmpty').style.display='none';
     document.getElementById('socialsTable').style.display='';
-    document.getElementById('socialsTbody').innerHTML=socials.map(s=>`<tr><td>${s.platform}</td><td>${s.username}</td><td>0</td><td><button class="btn btn-danger btn-sm" onclick="deleteSocial('${s.id}')">🗑️</button></td></tr>`).join('');
+    document.getElementById('socialsTbody').innerHTML=socials.map(s=>`<tr><td>${s.platform}</td><td>${s.username}</td><td><button class="btn btn-danger btn-sm" onclick="deleteSocial('${s.id}')">🗑️</button></td></tr>`).join('');
   }
   
-  // Analytics
   document.getElementById('totalClicks').textContent=totalClicks;
   document.getElementById('avgCTR').textContent=links.length>0?((totalClicks/(links.length*100))*100).toFixed(1)+'%':'0%';
   document.getElementById('totalSocials').textContent=socials.length;
-  
   const topLink=links.reduce((a,b)=>(a.clicks||0)>(b.clicks||0)?a:b,{label:'-'});
   document.getElementById('topLink').textContent=topLink.label||'-';
 }
@@ -573,12 +491,100 @@ async function saveToCloud(){
   await db.collection('users').doc(currentUsername).set(user,{merge:true});
 }
 
-// ========== PAGE NAVIGATION ==========
+// ========== PAGES ==========
 function showPage(n,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(ni=>ni.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(ni=>ni.classList.remove('active'));
   document.getElementById('page-'+n).classList.add('active');
   if(el)el.classList.add('active');
+}
+
+// ========== IMAGE CROP ==========
+function selectBanner(inp){
+  const f=inp.files[0];
+  if(!f)return;
+  cropType='banner';
+  const r=new FileReader();
+  r.onload=e=>{
+    document.getElementById('cropImage').src=e.target.result;
+    openCropModal();
+    setTimeout(()=>{
+      if(cropper)cropper.destroy();
+      cropper=new Cropper(document.getElementById('cropImage'),{
+        aspectRatio:3/1,
+        viewMode:1,
+        autoCropArea:1,
+        responsive:true,
+        restore:true,
+        guides:true,
+        center:true,
+        highlight:true,
+        cropBoxMovable:true,
+        cropBoxResizable:true,
+        toggleDragModeOnDblclick:true,
+      });
+    },100);
+  };
+  r.readAsDataURL(f);
+}
+
+function selectAvatar(inp){
+  const f=inp.files[0];
+  if(!f)return;
+  cropType='avatar';
+  const r=new FileReader();
+  r.onload=e=>{
+    document.getElementById('cropImage').src=e.target.result;
+    openCropModal();
+    setTimeout(()=>{
+      if(cropper)cropper.destroy();
+      cropper=new Cropper(document.getElementById('cropImage'),{
+        aspectRatio:1/1,
+        viewMode:1,
+        autoCropArea:1,
+        responsive:true,
+        guides:true,
+        center:true,
+        highlight:true,
+        cropBoxMovable:true,
+        cropBoxResizable:true,
+      });
+    },100);
+  };
+  r.readAsDataURL(f);
+}
+
+function openCropModal(){
+  document.getElementById('cropModal').classList.add('open');
+}
+
+function closeCropModal(){
+  document.getElementById('cropModal').classList.remove('open');
+  if(cropper)cropper.destroy();
+  cropper=null;
+  cropType=null;
+}
+
+function saveCropImage(){
+  if(!cropper)return;
+  const canvas=cropper.getCroppedCanvas();
+  const imageData=canvas.toDataURL();
+  
+  if(cropType==='banner'){
+    user.bannerImage=imageData;
+    document.querySelector('.pp-banner').style.backgroundImage=`url(${imageData})`;
+  }else if(cropType==='avatar'){
+    user.avatar=imageData;
+    renderSidebar();
+  }
+  
+  closeCropModal();
+  toast('✅ تم حفظ الصورة');
+  saveToCloud();
+}
+
+async function saveDesign(){
+  try{await saveToCloud();toast('✅ تم حفظ التصميم');}catch(e){toast('❌ خطأ: '+e.message);}
 }
 
 // ========== LINK MANAGEMENT ==========
@@ -587,7 +593,6 @@ function openLinkModal(){
   document.getElementById('lNum').value='';
   document.getElementById('lLabel').value='';
   document.getElementById('lUrl').value='';
-  document.getElementById('lDesc').value='';
   document.getElementById('delBtn').style.display='none';
   document.getElementById('linkModal').classList.add('open');
 }
@@ -602,7 +607,6 @@ function editLink(id){
   document.getElementById('lNum').value=l.num;
   document.getElementById('lLabel').value=l.label;
   document.getElementById('lUrl').value=l.url;
-  document.getElementById('lDesc').value=l.desc||'';
   document.getElementById('delBtn').style.display='block';
   document.getElementById('linkModal').classList.add('open');
 }
@@ -611,18 +615,17 @@ async function saveLink(){
   const num=parseInt(document.getElementById('lNum').value);
   const label=document.getElementById('lLabel').value.trim();
   const url=document.getElementById('lUrl').value.trim();
-  const desc=document.getElementById('lDesc').value.trim();
-  if(!num||!label||!url){toast('⚠️ ملء جميع الحقول المطلوبة');return;}
+  if(!num||!label||!url){toast('⚠️ ملء جميع الحقول');return;}
   
   const exist=user.links.find(l=>l.num===num&&l.id!==editLinkId);
   if(editLinkId){
     const i=user.links.findIndex(l=>l.id===editLinkId);
-    user.links[i]={...user.links[i],num,label,url,desc};
+    user.links[i]={...user.links[i],num,label,url};
     if(exist)user.links=user.links.filter(l=>l.id!==exist.id||l.id===editLinkId);
     toast('✅ تم التحديث');
   }else{
     if(exist)user.links=user.links.filter(l=>l.id!==exist.id);
-    user.links.push({id:Date.now(),num,label,url,desc,clicks:0});
+    user.links.push({id:Date.now(),num,label,url,clicks:0});
     toast('✅ تمت الإضافة');
   }
   closeLinkModal();
@@ -631,7 +634,7 @@ async function saveLink(){
 }
 
 async function deleteCurrentLink(){
-  if(!confirm('هل تريد حذف هذا الرابط؟'))return;
+  if(!confirm('حذف الرابط؟'))return;
   user.links=user.links.filter(l=>l.id!==editLinkId);
   closeLinkModal();
   render();
@@ -639,11 +642,11 @@ async function deleteCurrentLink(){
   try{await saveToCloud();}catch(e){toast('❌ خطأ: '+e.message);}
 }
 
-// ========== SOCIAL MANAGEMENT ==========
+// ========== SOCIAL ==========
 function detectPlatform(raw){
   const i=raw.trim(),l=i.toLowerCase().replace(/^https?:\/\//,'');
   if(l.includes('instagram.com'))return{platform:'instagram',username:'@'+l.split('/')[l.split('/').length-1]};
-  if(l.includes('tiktok.com'))return{platform:'tiktok',username:'@'+l.split('@')[1]};
+  if(l.includes('tiktok.com'))return{platform:'tiktok',username:'@'+(l.split('@')[1]||l.split('/')[l.split('/').length-1])};
   if(l.includes('t.me')||l.includes('telegram'))return{platform:'telegram',username:'@'+l.split('/')[l.split('/').length-1]};
   if(l.includes('wa.me')||l.includes('whatsapp')||/^\+?[0-9]{7,15}$/.test(i))return{platform:'whatsapp',username:i.replace(/\D/g,'')};
   return{platform:'website',username:i};
@@ -666,7 +669,7 @@ function onSocialInput(){
 }
 
 async function saveSocial(){
-  if(!detectedSocial){toast('⚠️ أدخل رابطاً صحيحاً');return;}
+  if(!detectedSocial){toast('⚠️ أدخل رابطاً');return;}
   if(!user.socials)user.socials=[];
   user.socials.push({id:Date.now()+'',platform:detectedSocial.platform,username:detectedSocial.username});
   document.getElementById('socialModal').classList.remove('open');
@@ -682,28 +685,7 @@ async function deleteSocial(id){
   try{await saveToCloud();}catch(e){toast('❌ خطأ: '+e.message);}
 }
 
-// ========== FILE UPLOADS ==========
-function onBannerFile(inp){
-  const f=inp.files[0];
-  if(!f)return;
-  const r=new FileReader();
-  r.onload=e=>{user.bannerImage=e.target.result;document.querySelector('.pp-banner').style.backgroundImage=`url(${user.bannerImage})`;};
-  r.readAsDataURL(f);
-}
-
-function onAvatarFile(inp){
-  const f=inp.files[0];
-  if(!f)return;
-  const r=new FileReader();
-  r.onload=e=>{user.avatar=e.target.result;renderSidebar();};
-  r.readAsDataURL(f);
-}
-
-// ========== PROFILE & DESIGN ==========
-async function saveDesign(){
-  try{await saveToCloud();toast('✅ تم حفظ التصميم');}catch(e){toast('❌ خطأ: '+e.message);}
-}
-
+// ========== PROFILE ==========
 async function saveProfile(){
   user.displayName=document.getElementById('pfName').value.trim();
   user.phone=document.getElementById('pfPhone').value.trim();
@@ -712,9 +694,8 @@ async function saveProfile(){
   try{await saveToCloud();renderSidebar();toast('✅ تم الحفظ');}catch(e){toast('❌ خطأ: '+e.message);}
 }
 
-// ========== LOGOUT ==========
 function logout(){
-  if(confirm('هل تريد تسجيل الخروج؟')){
+  if(confirm('تسجيل الخروج؟')){
     localStorage.removeItem('elLoggedIn');
     localStorage.removeItem('elUserUsername');
     window.location.href='signin.html';
