@@ -34,7 +34,7 @@ body::before{
              radial-gradient(ellipse 400px 400px at 80% 80%,rgba(255,101,132,0.1),transparent);
 }
 
-/* ========== LAYOUT ========== */
+/* ========== NAVBAR ========== */
 nav{
   position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;
   padding:12px 20px;background:rgba(255,255,255,0.96);border-bottom:1px solid var(--border);
@@ -42,7 +42,9 @@ nav{
 .logo{font-family:'Space Mono',monospace;font-size:1rem;color:var(--accent);text-decoration:none;font-weight:700;}
 .logo em{color:var(--accent2);font-style:normal;}
 .theme-btn{background:transparent;border:none;font-size:1.1rem;cursor:pointer;touch-action:manipulation;}
-.wrap{position:relative;z-index:5;max-width:500px;margin:0 auto;padding:40px 20px 70px;}
+
+/* ========== MAIN LAYOUT ========== */
+.wrap{position:relative;z-index:5;max-width:500px;margin:0 auto;padding:20px;padding-bottom:70px;}
 
 /* ========== BANNER & AVATAR ========== */
 .banner{
@@ -79,28 +81,38 @@ nav{
 }
 .location-btn:active{transform:scale(0.96);}
 
+/* ========== STATS BANNER ========== */
+.stats-banner{
+  background:rgba(240,244,255,0.8);border:1px solid rgba(100,130,255,0.2);border-radius:12px;
+  padding:16px;margin-bottom:24px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+}
+[data-theme="dark"] .stats-banner{background:rgba(10,15,40,0.4);border-color:rgba(100,130,255,0.15);}
+.sb-item{text-align:center;}
+.sb-num{font-size:1.4rem;font-weight:900;color:var(--accent);}
+.sb-label{font-size:0.7rem;color:var(--muted);margin-top:4px;}
+
 /* ========== NUMBER INPUT BOX ========== */
 .number-box{
-  background:var(--surface);border:1.5px solid var(--border);border-radius:14px;
-  padding:26px;margin-bottom:30px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.05);
+  background:rgba(240,244,255,0.8);border:1px solid rgba(100,130,255,0.2);border-radius:12px;
+  padding:24px;margin-bottom:30px;
 }
-.nb-label{font-size:0.92rem;font-weight:700;color:var(--text2);margin-bottom:14px;}
-.nb-input-row{display:flex;gap:10px;justify-content:center;margin-bottom:14px;}
+[data-theme="dark"] .number-box{background:rgba(10,15,40,0.4);border-color:rgba(100,130,255,0.15);}
+.nb-label{font-size:0.92rem;font-weight:700;color:var(--text);margin-bottom:16px;text-align:center;}
 .nb-input{
-  width:80px;height:80px;font-size:2rem;font-weight:900;text-align:center;
-  border:2.5px solid var(--border);border-radius:12px;background:var(--bg2);
-  color:var(--text);font-family:'Space Mono',monospace;outline:none;
-  transition:border-color .15s,box-shadow .15s;touch-action:manipulation;
+  width:100%;padding:14px 16px;font-size:1rem;font-weight:700;border:2px solid var(--text);
+  border-radius:10px;background:transparent;color:var(--text);font-family:'Space Mono',monospace;
+  outline:none;transition:border-color .15s,box-shadow .15s;text-align:center;
+  margin-bottom:10px;touch-action:manipulation;
 }
 .nb-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light);}
 .nb-btn{
-  background:var(--accent);color:#fff;border:none;border-radius:12px;padding:0 28px;
-  height:80px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif;
+  width:100%;background:var(--accent);color:#fff;border:none;border-radius:10px;
+  padding:14px 28px;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif;
   transition:filter .15s,transform .15s;box-shadow:0 4px 16px rgba(61,90,241,0.3);
   touch-action:manipulation;
 }
 .nb-btn:active{transform:scale(0.95);}
-.nb-err{color:#e8436a;font-size:0.78rem;margin-top:8px;display:none;}
+.nb-err{color:#e8436a;font-size:0.78rem;margin-top:8px;text-align:center;display:none;}
 .nb-err.show{display:block;animation:shake .3s;}
 @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-5px);}75%{transform:translateX(5px);}}
 .nb-quick{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:12px;}
@@ -133,14 +145,42 @@ nav{
 .footer{text-align:center;font-size:0.8rem;color:var(--muted);padding-top:20px;border-top:1px solid var(--border);}
 .footer a{color:var(--accent);text-decoration:none;font-weight:700;}
 
-/* ========== STATS BANNER ========== */
-.stats-banner{
-  background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;
-  margin-bottom:30px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+/* ========== MODAL - Image Crop ========== */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;
+  justify-content:center;z-index:300;opacity:0;pointer-events:none;transition:opacity .2s;
 }
-.sb-item{text-align:center;}
-.sb-num{font-size:1.5rem;font-weight:900;color:var(--accent);}
-.sb-label{font-size:0.75rem;color:var(--muted);margin-top:4px;}
+.modal-overlay.open{opacity:1;pointer-events:auto;}
+.crop-modal{
+  background:var(--surface);border-radius:16px;max-width:500px;width:90%;
+  max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);
+}
+.crop-head{padding:20px;border-bottom:1px solid var(--border);}
+.crop-head h3{font-size:1rem;font-weight:900;}
+.crop-body{padding:20px;}
+.crop-preview{
+  width:100%;height:300px;border:2px solid var(--border);border-radius:12px;
+  overflow:hidden;background:var(--bg2);position:relative;margin-bottom:16px;
+}
+.crop-preview img{width:100%;height:100%;object-fit:cover;cursor:grab;}
+.crop-preview img:active{cursor:grabbing;}
+.crop-foot{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;}
+.btn{
+  display:inline-flex;align-items:center;gap:5px;padding:8px 16px;border-radius:8px;
+  font-family:'Tajawal',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;border:none;
+  text-decoration:none;transition:transform .15s;touch-action:manipulation;
+}
+.btn:active{transform:scale(0.95);}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text);}
+
+/* ========== RESPONSIVE ========== */
+@media(max-width:600px){
+  .wrap{padding:16px;padding-bottom:60px;}
+  .page-grid{grid-template-columns:repeat(2,1fr);}
+  .nb-input{font-size:0.95rem;}
+  .crop-preview{height:250px;}
+}
 </style>
 </head>
 <body>
@@ -152,6 +192,21 @@ nav{
 
 <!-- ========== MAIN CONTENT ========== -->
 <div class="wrap" id="wrap"></div>
+
+<!-- ========== CROP MODAL ========== -->
+<div class="modal-overlay" id="cropModal">
+  <div class="crop-modal">
+    <div class="crop-head"><h3>تحديد الصورة</h3></div>
+    <div class="crop-body">
+      <div class="crop-preview" id="cropPreview"></div>
+      <small style="color:var(--muted);">اسحب الصورة لتحديد الجزء المرئي</small>
+    </div>
+    <div class="crop-foot">
+      <button class="btn btn-primary" onclick="saveCrop()">✅ حفظ</button>
+      <button class="btn btn-ghost" onclick="closeCropModal()">❌ إلغاء</button>
+    </div>
+  </div>
+</div>
 
 <!-- ========== FIREBASE ========== -->
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -202,8 +257,8 @@ function arabicToEnglish(s){
   return r;
 }
 
-// ========== STATE ==========
-let userLinks=[],pageUsername='';
+// ========== IMAGE CROP STATE ==========
+let cropData=null,cropType=null,userLinks=[],pageUsername='';
 
 // ========== INIT ==========
 async function init(){
@@ -254,10 +309,8 @@ function render(user){
     ${statsBanner}
     <div class="number-box">
       <div class="nb-label">⌨️ اكتب رقماً للانتقال فوراً</div>
-      <div class="nb-input-row">
-        <input class="nb-input" type="tel" id="numIn" placeholder="0" maxlength="1" inputmode="none" oninput="convertNum()">
-        <button class="nb-btn" onclick="goNav()">✨ اذهب الآن</button>
-      </div>
+      <input class="nb-input" type="tel" id="numIn" placeholder="0" maxlength="1" inputmode="none" oninput="convertNum()">
+      <button class="nb-btn" onclick="goNav()">✨ اذهب الآن</button>
       <div class="nb-err" id="nbErr">❌ الرقم غير موجود</div>
       <div class="nb-quick">${quickBtns}</div>
     </div>
@@ -297,6 +350,19 @@ function show404(msg){
       <a href="index.html" style="display:inline-block;padding:10px 20px;background:var(--accent);color:#fff;border-radius:8px;text-decoration:none;font-weight:700;">🏠 الصفحة الرئيسية</a>
     </div>
   `;
+}
+
+// ========== CROP MODAL FUNCTIONS ==========
+function closeCropModal(){
+  document.getElementById('cropModal').classList.remove('open');
+  cropData=null;
+  cropType=null;
+}
+
+function saveCrop(){
+  if(!cropData)return;
+  // هنا سيتم حفظ الصورة المقصوصة في Firestore
+  closeCropModal();
 }
 
 // ========== INIT ==========
