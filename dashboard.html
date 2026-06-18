@@ -565,7 +565,7 @@ function closeCropModal(){
   cropType=null;
 }
 
-function saveCropImage(){
+async function saveCropImage(){
   if(!cropper)return;
   const canvas=cropper.getCroppedCanvas();
   const imageData=canvas.toDataURL();
@@ -579,12 +579,24 @@ function saveCropImage(){
   }
   
   closeCropModal();
-  toast('✅ تم حفظ الصورة');
-  saveToCloud();
+  toast('✅ جاري الحفظ...');
+  
+  try{
+    await saveToCloud();
+    toast('✅ تم حفظ الصورة بنجاح!');
+  }catch(e){
+    toast('❌ خطأ: '+e.message);
+  }
 }
 
 async function saveDesign(){
-  try{await saveToCloud();toast('✅ تم حفظ التصميم');}catch(e){toast('❌ خطأ: '+e.message);}
+  toast('✅ جاري الحفظ...');
+  try{
+    await saveToCloud();
+    toast('✅ تم حفظ التصميم بنجاح!');
+  }catch(e){
+    toast('❌ خطأ: '+e.message);
+  }
 }
 
 // ========== LINK MANAGEMENT ==========
