@@ -556,16 +556,8 @@ function closeCropModal(){
 async function saveCropImage(){
   if(!cropper)return;
   toast('💾 جاري الحفظ...');
-  
-  let canvasOptions = {};
-  if(cropType === 'avatar'){
-    canvasOptions = { width: 300, height: 300 };
-  } else if(cropType === 'banner') {
-    canvasOptions = { width: 900, height: 300 };
-  }
-
-  const canvas = cropper.getCroppedCanvas(canvasOptions);
-  const imageData = canvas.toDataURL('image/jpeg', 0.7); 
+  const canvas=cropper.getCroppedCanvas();
+  const imageData=canvas.toDataURL();
   
   if(cropType==='banner'){
     user.bannerImage=imageData;
@@ -582,11 +574,7 @@ async function saveCropImage(){
     toast('✅ تم حفظ الصورة بنجاح!');
   }catch(e){
     console.error('Error saving:', e);
-    if(e.message.includes('longer than 1048487')){
-      toast('❌ حجم الصورة لا يزال كبيراً، حاول اختيار صورة أصغر');
-    } else {
-      toast('❌ خطأ: '+e.message);
-    }
+    toast('❌ خطأ: '+e.message);
   }
 }
 
