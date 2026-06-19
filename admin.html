@@ -5,49 +5,70 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>لوحة الإدارة — electrwni.link</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<!-- إضافة مكتبة html2pdf لتصدير التقارير -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
 <style>
-:root{--bg:#f0f4ff;--text:#0f1535;--text2:#3a4270;--accent:#3d5af1;--accent2:#c9a961;--border:rgba(100,130,255,0.18);--surface:#ffffff;--muted:#7b84b0;--error:#e8436a;}
-[data-theme="dark"]{--bg:#050810;--text:#e8eeff;--text2:#a0aad0;--accent:#6c8fff;--accent2:#d9c08a;--border:rgba(100,130,255,0.16);--surface:rgba(12,18,45,0.9);--muted:#5a6490;--error:#ff6584;}
-*{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation;}
-body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
-nav{display:flex;justify-content:space-between;align-items:center;padding:16px 40px;border-bottom:1px solid var(--border);background:var(--surface);}
-.logo{font-family:'Space Mono',monospace;font-size:1.1rem;color:var(--accent);text-decoration:none;font-weight:700;}
-.logo em{color:var(--accent2);}
-.nav-right{display:flex;align-items:center;gap:12px;}
-.btn{padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;font-size:0.85rem;transition:transform .15s;}
-.btn:active{transform:scale(0.96);}
-.btn-primary{background:var(--accent);color:#fff;}
-.container{max-width:1200px;margin:0 auto;padding:40px 20px;}
-h1{font-size:2rem;margin-bottom:10px;}
-.subtitle{color:var(--muted);margin-bottom:30px;}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:40px;}
-.stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;}
-.stat-num{font-size:2rem;font-weight:900;color:var(--accent);}
-.stat-label{color:var(--muted);font-size:0.85rem;margin-top:6px;}
-.search-box{margin-bottom:20px;}
-input{width:100%;max-width:400px;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'Tajawal',sans-serif;background:var(--surface);color:var(--text);outline:none;}
-input:focus{border-color:var(--accent);}
-table{width:100%;border-collapse:collapse;background:var(--surface);border-radius:12px;overflow:hidden;border:1px solid var(--border);}
-th,td{padding:14px;text-align:right;border-bottom:1px solid var(--border);}
-th{font-weight:900;background:rgba(100,130,255,0.08);}
-tr:last-child td{border:none;}
-.user-link{color:var(--accent);text-decoration:none;font-weight:700;}
-.badge{display:inline-block;padding:4px 10px;border-radius:100px;font-size:0.75rem;font-weight:700;}
-.badge-ok{background:rgba(10,184,122,0.2);color:#0ab87a;}
-.footer{text-align:center;color:var(--muted);font-size:0.8rem;margin-top:60px;padding-top:20px;border-top:1px solid var(--border);}
+:root {
+  --bg: #ffffff; 
+  --text: #000000; 
+  --text2: #222222; 
+  --accent: #000000; 
+  --accent2: #333333; 
+  --border: rgba(0, 0, 0, 0.12); 
+  --surface: #ffffff; 
+  --muted: #666666; 
+  --error: #d93838;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
+body { font-family: 'Tajawal', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+nav { display: flex; justify-content: space-between; align-items: center; padding: 16px 40px; border-bottom: 1px solid var(--border); background: var(--surface); box-shadow: var(--shadow); }
+.logo { font-family: 'Space Mono', monospace; font-size: 1.1rem; color: var(--accent); text-decoration: none; font-weight: 700; }
+.logo em { color: var(--muted); font-style: normal; }
+.nav-right { display: flex; align-items: center; gap: 12px; }
+.admin-badge { background: #000; color: #fff; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; }
+.btn { padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; font-family: 'Tajawal', sans-serif; font-weight: 700; font-size: 0.85rem; transition: all .15s; background: #ffffff; color: #000000; }
+.btn:active { transform: scale(0.96); }
+.btn-primary { background: #000000; color: #ffffff; border: none; }
+.btn-primary:hover { background: #222222; }
+.btn-danger { background: var(--error); color: #fff; border: none; }
+.action-box { display: flex; gap: 10px; margin-bottom: 20px; max-width: 600px; }
+.search-wrapper { position: relative; flex: 1; }
+.clear-btn { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: #000; color: #fff; border: none; border-radius: 4px; width: 22px; height: 22px; font-size: 0.7rem; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 900; }
+.container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+h1 { font-size: 2rem; margin-bottom: 10px; font-weight: 900; }
+.subtitle { color: var(--muted); margin-bottom: 30px; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; box-shadow: var(--shadow); }
+.stat-num { font-size: 2.2rem; font-weight: 900; color: var(--accent); }
+.stat-label { color: var(--muted); font-size: 0.85rem; margin-top: 6px; font-weight: 700; }
+input { width: 100%; padding: 10px 14px; padding-left: 40px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'Tajawal', sans-serif; background: var(--surface); color: var(--text); outline: none; }
+input:focus { border-color: var(--accent); }
+.table-area { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; padding: 10px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 14px; text-align: right; border-bottom: 1px solid var(--border); }
+th { font-weight: 900; background: #f9f9f9; color: #000; }
+tr:last-child td { border: none; }
+.user-link { color: var(--accent); text-decoration: underline; font-weight: 700; }
+.go-btn { display: inline-flex; align-items: center; justify-content: center; background: #000; color: #fff; text-decoration: none; padding: 4px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; }
+.badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
+.badge-ok { background: rgba(0,0,0,0.05); color: #000; border: 1px solid var(--border); }
+.footer { text-align: center; color: var(--muted); font-size: 0.8rem; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
 </style>
 </head>
 <body>
 <nav>
   <a href="index.html" class="logo">electrwni<em>.link</em></a>
   <div class="nav-right">
-    <button class="btn btn-primary" onclick="logout()">خروج</button>
+    <span class="admin-badge" id="adminEmail">—</span>
+    <button class="btn btn-danger" onclick="logout()">خروج</button>
   </div>
 </nav>
 
 <div class="container">
   <h1>لوحة الإدارة</h1>
-  <p class="subtitle">إدارة المستخدمين والإحصائيات</p>
+  <p class="subtitle">إدارة مستخدمي المنصة والمؤشرات العامة لروابط الـ Realtime Database</p>
 
   <div class="stats">
     <div class="stat">
@@ -56,108 +77,223 @@ tr:last-child td{border:none;}
     </div>
     <div class="stat">
       <div class="stat-num" id="totalLinks">0</div>
-      <div class="stat-label">الروابط</div>
+      <div class="stat-label">الروابط النشطة</div>
     </div>
     <div class="stat">
       <div class="stat-num" id="totalClicks">0</div>
-      <div class="stat-label">الضغطات</div>
+      <div class="stat-label">إجمالي الضغطات</div>
     </div>
   </div>
 
-  <div class="search-box">
-    <input type="text" id="searchInput" placeholder="البحث عن مستخدم..." oninput="filterUsers()">
+  <div class="action-box">
+    <div class="search-wrapper">
+      <input type="text" id="searchInput" placeholder="البحث عن مستخدم..." oninput="filterUsers()">
+      <button class="clear-btn" title="مسح الحقل كاملاً" onclick="clearSearch()">D</button>
+    </div>
+    <button class="btn" onclick="exportToPDF()">طباعة PDF</button>
   </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>المستخدم</th>
-        <th>الاسم</th>
-        <th>البريد</th>
-        <th>الروابط</th>
-        <th>الضغطات</th>
-        <th>التاريخ</th>
-        <th>الحالة</th>
-      </tr>
-    </thead>
-    <tbody id="usersList"></tbody>
-  </table>
+  <div class="table-area" id="pdfContent">
+    <table>
+      <thead>
+        <tr>
+          <th>المستخدم</th>
+          <th>الاسم المعروض</th>
+          <th>البريد الإلكتروني</th>
+          <th>الروابط</th>
+          <th>الضغطات</th>
+          <th>تاريخ التسجيل</th>
+          <th>رابط المستخدم</th>
+        </tr>
+      </thead>
+      <tbody id="usersList">
+        <tr><td colspan="7" style="text-align:center;color:var(--muted);">جاري التحقق وجلب البيانات المعالجة...</td></tr>
+      </tbody>
+    </table>
+  </div>
 
   <div class="footer">
     <p>© 2026 electrwni.link Admin Panel</p>
   </div>
 </div>
 
+<!-- استخدام مكتبات Firebase المتوافقة مع الإعداد الفعلي للمشروع -->
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
 <script>
-const firebaseConfig={apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",authDomain:"electrwni-link.firebaseapp.com",projectId:"electrwni-link",storageBucket:"electrwni-link.firebasestorage.app",messagingSenderId:"712490301263",appId:"1:712490301263:web:2084210da3f687285ab73a"};
-if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth();
-const db=firebase.firestore();
+// إعدادات مشروع Firebase الحقيقية والمكتملة للربط المباشر بـ Realtime Database
+const firebaseConfig = {
+  apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
+  authDomain: "electrwni-link.firebaseapp.com",
+  projectId: "electrwni-link",
+  storageBucket: "electrwni-link.firebasestorage.app",
+  messagingSenderId: "712490301263",
+  appId: "1:712490301263:web:2084210da3f687285ab73a",
+  databaseURL: "https://electrwni-link-default-rtdb.firebaseio.com/"
+};
 
-const ADMIN_PASS='admin123';
-let allUsers=[];
+if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const rtdb = firebase.database();
 
-async function checkAuth(){
-  const pass=prompt('كلمة المرور:');
-  if(pass!==ADMIN_PASS){alert('❌ كلمة المرور خاطئة');window.location.href='index.html';return;}
-  loadData();
+const ADMIN_PASS = 'admin123';
+let allUsers = [];
+
+// فحص برميجي أمني فوري لحجب الواجهة عند عدم توفر صلاحية الدخول
+async function checkAuth() {
+  const pass = prompt('أدخل كلمة المرور الخاصة بالمسؤول للولوج لوحة التحكم:');
+  if (pass !== ADMIN_PASS) {
+    alert('❌ كلمة المرور خاطئة! تم حظر الوصول الفوري.');
+    window.location.href = 'index.html';
+    return;
+  }
+  
+  // شريط المستخدم العلوي الذكي لاستخراج الجزء الأول من بريد الأدمن المسجل
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      const emailName = user.displayName || user.email.split('@')[0];
+      document.getElementById('adminEmail').textContent = `الأدمن: ${emailName}`;
+    } else {
+      document.getElementById('adminEmail').textContent = "أدمن عام";
+    }
+  });
+
+  loadDataFromRTDB();
 }
 
-async function loadData(){
-  try{
-    const snap=await db.collection('users').get();
-    allUsers=snap.docs.map(d=>d.data());
-    const totalLinks=allUsers.reduce((s,u)=>s+(u.links||[]).length,0);
-    const totalClicks=allUsers.reduce((s,u)=>s+(u.links||[]).reduce((ss,l)=>ss+(l.clicks||0),0),0);
-    document.getElementById('totalUsers').textContent=allUsers.length;
-    document.getElementById('totalLinks').textContent=totalLinks;
-    document.getElementById('totalClicks').textContent=totalClicks;
-    renderUsers();
-  }catch(e){alert('خطأ: '+e.message);}
+// مسار جلب البيانات الفعلي والمباشر والموحد من مجلد links الرئيسي مباشرة
+async function loadDataFromRTDB() {
+  try {
+    const snapshot = await rtdb.ref('links').once('value');
+    const data = snapshot.val();
+    
+    if (!data) {
+      allUsers = [];
+      updateDashboardUI();
+      return;
+    }
+
+    // معالجة وإعادة هيكلة البيانات المقروءة للعرض المتناسق
+    allUsers = Object.keys(data).map(username => {
+      const userData = data[username] || {};
+      
+      // جلب مصفوفة أو كائن الروابط والتحقق الإحصائي الدقيق
+      let linksArray = [];
+      if (userData.links) {
+        if (Array.isArray(userData.links)) {
+          linksArray = userData.links.filter(Boolean);
+        } else if (typeof userData.links === 'object') {
+          linksArray = Object.values(userData.links);
+        }
+      }
+
+      return {
+        username: username,
+        displayName: userData.displayName || userData.name || '—',
+        email: userData.email || '—',
+        createdAt: userData.createdAt || null,
+        links: linksArray
+      };
+    });
+
+    updateDashboardUI();
+  } catch(e) {
+    alert('حدث خطأ أثناء جلب المؤشرات الحية: ' + e.message);
+  }
 }
 
-function renderUsers(){
-  const html=allUsers.map(u=>{
-    const clicks=(u.links||[]).reduce((s,l)=>s+(l.clicks||0),0);
-    const created=u.createdAt?new Date(u.createdAt).toLocaleDateString('ar-SA'):'—';
+// تحديث لوحات العدادات والواجهة
+function updateDashboardUI() {
+  let totalLinks = 0;
+  let totalClicks = 0;
+
+  allUsers.forEach(u => {
+    totalLinks += u.links.length;
+    u.links.forEach(l => {
+      totalClicks += parseInt(l.clicks || 0, 10);
+    });
+  });
+
+  document.getElementById('totalUsers').textContent = allUsers.length;
+  document.getElementById('totalLinks').textContent = totalLinks;
+  document.getElementById('totalClicks').textContent = totalClicks;
+  
+  renderUsers(allUsers);
+}
+
+// صياغة وإدراج البيانات في خلايا الجدول بدقة هندسية متناسقة
+function renderUsers(usersToRender) {
+  const tbody = document.getElementById('usersList');
+  if(usersToRender.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);">لا توجد بيانات متاحة حالياً</td></tr>';
+    return;
+  }
+
+  const html = usersToRender.map(u => {
+    let clicks = 0;
+    u.links.forEach(l => clicks += parseInt(l.clicks || 0, 10));
+    
+    const created = u.createdAt ? new Date(u.createdAt).toLocaleDateString('ar-KW', {year:'numeric', month:'long', day:'numeric'}) : '—';
+    
     return `<tr>
-      <td><a href="page.html#${u.username}" target="_blank" class="user-link">${u.username}</a></td>
-      <td>${u.displayName||'—'}</td>
-      <td style="font-family:'Space Mono',monospace;font-size:0.8rem;direction:ltr;text-align:left;">${u.email||'—'}</td>
-      <td>${(u.links||[]).length}</td>
-      <td>${clicks}</td>
+      <td><span class="user-link">${u.username}</span></td>
+      <td>${u.displayName}</td>
+      <td style="font-family:'Space Mono',monospace;font-size:0.8rem;direction:ltr;text-align:left;">${u.email}</td>
+      <td><strong>${u.links.length}</strong></td>
+      <td><strong>${clicks}</strong></td>
       <td style="font-size:0.82rem;">${created}</td>
-      <td><span class="badge badge-ok">✓ نشط</span></td>
+      <td><a href="page.html#${u.username}" target="_blank" class="go-btn">اذهب</a></td>
     </tr>`;
   }).join('');
-  document.getElementById('usersList').innerHTML=html;
+  
+  tbody.innerHTML = html;
 }
 
-function filterUsers(){
-  const q=document.getElementById('searchInput').value.toLowerCase();
-  if(!q){renderUsers();return;}
-  const filtered=allUsers.filter(u=>u.username.includes(q)||u.displayName.toLowerCase().includes(q)||u.email.toLowerCase().includes(q));
-  const html=filtered.map(u=>{
-    const clicks=(u.links||[]).reduce((s,l)=>s+(l.clicks||0),0);
-    const created=u.createdAt?new Date(u.createdAt).toLocaleDateString('ar-SA'):'—';
-    return `<tr>
-      <td><a href="page.html#${u.username}" target="_blank" class="user-link">${u.username}</a></td>
-      <td>${u.displayName||'—'}</td>
-      <td style="font-family:'Space Mono',monospace;font-size:0.8rem;direction:ltr;text-align:left;">${u.email||'—'}</td>
-      <td>${(u.links||[]).length}</td>
-      <td>${clicks}</td>
-      <td style="font-size:0.82rem;">${created}</td>
-      <td><span class="badge badge-ok">✓ نشط</span></td>
-    </tr>`;
-  }).join('');
-  document.getElementById('usersList').innerHTML=html||'<tr><td colspan="7" style="text-align:center;color:var(--muted);">لا توجد نتائج</td></tr>';
+// محرك الفرز والتصفية اللحظية للمستندات والأسماء
+function filterUsers() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  if(!q) {
+    renderUsers(allUsers);
+    return;
+  }
+  const filtered = allUsers.filter(u => 
+    u.username.toLowerCase().includes(q) || 
+    u.displayName.toLowerCase().includes(q) || 
+    u.email.toLowerCase().includes(q)
+  );
+  renderUsers(filtered);
 }
 
-function logout(){if(confirm('تسجيل خروج؟')){window.location.href='index.html';}}
+// زر المسح السريع الفوري (D) لتنظيف الحقل وإرجاع القائمة فوراً بضغطة واحدة
+function clearSearch() {
+  const input = document.getElementById('searchInput');
+  input.value = '';
+  input.focus();
+  renderUsers(allUsers);
+}
 
+// طباعة وحفظ الجدول كملف PDF متناسق ومهيأ للحروف العربية دون تشويه أو تقطع
+function exportToPDF() {
+  const element = document.getElementById('pdfContent');
+  const opt = {
+    margin:       10,
+    filename:     'electrwni_admin_report.pdf',
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS: true },
+    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+  };
+  html2pdf().set(opt).from(element).save();
+}
+
+function logout() {
+  if(confirm('هل أنت متأكد من رغبتك في تسجيل الخروج النهائي من لوحة الإدارة؟')) {
+    window.location.href = 'index.html';
+  }
+}
+
+// انطلاق الفحص التلقائي الفوري بمجرد تشغيل الصفحة
 checkAuth();
 </script>
 </body>
