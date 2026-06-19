@@ -1,184 +1,475 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="light">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>electrwni.link</title>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+<title>صفحتك الشخصية — electrwni.link</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Tajawal', sans-serif; background-color: #ffffff; min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; }
-.wrapper { width: 100%; max-width: 480px; min-height: 100vh; background: #ffffff; display: flex; flex-direction: column; position: relative; }
+/* ========== CSS VARIABLES ========== */
+:root{
+  --bg:#f5f5f5;--surface:#ffffff;--border:rgba(100,130,255,0.15);
+  --accent:#3d5af1;--accent2:#c9a961;--text:#0f1535;--text2:#3a4270;--muted:#9aa2c8;
+}
+[data-theme="dark"]{
+  --bg:#1a1a2e;--surface:#16213e;--border:rgba(100,130,255,0.2);
+  --accent:#6c8fff;--accent2:#d9c08a;--text:#ffffff;--text2:#b0b0b0;--muted:#808080;
+}
 
-/* البانر العلوي المتطابق مع image_2.png */
-.banner { width: 100%; height: 180px; background: linear-gradient(135deg, #1d3557, #457b9d); position: relative; border-bottom: 4px solid #ffd166; overflow: hidden; }
-.banner::before { content: ""; position: absolute; top: -20%; left: -20%; width: 60%; height: 140%; background: #112233; transform: skewX(-25deg); opacity: 0.8; }
-.banner-dots { position: absolute; bottom: 15px; left: 30%; width: 80px; height: 50px; background-image: radial-gradient(#ffffff 2px, transparent 2px); background-size: 8px 8px; opacity: 0.3; }
-.banner-zigzag { position: absolute; top: 30px; right: 30px; font-size: 1.5rem; color: #ffd166; transform: rotate(15deg); opacity: 0.7; letter-spacing: -2px; font-weight: 900; }
-.banner-triangle { position: absolute; bottom: 40px; right: 25%; width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-bottom: 25px solid #ff007f; transform: rotate(25deg); }
+/* ========== GLOBAL ========== */
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;
+  transition:background .3s;
+}
 
-/* الصورة الرمزية الدائرية الوسطى */
-.avatar-container { width: 110px; height: 110px; border-radius: 50%; background: #ffffff; position: absolute; top: 125px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); z-index: 10; border: 3px solid #ffffff; }
-.avatar-inner { width: 96px; height: 96px; border-radius: 50%; background: linear-gradient(135deg, #00f2fe, #4facfe); border: 3px solid #ffd166; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; color: #ffffff; font-weight: 900; position: relative; overflow: hidden; }
-.avatar-inner svg { width: 45px; height: 45px; fill: #ffffff; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
+/* ========== NAVBAR ========== */
+nav{
+  position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;
+  padding:12px 20px;background:var(--surface);border-bottom:1px solid var(--border);
+}
+.logo{font-family:'Space Mono',monospace;font-size:0.95rem;color:var(--accent);text-decoration:none;font-weight:700;}
+.logo em{color:var(--accent2);font-style:normal;}
+.theme-btn{background:transparent;border:none;font-size:1.1rem;cursor:pointer;color:var(--text);}
 
-/* منطقة المحتوى والمدخلات */
-.content { margin-top: 90px; padding: 20px; display: flex; flex-direction: column; align-items: center; flex-grow: 1; }
-.input-field { width: 100%; max-width: 320px; height: 52px; border: 3px solid #3a86ff; border-radius: 12px; font-family: 'Tajawal', sans-serif; font-size: 1.2rem; font-weight: 700; text-align: center; color: #333333; outline: none; margin-bottom: 12px; background: #ffffff; transition: border-color 0.2s; }
-.input-field::placeholder { color: #888888; font-weight: 700; }
-.input-field:focus { border-color: #0056b3; }
+/* ========== MAIN LAYOUT ========== */
+.wrap{
+  position:relative;max-width:500px;margin:0 auto;padding:0;
+}
 
-.action-btn { width: 100%; max-width: 320px; height: 52px; background-color: #3a86ff; color: #ffffff; border: none; border-radius: 12px; font-family: 'Tajawal', sans-serif; font-size: 1.2rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(58, 134, 255, 0.2); transition: background 0.2s; margin-bottom: 40px; }
-.action-btn:active { transform: scale(0.98); }
-.action-btn:hover { background-color: #0056b3; }
+/* ========== HERO BANNER ========== */
+.hero-banner{
+  position:relative;width:100%;height:280px;background:linear-gradient(135deg,#3d5af1 0%,#6c8fff 100%);
+  overflow:hidden;display:flex;align-items:center;justify-content:center;
+}
 
-/* قسم روابط التواصل الاجتماعي السفلي */
-.social-section { text-align: center; margin-top: auto; padding-bottom: 40px; }
-.social-title { color: #3a86ff; font-weight: 900; font-size: 1.1rem; margin-bottom: 15px; }
-.social-icons { display: flex; justify-content: center; gap: 15px; }
-.social-icon { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); transition: transform 0.2s; text-decoration: none; }
-.social-icon:active { transform: scale(0.9); }
-.instagram { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%,#d6249f 60%,#285AEB 90%); }
-.telegram { background: #0088cc; }
-.snapchat { background: #fffc00; }
-.social-icon svg { width: 22px; height: 22px; fill: #ffffff; }
-.snapchat svg { fill: #000000; }
+.hero-banner::before{
+  content:'';position:absolute;top:0;left:0;width:100%;height:100%;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.1) 0%, transparent 50%);
+}
+
+.hero-shapes{
+  position:absolute;width:100%;height:100%;top:0;left:0;
+}
+
+.shape{position:absolute;opacity:0.15;}
+.shape-triangle{width:0;height:0;border-left:30px solid transparent;border-right:30px solid transparent;border-bottom:60px solid #ff6b9d;top:40px;right:50px;}
+.shape-dots{width:200px;height:100px;top:50px;left:30px;background-image:radial-gradient(circle,#c9a961 2px,transparent 2px);background-size:20px 20px;}
+.shape-line{width:2px;height:80px;background:#c9a961;top:100px;right:80px;transform:rotate(30deg);}
+.shape-wave{width:60px;height:60px;border:2px solid #c9a961;top:30px;right:20px;transform:skewY(-20deg);}
+
+.avatar-container{
+  position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;gap:0;
+}
+
+.avatar-circle{
+  width:140px;height:140px;border-radius:50%;background:var(--surface);border:6px solid var(--accent2);
+  display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:900;
+  font-size:3rem;overflow:hidden;flex-shrink:0;margin-top:-70px;position:relative;z-index:11;
+  box-shadow:0 10px 40px rgba(0,0,0,0.15);
+}
+
+.avatar-circle img{width:100%;height:100%;object-fit:cover;}
+
+.avatar-ring{
+  position:absolute;width:155px;height:155px;border-radius:50%;border:3px solid var(--accent2);
+  top:-7px;left:-7px;animation:spin 8s linear infinite;
+}
+
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+/* ========== CONTENT ========== */
+.content{padding:40px 24px 30px;background:var(--surface);min-height:100vh;}
+
+/* ========== PROFILE INFO ========== */
+.profile-info{text-align:center;margin-bottom:30px;}
+.profile-name{font-size:1.8rem;font-weight:900;margin-bottom:6px;color:var(--text);}
+.profile-handle{font-family:'Space Mono',monospace;font-size:0.8rem;color:var(--text2);direction:ltr;margin-bottom:12px;}
+.profile-bio{font-size:0.95rem;color:var(--text2);line-height:1.6;}
+
+/* ========== INPUT SECTION ========== */
+.input-section{
+  background:linear-gradient(135deg,#3d5af1,#6c8fff);border-radius:16px;
+  padding:24px;margin-bottom:30px;
+}
+
+.input-label{font-size:0.95rem;font-weight:700;color:#ffffff;margin-bottom:12px;text-align:center;}
+
+.input-box{
+  background:transparent;border:2.5px solid #ffffff;border-radius:12px;
+  padding:16px;color:#ffffff;font-size:1.3rem;font-weight:700;font-family:'Space Mono',monospace;
+  outline:none;text-align:center;margin-bottom:12px;caret-color:#c9a961;
+}
+
+.input-box::placeholder{color:rgba(255,255,255,0.6);}
+
+.btn-go{
+  width:100%;background:#ffffff;color:var(--accent);border:none;border-radius:12px;
+  padding:16px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif;
+  transition:transform .15s;touch-action:manipulation;
+}
+
+.btn-go:active{transform:scale(0.98);}
+
+.error-msg{color:#ff6b9d;font-size:0.85rem;margin-top:8px;text-align:center;display:none;font-weight:700;}
+.error-msg.show{display:block;}
+
+.quick-buttons{
+  display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px;
+}
+
+.quick-btn{
+  width:42px;height:42px;border-radius:10px;border:2px solid #ffffff;
+  background:transparent;color:#ffffff;font-weight:700;cursor:pointer;
+  transition:all .15s;touch-action:manipulation;font-size:0.95rem;
+}
+
+.quick-btn:active{transform:scale(0.9);}
+.quick-btn:hover{background:#ffffff;color:var(--accent);}
+
+/* ========== SOCIALS SECTION ========== */
+.section-title{
+  font-size:1.2rem;font-weight:900;color:var(--accent);text-align:center;
+  margin:32px 0 20px;
+}
+
+.socials-box{
+  display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-bottom:32px;
+}
+
+.social-btn{
+  display:flex;align-items:center;justify-content:center;
+  width:70px;height:70px;border-radius:20px;background:var(--accent);
+  color:#ffffff;text-decoration:none;
+  transition:transform .15s,box-shadow .15s;box-shadow:0 6px 20px rgba(61,90,241,0.2);
+  touch-action:manipulation;position:relative;
+}
+
+.social-btn:active{transform:scale(0.95);}
+.social-btn:hover{box-shadow:0 8px 30px rgba(61,90,241,0.3);}
+
+.social-btn svg{width:32px;height:32px;fill:#ffffff;}
+
+/* ========== ANALYTICS SECTION ========== */
+.analytics{background:var(--surface);margin-bottom:30px;}
+
+.stat-row{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:16px;
+}
+
+.stat-box{
+  background:linear-gradient(135deg,#3d5af1,#6c8fff);border-radius:12px;
+  padding:20px;text-align:center;color:#ffffff;
+}
+
+.stat-num{font-size:2rem;font-weight:900;margin-bottom:4px;}
+.stat-label{font-size:0.85rem;font-weight:700;opacity:0.9;}
+
+/* ========== LINKS TABLE ========== */
+.links-section{margin-bottom:30px;}
+
+.table-title{
+  font-size:1rem;font-weight:900;color:var(--text);margin-bottom:12px;
+  text-align:center;
+}
+
+table{
+  width:100%;border-collapse:collapse;background:var(--surface);border-radius:12px;
+  overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.05);
+}
+
+th,td{
+  padding:14px 12px;text-align:center;font-size:0.85rem;
+}
+
+th{
+  background:linear-gradient(135deg,#3d5af1,#6c8fff);color:#ffffff;font-weight:900;
+}
+
+td{border-bottom:1px solid var(--border);color:var(--text2);}
+
+tr:hover{background:rgba(61,90,241,0.05);}
+
+.link-num{font-weight:900;color:var(--accent);font-family:'Space Mono',monospace;font-size:0.95rem;}
+
+/* ========== FOOTER ========== */
+.footer{
+  text-align:center;font-size:0.8rem;color:var(--muted);padding:20px 0;
+  border-top:1px solid var(--border);
+}
+
+.footer a{color:var(--accent);text-decoration:none;font-weight:700;}
+
+/* ========== EMPTY STATE ========== */
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted);}
+
+/* ========== RESPONSIVE ========== */
+@media(max-width:600px){
+  .wrap{padding-bottom:20px;}
+  .hero-banner{height:220px;}
+  .avatar-circle{width:110px;height:110px;font-size:2.2rem;border-width:5px;margin-top:-55px;}
+  .avatar-ring{width:125px;height:125px;border-width:2px;top:-5px;left:-5px;}
+  .content{padding:30px 16px 20px;}
+  .profile-name{font-size:1.5rem;}
+  .stat-row{gap:12px;}
+  .social-btn{width:60px;height:60px;}
+  .social-btn svg{width:28px;height:28px;}
+  table{font-size:0.8rem;}
+  th,td{padding:10px 8px;}
+}
 </style>
 </head>
 <body>
+<!-- ========== NAVBAR ========== -->
+<nav>
+  <a href="index.html" class="logo">electrwni<em>.link</em></a>
+  <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
+</nav>
 
-<div class="wrapper">
-  <!-- البانر العلوي الهندسي هندسة محاكية للصورة المرفقة -->
-  <div class="banner">
-    <div class="banner-dots"></div>
-    <div class="banner-zigzag">⌇⌇⌇</div>
-    <div class="banner-triangle"></div>
+<!-- ========== HERO BANNER WITH AVATAR ========== -->
+<div class="hero-banner">
+  <div class="hero-shapes">
+    <div class="shape shape-triangle"></div>
+    <div class="shape shape-dots"></div>
+    <div class="shape shape-line"></div>
+    <div class="shape shape-wave"></div>
   </div>
-
-  <!-- حاوية الصورة الرمزية الدائرية (شعار المشاركة المتصلة) -->
+  
   <div class="avatar-container">
-    <div class="avatar-inner">
-      <svg viewBox="0 0 24 24">
-        <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
-      </svg>
-    </div>
-  </div>
-
-  <!-- حقول الإدخال والتحويل الفوري للرابط -->
-  <div class="content">
-    <input type="tel" id="codeRange" class="input-field" placeholder="أكتب الرقم" autocomplete="off" inputmode="numeric">
-    <button class="action-btn" onclick="redirectToLink()">أذهب الآن</button>
-  </div>
-
-  <!-- قسم قنوات التواصل المحددة بالهوية البصرية المتناسقة -->
-  <div class="social-section">
-    <div class="social-title">تابعنا</div>
-    <div class="social-icons">
-      <a href="#" class="social-icon instagram" id="instaLink">
-        <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-      </a>
-      <a href="#" class="social-icon telegram" id="teleLink">
-        <svg viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.565 8.161l-1.897 8.944c-.143.633-.519.79-.1047.319l-2.887-2.13-1.392 1.34c-.154.154-.284.284-.583.284l.207-2.936 5.344-4.828c.232-.207-.051-.322-.361-.115l-6.604 4.157-2.845-.89c-.619-.193-.632-.619.129-.916l11.12-4.288c.515-.193.966.115.753.992z"/></svg>
-      </a>
-      <a href="#" class="social-icon snapchat" id="snapLink">
-        <svg viewBox="0 0 24 24"><path d="M12 2c-5.522 0-10 4.477-10 10s4.477 10 10 10 10-4.477 10-10-4.477-10-10-10zm5.176 13.917c-.31.111-.645.215-.99.309-.327.344-.754.717-1.259.957-.406.192-.857.291-1.336.291-.04 0-.08-.002-.12-.005-.173-.012-.349-.039-.523-.081-.692-.164-1.347-.562-1.895-1.15-.36.436-.838.742-1.366.89-.138.039-.279.06-.421.066-.021.001-.041.001-.062.001-.444 0-.868-.093-1.251-.271-.462-.216-.856-.549-1.163-.863-.377-.099-.743-.211-1.085-.333-.373-.133-.561-.299-.561-.497 0-.361.621-.628.988-.748.118-.328.291-.849.441-1.373.088-.305.166-.613.23-.915-.246-.192-.455-.456-.598-.755-.162-.338-.201-.723-.111-1.082.083-.332.285-.615.568-.799.043-.497.169-.997.387-1.464.444-.951 1.258-1.637 2.294-1.933.565-.162 1.161-.225 1.769-.187.575-.308 1.246-.481 1.954-.481.657 0 1.282.149 1.823.419.645-.04 1.278.026 1.879.197 1.036.296 1.85 1.002 2.294 1.953.21.451.334.931.378 1.411.291.183.497.472.58.813.094.385.048.796-.13 1.151-.15.297-.362.557-.611.745.064.298.141.602.228.903.149.522.321 1.041.439 1.368.37.12.996.388.996.75 0 .197-.189.363-.563.497z"/></svg>
-      </a>
+    <div style="position:relative;">
+      <div class="avatar-ring"></div>
+      <div class="avatar-circle" id="avatar">U</div>
     </div>
   </div>
 </div>
 
+<!-- ========== CONTENT ========== -->
+<div class="content">
+  <!-- PROFILE INFO -->
+  <div class="profile-info">
+    <div class="profile-name" id="name">الاسم</div>
+    <div class="profile-handle" id="handle">electrwni.link/username</div>
+    <div class="profile-bio" id="bio">النبذة الشخصية</div>
+  </div>
+
+  <!-- INPUT SECTION -->
+  <div class="input-section">
+    <div class="input-label">⌨️ اكتب الرقم</div>
+    <input class="input-box" type="tel" id="numIn" placeholder="0" maxlength="1" inputmode="none" oninput="convertNum()">
+    <button class="btn-go" onclick="goNav()">اذهب الآن</button>
+    <div class="error-msg" id="errMsg">❌ الرقم غير موجود</div>
+    <div class="quick-buttons" id="quickBtns"></div>
+  </div>
+
+  <!-- SOCIALS -->
+  <div id="socialsDiv"></div>
+
+  <!-- ANALYTICS -->
+  <div class="analytics">
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="stat-num" id="topLink">-</div>
+        <div class="stat-label">أعلى رابط 🔥</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num" id="thisMonth">0</div>
+        <div class="stat-label">نشط هذا الشهر 📅</div>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="stat-num" id="lastAdded">-</div>
+        <div class="stat-label">آخر رابط مضاف ✨</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num" id="totalLinks">0</div>
+        <div class="stat-label">عدد الروابط 📊</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LINKS TABLE -->
+  <div class="links-section">
+    <div class="table-title">جميع الروابط</div>
+    <table id="linksTable" style="display:none;">
+      <thead>
+        <tr><th>الرقم</th><th>العنوان</th><th>الضغطات</th></tr>
+      </thead>
+      <tbody id="linksTbody"></tbody>
+    </table>
+    <div id="noLinks" class="empty-state">لا توجد روابط بعد</div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    بواسطة <a href="index.html">electrwni.link</a> • 2026
+  </div>
+</div>
+
+<!-- ========== FIREBASE ========== -->
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
 <script>
-// الإعداد الفعلي المتناسق مع الخادم المركزي
-const firebaseConfig = {
-  apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
-  authDomain: "electrwni-link.firebaseapp.com",
-  projectId: "electrwni-link",
-  storageBucket: "electrwni-link.firebasestorage.app",
-  messagingSenderId: "712490301263",
-  appId: "1:712490301263:web:2084210da3f687285ab73a",
-  databaseURL: "https://electrwni-link-default-rtdb.firebaseio.com/"
+// ========== FIREBASE CONFIG ==========
+const cfg={
+  apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
+  authDomain:"electrwni-link.firebaseapp.com",
+  projectId:"electrwni-link",
+  storageBucket:"electrwni-link.firebasestorage.app",
+  messagingSenderId:"712490301263",
+  appId:"1:712490301263:web:2084210da3f687285ab73a"
+};
+if(!firebase.apps.length)firebase.initializeApp(cfg);
+const db=firebase.firestore();
+
+// ========== SVG ICONS ==========
+const ICONS={
+  instagram:'<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.7" fill="none"/><circle cx="12" cy="12" r="3.8" stroke="currentColor" stroke-width="1.7" fill="none"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor"/></svg>',
+  tiktok:'<svg viewBox="0 0 24 24"><path d="M14 3v10.8a3.7 3.7 0 1 1-3.7-3.7c.3 0 .6.03.9.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/><path d="M14 3c.3 2.2 2 3.9 4.2 4.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></svg>',
+  telegram:'<svg viewBox="0 0 24 24"><path d="M21 4L3 11l6 2.2L11 19l3-4 4 3 3-14z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" fill="none"/><path d="M9 13.2L18 7" stroke="currentColor" stroke-width="1.4" fill="none"/></svg>',
+  whatsapp:'<svg viewBox="0 0 24 24"><path d="M12 3.5a8.5 8.5 0 0 0-7.4 12.8L3.5 20.5l4.3-1.1A8.5 8.5 0 1 0 12 3.5z" stroke="currentColor" stroke-width="1.6" fill="none"/></svg>',
+  snapchat:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M9 12h6M8 9h8M8 15h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>',
 };
 
-if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-const rtdb = firebase.database();
-
-// استخراج اسم المستخدم تلقائياً من الـ Hash للرابط الحالي (مثال: page.html#khaled)
-const currentUsername = window.location.hash.substring(1).trim().toLowerCase() || 'default';
-
-// تفعيل وتعبئة روابط شبكات التواصل الخاصة بصاحب الحساب تلقائياً عند التشغيل
-function loadSocialLinks() {
-  rtdb.ref(`links/${currentUsername}`).once('value').then(snapshot => {
-    const data = snapshot.val();
-    if(data) {
-      if(data.instagram) document.getElementById('instaLink').href = data.instagram;
-      if(data.telegram) document.getElementById('teleLink').href = data.telegram;
-      if(data.snapchat) document.getElementById('snapLink').href = data.snapchat;
-    }
-  }).catch(e => console.log("Social fetch pass: ", e));
+// ========== THEME TOGGLE ==========
+const t=localStorage.getItem('theme')||'light';
+document.documentElement.setAttribute('data-theme',t);
+function toggleTheme(){
+  const c=document.documentElement.getAttribute('data-theme');
+  const n=c==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',n);
+  localStorage.setItem('theme',n);
+  document.getElementById('themeBtn').textContent=n==='dark'?'☀️':'🌙';
 }
 
-// محرك فحص الرقم والتحويل اللحظي مع احتساب زيادة العداد (Clicks) بدقة
-function redirectToLink() {
-  const codeInput = document.getElementById('codeRange').value.trim();
+// ========== UTILITY ==========
+function getUsername(){return window.location.hash.substring(1)||null;}
+
+function arabicToEnglish(s){
+  const ar=['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+  const en=['0','1','2','3','4','5','6','7','8','9'];
+  let r=s;
+  ar.forEach((a,i)=>{r=r.replaceAll(a,en[i]);});
+  return r;
+}
+
+// ========== STATE ==========
+let userLinks=[],pageUsername='';
+
+// ========== INIT ==========
+async function init(){
+  const u=getUsername();
+  if(!u){show404('لم يتم تحديد المستخدم');return;}
+  pageUsername=u;
+  try{
+    const d=await db.collection('users').doc(u).get();
+    if(!d.exists){show404('الحساب غير موجود');return;}
+    const user=d.data();
+    userLinks=(user.links||[]).sort((a,b)=>a.num-b.num);
+    render(user);
+    
+    db.collection('users').doc(u).onSnapshot(doc=>{
+      if(doc.exists){
+        const updated=doc.data();
+        userLinks=(updated.links||[]).sort((a,b)=>a.num-b.num);
+        render(updated);
+      }
+    });
+  }catch(e){
+    show404('خطأ: '+e.message);
+  }
+}
+
+// ========== RENDER ==========
+function render(user){
+  const avatar=user.avatar?`<img src="${user.avatar}">`:user.displayName[0].toUpperCase();
+  document.getElementById('avatar').innerHTML=avatar;
+  document.getElementById('name').textContent=user.displayName||user.username;
+  document.getElementById('handle').textContent='electrwni.link/'+user.username;
+  document.getElementById('bio').textContent=user.bio||'';
   
-  if (!codeInput) {
-    alert('⚠️ الرجاء إدخال الرقم أولاً للانتقال.');
+  // Quick buttons
+  document.getElementById('quickBtns').innerHTML=userLinks.map(l=>`<button class="quick-btn" onclick="quickGo(${l.num})">${l.num}</button>`).join('');
+  
+  // Socials
+  const socials=user.socials||[];
+  if(socials.length){
+    document.getElementById('socialsDiv').innerHTML=`
+      <div class="section-title">تابعنا</div>
+      <div class="socials-box">
+        ${socials.map(s=>{
+          let url=s.username;
+          if(s.platform==='whatsapp')url=`https://wa.me/${s.username.replace(/\D/g,'')}`;
+          if(s.platform==='telegram')url=`https://t.me/${s.username.replace('@','')}`;
+          if(s.platform==='instagram')url=`https://instagram.com/${s.username.replace('@','')}`;
+          if(s.platform==='tiktok')url=`https://tiktok.com/@${s.username.replace('@','')}`;
+          if(s.platform==='snapchat')url=`https://snapchat.com/add/${s.username.replace('@','')}`;
+          return `<a href="${url}" target="_blank" class="social-btn">${ICONS[s.platform]||ICONS.website}</a>`;
+        }).join('')}
+      </div>
+    `;
+  }else{
+    document.getElementById('socialsDiv').innerHTML='';
+  }
+  
+  // Analytics
+  const topLink=userLinks.reduce((a,b)=>(a.clicks||0)>(b.clicks||0)?a:b,null);
+  const thisMonth=userLinks.filter(l=>l.clicks>5).length;
+  const lastAdded=userLinks[userLinks.length-1];
+  
+  document.getElementById('topLink').textContent=topLink?topLink.label:'-';
+  document.getElementById('thisMonth').textContent=thisMonth;
+  document.getElementById('lastAdded').textContent=lastAdded?lastAdded.label:'-';
+  document.getElementById('totalLinks').textContent=userLinks.length;
+  
+  // Links table
+  if(!userLinks.length){
+    document.getElementById('linksTable').style.display='none';
+    document.getElementById('noLinks').style.display='block';
+  }else{
+    document.getElementById('linksTable').style.display='';
+    document.getElementById('noLinks').style.display='none';
+    document.getElementById('linksTbody').innerHTML=userLinks.map(l=>`<tr><td class="link-num">${l.num}</td><td>${l.label}</td><td>${l.clicks||0}</td></tr>`).join('');
+  }
+}
+
+function convertNum(){
+  const inp=document.getElementById('numIn');
+  inp.value=arabicToEnglish(inp.value);
+}
+
+function quickGo(n){
+  document.getElementById('numIn').value=n;
+  goNav();
+}
+
+function goNav(){
+  const n=parseInt(document.getElementById('numIn').value);
+  const l=userLinks.find(x=>x.num===n);
+  if(!l){
+    const err=document.getElementById('errMsg');
+    err.classList.add('show');
+    setTimeout(()=>err.classList.remove('show'),2000);
     return;
   }
-
-  // البحث المباشر داخل مصفوفة أو كائن الروابط الخاص بالمستخدم الحالي
-  const userRef = rtdb.ref(`links/${currentUsername}`);
-  
-  userRef.once('value').then(snapshot => {
-    const userData = snapshot.val();
-    if (!userData || !userData.links) {
-      alert('❌ لا توجد روابط مسجلة لهذا الحساب حالياً.');
-      return;
-    }
-
-    let foundLink = null;
-    let foundIndex = -1;
-
-    // معالجة بنية تخزين الروابط وسحب الرابط المرادف للرقم المكتوب
-    if (Array.isArray(userData.links)) {
-      foundIndex = userData.links.findIndex(l => l && String(l.number || l.code) === codeInput);
-      if (foundIndex !== -1) foundLink = userData.links[foundIndex];
-    } else if (typeof userData.links === 'object') {
-      const keys = Object.keys(userData.links);
-      for (let k of keys) {
-        if (String(userData.links[k].number || userData.links[k].code) === codeInput) {
-          foundLink = userData.links[k];
-          foundIndex = k;
-          break;
-        }
-      }
-    }
-
-    if (foundLink && (foundLink.url || foundLink.link)) {
-      const targetUrl = foundLink.url || foundLink.link;
-      const currentClicks = parseInt(foundLink.clicks || 0, 10);
-      
-      // تحديث فوري تصاعدي لعداد النقرات لضمان قراءتها في لوحة التحكم الإدارية
-      const clickPath = `links/${currentUsername}/links/${foundIndex}/clicks`;
-      rtdb.ref(clickPath).set(currentClicks + 1).then(() => {
-        // التحويل المباشر للرابط المقصود
-        window.location.href = targetUrl;
-      }).catch(() => {
-        // تحويل احتياطي مباشر في حال حدوث بطء في اتصال الشبكة
-        window.location.href = targetUrl;
-      });
-    } else {
-      alert('❌ الرقم الذي أدخلته غير صحيح أو غير متوفر حالياً.');
-    }
-  }).catch(err => {
-    alert('حدث خطأ في الاتصال بالخادم: ' + err.message);
-  });
+  window.location.href=l.url;
 }
 
-// انطلاق الوظائف التمهيدية فور تحميل الصفحة
-window.onload = loadSocialLinks;
+function show404(msg){
+  document.querySelector('.content').innerHTML=`
+    <div class="empty-state" style="padding:100px 20px;">
+      <div style="font-size:3rem;margin-bottom:20px;">❌</div>
+      <h2 style="font-weight:900;margin-bottom:10px;font-size:1.3rem;">${msg}</h2>
+      <a href="index.html" style="display:inline-block;margin-top:20px;padding:10px 20px;background:var(--accent);color:#fff;border-radius:8px;text-decoration:none;font-weight:700;">العودة للرئيسية</a>
+    </div>
+  `;
+}
+
+init();
 </script>
 </body>
 </html>
