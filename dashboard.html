@@ -99,14 +99,14 @@ body{
   display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;
   border:1px solid var(--border);border-radius:12px;background:var(--bg2);
 }
-.pp-banner{width:100%;height:140px;border-radius:12px;background:linear-gradient(135deg,#3d5af1,#6c8fff);position:relative;margin-bottom:-30px;background-size:cover;background-position:center;}
+.pp-banner{width:calc(100% + 40px);height:140px;border-radius:12px;background:linear-gradient(135deg,#3d5af1,#6c8fff);position:relative;margin:-20px -20px 0;background-size:cover;background-position:center;}
 .pp-avatar{
   width:60px;height:60px;border-radius:50%;background:#fff;border:4px solid var(--surface);
   display:flex;align-items:center;justify-content:center;color:#3d5af1;font-weight:900;
-  font-size:1.4rem;overflow:hidden;flex-shrink:0;z-index:1;
+  font-size:1.4rem;overflow:hidden;flex-shrink:0;z-index:1;margin-top:-30px;
 }
 .pp-avatar img{width:100%;height:100%;object-fit:cover;}
-.pp-info{text-align:center;margin-top:20px;}
+.pp-info{text-align:center;margin-top:10px;}
 .pp-name{font-size:1rem;font-weight:900;}
 .pp-handle{font-family:'Space Mono',monospace;font-size:0.75rem;color:var(--accent);direction:ltr;}
 .pp-bio{font-size:0.82rem;color:var(--text2);margin-top:6px;}
@@ -220,7 +220,7 @@ tr:hover{background:var(--bg2);}
             <h2>روابطي المرقمة</h2>
             <button class="btn btn-primary btn-sm" onclick="openLinkModal()">➕ إضافة</button>
           </div>
-          <div id="linksEmpty" class="empty"><div>-</div><p>لا توجد روابط بعد</p></div>
+          <div id="linksEmpty" class="empty"><p>لا توجد روابط بعد</p></div>
           <table id="linksTable" style="display:none;">
             <thead><tr><th>الرقم</th><th>العنوان</th><th>الضغطات</th><th>التحويل</th><th></th></tr></thead>
             <tbody id="linksTbody"></tbody>
@@ -245,19 +245,14 @@ tr:hover{background:var(--bg2);}
 
         <div class="section-box">
           <h2 style="margin-bottom:20px;">🖼️ تخصيص الصفحة</h2>
-          
           <div class="form-group">
             <label>صورة الغلاف (Banner)</label>
             <input type="file" id="bannerInput" accept="image/*" onchange="selectBanner(this)">
-            <small style="color:var(--muted);margin-top:4px;display:block;">النسبة: 3:1 (مثالي: 600×200px)</small>
           </div>
-
           <div class="form-group">
             <label>صورة البروفايل</label>
             <input type="file" id="avatarInput" accept="image/*" onchange="selectAvatar(this)">
-            <small style="color:var(--muted);margin-top:4px;display:block;">النسبة: 1:1 (مثالي: 200×200px)</small>
           </div>
-
           <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="saveDesign()">💾 حفظ التصميم</button>
         </div>
       </div>
@@ -282,22 +277,10 @@ tr:hover{background:var(--bg2);}
         <div class="section-box">
           <h2 style="margin-bottom:20px;">📈 التحليلات المتقدمة</h2>
           <div class="page-grid" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr));">
-            <div class="stat-card">
-              <div class="stat-val" id="totalClicks">0</div>
-              <div class="stat-label">مجموع الضغطات</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-val" id="avgCTR">0%</div>
-              <div class="stat-label">متوسط التحويل</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-val" id="topLink">-</div>
-              <div class="stat-label">أعلى رابط</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-val" id="totalSocials">0</div>
-              <div class="stat-label">الحسابات</div>
-            </div>
+            <div class="stat-card"><div class="stat-val" id="totalClicks">0</div><div class="stat-label">مجموع الضغطات</div></div>
+            <div class="stat-card"><div class="stat-val" id="avgCTR">0%</div><div class="stat-label">متوسط التحويل</div></div>
+            <div class="stat-card"><div class="stat-val" id="topLink">-</div><div class="stat-label">أعلى رابط</div></div>
+            <div class="stat-card"><div class="stat-val" id="totalSocials">0</div><div class="stat-label">الحسابات</div></div>
           </div>
         </div>
       </div>
@@ -314,7 +297,6 @@ tr:hover{background:var(--bg2);}
           <div class="form-group"><label>الموقع الجغرافي</label><input type="text" id="pfLocation"></div>
           <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="saveProfile()">💾 حفظ</button>
         </div>
-
         <div class="section-box">
           <h2 style="margin-bottom:15px;">🔒 الأمان</h2>
           <button class="btn btn-danger" style="width:100%;justify-content:center;" onclick="logout()">🚪 تسجيل الخروج</button>
@@ -374,6 +356,7 @@ tr:hover{background:var(--bg2);}
 
 <!-- ========== FIREBASE ========== -->
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
@@ -388,19 +371,20 @@ const firebaseConfig={
   appId:"1:712490301263:web:2084210da3f687285ab73a"
 };
 if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth();
 const db=firebase.firestore();
-
-// ========== STATE ==========
-let user=null,editLinkId=null,cropper=null,cropType=null;
-let currentUsername=localStorage.getItem('elUserUsername')||'';
 
 // ========== UTILITY ==========
 function toast(msg){
   const el=document.getElementById('toast');
   el.textContent=msg;
   el.classList.add('show');
-  setTimeout(()=>el.classList.remove('show'),2500);
+  setTimeout(()=>el.classList.remove('show'),3000);
 }
+
+// ========== STATE ==========
+let user=null,editLinkId=null,cropper=null,cropType=null;
+let currentUsername=localStorage.getItem('elUserUsername')||'';
 
 // ========== INIT ========== 
 async function load(){
@@ -409,28 +393,33 @@ async function load(){
     return;
   }
   
-  const ref=db.collection('users').doc(currentUsername);
   try{
+    const ref=db.collection('users').doc(currentUsername);
     const doc=await ref.get();
-    if(!doc.exists){window.location.href='signin.html';return;}
+    if(!doc.exists){
+      toast('❌ الحساب غير موجود');
+      window.location.href='signin.html';
+      return;
+    }
     user=doc.data();
     if(!user.links)user.links=[];
     if(!user.socials)user.socials=[];
     renderSidebar();
     render();
-    document.querySelector('[href*="page.html"]').href='page.html#'+currentUsername;
+    
+    // Real-time listening
+    ref.onSnapshot(doc=>{
+      if(doc.exists){
+        user=doc.data();
+        if(!user.links)user.links=[];
+        if(!user.socials)user.socials=[];
+        render();
+      }
+    });
   }catch(e){
+    console.error('Error:', e);
     toast('❌ خطأ: '+e.message);
   }
-  
-  ref.onSnapshot(doc=>{
-    if(doc.exists){
-      user=doc.data();
-      if(!user.links)user.links=[];
-      if(!user.socials)user.socials=[];
-      render();
-    }
-  });
 }
 
 // ========== RENDER ==========
@@ -488,7 +477,8 @@ function render(){
 }
 
 async function saveToCloud(){
-  await db.collection('users').doc(currentUsername).set(user,{merge:true});
+  console.log('Saving to Firebase:', currentUsername);
+  return await db.collection('users').doc(currentUsername).update(user);
 }
 
 // ========== PAGES ==========
@@ -515,13 +505,11 @@ function selectBanner(inp){
         viewMode:1,
         autoCropArea:1,
         responsive:true,
-        restore:true,
         guides:true,
         center:true,
         highlight:true,
         cropBoxMovable:true,
         cropBoxResizable:true,
-        toggleDragModeOnDblclick:true,
       });
     },100);
   };
@@ -567,8 +555,17 @@ function closeCropModal(){
 
 async function saveCropImage(){
   if(!cropper)return;
-  const canvas=cropper.getCroppedCanvas();
-  const imageData=canvas.toDataURL();
+  toast('💾 جاري الحفظ...');
+  
+  let canvasOptions = {};
+  if(cropType === 'avatar'){
+    canvasOptions = { width: 300, height: 300 };
+  } else if(cropType === 'banner') {
+    canvasOptions = { width: 900, height: 300 };
+  }
+
+  const canvas = cropper.getCroppedCanvas(canvasOptions);
+  const imageData = canvas.toDataURL('image/jpeg', 0.7); 
   
   if(cropType==='banner'){
     user.bannerImage=imageData;
@@ -579,22 +576,27 @@ async function saveCropImage(){
   }
   
   closeCropModal();
-  toast('✅ جاري الحفظ...');
   
   try{
     await saveToCloud();
     toast('✅ تم حفظ الصورة بنجاح!');
   }catch(e){
-    toast('❌ خطأ: '+e.message);
+    console.error('Error saving:', e);
+    if(e.message.includes('longer than 1048487')){
+      toast('❌ حجم الصورة لا يزال كبيراً، حاول اختيار صورة أصغر');
+    } else {
+      toast('❌ خطأ: '+e.message);
+    }
   }
 }
 
 async function saveDesign(){
-  toast('✅ جاري الحفظ...');
+  toast('💾 جاري الحفظ...');
   try{
     await saveToCloud();
     toast('✅ تم حفظ التصميم بنجاح!');
   }catch(e){
+    console.error('Error saving:', e);
     toast('❌ خطأ: '+e.message);
   }
 }
@@ -629,20 +631,25 @@ async function saveLink(){
   const url=document.getElementById('lUrl').value.trim();
   if(!num||!label||!url){toast('⚠️ ملء جميع الحقول');return;}
   
+  toast('💾 جاري الحفظ...');
   const exist=user.links.find(l=>l.num===num&&l.id!==editLinkId);
   if(editLinkId){
     const i=user.links.findIndex(l=>l.id===editLinkId);
     user.links[i]={...user.links[i],num,label,url};
     if(exist)user.links=user.links.filter(l=>l.id!==exist.id||l.id===editLinkId);
-    toast('✅ تم التحديث');
   }else{
     if(exist)user.links=user.links.filter(l=>l.id!==exist.id);
     user.links.push({id:Date.now(),num,label,url,clicks:0});
-    toast('✅ تمت الإضافة');
   }
   closeLinkModal();
   render();
-  try{await saveToCloud();}catch(e){toast('❌ خطأ: '+e.message);}
+  try{
+    await saveToCloud();
+    toast('✅ تم الحفظ بنجاح!');
+  }catch(e){
+    console.error('Error saving:', e);
+    toast('❌ خطأ: '+e.message);
+  }
 }
 
 async function deleteCurrentLink(){
@@ -650,8 +657,14 @@ async function deleteCurrentLink(){
   user.links=user.links.filter(l=>l.id!==editLinkId);
   closeLinkModal();
   render();
-  toast('🗑️ تم الحذف');
-  try{await saveToCloud();}catch(e){toast('❌ خطأ: '+e.message);}
+  toast('💾 جاري الحفظ...');
+  try{
+    await saveToCloud();
+    toast('✅ تم الحذف!');
+  }catch(e){
+    console.error('Error saving:', e);
+    toast('❌ خطأ: '+e.message);
+  }
 }
 
 // ========== SOCIAL ==========
@@ -686,15 +699,27 @@ async function saveSocial(){
   user.socials.push({id:Date.now()+'',platform:detectedSocial.platform,username:detectedSocial.username});
   document.getElementById('socialModal').classList.remove('open');
   render();
-  toast('✅ تمت الإضافة');
-  try{await saveToCloud();}catch(e){toast('❌ خطأ: '+e.message);}
+  toast('💾 جاري الحفظ...');
+  try{
+    await saveToCloud();
+    toast('✅ تمت الإضافة!');
+  }catch(e){
+    console.error('Error saving:', e);
+    toast('❌ خطأ: '+e.message);
+  }
 }
 
 async function deleteSocial(id){
   user.socials=user.socials.filter(s=>s.id!==id);
   render();
-  toast('🗑️ تم الحذف');
-  try{await saveToCloud();}catch(e){toast('❌ خطأ: '+e.message);}
+  toast('💾 جاري الحفظ...');
+  try{
+    await saveToCloud();
+    toast('✅ تم الحذف!');
+  }catch(e){
+    console.error('Error saving:', e);
+    toast('❌ خطأ: '+e.message);
+  }
 }
 
 // ========== PROFILE ==========
@@ -703,7 +728,16 @@ async function saveProfile(){
   user.phone=document.getElementById('pfPhone').value.trim();
   user.bio=document.getElementById('pfBio').value.trim();
   user.location=document.getElementById('pfLocation').value.trim();
-  try{await saveToCloud();renderSidebar();toast('✅ تم الحفظ');}catch(e){toast('❌ خطأ: '+e.message);}
+  
+  toast('💾 جاري الحفظ...');
+  try{
+    await saveToCloud();
+    renderSidebar();
+    toast('✅ تم الحفظ بنجاح!');
+  }catch(e){
+    console.error('Error saving:', e);
+    toast('❌ خطأ: '+e.message);
+  }
 }
 
 function logout(){
