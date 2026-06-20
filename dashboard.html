@@ -1,380 +1,328 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-theme="light">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>لوحة التحكم — electrwni.link</title>
+<title>مدير الروابط — electrwni.link</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
 <style>
-/* ========== CSS VARIABLES ========== */
 :root{
-  --bg:#f0f4ff;--bg2:#e8eeff;--surface:rgba(255,255,255,0.98);--border:rgba(100,130,255,0.18);
-  --accent:#3d5af1;--accent2:#c9a961;--accent-light:rgba(61,90,241,0.1);
-  --text:#0f1535;--text2:#3a4270;--muted:#7b84b0;--glass:rgba(255,255,255,0.96);
-  --success:#0ab87a;--error:#e8436a;--warning:#ff9f43;
-}
-[data-theme="dark"]{
-  --bg:#050810;--bg2:#0a0f20;--surface:rgba(12,18,45,0.98);--border:rgba(100,130,255,0.16);
-  --accent:#6c8fff;--accent2:#d9c08a;--accent-light:rgba(108,143,255,0.1);
-  --text:#e8eeff;--text2:#a0aad0;--muted:#5a6490;--glass:rgba(12,18,45,0.96);
-  --success:#4ecca3;--error:#ff6584;--warning:#ffb74d;
+  --primary:#3d5af1;--primary-light:#6c8fff;--bg:#f5f5f5;--surface:#ffffff;
+  --text:#0f1535;--text2:#3a4270;--muted:#9aa2c8;--success:#0ab87a;
+  --error:#e8436a;--warning:#ffc107;
 }
 
-/* ========== GLOBAL STYLES ========== */
-*{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation;}
-html{scroll-behavior:smooth;}
+*{margin:0;padding:0;box-sizing:border-box;}
 body{
-  font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;
-  transition:background .3s,color .3s;line-height:1.6;
+  font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);
+  min-height:100vh;padding-bottom:20px;
 }
-
-/* ========== LAYOUT ========== */
-.container{display:flex;flex-direction:column;min-height:100vh;}
-.main{flex:1;display:flex;flex-direction:column;}
-.content{flex:1;padding:24px 20px;overflow-y:auto;}
 
 /* ========== TOPBAR ========== */
 .topbar{
-  display:flex;align-items:center;justify-content:space-between;padding:14px 20px;
-  border-bottom:1px solid var(--border);background:linear-gradient(90deg,#3d5af1,#6c8fff);
-  position:sticky;top:0;z-index:40;gap:20px;
+  background:linear-gradient(135deg,var(--primary),var(--primary-light));
+  color:#fff;padding:14px 20px;display:flex;justify-content:space-between;
+  align-items:center;position:sticky;top:0;z-index:50;
 }
-.tb-logo{font-family:'Space Mono',monospace;font-size:0.95rem;font-weight:900;color:#fff;letter-spacing:-0.5px;}
-.tb-logo .dark{color:#a8c5ff;}
-.topbar-right{display:flex;align-items:center;gap:8px;}
+
+.topbar-brand{font-family:'Space Mono',monospace;font-size:1rem;font-weight:900;}
+
+.topbar-btns{display:flex;gap:8px;}
 
 .btn{
-  display:inline-flex;align-items:center;gap:5px;padding:8px 16px;border-radius:8px;
-  font-family:'Tajawal',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;border:none;
-  text-decoration:none;transition:transform .15s,filter .15s;touch-action:manipulation;
+  padding:8px 16px;border:none;border-radius:8px;cursor:pointer;
+  font-family:'Tajawal',sans-serif;font-weight:700;font-size:0.85rem;
+  transition:all .2s;touch-action:manipulation;
 }
-.btn:active{transform:scale(0.95);}
-.btn-primary{background:#fff;color:#3d5af1;}
-.btn-primary:hover{filter:brightness(0.95);}
-.btn-ghost{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;}
-.btn-ghost:hover{background:rgba(255,255,255,0.25);}
-.btn-sm{padding:6px 12px;font-size:0.78rem;}
-.btn-danger{background:rgba(232,67,106,0.1);color:var(--error);border:1px solid rgba(232,67,106,0.2);}
 
-/* ========== NAVIGATION TABS ========== */
-.nav-tabs{
-  display:flex;align-items:center;gap:4px;padding:12px 20px;background:var(--surface);
-  border-bottom:1px solid var(--border);overflow-x:auto;flex-wrap:wrap;
-}
-.nav-tab{
-  background:transparent;border:none;color:var(--text2);text-align:center;padding:8px 14px;
-  border-radius:8px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:0.85rem;
-  font-weight:700;transition:background .15s,color .15s,border-color .15s;
-  border-bottom:2px solid transparent;display:flex;align-items:center;gap:5px;white-space:nowrap;
-}
-.nav-tab:active{transform:scale(0.96);}
-.nav-tab.active{background:var(--accent-light);color:var(--accent);border-bottom-color:var(--accent);}
-.nav-tab:hover{background:var(--accent-light);}
+.btn-white{background:#fff;color:var(--primary);}
+.btn-white:active{transform:scale(0.95);}
 
-/* ========== PAGES ========== */
-.page{display:none;}
-.page.active{display:block;animation:fadeIn .2s;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.btn-logout{background:rgba(232,67,106,0.2);color:#fff;border:1px solid rgba(232,67,106,0.4);}
+.btn-logout:active{transform:scale(0.95);}
 
-/* ========== GRID & CARDS ========== */
-.page-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-bottom:24px;}
-.stat-card{
-  background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;
-  text-align:center;cursor:pointer;transition:transform .15s,box-shadow .15s;
-}
-.stat-card:active{transform:scale(0.96);}
-.stat-card:hover{box-shadow:0 4px 12px rgba(61,90,241,0.1);}
-.stat-val{font-size:1.8rem;font-weight:900;color:var(--accent);}
-.stat-label{font-size:0.75rem;color:var(--muted);font-weight:700;margin-top:8px;}
+/* ========== CONTAINER ========== */
+.container{max-width:900px;margin:0 auto;padding:20px;}
 
-.section-box{
-  background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px;
+/* ========== EXPANDABLE BOX ========== */
+.expandable{
+  background:var(--surface);border-radius:14px;margin-bottom:16px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.05);overflow:hidden;
 }
-.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:10px;flex-wrap:wrap;}
-.sec-hd h2{font-size:0.95rem;font-weight:900;}
 
-/* ========== PROFILE PREVIEW ========== */
-.profile-preview{
-  display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;
-  border:1px solid var(--border);border-radius:12px;background:var(--bg2);
+.expandable-header{
+  padding:18px 20px;cursor:pointer;display:flex;justify-content:space-between;
+  align-items:center;background:linear-gradient(135deg,#f9f9f9,#ffffff);
+  border-bottom:2px solid #f0f0f0;transition:all .2s;
 }
-.pp-banner{width:calc(100% + 40px);height:140px;border-radius:12px;background:linear-gradient(135deg,#3d5af1,#6c8fff);position:relative;margin:-20px -20px 0;background-size:cover;background-position:center;}
-.pp-avatar{
-  width:60px;height:60px;border-radius:50%;background:#fff;border:4px solid var(--surface);
-  display:flex;align-items:center;justify-content:center;color:#3d5af1;font-weight:900;
-  font-size:1.4rem;overflow:hidden;flex-shrink:0;z-index:1;margin-top:-30px;
-}
-.pp-avatar img{width:100%;height:100%;object-fit:cover;}
-.pp-info{text-align:center;margin-top:10px;}
-.pp-name{font-size:1rem;font-weight:900;}
-.pp-handle{font-family:'Space Mono',monospace;font-size:0.75rem;color:var(--accent);direction:ltr;}
-.pp-bio{font-size:0.82rem;color:var(--text2);margin-top:6px;}
 
-/* ========== FORMS ========== */
+.expandable-header:hover{background:#f5f5f5;}
+.expandable-header.open{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;}
+
+.expandable-title{font-size:1.1rem;font-weight:900;display:flex;align-items:center;gap:8px;}
+
+.expandable-icon{
+  width:32px;height:32px;border-radius:8px;
+  background:linear-gradient(135deg,var(--primary),var(--primary-light));
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;transition:transform .3s;
+}
+
+.expandable-header.open .expandable-icon{transform:rotate(180deg);}
+
+.expandable-toggle{font-size:1.4rem;transition:transform .3s;}
+.expandable-header.open .expandable-toggle{transform:rotate(180deg);}
+
+.expandable-content{
+  display:none;padding:20px;max-height:0;overflow:hidden;transition:all .3s;
+}
+
+.expandable-header.open+.expandable-content{
+  display:block;max-height:2000px;
+}
+
+/* ========== FORM GROUPS ========== */
 .form-group{margin-bottom:14px;}
-.form-group label{display:block;font-size:0.8rem;font-weight:700;margin-bottom:6px;color:var(--text2);}
-input[type=text],input[type=email],input[type=tel],input[type=number],input[type=file],textarea,select{
-  width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:8px;
-  padding:10px 12px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:0.88rem;
-  outline:none;transition:border-color .15s,box-shadow .15s;
-}
-input:focus,textarea:focus,select:focus{
-  border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light);
-}
-textarea{resize:vertical;min-height:80px;}
 
-/* ========== TABLES ========== */
-table{width:100%;border-collapse:collapse;font-size:0.85rem;}
-th,td{padding:10px;text-align:right;border-bottom:1px solid var(--border);}
-th{font-weight:900;background:var(--bg2);}
-tr:hover{background:var(--bg2);}
+.form-group label{display:block;font-size:0.85rem;font-weight:700;margin-bottom:6px;color:var(--text2);}
 
-/* ========== MODALS ========== */
-.modal-overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;
-  justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity .2s;
+input[type=text],input[type=url],input[type=number],textarea,select{
+  width:100%;padding:10px 12px;border:1.5px solid #e0e0e0;border-radius:8px;
+  font-family:'Tajawal',sans-serif;font-size:0.9rem;outline:none;transition:border .2s;
 }
-.modal-overlay.open{opacity:1;pointer-events:auto;}
-.modal{
-  background:var(--surface);border-radius:16px;max-width:500px;width:90%;
-  max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);
-}
-.modal-head{padding:20px;border-bottom:1px solid var(--border);}
-.modal-head h3{font-size:1rem;font-weight:900;margin-bottom:4px;}
-.modal-body{padding:20px;}
-.modal-foot{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
 
-/* ========== CROP MODAL ========== */
-.crop-container{position:relative;width:100%;max-height:400px;overflow:hidden;}
-.crop-container img{max-width:100%;}
+input:focus,textarea:focus,select:focus{border-color:var(--primary);}
+
+textarea{resize:vertical;min-height:60px;}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+@media(max-width:600px){
+  .form-row{grid-template-columns:1fr;}
+}
+
+/* ========== BUTTONS ========== */
+.btn-add{
+  background:var(--success);color:#fff;padding:12px 24px;border:none;
+  border-radius:8px;cursor:pointer;font-weight:700;font-family:'Tajawal',sans-serif;
+  width:100%;transition:all .2s;font-size:0.95rem;
+}
+
+.btn-add:active{transform:scale(0.98);}
+
+.btn-pdf{
+  background:var(--error);color:#fff;padding:14px 28px;border:none;
+  border-radius:8px;cursor:pointer;font-weight:700;font-family:'Tajawal',sans-serif;
+  width:100%;margin-top:16px;font-size:0.95rem;transition:all .2s;
+}
+
+.btn-pdf:active{transform:scale(0.98);}
+
+/* ========== COLLAPSIBLE ITEMS ========== */
+.item{
+  background:#f9f9f9;border:1px solid #e0e0e0;border-radius:8px;padding:12px 14px;
+  margin-bottom:8px;cursor:pointer;transition:all .2s;display:flex;
+  justify-content:space-between;align-items:center;
+}
+
+.item:hover{background:#f5f5f5;border-color:var(--primary);}
+.item.open{background:var(--primary-light);color:#fff;border-color:var(--primary);}
+
+.item-header{flex:1;font-weight:700;font-size:0.95rem;}
+.item-toggle{font-size:1.2rem;transition:transform .3s;}
+.item.open .item-toggle{transform:rotate(180deg);}
+
+.item-details{
+  display:none;margin-top:12px;padding-top:12px;border-top:1px solid rgba(0,0,0,0.1);
+}
+
+.item.open .item-details{display:block;}
+
+.detail-row{display:flex;gap:8px;margin-bottom:8px;font-size:0.9rem;}
+.detail-label{font-weight:700;min-width:60px;}
+.detail-value{flex:1;word-break:break-all;}
+
+.btn-delete{
+  background:var(--error);color:#fff;padding:6px 12px;border:none;
+  border-radius:6px;cursor:pointer;font-size:0.8rem;font-weight:700;
+}
+
+/* ========== TABLE ========== */
+table{width:100%;border-collapse:collapse;font-size:0.85rem;margin-top:12px;}
+
+th,td{padding:10px;text-align:right;border-bottom:1px solid #e0e0e0;}
+
+th{
+  background:linear-gradient(135deg,var(--primary),var(--primary-light));
+  color:#fff;font-weight:900;
+}
+
+tr:hover{background:#f5f5f5;}
+
+.col-num{font-weight:900;color:var(--primary);max-width:40px;}
+
+/* ========== PAGINATION ========== */
+.pagination{
+  display:flex;gap:6px;justify-content:center;margin-top:14px;flex-wrap:wrap;
+}
+
+.pagination button{
+  padding:6px 10px;border:1px solid #e0e0e0;border-radius:6px;
+  background:#fff;cursor:pointer;font-weight:700;font-size:0.9rem;
+  transition:all .2s;
+}
+
+.pagination button.active{
+  background:var(--primary);color:#fff;border-color:var(--primary);
+}
+
+.pagination button:active{transform:scale(0.95);}
 
 /* ========== EMPTY STATE ========== */
-.empty{text-align:center;padding:40px 20px;color:var(--muted);}
+.empty{
+  text-align:center;padding:30px;color:var(--muted);
+}
 
 /* ========== TOAST ========== */
 .toast{
-  position:fixed;bottom:20px;left:20px;background:var(--text);color:var(--bg);
-  padding:10px 16px;border-radius:8px;font-weight:700;font-size:0.8rem;opacity:0;
-  transform:translateY(20px);transition:opacity .2s,transform .2s;pointer-events:none;z-index:300;
+  position:fixed;bottom:20px;left:20px;background:var(--text);
+  color:var(--bg);padding:12px 20px;border-radius:8px;
+  font-weight:700;font-size:0.9rem;opacity:0;transform:translateY(20px);
+  transition:all .3s;z-index:100;
 }
+
 .toast.show{opacity:1;transform:translateY(0);}
 
 /* ========== RESPONSIVE ========== */
-@media(max-width:768px){
-  .content{padding:16px 12px;}
-  .page-grid{grid-template-columns:repeat(auto-fit,minmax(110px,1fr));}
-  .nav-tabs{gap:2px;padding:8px 12px;}
-  .nav-tab{padding:6px 10px;font-size:0.8rem;}
-  .sec-hd{flex-direction:column;align-items:flex-start;}
-  table{font-size:0.75rem;}
+@media(max-width:600px){
+  .container{padding:16px 12px;}
+  .expandable-header{padding:14px 16px;}
+  .expandable-content{padding:16px;}
+  .form-row{grid-template-columns:1fr;}
+  table{font-size:0.8rem;}
   th,td{padding:8px;}
-}
-
-@media(max-width:480px){
-  .topbar{flex-wrap:wrap;gap:8px;}
-  .topbar-right{width:100%;justify-content:space-between;}
-  .nav-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-  .nav-tab{padding:6px 8px;font-size:0.75rem;}
-  .page-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
-  .stat-val{font-size:1.4rem;}
-  .section-box{padding:16px;margin-bottom:16px;}
-  table{font-size:0.7rem;}
-  th,td{padding:6px;}
 }
 </style>
 </head>
 <body>
+
+<!-- ========== TOPBAR ========== -->
+<div class="topbar">
+  <div class="topbar-brand">electrwni.link</div>
+  <div class="topbar-btns">
+    <button class="btn btn-white" onclick="window.location.href='page.html'">👁 صفحتك</button>
+    <button class="btn btn-logout" onclick="logout()">🚪 خروج</button>
+  </div>
+</div>
+
+<!-- ========== CONTAINER ========== -->
 <div class="container">
-  <!-- ========== TOPBAR ========== -->
-  <div class="topbar">
-    <div class="tb-logo"><span style="color:#fff;">Electrwni</span><span class="dark">.link</span></div>
-    <div class="topbar-right">
-      <a href="page.html" target="_blank" class="btn btn-primary btn-sm">👁 صفحتك</a>
+
+  <!-- ===== BOX 1: ADD LINK ===== -->
+  <div class="expandable">
+    <div class="expandable-header" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
+      <div class="expandable-title">
+        <div class="expandable-icon">➕</div>
+        <span>أضف رابط</span>
+      </div>
+      <div class="expandable-toggle">▼</div>
+    </div>
+    <div class="expandable-content" style="display:block;">
+      <div class="form-row">
+        <div class="form-group">
+          <label>الرقم (1-9)</label>
+          <input type="number" id="linkNum" placeholder="1" min="1" max="9">
+        </div>
+        <div class="form-group">
+          <label>العنوان (20 حرف)</label>
+          <input type="text" id="linkTitle" placeholder="اكتب العنوان" maxlength="20">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>الوصف</label>
+        <textarea id="linkDesc" placeholder="اوصف الرابط"></textarea>
+      </div>
+      <div class="form-group">
+        <label>الرابط</label>
+        <input type="url" id="linkUrl" placeholder="https://example.com" dir="ltr">
+      </div>
+      <button class="btn-add" onclick="addLink()">✅ إضافة الرابط</button>
     </div>
   </div>
 
-  <!-- ========== NAVIGATION TABS ========== -->
-  <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showPage('links',this)">📋 الروابط</button>
-    <button class="nav-tab" onclick="showPage('design',this)">🎨 التصميم</button>
-    <button class="nav-tab" onclick="showPage('socials',this)">🌐 حسابات</button>
-    <button class="nav-tab" onclick="showPage('analytics',this)">📈 تحليلات</button>
-    <button class="nav-tab" onclick="showPage('profile',this)">👤 ملفي</button>
-  </div>
-
-  <!-- ========== MAIN CONTENT ========== -->
-  <div class="main">
-    <div class="content">
-      <!-- ===== PAGE: LINKS ===== -->
-      <div class="page active" id="page-links">
-        <div class="page-grid">
-          <div class="stat-card"><div class="stat-val" id="stLinks">0</div><div class="stat-label">الروابط</div></div>
-          <div class="stat-card"><div class="stat-val" id="stClicks">0</div><div class="stat-label">الضغطات</div></div>
-          <div class="stat-card"><div class="stat-val" id="stSocials">0</div><div class="stat-label">الحسابات</div></div>
-          <div class="stat-card"><div class="stat-val" id="ctr">0%</div><div class="stat-label">التحويل</div></div>
-        </div>
-        
-        <div class="section-box">
-          <div class="sec-hd">
-            <h2>روابطي المرقمة</h2>
-            <button class="btn btn-primary btn-sm" onclick="openLinkModal()">➕ إضافة</button>
-          </div>
-          <div id="linksEmpty" class="empty"><p>لا توجد روابط بعد</p></div>
-          <table id="linksTable" style="display:none;">
-            <thead><tr><th>الرقم</th><th>العنوان</th><th>الضغطات</th><th>التحويل</th><th></th></tr></thead>
-            <tbody id="linksTbody"></tbody>
-          </table>
-        </div>
+  <!-- ===== BOX 2: LINKS REGISTRY ===== -->
+  <div class="expandable">
+    <div class="expandable-header" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
+      <div class="expandable-title">
+        <div class="expandable-icon">📋</div>
+        <span>سجل الروابط</span>
       </div>
-
-      <!-- ===== PAGE: DESIGN ===== -->
-      <div class="page" id="page-design">
-        <div class="section-box">
-          <h2 style="margin-bottom:20px;">🎨 معاينة صفحتك</h2>
-          <div class="profile-preview">
-            <div class="pp-banner"></div>
-            <div class="pp-avatar" id="ppAvatar">U</div>
-            <div class="pp-info">
-              <div class="pp-name" id="ppName">الاسم</div>
-              <div class="pp-handle" id="ppHandle">electrwni.link/username</div>
-              <div class="pp-bio" id="ppBio">النبذة</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-box">
-          <h2 style="margin-bottom:20px;">🖼️ تخصيص الصفحة</h2>
-          <div class="form-group">
-            <label>صورة الغلاف (Banner)</label>
-            <input type="file" id="bannerInput" accept="image/*" onchange="selectBanner(this)">
-          </div>
-          <div class="form-group">
-            <label>صورة البروفايل</label>
-            <input type="file" id="avatarInput" accept="image/*" onchange="selectAvatar(this)">
-          </div>
-          <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="saveDesign()">💾 حفظ التصميم</button>
-        </div>
+      <div class="expandable-toggle">▼</div>
+    </div>
+    <div class="expandable-content">
+      <div style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:6px;">
+        📊 <span>دراسة جدوى لجماهيرية وفاعلية نشاط روابطك</span>
       </div>
-
-      <!-- ===== PAGE: SOCIALS ===== -->
-      <div class="page" id="page-socials">
-        <div class="section-box">
-          <div class="sec-hd">
-            <h2>🌐 حسابات التواصل</h2>
-            <button class="btn btn-primary btn-sm" onclick="openSocialModal()">➕ إضافة</button>
-          </div>
-          <div id="socialsEmpty" class="empty"><p>لم تضف حسابات بعد</p></div>
-          <table id="socialsTable" style="display:none;">
-            <thead><tr><th>المنصة</th><th>الحساب</th><th></th></tr></thead>
-            <tbody id="socialsTbody"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- ===== PAGE: ANALYTICS ===== -->
-      <div class="page" id="page-analytics">
-        <div class="section-box">
-          <h2 style="margin-bottom:20px;">📈 التحليلات المتقدمة</h2>
-          <div class="page-grid" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr));">
-            <div class="stat-card"><div class="stat-val" id="totalClicks">0</div><div class="stat-label">مجموع الضغطات</div></div>
-            <div class="stat-card"><div class="stat-val" id="avgCTR">0%</div><div class="stat-label">متوسط التحويل</div></div>
-            <div class="stat-card"><div class="stat-val" id="topLink">-</div><div class="stat-label">أعلى رابط</div></div>
-            <div class="stat-card"><div class="stat-val" id="totalSocials">0</div><div class="stat-label">الحسابات</div></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== PAGE: PROFILE ===== -->
-      <div class="page" id="page-profile">
-        <div class="section-box">
-          <h2 style="margin-bottom:20px;">👤 معلومات ملفك</h2>
-          <div class="form-group"><label>الاسم الكامل</label><input type="text" id="pfName"></div>
-          <div class="form-group"><label>اسم المستخدم</label><input type="text" id="pfUser" dir="ltr" disabled style="opacity:0.6;"></div>
-          <div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="pfEmail" dir="ltr" disabled style="opacity:0.6;"></div>
-          <div class="form-group"><label>رقم الجوال</label><input type="tel" id="pfPhone" dir="ltr"></div>
-          <div class="form-group"><label>النبذة الشخصية</label><textarea id="pfBio"></textarea></div>
-          <div class="form-group"><label>الموقع الجغرافي</label><input type="text" id="pfLocation"></div>
-          <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="saveProfile()">💾 حفظ</button>
-        </div>
-        <div class="section-box">
-          <h2 style="margin-bottom:15px;">🔒 الأمان</h2>
-          <button class="btn btn-danger" style="width:100%;justify-content:center;" onclick="logout()">🚪 تسجيل الخروج</button>
-        </div>
-      </div>
+      <div id="linksRegistry"></div>
+      <button class="btn-pdf" onclick="goToStats()">📥 PDF</button>
     </div>
   </div>
+
+  <!-- ===== BOX 3: STATISTICS ===== -->
+  <div class="expandable">
+    <div class="expandable-header" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
+      <div class="expandable-title">
+        <div class="expandable-icon">📊</div>
+        <span>إحصائيات</span>
+      </div>
+      <div class="expandable-toggle">▼</div>
+    </div>
+    <div class="expandable-content">
+      <div class="form-group">
+        <label>عدد الروابط في الصفحة</label>
+        <select id="pageSize" onchange="updateStats()">
+          <option value="10">10 روابط</option>
+          <option value="25">25 رابط</option>
+          <option value="50">50 رابط</option>
+          <option value="100">100 رابط</option>
+        </select>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th class="col-num">الرقم</th>
+            <th>العنوان</th>
+            <th>الوصف</th>
+            <th>الرابط</th>
+            <th>المشاهدات</th>
+          </tr>
+        </thead>
+        <tbody id="statsTbody">
+          <tr><td colspan="5" class="empty">لا توجد روابط</td></tr>
+        </tbody>
+      </table>
+
+      <div class="pagination" id="pagination"></div>
+    </div>
+  </div>
+
 </div>
 
-<!-- ========== CROP MODAL ========== -->
-<div class="modal-overlay" id="cropModal">
-  <div class="modal">
-    <div class="modal-head"><h3>تحديد الصورة</h3></div>
-    <div class="modal-body">
-      <div class="crop-container"><img id="cropImage" src="" style="max-width:100%;"></div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn btn-primary" onclick="saveCropImage()">✅ حفظ</button>
-      <button class="btn btn-ghost" onclick="closeCropModal()">❌ إلغاء</button>
-    </div>
-  </div>
-</div>
-
-<!-- ========== LINK MODAL ========== -->
-<div class="modal-overlay" id="linkModal" onclick="if(event.target===this)closeLinkModal()">
-  <div class="modal">
-    <div class="modal-head"><h3>إضافة/تعديل رابط</h3></div>
-    <div class="modal-body">
-      <div class="form-group"><label>الرقم (1-9)</label><input type="number" id="lNum" min="1" max="9"></div>
-      <div class="form-group"><label>العنوان</label><input type="text" id="lLabel"></div>
-      <div class="form-group"><label>الرابط</label><input type="url" id="lUrl" dir="ltr"></div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn btn-danger" onclick="deleteCurrentLink()" id="delBtn" style="display:none;">🗑️ حذف</button>
-      <button class="btn btn-primary" onclick="saveLink()">✅ حفظ</button>
-      <button class="btn btn-ghost" onclick="closeLinkModal()">❌ إلغاء</button>
-    </div>
-  </div>
-</div>
-
-<!-- ========== SOCIAL MODAL ========== -->
-<div class="modal-overlay" id="socialModal" onclick="if(event.target===this)document.getElementById('socialModal').classList.remove('open')">
-  <div class="modal">
-    <div class="modal-head"><h3>إضافة حساب تواصل</h3></div>
-    <div class="modal-body">
-      <div class="form-group"><label>الرابط أو الرقم</label><input type="text" id="sInput" dir="ltr" oninput="onSocialInput()"></div>
-      <div id="socialPreview" style="display:none;padding:12px;background:var(--bg2);border-radius:8px;"><span id="spUsername" style="font-size:0.85rem;color:var(--accent);font-weight:700;">-</span></div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn btn-primary" onclick="saveSocial()">✅ إضافة</button>
-      <button class="btn btn-ghost" onclick="document.getElementById('socialModal').classList.remove('open')">❌ إلغاء</button>
-    </div>
-  </div>
-</div>
-
+<!-- ========== TOAST ========== -->
 <div class="toast" id="toast"></div>
 
 <!-- ========== FIREBASE ========== -->
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
 <script>
-// ========== FIREBASE CONFIG ==========
-const firebaseConfig={
-  apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
-  authDomain:"electrwni-link.firebaseapp.com",
-  projectId:"electrwni-link",
-  storageBucket:"electrwni-link.firebasestorage.app",
-  messagingSenderId:"712490301263",
-  appId:"1:712490301263:web:2084210da3f687285ab73a"
-};
-if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth();
+const cfg={apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",authDomain:"electrwni-link.firebaseapp.com",projectId:"electrwni-link",storageBucket:"electrwni-link.firebasestorage.app",messagingSenderId:"712490301263",appId:"1:712490301263:web:2084210da3f687285ab73a"};
+if(!firebase.apps.length)firebase.initializeApp(cfg);
 const db=firebase.firestore();
 
-// ========== UTILITY ==========
+let user=null,currentUsername='',allLinks=[],currentPage=1,pageSize=10;
+
 function toast(msg){
   const el=document.getElementById('toast');
   el.textContent=msg;
@@ -382,361 +330,153 @@ function toast(msg){
   setTimeout(()=>el.classList.remove('show'),3000);
 }
 
-// ========== STATE ==========
-let user=null,editLinkId=null,cropper=null,cropType=null;
-let currentUsername=localStorage.getItem('elUserUsername')||'';
-
-// ========== INIT ========== 
 async function load(){
-  if(!localStorage.getItem('elLoggedIn')||!currentUsername){
+  currentUsername=localStorage.getItem('elUserUsername');
+  if(!currentUsername||!localStorage.getItem('elLoggedIn')){
     window.location.href='signin.html';
     return;
   }
-  
+
   try{
     const ref=db.collection('users').doc(currentUsername);
     const doc=await ref.get();
-    if(!doc.exists){
-      toast('❌ الحساب غير موجود');
-      window.location.href='signin.html';
-      return;
-    }
-    user=doc.data();
-    if(!user.links)user.links=[];
-    if(!user.socials)user.socials=[];
-    renderSidebar();
-    render();
+    if(!doc.exists){window.location.href='signin.html';return;}
     
-    // Real-time listening
-    ref.onSnapshot(doc=>{
-      if(doc.exists){
-        user=doc.data();
-        if(!user.links)user.links=[];
-        if(!user.socials)user.socials=[];
-        render();
+    user=doc.data();
+    allLinks=(user.links||[]).sort((a,b)=>a.num-b.num);
+    renderRegistry();
+    renderStats();
+
+    ref.onSnapshot(d=>{
+      if(d.exists){
+        user=d.data();
+        allLinks=(user.links||[]).sort((a,b)=>a.num-b.num);
+        renderRegistry();
+        renderStats();
       }
     });
   }catch(e){
-    console.error('Error:', e);
+    console.error(e);
     toast('❌ خطأ: '+e.message);
   }
 }
 
-// ========== RENDER ==========
-function renderSidebar(){
-  const h='electrwni.link/'+user.username;
-  document.getElementById('pfName').value=user.displayName||'';
-  document.getElementById('pfEmail').value=user.email||'';
-  document.getElementById('pfPhone').value=user.phone||'';
-  document.getElementById('pfBio').value=user.bio||'';
-  document.getElementById('pfLocation').value=user.location||'';
-  document.getElementById('ppAvatar').innerHTML=user.avatar?`<img src="${user.avatar}">`:user.displayName[0].toUpperCase();
-  document.getElementById('ppName').textContent=user.displayName||user.username;
-  document.getElementById('ppHandle').textContent=h;
-  document.getElementById('ppBio').textContent=user.bio||'نبذة';
-  if(user.bannerImage)document.querySelector('.pp-banner').style.backgroundImage=`url(${user.bannerImage})`;
-  document.getElementById('pfUser').value=user.username;
-}
-
-function render(){
-  const links=user.links||[];
-  const socials=user.socials||[];
-  const totalClicks=links.reduce((s,l)=>s+(l.clicks||0),0);
-  
-  document.getElementById('stLinks').textContent=links.length;
-  document.getElementById('stClicks').textContent=totalClicks;
-  document.getElementById('stSocials').textContent=socials.length;
-  document.getElementById('ctr').textContent=links.length>0?((totalClicks/(links.length*100))*100).toFixed(1)+'%':'0%';
-  
-  if(!links.length){
-    document.getElementById('linksEmpty').style.display='block';
-    document.getElementById('linksTable').style.display='none';
-  }else{
-    document.getElementById('linksEmpty').style.display='none';
-    document.getElementById('linksTable').style.display='';
-    document.getElementById('linksTbody').innerHTML=links.map(l=>{
-      const ctr=((l.clicks/(links.length*100))*100).toFixed(1);
-      return `<tr><td><strong>${l.num}</strong></td><td>${l.label}</td><td>${l.clicks||0}</td><td>${ctr}%</td><td><button class="btn btn-primary btn-sm" onclick="editLink(${l.id})">✏️</button></td></tr>`;
-    }).join('');
+function renderRegistry(){
+  if(!allLinks.length){
+    document.getElementById('linksRegistry').innerHTML='<div class="empty">لا توجد روابط</div>';
+    return;
   }
-  
-  if(!socials.length){
-    document.getElementById('socialsEmpty').style.display='block';
-    document.getElementById('socialsTable').style.display='none';
-  }else{
-    document.getElementById('socialsEmpty').style.display='none';
-    document.getElementById('socialsTable').style.display='';
-    document.getElementById('socialsTbody').innerHTML=socials.map(s=>`<tr><td>${s.platform}</td><td>${s.username}</td><td><button class="btn btn-danger btn-sm" onclick="deleteSocial('${s.id}')">🗑️</button></td></tr>`).join('');
+
+  document.getElementById('linksRegistry').innerHTML=allLinks.map(l=>`
+    <div class="item" onclick="this.classList.toggle('open')">
+      <div>
+        <div class="item-header">${l.num} — ${l.label}</div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">الوصف:</span><span class="detail-value">${l.desc||'-'}</span></div>
+          <div class="detail-row"><span class="detail-label">الرابط:</span><span class="detail-value"><a href="${l.url}" target="_blank" style="color:var(--primary);text-decoration:none;">فتح</a></span></div>
+          <div class="detail-row"><span class="detail-label">المشاهدات:</span><span class="detail-value">${l.clicks||0}</span></div>
+          <button class="btn-delete" onclick="deleteLink(${l.id},event)">🗑️ حذف</button>
+        </div>
+      </div>
+      <div class="item-toggle">▼</div>
+    </div>
+  `).join('');
+}
+
+function renderStats(){
+  currentPage=1;
+  const pageSize=parseInt(document.getElementById('pageSize').value)||10;
+  const totalPages=Math.ceil(allLinks.length/pageSize);
+  const start=(currentPage-1)*pageSize;
+  const pageLinks=allLinks.slice(start,start+pageSize);
+
+  if(!allLinks.length){
+    document.getElementById('statsTbody').innerHTML='<tr><td colspan="5" class="empty">لا توجد روابط</td></tr>';
+    document.getElementById('pagination').innerHTML='';
+    return;
   }
-  
-  document.getElementById('totalClicks').textContent=totalClicks;
-  document.getElementById('avgCTR').textContent=links.length>0?((totalClicks/(links.length*100))*100).toFixed(1)+'%':'0%';
-  document.getElementById('totalSocials').textContent=socials.length;
-  const topLink=links.reduce((a,b)=>(a.clicks||0)>(b.clicks||0)?a:b,{label:'-'});
-  document.getElementById('topLink').textContent=topLink.label||'-';
-}
 
-async function saveToCloud(){
-  console.log('Saving to Firebase:', currentUsername);
-  return await db.collection('users').doc(currentUsername).update(user);
-}
+  document.getElementById('statsTbody').innerHTML=pageLinks.map(l=>`
+    <tr>
+      <td class="col-num">${l.num}</td>
+      <td>${l.label}</td>
+      <td>${l.desc||'-'}</td>
+      <td><a href="${l.url}" target="_blank" style="color:var(--primary);text-decoration:none;">رابط</a></td>
+      <td>${l.clicks||0}</td>
+    </tr>
+  `).join('');
 
-// ========== PAGES ==========
-function showPage(n,el){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(ni=>ni.classList.remove('active'));
-  document.getElementById('page-'+n).classList.add('active');
-  if(el)el.classList.add('active');
-}
-
-// ========== IMAGE CROP ==========
-function selectBanner(inp){
-  const f=inp.files[0];
-  if(!f)return;
-  cropType='banner';
-  const r=new FileReader();
-  r.onload=e=>{
-    document.getElementById('cropImage').src=e.target.result;
-    openCropModal();
-    setTimeout(()=>{
-      if(cropper)cropper.destroy();
-      cropper=new Cropper(document.getElementById('cropImage'),{
-        aspectRatio:3/1,
-        viewMode:1,
-        autoCropArea:1,
-        responsive:true,
-        guides:true,
-        center:true,
-        highlight:true,
-        cropBoxMovable:true,
-        cropBoxResizable:true,
-      });
-    },100);
-  };
-  r.readAsDataURL(f);
-}
-
-function selectAvatar(inp){
-  const f=inp.files[0];
-  if(!f)return;
-  cropType='avatar';
-  const r=new FileReader();
-  r.onload=e=>{
-    document.getElementById('cropImage').src=e.target.result;
-    openCropModal();
-    setTimeout(()=>{
-      if(cropper)cropper.destroy();
-      cropper=new Cropper(document.getElementById('cropImage'),{
-        aspectRatio:1/1,
-        viewMode:1,
-        autoCropArea:1,
-        responsive:true,
-        guides:true,
-        center:true,
-        highlight:true,
-        cropBoxMovable:true,
-        cropBoxResizable:true,
-      });
-    },100);
-  };
-  r.readAsDataURL(f);
-}
-
-function openCropModal(){
-  document.getElementById('cropModal').classList.add('open');
-}
-
-function closeCropModal(){
-  document.getElementById('cropModal').classList.remove('open');
-  if(cropper)cropper.destroy();
-  cropper=null;
-  cropType=null;
-}
-
-async function saveCropImage(){
-  if(!cropper)return;
-  toast('💾 جاري الحفظ...');
-  const canvas=cropper.getCroppedCanvas();
-  const imageData=canvas.toDataURL();
-  
-  if(cropType==='banner'){
-    user.bannerImage=imageData;
-    document.querySelector('.pp-banner').style.backgroundImage=`url(${imageData})`;
-  }else if(cropType==='avatar'){
-    user.avatar=imageData;
-    renderSidebar();
+  let paginationHtml='';
+  for(let i=1;i<=totalPages;i++){
+    paginationHtml+=`<button ${i===currentPage?'class="active"':''} onclick="goPage(${i})">${i}</button>`;
   }
-  
-  closeCropModal();
-  
-  try{
-    await saveToCloud();
-    toast('✅ تم حفظ الصورة بنجاح!');
-  }catch(e){
-    console.error('Error saving:', e);
-    toast('❌ خطأ: '+e.message);
-  }
+  document.getElementById('pagination').innerHTML=paginationHtml;
 }
 
-async function saveDesign(){
+function updateStats(){
+  renderStats();
+}
+
+function goPage(page){
+  currentPage=page;
+  renderStats();
+  document.querySelector('table').scrollIntoView({behavior:'smooth'});
+}
+
+function goToStats(){
+  const statsBox=document.querySelectorAll('.expandable')[2];
+  statsBox.querySelector('.expandable-header').classList.add('open');
+  statsBox.querySelector('.expandable-content').style.display='block';
+  statsBox.scrollIntoView({behavior:'smooth'});
+}
+
+async function addLink(){
+  const num=parseInt(document.getElementById('linkNum').value);
+  const title=document.getElementById('linkTitle').value.trim();
+  const desc=document.getElementById('linkDesc').value.trim();
+  const url=document.getElementById('linkUrl').value.trim();
+
+  if(!num||!title||!url){toast('⚠️ ملء الحقول المطلوبة');return;}
+
+  const exist=allLinks.find(l=>l.num===num);
+  if(exist){allLinks=allLinks.filter(l=>l.id!==exist.id);}
+
+  allLinks.push({id:Date.now(),num,label:title,desc,url,clicks:0});
+
+  document.getElementById('linkNum').value='';
+  document.getElementById('linkTitle').value='';
+  document.getElementById('linkDesc').value='';
+  document.getElementById('linkUrl').value='';
+
   toast('💾 جاري الحفظ...');
   try{
-    await saveToCloud();
-    toast('✅ تم حفظ التصميم بنجاح!');
-  }catch(e){
-    console.error('Error saving:', e);
-    toast('❌ خطأ: '+e.message);
-  }
-}
-
-// ========== LINK MANAGEMENT ==========
-function openLinkModal(){
-  editLinkId=null;
-  document.getElementById('lNum').value='';
-  document.getElementById('lLabel').value='';
-  document.getElementById('lUrl').value='';
-  document.getElementById('delBtn').style.display='none';
-  document.getElementById('linkModal').classList.add('open');
-}
-
-function closeLinkModal(){
-  document.getElementById('linkModal').classList.remove('open');
-}
-
-function editLink(id){
-  editLinkId=id;
-  const l=user.links.find(x=>x.id===id);
-  document.getElementById('lNum').value=l.num;
-  document.getElementById('lLabel').value=l.label;
-  document.getElementById('lUrl').value=l.url;
-  document.getElementById('delBtn').style.display='block';
-  document.getElementById('linkModal').classList.add('open');
-}
-
-async function saveLink(){
-  const num=parseInt(document.getElementById('lNum').value);
-  const label=document.getElementById('lLabel').value.trim();
-  const url=document.getElementById('lUrl').value.trim();
-  if(!num||!label||!url){toast('⚠️ ملء جميع الحقول');return;}
-  
-  toast('💾 جاري الحفظ...');
-  const exist=user.links.find(l=>l.num===num&&l.id!==editLinkId);
-  if(editLinkId){
-    const i=user.links.findIndex(l=>l.id===editLinkId);
-    user.links[i]={...user.links[i],num,label,url};
-    if(exist)user.links=user.links.filter(l=>l.id!==exist.id||l.id===editLinkId);
-  }else{
-    if(exist)user.links=user.links.filter(l=>l.id!==exist.id);
-    user.links.push({id:Date.now(),num,label,url,clicks:0});
-  }
-  closeLinkModal();
-  render();
-  try{
-    await saveToCloud();
-    toast('✅ تم الحفظ بنجاح!');
-  }catch(e){
-    console.error('Error saving:', e);
-    toast('❌ خطأ: '+e.message);
-  }
-}
-
-async function deleteCurrentLink(){
-  if(!confirm('حذف الرابط؟'))return;
-  user.links=user.links.filter(l=>l.id!==editLinkId);
-  closeLinkModal();
-  render();
-  toast('💾 جاري الحفظ...');
-  try{
-    await saveToCloud();
-    toast('✅ تم الحذف!');
-  }catch(e){
-    console.error('Error saving:', e);
-    toast('❌ خطأ: '+e.message);
-  }
-}
-
-// ========== SOCIAL ==========
-function detectPlatform(raw){
-  const i=raw.trim(),l=i.toLowerCase().replace(/^https?:\/\//,'');
-  if(l.includes('instagram.com'))return{platform:'instagram',username:'@'+l.split('/')[l.split('/').length-1]};
-  if(l.includes('tiktok.com'))return{platform:'tiktok',username:'@'+(l.split('@')[1]||l.split('/')[l.split('/').length-1])};
-  if(l.includes('t.me')||l.includes('telegram'))return{platform:'telegram',username:'@'+l.split('/')[l.split('/').length-1]};
-  if(l.includes('wa.me')||l.includes('whatsapp')||/^\+?[0-9]{7,15}$/.test(i))return{platform:'whatsapp',username:i.replace(/\D/g,'')};
-  return{platform:'website',username:i};
-}
-
-let detectedSocial=null;
-function openSocialModal(){
-  document.getElementById('sInput').value='';
-  document.getElementById('socialPreview').style.display='none';
-  detectedSocial=null;
-  document.getElementById('socialModal').classList.add('open');
-}
-
-function onSocialInput(){
-  const v=document.getElementById('sInput').value;
-  if(!v){document.getElementById('socialPreview').style.display='none';return;}
-  detectedSocial=detectPlatform(v);
-  document.getElementById('socialPreview').style.display='block';
-  document.getElementById('spUsername').textContent=detectedSocial.username;
-}
-
-async function saveSocial(){
-  if(!detectedSocial){toast('⚠️ أدخل رابطاً');return;}
-  if(!user.socials)user.socials=[];
-  user.socials.push({id:Date.now()+'',platform:detectedSocial.platform,username:detectedSocial.username});
-  document.getElementById('socialModal').classList.remove('open');
-  render();
-  toast('💾 جاري الحفظ...');
-  try{
-    await saveToCloud();
+    await db.collection('users').doc(currentUsername).update({links:allLinks});
     toast('✅ تمت الإضافة!');
   }catch(e){
-    console.error('Error saving:', e);
     toast('❌ خطأ: '+e.message);
   }
 }
 
-async function deleteSocial(id){
-  user.socials=user.socials.filter(s=>s.id!==id);
-  render();
+async function deleteLink(id,event){
+  event.stopPropagation();
+  if(!confirm('حذف الرابط؟'))return;
+  allLinks=allLinks.filter(l=>l.id!==id);
   toast('💾 جاري الحفظ...');
   try{
-    await saveToCloud();
+    await db.collection('users').doc(currentUsername).update({links:allLinks});
     toast('✅ تم الحذف!');
   }catch(e){
-    console.error('Error saving:', e);
-    toast('❌ خطأ: '+e.message);
-  }
-}
-
-// ========== PROFILE ==========
-async function saveProfile(){
-  user.displayName=document.getElementById('pfName').value.trim();
-  user.phone=document.getElementById('pfPhone').value.trim();
-  user.bio=document.getElementById('pfBio').value.trim();
-  user.location=document.getElementById('pfLocation').value.trim();
-  
-  toast('💾 جاري الحفظ...');
-  try{
-    await saveToCloud();
-    renderSidebar();
-    toast('✅ تم الحفظ بنجاح!');
-  }catch(e){
-    console.error('Error saving:', e);
     toast('❌ خطأ: '+e.message);
   }
 }
 
 function logout(){
-  if(confirm('تسجيل الخروج؟')){
-    localStorage.removeItem('elLoggedIn');
-    localStorage.removeItem('elUserUsername');
-    window.location.href='signin.html';
-  }
+  if(!confirm('تسجيل الخروج؟'))return;
+  localStorage.removeItem('elLoggedIn');
+  localStorage.removeItem('elUserUsername');
+  window.location.href='index.html';
 }
 
-// ========== INIT ==========
 load();
 </script>
 </body>
