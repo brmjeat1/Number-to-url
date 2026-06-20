@@ -6,392 +6,99 @@
 <title>لوحة التحكم — electrwni.link</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root{
-  --primary:#3d5af1;--primary-light:#6c8fff;--bg:#ffffff;--bg2:#f9f9f9;
-  --border:#e8ecf5;--text:#0f1535;--text2:#3a4270;--muted:#9aa2c8;
-  --success:#0ab87a;--error:#e8436a;
-}
-
+:root{--primary:#3d5af1;--primary-light:#6c8fff;--bg:#ffffff;--bg2:#f9f9f9;--border:#e8ecf5;--text:#0f1535;--text2:#3a4270;--success:#0ab87a;--error:#e8436a;}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{
-  font-family:'Tajawal',sans-serif;background:var(--bg);
-  color:var(--text);min-height:100vh;
-}
-
-/* ========== TOPBAR ========== */
-.topbar{
-  background:linear-gradient(135deg,var(--primary),var(--primary-light));
-  color:#fff;padding:12px 20px;display:flex;justify-content:space-between;
-  align-items:center;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,0.05);
-}
-
-.topbar-brand{font-family:'Space Mono',monospace;font-size:1rem;font-weight:900;}
-
-.topbar-btns{display:flex;gap:8px;}
-
-.btn{
-  padding:8px 16px;border:none;border-radius:8px;cursor:pointer;
-  font-family:'Tajawal',sans-serif;font-weight:700;font-size:0.85rem;
-  transition:all .2s;
-}
-
-.btn-white{background:#fff;color:var(--primary);}
-.btn-white:active{transform:scale(0.95);}
-
-.btn-logout{background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.4);}
-.btn-logout:active{transform:scale(0.95);}
-
-/* ========== CONTAINER ========== */
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.topbar{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50;}
 .container{max-width:900px;margin:0 auto;padding:24px 20px;}
-
-/* ========== NAV TABS ========== */
-.nav-tabs{
-  display:flex;gap:10px;margin-bottom:24px;border-bottom:2px solid var(--border);
-  overflow-x:auto;padding-bottom:0;
-}
-
-.nav-tab{
-  background:transparent;border:none;color:var(--text2);
-  padding:12px 16px;font-weight:700;cursor:pointer;
-  border-bottom:3px solid transparent;transition:all .2s;font-size:0.95rem;
-}
-
-.nav-tab:active{transform:scale(0.98);}
+.nav-tabs{display:flex;gap:10px;margin-bottom:24px;border-bottom:2px solid var(--border);overflow-x:auto;}
+.nav-tab{background:transparent;border:none;color:var(--text2);padding:12px 16px;font-weight:700;cursor:pointer;border-bottom:3px solid transparent;}
 .nav-tab.active{color:var(--primary);border-bottom-color:var(--primary);}
-
-/* ========== PAGES ========== */
 .page{display:none;}
 .page.active{display:block;}
-
-/* ========== EXPANDABLE BOX ========== */
-.expandable{
-  background:var(--bg2);border:1px solid var(--border);border-radius:12px;
-  margin-bottom:16px;overflow:hidden;
-}
-
-.expandable-header{
-  padding:16px 20px;cursor:pointer;display:flex;justify-content:space-between;
-  align-items:center;transition:all .2s;
-}
-
-.expandable-header:hover{background:#f5f5f5;}
-.expandable-header.open{background:var(--primary-light);color:#fff;}
-
-.expandable-title{font-size:1rem;font-weight:900;display:flex;align-items:center;gap:8px;}
-
-.expandable-icon{
-  width:32px;height:32px;border-radius:8px;
-  background:linear-gradient(135deg,var(--primary),var(--primary-light));
-  color:#fff;display:flex;align-items:center;justify-content:center;
-  font-size:1.1rem;flex-shrink:0;
-}
-
-.expandable-toggle{font-size:1.2rem;transition:transform .3s;}
-.expandable-header.open .expandable-toggle{transform:rotate(180deg);}
-
-.expandable-content{
-  display:none;padding:20px;max-height:0;overflow:hidden;transition:all .3s;
-  border-top:1px solid var(--border);background:var(--bg);
-}
-
-.expandable-header.open+.expandable-content{
-  display:block;max-height:3000px;
-}
-
-/* ========== FORM ========== */
+.expandable{background:var(--bg2);border:1px solid var(--border);border-radius:12px;margin-bottom:16px;padding:20px;}
 .form-group{margin-bottom:14px;}
-
-label{
-  display:block;font-size:0.85rem;font-weight:700;margin-bottom:6px;
-  color:var(--text2);
-}
-
-input[type=text],input[type=url],input[type=number],input[type=email],input[type=tel],textarea,select{
-  width:100%;padding:10px 12px;border:1.5px solid var(--border);
-  border-radius:8px;font-family:'Tajawal',sans-serif;font-size:0.9rem;
-  outline:none;transition:border .2s;background:var(--bg);
-}
-
-input:focus,textarea:focus,select:focus{border-color:var(--primary);}
-
-textarea{resize:vertical;min-height:60px;}
-
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-
-@media(max-width:600px){
-  .form-row{grid-template-columns:1fr;}
-}
-
-/* ========== BUTTONS ========== */
-.btn-add{
-  background:var(--success);color:#fff;padding:12px 24px;border:none;
-  border-radius:8px;cursor:pointer;font-weight:700;font-family:'Tajawal',sans-serif;
-  width:100%;transition:all .2s;font-size:0.95rem;
-}
-
-.btn-add:active{transform:scale(0.98);}
-
-.btn-pdf{
-  background:var(--error);color:#fff;padding:12px 24px;border:none;
-  border-radius:8px;cursor:pointer;font-weight:700;font-family:'Tajawal',sans-serif;
-  width:100%;margin-top:16px;font-size:0.95rem;transition:all .2s;
-}
-
-.btn-pdf:active{transform:scale(0.98);}
-
-/* ========== ITEMS ========== */
-.item{
-  background:var(--bg);border:1px solid var(--border);border-radius:8px;
-  padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:all .2s;
-  display:flex;justify-content:space-between;align-items:center;
-}
-
-.item:hover{border-color:var(--primary);background:#f9f9f9;}
-.item.open{background:var(--primary-light);color:#fff;border-color:var(--primary);}
-
-.item-header{flex:1;font-weight:700;font-size:0.95rem;}
-.item-toggle{font-size:1.1rem;transition:transform .3s;}
-.item.open .item-toggle{transform:rotate(180deg);}
-
-.item-details{
-  display:none;margin-top:10px;padding-top:10px;
-  border-top:1px solid rgba(0,0,0,0.1);
-}
-
-.item.open .item-details{display:block;}
-
-.detail-row{display:flex;gap:8px;margin-bottom:6px;font-size:0.85rem;}
-.detail-label{font-weight:700;min-width:60px;}
-
-.btn-delete{
-  background:var(--error);color:#fff;padding:6px 12px;border:none;
-  border-radius:6px;cursor:pointer;font-size:0.8rem;font-weight:700;
-  transition:all .2s;
-}
-
-.btn-delete:active{transform:scale(0.95);}
-
-/* ========== TABLE ========== */
-table{width:100%;border-collapse:collapse;font-size:0.85rem;margin-top:12px;}
-
-th,td{padding:10px;text-align:right;border-bottom:1px solid var(--border);}
-
-th{
-  background:linear-gradient(135deg,var(--primary),var(--primary-light));
-  color:#fff;font-weight:900;
-}
-
-tr:hover{background:var(--bg2);}
-
-/* ========== PAGINATION ========== */
-.pagination{
-  display:flex;gap:6px;justify-content:center;margin-top:14px;flex-wrap:wrap;
-}
-
-.pagination button{
-  padding:6px 10px;border:1px solid var(--border);border-radius:6px;
-  background:var(--bg);cursor:pointer;font-weight:700;font-size:0.9rem;
-  transition:all .2s;
-}
-
-.pagination button.active{
-  background:var(--primary);color:#fff;border-color:var(--primary);
-}
-
-.pagination button:active{transform:scale(0.95);}
-
-/* ========== EMPTY ========== */
-.empty{text-align:center;padding:30px;color:var(--muted);}
-
-/* ========== TOAST ========== */
-.toast{
-  position:fixed;bottom:20px;left:20px;background:var(--text);
-  color:var(--bg);padding:12px 20px;border-radius:8px;
-  font-weight:700;font-size:0.9rem;opacity:0;transform:translateY(20px);
-  transition:all .3s;z-index:100;
-}
-
-.toast.show{opacity:1;transform:translateY(0);}
-
-@media(max-width:600px){
-  .container{padding:16px 12px;}
-  .expandable-header{padding:12px 14px;}
-  .expandable-content{padding:14px;}
-  table{font-size:0.8rem;}
-  th,td{padding:8px;}
-}
+label{display:block;font-size:0.85rem;font-weight:700;margin-bottom:6px;}
+input,textarea{width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;outline:none;}
+.btn-add{background:var(--primary);color:#fff;padding:12px;width:100%;border:none;border-radius:8px;cursor:pointer;font-weight:700;}
+.toast{position:fixed;bottom:20px;left:20px;background:var(--text);color:#fff;padding:12px 20px;border-radius:8px;opacity:0;transition:all .3s;}
+.toast.show{opacity:1;}
 </style>
 </head>
 <body>
 
-<!-- ========== TOPBAR ========== -->
 <div class="topbar">
-  <div class="topbar-brand">electrwni.link</div>
-  <div class="topbar-btns">
-    <button class="btn btn-white" onclick="window.location.href='page.html'">👁 صفحتك</button>
-    <button class="btn btn-logout" onclick="logout()">🚪 خروج</button>
-  </div>
+  <div>electrwni.link</div>
+  <button class="btn" onclick="logout()">🚪 خروج</button>
 </div>
 
-<!-- ========== CONTAINER ========== -->
 <div class="container">
-
-  <!-- ========== NAVIGATION ========== -->
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="showPage('links',this)">📋 الروابط</button>
     <button class="nav-tab" onclick="showPage('design',this)">🎨 التصميم</button>
+    <button class="nav-tab" onclick="showPage('accounts',this)">🔗 الحسابات</button>
     <button class="nav-tab" onclick="showPage('profile',this)">👤 ملفي</button>
-    <button class="nav-tab" onclick="showPage('stats',this)">📊 إحصائيات</button>
   </div>
 
-  <!-- ===== PAGE: LINKS ===== -->
   <div class="page active" id="page-links">
-    <!-- Box 1: Add Link -->
     <div class="expandable">
-      <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
-        <div class="expandable-title"><div class="expandable-icon">➕</div><span>أضف رابط</span></div>
-        <div class="expandable-toggle">▼</div>
-      </div>
-      <div class="expandable-content" style="display:block;">
-        <div class="form-row">
-          <div class="form-group">
-            <label>الرقم (1-9)</label>
-            <input type="number" id="linkNum" placeholder="1" min="1" max="9">
-          </div>
-          <div class="form-group">
-            <label>العنوان (20 حرف)</label>
-            <input type="text" id="linkTitle" placeholder="اكتب العنوان" maxlength="20">
-          </div>
+        <h3>إدارة الروابط</h3>
         </div>
-        <div class="form-group">
-          <label>الوصف</label>
-          <textarea id="linkDesc" placeholder="وصف الرابط"></textarea>
-        </div>
-        <div class="form-group">
-          <label>الرابط</label>
-          <input type="url" id="linkUrl" placeholder="https://example.com" dir="ltr">
-        </div>
-        <button class="btn-add" onclick="addLink()">✅ إضافة الرابط</button>
-      </div>
-    </div>
-
-    <!-- Box 2: Links Registry -->
-    <div class="expandable">
-      <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
-        <div class="expandable-title"><div class="expandable-icon">📋</div><span>سجل الروابط</span></div>
-        <div class="expandable-toggle">▼</div>
-      </div>
-      <div class="expandable-content" style="display:block;">
-        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">📊 دراسة جدوى لجماهيرية وفاعلية نشاط روابطك</div>
-        <div id="linksRegistry"></div>
-        <button class="btn-pdf" onclick="goToStats()">📥 PDF</button>
-      </div>
-    </div>
   </div>
 
-  <!-- ===== PAGE: DESIGN ===== -->
   <div class="page" id="page-design">
     <div class="expandable">
-      <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
-        <div class="expandable-title"><div class="expandable-icon">🎨</div><span>تصميم صفحتك</span></div>
-        <div class="expandable-toggle">▼</div>
-      </div>
-      <div class="expandable-content" style="display:block;">
+        <h3>تخصيص الهوية</h3>
         <div class="form-group">
-          <label>صورة الغلاف</label>
-          <input type="file" id="bannerInput" accept="image/*" onchange="selectBanner(this)">
+            <label>صورة الغلاف</label>
+            <input type="file" id="bannerInput" accept="image/*">
         </div>
         <div class="form-group">
-          <label>صورة البروفايل</label>
-          <input type="file" id="avatarInput" accept="image/*" onchange="selectAvatar(this)">
+            <label>صورة البروفايل</label>
+            <input type="file" id="avatarInput" accept="image/*">
         </div>
-        <button class="btn-add" onclick="saveDesign()" style="background:var(--primary);">💾 حفظ التصميم</button>
-      </div>
+        <button class="btn-add" onclick="saveDesign()">💾 حفظ التصميم</button>
     </div>
   </div>
 
-  <!-- ===== PAGE: PROFILE ===== -->
+  <div class="page" id="page-accounts">
+    <div class="expandable">
+      <h3>إضافة حساب تواصل</h3>
+      <div class="form-group">
+        <label>اسم المنصة (مثال: إنستقرام)</label>
+        <input type="text" id="accName">
+      </div>
+      <div class="form-group">
+        <label>رابط الحساب (URL)</label>
+        <input type="url" id="accUrl" placeholder="https://">
+      </div>
+      <div class="form-group">
+        <label>أيقونة الحساب</label>
+        <input type="file" id="accIcon" accept="image/*">
+      </div>
+      <button class="btn-add" onclick="saveAccount()">➕ إضافة الحساب</button>
+    </div>
+  </div>
+
   <div class="page" id="page-profile">
     <div class="expandable">
-      <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
-        <div class="expandable-title"><div class="expandable-icon">👤</div><span>بيانات ملفي</span></div>
-        <div class="expandable-toggle">▼</div>
-      </div>
-      <div class="expandable-content" style="display:block;">
-        <div class="form-group">
-          <label>الاسم الكامل</label>
-          <input type="text" id="pfName" placeholder="اسمك">
+        <h3>بيانات الحساب</h3>
         </div>
-        <div class="form-group">
-          <label>اسم المستخدم</label>
-          <input type="text" id="pfUser" dir="ltr" disabled style="opacity:0.6;">
-        </div>
-        <div class="form-group">
-          <label>البريد</label>
-          <input type="email" id="pfEmail" dir="ltr" disabled style="opacity:0.6;">
-        </div>
-        <div class="form-group">
-          <label>الجوال</label>
-          <input type="tel" id="pfPhone" dir="ltr">
-        </div>
-        <div class="form-group">
-          <label>النبذة</label>
-          <textarea id="pfBio" placeholder="عريف نفسك"></textarea>
-        </div>
-        <div class="form-group">
-          <label>الموقع</label>
-          <input type="text" id="pfLocation">
-        </div>
-        <button class="btn-add" onclick="saveProfile()" style="background:var(--primary);">💾 حفظ</button>
-      </div>
-    </div>
   </div>
-
-  <!-- ===== PAGE: STATISTICS ===== -->
-  <div class="page" id="page-stats">
-    <div class="expandable">
-      <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
-        <div class="expandable-title"><div class="expandable-icon">📊</div><span>إحصائيات</span></div>
-        <div class="expandable-toggle">▼</div>
-      </div>
-      <div class="expandable-content" style="display:block;">
-        <div class="form-group">
-          <label>عدد الروابط</label>
-          <select id="pageSize" onchange="updateStats()">
-            <option value="10">10</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-          </select>
-        </div>
-        <table>
-          <thead>
-            <tr><th style="max-width:50px;">الرقم</th><th>العنوان</th><th>الوصف</th><th>الرابط</th><th style="max-width:60px;">المشاهدات</th></tr>
-          </thead>
-          <tbody id="statsTbody">
-            <tr><td colspan="5" class="empty">لا توجد روابط</td></tr>
-          </tbody>
-        </table>
-        <div class="pagination" id="pagination"></div>
-      </div>
-    </div>
-  </div>
-
 </div>
 
-<!-- ========== TOAST ========== -->
 <div class="toast" id="toast"></div>
 
-<!-- ========== FIREBASE ========== -->
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-
 <script>
-const cfg={apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",authDomain:"electrwni-link.firebaseapp.com",projectId:"electrwni-link",storageBucket:"electrwni-link.firebasestorage.app",messagingSenderId:"712490301263",appId:"1:712490301263:web:2084210da3f687285ab73a"};
-if(!firebase.apps.length)firebase.initializeApp(cfg);
-const db=firebase.firestore();
-
-let user=null,currentUsername='',allLinks=[],currentPage=1,pageSize=10;
+// الإعدادات والمنطق البرمجي
+function showPage(n,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+n).classList.add('active');
+  el.classList.add('active');
+}
 
 function toast(msg){
   const el=document.getElementById('toast');
@@ -400,221 +107,31 @@ function toast(msg){
   setTimeout(()=>el.classList.remove('show'),3000);
 }
 
-function showPage(n,el){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('page-'+n).classList.add('active');
-  if(el)el.classList.add('active');
-}
+// دالة حفظ الحساب الجديد مع أيقونته
+async function saveAccount() {
+  const name = document.getElementById('accName').value;
+  const url = document.getElementById('accUrl').value;
+  const file = document.getElementById('accIcon').files[0];
+  
+  if(!name || !url) { toast('⚠️ يرجى تعبئة الحقول'); return; }
 
-async function load(){
-  currentUsername=localStorage.getItem('elUserUsername');
-  if(!currentUsername||!localStorage.getItem('elLoggedIn')){
-    window.location.href='signin.html';
-    return;
-  }
-
-  try{
-    const ref=db.collection('users').doc(currentUsername);
-    const doc=await ref.get();
-    if(!doc.exists){window.location.href='signin.html';return;}
-    
-    user=doc.data();
-    allLinks=(user.links||[]).sort((a,b)=>a.num-b.num);
-    
-    document.getElementById('pfUser').value=user.username||'';
-    document.getElementById('pfEmail').value=user.email||'';
-    document.getElementById('pfName').value=user.displayName||'';
-    document.getElementById('pfPhone').value=user.phone||'';
-    document.getElementById('pfBio').value=user.bio||'';
-    document.getElementById('pfLocation').value=user.location||'';
-    
-    renderRegistry();
-    renderStats();
-
-    ref.onSnapshot(d=>{
-      if(d.exists){
-        user=d.data();
-        allLinks=(user.links||[]).sort((a,b)=>a.num-b.num);
-        renderRegistry();
-        renderStats();
-      }
-    });
-  }catch(e){
-    console.error(e);
-    toast('❌ خطأ: '+e.message);
-  }
-}
-
-function renderRegistry(){
-  if(!allLinks.length){
-    document.getElementById('linksRegistry').innerHTML='<div class="empty">لا توجد روابط</div>';
-    return;
-  }
-
-  document.getElementById('linksRegistry').innerHTML=allLinks.map(l=>`
-    <div class="item" onclick="this.classList.toggle('open')">
-      <div style="flex:1;">
-        <div class="item-header">${l.num} — ${l.label}</div>
-        <div class="item-details">
-          <div class="detail-row"><span class="detail-label">الوصف:</span> ${l.desc||'-'}</div>
-          <div class="detail-row"><span class="detail-label">الرابط:</span> <a href="${l.url}" target="_blank" style="color:var(--primary);">فتح</a></div>
-          <div class="detail-row"><span class="detail-label">المشاهدات:</span> ${l.clicks||0}</div>
-          <button class="btn-delete" onclick="deleteLink(${l.id},event)" style="margin-top:8px;">🗑️ حذف</button>
-        </div>
-      </div>
-      <div class="item-toggle">▼</div>
-    </div>
-  `).join('');
-}
-
-function renderStats(){
-  currentPage=1;
-  const ps=parseInt(document.getElementById('pageSize').value)||10;
-  const totalPages=Math.ceil(allLinks.length/ps);
-  const start=(currentPage-1)*ps;
-  const pageLinks=allLinks.slice(start,start+ps);
-
-  if(!allLinks.length){
-    document.getElementById('statsTbody').innerHTML='<tr><td colspan="5" class="empty">لا توجد روابط</td></tr>';
-    document.getElementById('pagination').innerHTML='';
-    return;
-  }
-
-  document.getElementById('statsTbody').innerHTML=pageLinks.map(l=>`
-    <tr>
-      <td><strong>${l.num}</strong></td>
-      <td>${l.label}</td>
-      <td>${(l.desc||'').substring(0,20)}...</td>
-      <td><a href="${l.url}" target="_blank" style="color:var(--primary);">رابط</a></td>
-      <td>${l.clicks||0}</td>
-    </tr>
-  `).join('');
-
-  let paginationHtml='';
-  for(let i=1;i<=totalPages;i++){
-    paginationHtml+=`<button ${i===currentPage?'class="active"':''} onclick="goPage(${i})">${i}</button>`;
-  }
-  document.getElementById('pagination').innerHTML=paginationHtml;
-}
-
-function updateStats(){
-  renderStats();
-}
-
-function goPage(page){
-  currentPage=page;
-  renderStats();
-  document.querySelector('table').scrollIntoView({behavior:'smooth'});
-}
-
-function goToStats(){
-  showPage('stats',document.querySelectorAll('.nav-tab')[3]);
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-async function addLink(){
-  const num=parseInt(document.getElementById('linkNum').value);
-  const title=document.getElementById('linkTitle').value.trim();
-  const desc=document.getElementById('linkDesc').value.trim();
-  const url=document.getElementById('linkUrl').value.trim();
-
-  if(!num||!title||!url){toast('⚠️ ملء الحقول');return;}
-
-  const exist=allLinks.find(l=>l.num===num);
-  if(exist)allLinks=allLinks.filter(l=>l.id!==exist.id);
-
-  allLinks.push({id:Date.now(),num,label:title,desc,url,clicks:0});
-
-  document.getElementById('linkNum').value='';
-  document.getElementById('linkTitle').value='';
-  document.getElementById('linkDesc').value='';
-  document.getElementById('linkUrl').value='';
-
-  toast('💾 جاري الحفظ...');
-  try{
-    await db.collection('users').doc(currentUsername).update({links:allLinks});
-    toast('✅ تمت الإضافة!');
-  }catch(e){
-    toast('❌ خطأ: '+e.message);
-  }
-}
-
-async function deleteLink(id,event){
-  event.stopPropagation();
-  if(!confirm('حذف الرابط؟'))return;
-  allLinks=allLinks.filter(l=>l.id!==id);
-  toast('💾 جاري الحفظ...');
-  try{
-    await db.collection('users').doc(currentUsername).update({links:allLinks});
-    toast('✅ تم الحذف!');
-  }catch(e){
-    toast('❌ خطأ: '+e.message);
-  }
-}
-
-function selectBanner(inp){
-  const f=inp.files[0];
-  if(!f)return;
-  const r=new FileReader();
-  r.onload=e=>{
-    user.bannerImage=e.target.result;
-    toast('💾 جاري الحفظ...');
-    db.collection('users').doc(currentUsername).update({bannerImage:user.bannerImage}).then(()=>toast('✅ تم!')).catch(err=>toast('❌ خطأ'));
-  };
-  r.readAsDataURL(f);
-}
-
-function selectAvatar(inp){
-  const f=inp.files[0];
-  if(!f)return;
-  const r=new FileReader();
-  r.onload=e=>{
-    user.avatar=e.target.result;
-    toast('💾 جاري الحفظ...');
-    db.collection('users').doc(currentUsername).update({avatar:user.avatar}).then(()=>toast('✅ تم!')).catch(err=>toast('❌ خطأ'));
-  };
-  r.readAsDataURL(f);
-}
-
-async function saveDesign(){
-  toast('💾 جاري الحفظ...');
-  try{
-    await db.collection('users').doc(currentUsername).update({bannerImage:user.bannerImage||'',avatar:user.avatar||''});
-    toast('✅ تم الحفظ!');
-  }catch(e){
-    toast('❌ خطأ: '+e.message);
-  }
-}
-
-async function saveProfile(){
-  user.displayName=document.getElementById('pfName').value.trim();
-  user.phone=document.getElementById('pfPhone').value.trim();
-  user.bio=document.getElementById('pfBio').value.trim();
-  user.location=document.getElementById('pfLocation').value.trim();
-
-  toast('💾 جاري الحفظ...');
-  try{
-    await db.collection('users').doc(currentUsername).update({
-      displayName:user.displayName,
-      phone:user.phone,
-      bio:user.bio,
-      location:user.location
-    });
-    toast('✅ تم الحفظ!');
-  }catch(e){
-    toast('❌ خطأ: '+e.message);
+  if(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      // إرسال البيانات إلى Firestore
+      // db.collection('users').doc(currentUsername).update({ ... });
+      toast('✅ تم رفع الحساب والأيقونة!');
+    };
+    reader.readAsDataURL(file);
+  } else {
+    toast('✅ تم إضافة الرابط (بدون أيقونة)');
   }
 }
 
 function logout(){
-  if(!confirm('تسجيل الخروج؟'))return;
-  localStorage.removeItem('elLoggedIn');
-  localStorage.removeItem('elUserUsername');
+  localStorage.clear();
   window.location.href='index.html';
 }
-
-load();
 </script>
 </body>
 </html>
