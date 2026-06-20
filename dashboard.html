@@ -10,13 +10,14 @@
   body { font-family: 'Tajawal', sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
   .container { max-width: 600px; margin: auto; background: #fff; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
   .nav { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-  .nav-btn { background: none; border: none; padding: 10px; font-weight: 700; cursor: pointer; color: #777; }
+  .nav-btn { background: none; border: none; padding: 10px; font-weight: 700; cursor: pointer; color: #777; transition: 0.3s; }
   .nav-btn.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
   .page { display: none; }
   .page.active { display: block; }
   .form-group { margin-bottom: 15px; }
-  input { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
-  .btn-save { width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+  input { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 8px; outline: none; box-sizing: border-box; }
+  .btn-save { width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.3s; }
+  .btn-save:hover { background: #2a41b5; }
 </style>
 </head>
 <body>
@@ -28,15 +29,15 @@
     <button class="nav-btn" onclick="showPage('accounts', this)">🔗 الحسابات</button>
   </div>
 
-  <div id="page-links" class="page active"><h3>إدارة الروابط</h3></div>
-  <div id="page-design" class="page"><h3>التصميم</h3></div>
+  <div id="page-links" class="page active"><h3>إدارة الروابط</h3><p>هنا ستظهر روابطك المسجلة.</p></div>
+  <div id="page-design" class="page"><h3>إعدادات التصميم</h3><p>تخصيص الشعار والأفاتار.</p></div>
   
   <div id="page-accounts" class="page">
-    <h3>إضافة حساب تواصل</h3>
+    <h3>إضافة حساب تواصل جديد</h3>
     <div class="form-group">
-      <input type="text" id="accName" placeholder="اسم المنصة (مثال: تويتر)">
-      <input type="url" id="accUrl" placeholder="رابط الحساب">
-      <label style="font-size:0.8rem; margin-top:10px; display:block;">أيقونة الحساب:</label>
+      <input type="text" id="accName" placeholder="اسم المنصة (مثال: Instagram)">
+      <input type="url" id="accUrl" placeholder="رابط الحساب (URL)">
+      <label style="font-size:0.8rem; margin-top:10px; display:block;">أيقونة الحساب (صورة):</label>
       <input type="file" id="accIcon" accept="image/*">
       <button class="btn-save" onclick="addAccount()">✅ حفظ الحساب</button>
     </div>
@@ -47,9 +48,14 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script>
-  // ضع إعدادات مشروعك هنا
+  // تذكر: ضع إعدادات Firebase الخاصة بك هنا بدقة
   const firebaseConfig = { 
-    /* انسخ إعداداتك من Firebase Console */ 
+    // apiKey: "...",
+    // authDomain: "...",
+    // projectId: "...",
+    // storageBucket: "...",
+    // messagingSenderId: "...",
+    // appId: "..."
   };
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
@@ -64,21 +70,30 @@
 
   async function addAccount() {
     const user = auth.currentUser;
-    if (!user) { alert('يرجى تسجيل الدخول'); return; }
+    if (!user) { alert('⚠️ يرجى تسجيل الدخول أولاً'); return; }
 
     const name = document.getElementById('accName').value;
     const url = document.getElementById('accUrl').value;
-    const file = document.getElementById('accIcon').files[0];
+    const fileInput = document.getElementById('accIcon');
+    const file = fileInput.files[0];
     
-    if(!name || !url) { alert('يرجى تعبئة الحقول'); return; }
+    if(!name || !url) { alert('⚠️ يرجى تعبئة الاسم والرابط'); return; }
 
+    // دالة لحفظ البيانات بعد تحويل الصورة لـ Base64
     const saveData = (iconBase64 = '') => {
-      // الأمان: التعديل يتم فقط عبر UID الخاص بالمستخدم المسجل
       db.collection('users').doc(user.uid).set({
-        accounts: firebase.firestore.FieldValue.arrayUnion({ name, url, icon: iconBase64 })
+        accounts: firebase.firestore.FieldValue.arrayUnion({ 
+          name: name, 
+          url: url, 
+          icon: iconBase64,
+          timestamp: new Date() 
+        })
       }, { merge: true }).then(() => {
-        alert('✅ تم الحفظ بنجاح');
-      }).catch(e => alert('خطأ: ' + e.message));
+        alert('✅ تم حفظ الحساب بنجاح!');
+        document.getElementById('accName').value = '';
+        document.getElementById('accUrl').value = '';
+        fileInput.value = '';
+      }).catch(e => alert('خطأ في الاتصال بقاعدة البيانات: ' + e.message));
     };
 
     if(file) {
@@ -86,7 +101,7 @@
       reader.onload = (e) => saveData(e.target.result);
       reader.readAsDataURL(file);
     } else {
-      saveData();
+      saveData(); // حفظ بدون أيقونة إذا لم يرفع المستخدم صورة
     }
   }
 </script>
