@@ -2,33 +2,43 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"/>
-<title>لوحة التحكم - electrwni.link</title>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>لوحة التحكم — electrwni.link</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-  body{font-family:'Tajawal',sans-serif;background:#f9f9f9;padding:20px;}
-  .container{max-width:600px;margin:auto;background:#fff;padding:20px;border-radius:15px;}
-  .nav{display:flex;gap:10px;margin-bottom:20px;border-bottom:1px solid #ddd;padding-bottom:10px;}
-  .btn{padding:10px 15px;cursor:pointer;border:none;border-radius:8px;background:#3d5af1;color:#fff;}
-  .form-group{margin-bottom:15px;}
-  input{width:100%;padding:10px;margin-top:5px;border:1px solid #ddd;border-radius:8px;}
+  :root { --primary: #3d5af1; --bg: #f9f9f9; --text: #0f1535; }
+  body { font-family: 'Tajawal', sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
+  .container { max-width: 600px; margin: auto; background: #fff; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+  .nav { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+  .nav-btn { background: none; border: none; padding: 10px; font-weight: 700; cursor: pointer; color: #777; }
+  .nav-btn.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+  .page { display: none; }
+  .page.active { display: block; }
+  .form-group { margin-bottom: 15px; }
+  input { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
+  .btn-save { width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 10px; }
 </style>
 </head>
 <body>
+
 <div class="container">
   <div class="nav">
-    <button class="btn" onclick="showPage('links')">📋 الروابط</button>
-    <button class="btn" onclick="showPage('design')">🎨 التصميم</button>
-    <button class="btn" onclick="showPage('accounts')">🔗 الحسابات</button>
+    <button class="nav-btn active" onclick="showPage('links', this)">📋 الروابط</button>
+    <button class="nav-btn" onclick="showPage('design', this)">🎨 التصميم</button>
+    <button class="nav-btn" onclick="showPage('accounts', this)">🔗 الحسابات</button>
   </div>
 
-  <div id="page-accounts">
-    <h3>إدارة حسابات التواصل</h3>
+  <div id="page-links" class="page active"><h3>إدارة الروابط</h3></div>
+  <div id="page-design" class="page"><h3>التصميم</h3></div>
+  
+  <div id="page-accounts" class="page">
+    <h3>إضافة حساب تواصل</h3>
     <div class="form-group">
-      <input type="text" id="accName" placeholder="اسم المنصة">
+      <input type="text" id="accName" placeholder="اسم المنصة (مثال: تويتر)">
       <input type="url" id="accUrl" placeholder="رابط الحساب">
-      <label>أيقونة الحساب:</label>
+      <label style="font-size:0.8rem; margin-top:10px; display:block;">أيقونة الحساب:</label>
       <input type="file" id="accIcon" accept="image/*">
-      <button class="btn" onclick="addAccount()" style="margin-top:10px;width:100%;">إضافة الحساب</button>
+      <button class="btn-save" onclick="addAccount()">✅ حفظ الحساب</button>
     </div>
   </div>
 </div>
@@ -37,38 +47,48 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script>
-const db = firebase.firestore();
-const auth = firebase.auth();
-
-async function addAccount() {
-  const user = auth.currentUser;
-  if (!user) { alert('يرجى تسجيل الدخول'); return; }
-
-  const name = document.getElementById('accName').value;
-  const url = document.getElementById('accUrl').value;
-  const file = document.getElementById('accIcon').files[0];
-  
-  if(!name || !url) { alert('املأ البيانات'); return; }
-
-  const processAdd = async (iconBase64 = '') => {
-    // التعديل الأمني هنا: استخدام UID المستخدم كمعرف للوثيقة
-    const userRef = db.collection('users').doc(user.uid); 
-    await userRef.set({
-      accounts: firebase.firestore.FieldValue.arrayUnion({ name, url, icon: iconBase64 })
-    }, { merge: true });
-    alert('✅ تم الحفظ بأمان!');
+  // ضع إعدادات مشروعك هنا
+  const firebaseConfig = { 
+    /* انسخ إعداداتك من Firebase Console */ 
   };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const auth = firebase.auth();
 
-  if(file) {
-    const reader = new FileReader();
-    reader.onload = (e) => processAdd(e.target.result);
-    reader.readAsDataURL(file);
-  } else {
-    processAdd();
+  function showPage(id, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    btn.classList.add('active');
   }
-}
 
-function showPage(p) { /* منطق التنقل الخاص بك */ }
+  async function addAccount() {
+    const user = auth.currentUser;
+    if (!user) { alert('يرجى تسجيل الدخول'); return; }
+
+    const name = document.getElementById('accName').value;
+    const url = document.getElementById('accUrl').value;
+    const file = document.getElementById('accIcon').files[0];
+    
+    if(!name || !url) { alert('يرجى تعبئة الحقول'); return; }
+
+    const saveData = (iconBase64 = '') => {
+      // الأمان: التعديل يتم فقط عبر UID الخاص بالمستخدم المسجل
+      db.collection('users').doc(user.uid).set({
+        accounts: firebase.firestore.FieldValue.arrayUnion({ name, url, icon: iconBase64 })
+      }, { merge: true }).then(() => {
+        alert('✅ تم الحفظ بنجاح');
+      }).catch(e => alert('خطأ: ' + e.message));
+    };
+
+    if(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => saveData(e.target.result);
+      reader.readAsDataURL(file);
+    } else {
+      saveData();
+    }
+  }
 </script>
 </body>
 </html>
