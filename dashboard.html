@@ -426,15 +426,22 @@ tr:hover{background:var(--bg2);}
 
 <!-- ========== FIREBASE ========== -->
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
 <script>
 const cfg={apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",authDomain:"electrwni-link.firebaseapp.com",projectId:"electrwni-link",storageBucket:"electrwni-link.firebasestorage.app",messagingSenderId:"712490301263",appId:"1:712490301263:web:2084210da3f687285ab73a"};
 if(!firebase.apps.length)firebase.initializeApp(cfg);
+const auth=firebase.auth();
 const db=firebase.firestore();
 
-let user=null,currentUsername='',allLinks=[],currentPage=1,pageSize=10;
-let allSocials=[],pendingSocIcon=null,editingSocId=null;
+// ========================================================================
+// هوية المستخدم بالكامل تُشتق من auth.currentUser.uid فقط.
+// لا نثق بـ localStorage كمصدر هوية إطلاقاً — هو فقط cache للعرض.
+// ========================================================================
+let currentUid=null;
+let user=null,allLinks=[],currentPage=1;
+let allSocials=[],pendingSocIcon=null;
 
 function toast(msg){
   const el=document.getElementById('toast');
@@ -443,47 +450,60 @@ function toast(msg){
   setTimeout(()=>el.classList.remove('show'),3000);
 }
 
-function showPage(n,el){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('page-'+n).classList.add('active');
-  if(el)el.classList.add('active');
-}
-
-async function load(){
-  currentUsername=localStorage.getItem('elUserUsername');
-  if(!currentUsername||!localStorage.getItem('elLoggedIn')){
+// ========== بوابة المصادقة الحقيقية ==========
+auth.onAuthStateChanged(async (fbUser)=>{
+  if(!fbUser){
+    // لا يوجد جلسة Firebase حقيقية -> ارجع لتسجيل الدخول دائماً
+    localStorage.removeItem('elUserUsername');
     window.location.href='signin.html';
     return;
   }
+  if(!fbUser.emailVerified){
+    toast('⚠️ يرجى تأكيد بريدك أولاً');
+    await auth.signOut();
+    window.location.href='signin.html';
+    return;
+  }
+  currentUid=fbUser.uid;
+  await loadUserData();
+});
 
+async function loadUserData(){
   try{
-    const ref=db.collection('users').doc(currentUsername);
+    const ref=db.collection('users').doc(currentUid);
     const doc=await ref.get();
-    if(!doc.exists){window.location.href='signin.html';return;}
-    
+    if(!doc.exists){
+      toast('❌ بيانات الحساب غير موجودة');
+      await auth.signOut();
+      window.location.href='signin.html';
+      return;
+    }
+
     user=doc.data();
+    localStorage.setItem('elUserUsername',user.username); // cache فقط، ليس مصدر الهوية
+
     allLinks=(user.links||[]).sort((a,b)=>a.num-b.num);
     allSocials=user.socials||[];
-    
+
     document.getElementById('pfUser').value=user.username||'';
     document.getElementById('pfEmail').value=user.email||'';
     document.getElementById('pfName').value=user.displayName||'';
     document.getElementById('pfPhone').value=user.phone||'';
     document.getElementById('pfBio').value=user.bio||'';
     document.getElementById('pfLocation').value=user.location||'';
-    
+
     if(user.bannerImage)document.getElementById('bannerPreview').style.backgroundImage=`url(${user.bannerImage})`;
     if(user.avatar){
       document.getElementById('avatarPreview').innerHTML=`<img src="${user.avatar}" style="width:100%;height:100%;object-fit:cover;">`;
     }else if(user.displayName){
       document.getElementById('avatarPreview').textContent=user.displayName[0].toUpperCase();
     }
-    
+
     renderRegistry();
     renderStats();
     renderSocials();
 
+    // مزامنة فورية: أي تغيير بقاعدة البيانات (من جهاز آخر مثلاً) ينعكس هنا تلقائياً
     ref.onSnapshot(d=>{
       if(d.exists){
         user=d.data();
@@ -494,18 +514,40 @@ async function load(){
         renderSocials();
       }
     });
+
   }catch(e){
-    console.error(e);
-    toast('❌ خطأ: '+e.message);
+    console.error('loadUserData error:',e);
+    toast('❌ خطأ بتحميل البيانات: '+e.message);
   }
 }
 
+// ========== دالة حفظ موحّدة، تستخدم uid الحقيقي دائماً ==========
+async function saveField(fields){
+  if(!currentUid){toast('❌ لست مسجل دخول');return false;}
+  try{
+    await db.collection('users').doc(currentUid).update(fields);
+    return true;
+  }catch(e){
+    console.error('saveField error:',e);
+    toast('❌ فشل الحفظ: '+e.message);
+    return false;
+  }
+}
+
+// ========== التنقل بين الصفحات ==========
+function showPage(n,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+n).classList.add('active');
+  if(el)el.classList.add('active');
+}
+
+// ========== سجل الروابط ==========
 function renderRegistry(){
   if(!allLinks.length){
     document.getElementById('linksRegistry').innerHTML='<div class="empty">لا توجد روابط</div>';
     return;
   }
-
   document.getElementById('linksRegistry').innerHTML=allLinks.map(l=>`
     <div class="item" onclick="this.classList.toggle('open')">
       <div style="flex:1;">
@@ -525,7 +567,7 @@ function renderRegistry(){
 function renderStats(){
   currentPage=1;
   const ps=parseInt(document.getElementById('pageSize').value)||10;
-  const totalPages=Math.ceil(allLinks.length/ps);
+  const totalPages=Math.ceil(allLinks.length/ps)||1;
   const start=(currentPage-1)*ps;
   const pageLinks=allLinks.slice(start,start+ps);
 
@@ -539,7 +581,7 @@ function renderStats(){
     <tr>
       <td><strong>${l.num}</strong></td>
       <td>${l.label}</td>
-      <td>${(l.desc||'').substring(0,20)}...</td>
+      <td>${(l.desc||'').substring(0,20)}</td>
       <td><a href="${l.url}" target="_blank" style="color:var(--primary);">رابط</a></td>
       <td>${l.clicks||0}</td>
     </tr>
@@ -552,13 +594,23 @@ function renderStats(){
   document.getElementById('pagination').innerHTML=paginationHtml;
 }
 
-function updateStats(){
-  renderStats();
-}
+function updateStats(){renderStats();}
 
 function goPage(page){
   currentPage=page;
-  renderStats();
+  const ps=parseInt(document.getElementById('pageSize').value)||10;
+  const start=(currentPage-1)*ps;
+  const pageLinks=allLinks.slice(start,start+ps);
+  document.getElementById('statsTbody').innerHTML=pageLinks.map(l=>`
+    <tr>
+      <td><strong>${l.num}</strong></td>
+      <td>${l.label}</td>
+      <td>${(l.desc||'').substring(0,20)}</td>
+      <td><a href="${l.url}" target="_blank" style="color:var(--primary);">رابط</a></td>
+      <td>${l.clicks||0}</td>
+    </tr>
+  `).join('');
+  document.querySelectorAll('.pagination button').forEach((b,i)=>b.classList.toggle('active',i+1===page));
   document.querySelector('table').scrollIntoView({behavior:'smooth'});
 }
 
@@ -567,17 +619,20 @@ function goToStats(){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
+// ========== إضافة/حذف رابط ==========
 async function addLink(){
   const num=parseInt(document.getElementById('linkNum').value);
   const title=document.getElementById('linkTitle').value.trim();
   const desc=document.getElementById('linkDesc').value.trim();
   const url=document.getElementById('linkUrl').value.trim();
 
-  if(!num||!title||!url){toast('⚠️ ملء الحقول');return;}
+  if(!num||num<1||num>9){toast('⚠️ الرقم يجب أن يكون بين 1 و 9');return;}
+  if(!title){toast('⚠️ اكتب عنواناً للرابط');return;}
+  if(!url){toast('⚠️ اكتب الرابط');return;}
+  try{ new URL(url); }catch(_){ toast('⚠️ صيغة الرابط غير صحيحة (يجب أن يبدأ بـ https://)');return; }
 
   const exist=allLinks.find(l=>l.num===num);
   if(exist)allLinks=allLinks.filter(l=>l.id!==exist.id);
-
   allLinks.push({id:Date.now(),num,label:title,desc,url,clicks:0});
 
   document.getElementById('linkNum').value='';
@@ -586,29 +641,24 @@ async function addLink(){
   document.getElementById('linkUrl').value='';
 
   toast('💾 جاري الحفظ...');
-  try{
-    await db.collection('users').doc(currentUsername).update({links:allLinks});
-    toast('✅ تمت الإضافة!');
-  }catch(e){
-    toast('❌ خطأ: '+e.message);
-  }
+  const ok=await saveField({links:allLinks});
+  if(ok)toast('✅ تمت إضافة الرابط!');
 }
 
 async function deleteLink(id,event){
   event.stopPropagation();
-  if(!confirm('حذف الرابط؟'))return;
+  if(!confirm('حذف هذا الرابط؟'))return;
+  const backup=allLinks;
   allLinks=allLinks.filter(l=>l.id!==id);
-  toast('💾 جاري الحفظ...');
-  try{
-    await db.collection('users').doc(currentUsername).update({links:allLinks});
-    toast('✅ تم الحذف!');
-  }catch(e){
-    toast('❌ خطأ: '+e.message);
-  }
+  renderRegistry();renderStats();
+  toast('💾 جاري الحذف...');
+  const ok=await saveField({links:allLinks});
+  if(ok)toast('✅ تم الحذف!');
+  else allLinks=backup;
 }
 
+// ========== حسابات التواصل ==========
 function openSocialForm(){
-  editingSocId=null;
   document.getElementById('socName').value='';
   document.getElementById('socUrl').value='';
   document.getElementById('socIcon').value='';
@@ -619,7 +669,6 @@ function openSocialForm(){
 
 function closeSocialForm(){
   document.getElementById('socialFormBox').style.display='none';
-  editingSocId=null;
   pendingSocIcon=null;
 }
 
@@ -640,7 +689,6 @@ function renderSocials(){
     document.getElementById('socialsRegistry').innerHTML='<div class="empty">لا توجد حسابات بعد</div>';
     return;
   }
-
   document.getElementById('socialsRegistry').innerHTML=allSocials.map(s=>`
     <div class="item" style="cursor:default;">
       <div style="display:flex;align-items:center;gap:12px;flex:1;">
@@ -660,47 +708,40 @@ function renderSocials(){
 async function saveSocial(){
   const name=document.getElementById('socName').value.trim();
   const url=document.getElementById('socUrl').value.trim();
+  if(!name){toast('⚠️ اكتب اسم الحساب');return;}
+  if(!url){toast('⚠️ اكتب رابط الحساب');return;}
+  try{ new URL(url); }catch(_){ toast('⚠️ صيغة الرابط غير صحيحة');return; }
 
-  if(!name||!url){toast('⚠️ ملء الاسم والرابط');return;}
-
-  allSocials.push({
-    id:Date.now()+'',
-    name,
-    url,
-    icon:pendingSocIcon||''
-  });
-
+  allSocials.push({id:Date.now()+'',name,url,icon:pendingSocIcon||''});
   closeSocialForm();
   toast('💾 جاري الحفظ...');
-  try{
-    await db.collection('users').doc(currentUsername).update({socials:allSocials});
-    toast('✅ تمت الإضافة!');
-  }catch(e){
-    toast('❌ خطأ: '+e.message);
-  }
+  const ok=await saveField({socials:allSocials});
+  if(ok)toast('✅ تمت إضافة الحساب!');
 }
 
 async function deleteSocial(id){
-  if(!confirm('حذف الحساب؟'))return;
+  if(!confirm('حذف هذا الحساب؟'))return;
+  const backup=allSocials;
   allSocials=allSocials.filter(s=>s.id!==id);
-  toast('💾 جاري الحفظ...');
-  try{
-    await db.collection('users').doc(currentUsername).update({socials:allSocials});
-    toast('✅ تم الحذف!');
-  }catch(e){
-    toast('❌ خطأ: '+e.message);
-  }
+  renderSocials();
+  toast('💾 جاري الحذف...');
+  const ok=await saveField({socials:allSocials});
+  if(ok)toast('✅ تم الحذف!');
+  else allSocials=backup;
 }
 
+// ========== التصميم (الغلاف والصورة الشخصية) ==========
 function selectBanner(inp){
   const f=inp.files[0];
   if(!f)return;
+  if(f.size>2*1024*1024){toast('⚠️ الصورة كبيرة جداً (الحد الأقصى 2MB)');return;}
   const r=new FileReader();
-  r.onload=e=>{
+  r.onload=async e=>{
     user.bannerImage=e.target.result;
     document.getElementById('bannerPreview').style.backgroundImage=`url(${user.bannerImage})`;
     toast('💾 جاري الحفظ...');
-    db.collection('users').doc(currentUsername).update({bannerImage:user.bannerImage}).then(()=>toast('✅ تم حفظ الغلاف!')).catch(err=>toast('❌ خطأ: '+err.message));
+    const ok=await saveField({bannerImage:user.bannerImage});
+    if(ok)toast('✅ تم حفظ الغلاف!');
   };
   r.readAsDataURL(f);
 }
@@ -708,54 +749,49 @@ function selectBanner(inp){
 function selectAvatar(inp){
   const f=inp.files[0];
   if(!f)return;
+  if(f.size>2*1024*1024){toast('⚠️ الصورة كبيرة جداً (الحد الأقصى 2MB)');return;}
   const r=new FileReader();
-  r.onload=e=>{
+  r.onload=async e=>{
     user.avatar=e.target.result;
     document.getElementById('avatarPreview').innerHTML=`<img src="${user.avatar}" style="width:100%;height:100%;object-fit:cover;">`;
     toast('💾 جاري الحفظ...');
-    db.collection('users').doc(currentUsername).update({avatar:user.avatar}).then(()=>toast('✅ تم حفظ الصورة!')).catch(err=>toast('❌ خطأ: '+err.message));
+    const ok=await saveField({avatar:user.avatar});
+    if(ok)toast('✅ تم حفظ الصورة الشخصية!');
   };
   r.readAsDataURL(f);
 }
 
 async function saveDesign(){
   toast('💾 جاري الحفظ...');
-  try{
-    await db.collection('users').doc(currentUsername).update({bannerImage:user.bannerImage||'',avatar:user.avatar||''});
-    toast('✅ تم الحفظ!');
-  }catch(e){
-    toast('❌ خطأ: '+e.message);
-  }
+  const ok=await saveField({bannerImage:user.bannerImage||'',avatar:user.avatar||''});
+  if(ok)toast('✅ تم حفظ التصميم!');
 }
 
+// ========== الملف الشخصي ==========
 async function saveProfile(){
-  user.displayName=document.getElementById('pfName').value.trim();
-  user.phone=document.getElementById('pfPhone').value.trim();
-  user.bio=document.getElementById('pfBio').value.trim();
-  user.location=document.getElementById('pfLocation').value.trim();
+  const displayName=document.getElementById('pfName').value.trim();
+  const phone=document.getElementById('pfPhone').value.trim();
+  const bio=document.getElementById('pfBio').value.trim();
+  const location=document.getElementById('pfLocation').value.trim();
 
   toast('💾 جاري الحفظ...');
-  try{
-    await db.collection('users').doc(currentUsername).update({
-      displayName:user.displayName,
-      phone:user.phone,
-      bio:user.bio,
-      location:user.location
-    });
-    toast('✅ تم الحفظ!');
-  }catch(e){
-    toast('❌ خطأ: '+e.message);
+  const ok=await saveField({displayName,phone,bio,location});
+  if(ok){
+    user.displayName=displayName;user.phone=phone;user.bio=bio;user.location=location;
+    toast('✅ تم حفظ ملفك الشخصي!');
   }
 }
 
+// ========== تسجيل الخروج الحقيقي ==========
 function logout(){
-  if(!confirm('تسجيل الخروج؟'))return;
-  localStorage.removeItem('elLoggedIn');
-  localStorage.removeItem('elUserUsername');
-  window.location.href='index.html';
+  if(!confirm('هل تريد تسجيل الخروج؟'))return;
+  auth.signOut().then(()=>{
+    localStorage.removeItem('elUserUsername');
+    window.location.href='index.html';
+  }).catch(e=>{
+    toast('❌ خطأ بتسجيل الخروج: '+e.message);
+  });
 }
-
-load();
 </script>
 </body>
 </html>
