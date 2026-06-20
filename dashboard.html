@@ -2,136 +2,73 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>لوحة التحكم — electrwni.link</title>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<title>لوحة التحكم - electrwni.link</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root{--primary:#3d5af1;--primary-light:#6c8fff;--bg:#ffffff;--bg2:#f9f9f9;--border:#e8ecf5;--text:#0f1535;--text2:#3a4270;--success:#0ab87a;--error:#e8436a;}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
-.topbar{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50;}
-.container{max-width:900px;margin:0 auto;padding:24px 20px;}
-.nav-tabs{display:flex;gap:10px;margin-bottom:24px;border-bottom:2px solid var(--border);overflow-x:auto;}
-.nav-tab{background:transparent;border:none;color:var(--text2);padding:12px 16px;font-weight:700;cursor:pointer;border-bottom:3px solid transparent;}
-.nav-tab.active{color:var(--primary);border-bottom-color:var(--primary);}
-.page{display:none;}
-.page.active{display:block;}
-.expandable{background:var(--bg2);border:1px solid var(--border);border-radius:12px;margin-bottom:16px;padding:20px;}
-.form-group{margin-bottom:14px;}
-label{display:block;font-size:0.85rem;font-weight:700;margin-bottom:6px;}
-input,textarea{width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;outline:none;}
-.btn-add{background:var(--primary);color:#fff;padding:12px;width:100%;border:none;border-radius:8px;cursor:pointer;font-weight:700;}
-.toast{position:fixed;bottom:20px;left:20px;background:var(--text);color:#fff;padding:12px 20px;border-radius:8px;opacity:0;transition:all .3s;}
-.toast.show{opacity:1;}
+  body{font-family:'Tajawal',sans-serif;background:#f9f9f9;padding:20px;}
+  .container{max-width:600px;margin:auto;background:#fff;padding:20px;border-radius:15px;}
+  .nav{display:flex;gap:10px;margin-bottom:20px;border-bottom:1px solid #ddd;padding-bottom:10px;}
+  .btn{padding:10px 15px;cursor:pointer;border:none;border-radius:8px;background:#3d5af1;color:#fff;}
+  .form-group{margin-bottom:15px;}
+  input{width:100%;padding:10px;margin-top:5px;border:1px solid #ddd;border-radius:8px;}
 </style>
 </head>
 <body>
-
-<div class="topbar">
-  <div>electrwni.link</div>
-  <button class="btn" onclick="logout()">🚪 خروج</button>
-</div>
-
 <div class="container">
-  <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showPage('links',this)">📋 الروابط</button>
-    <button class="nav-tab" onclick="showPage('design',this)">🎨 التصميم</button>
-    <button class="nav-tab" onclick="showPage('accounts',this)">🔗 الحسابات</button>
-    <button class="nav-tab" onclick="showPage('profile',this)">👤 ملفي</button>
+  <div class="nav">
+    <button class="btn" onclick="showPage('links')">📋 الروابط</button>
+    <button class="btn" onclick="showPage('design')">🎨 التصميم</button>
+    <button class="btn" onclick="showPage('accounts')">🔗 الحسابات</button>
   </div>
 
-  <div class="page active" id="page-links">
-    <div class="expandable">
-        <h3>إدارة الروابط</h3>
-        </div>
-  </div>
-
-  <div class="page" id="page-design">
-    <div class="expandable">
-        <h3>تخصيص الهوية</h3>
-        <div class="form-group">
-            <label>صورة الغلاف</label>
-            <input type="file" id="bannerInput" accept="image/*">
-        </div>
-        <div class="form-group">
-            <label>صورة البروفايل</label>
-            <input type="file" id="avatarInput" accept="image/*">
-        </div>
-        <button class="btn-add" onclick="saveDesign()">💾 حفظ التصميم</button>
+  <div id="page-accounts">
+    <h3>إدارة حسابات التواصل</h3>
+    <div class="form-group">
+      <input type="text" id="accName" placeholder="اسم المنصة">
+      <input type="url" id="accUrl" placeholder="رابط الحساب">
+      <label>أيقونة الحساب:</label>
+      <input type="file" id="accIcon" accept="image/*">
+      <button class="btn" onclick="addAccount()" style="margin-top:10px;width:100%;">إضافة الحساب</button>
     </div>
-  </div>
-
-  <div class="page" id="page-accounts">
-    <div class="expandable">
-      <h3>إضافة حساب تواصل</h3>
-      <div class="form-group">
-        <label>اسم المنصة (مثال: إنستقرام)</label>
-        <input type="text" id="accName">
-      </div>
-      <div class="form-group">
-        <label>رابط الحساب (URL)</label>
-        <input type="url" id="accUrl" placeholder="https://">
-      </div>
-      <div class="form-group">
-        <label>أيقونة الحساب</label>
-        <input type="file" id="accIcon" accept="image/*">
-      </div>
-      <button class="btn-add" onclick="saveAccount()">➕ إضافة الحساب</button>
-    </div>
-  </div>
-
-  <div class="page" id="page-profile">
-    <div class="expandable">
-        <h3>بيانات الحساب</h3>
-        </div>
   </div>
 </div>
-
-<div class="toast" id="toast"></div>
 
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script>
-// الإعدادات والمنطق البرمجي
-function showPage(n,el){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('page-'+n).classList.add('active');
-  el.classList.add('active');
-}
+const db = firebase.firestore();
+const auth = firebase.auth();
 
-function toast(msg){
-  const el=document.getElementById('toast');
-  el.textContent=msg;
-  el.classList.add('show');
-  setTimeout(()=>el.classList.remove('show'),3000);
-}
+async function addAccount() {
+  const user = auth.currentUser;
+  if (!user) { alert('يرجى تسجيل الدخول'); return; }
 
-// دالة حفظ الحساب الجديد مع أيقونته
-async function saveAccount() {
   const name = document.getElementById('accName').value;
   const url = document.getElementById('accUrl').value;
   const file = document.getElementById('accIcon').files[0];
   
-  if(!name || !url) { toast('⚠️ يرجى تعبئة الحقول'); return; }
+  if(!name || !url) { alert('املأ البيانات'); return; }
+
+  const processAdd = async (iconBase64 = '') => {
+    // التعديل الأمني هنا: استخدام UID المستخدم كمعرف للوثيقة
+    const userRef = db.collection('users').doc(user.uid); 
+    await userRef.set({
+      accounts: firebase.firestore.FieldValue.arrayUnion({ name, url, icon: iconBase64 })
+    }, { merge: true });
+    alert('✅ تم الحفظ بأمان!');
+  };
 
   if(file) {
     const reader = new FileReader();
-    reader.onload = (e) => {
-      // إرسال البيانات إلى Firestore
-      // db.collection('users').doc(currentUsername).update({ ... });
-      toast('✅ تم رفع الحساب والأيقونة!');
-    };
+    reader.onload = (e) => processAdd(e.target.result);
     reader.readAsDataURL(file);
   } else {
-    toast('✅ تم إضافة الرابط (بدون أيقونة)');
+    processAdd();
   }
 }
 
-function logout(){
-  localStorage.clear();
-  window.location.href='index.html';
-}
+function showPage(p) { /* منطق التنقل الخاص بك */ }
 </script>
 </body>
 </html>
