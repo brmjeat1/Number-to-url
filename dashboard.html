@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>لوحة التحكم — electrwni.link</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
 <style>
 :root{
   --primary:#3d5af1;--primary-light:#6c8fff;--bg:#ffffff;--bg2:#f9f9f9;
@@ -213,6 +214,38 @@ tr:hover{background:var(--bg2);}
 
 .toast.show{opacity:1;transform:translateY(0);}
 
+/* ========== أداة قص الصور (Cropper Modal) ========== */
+.crop-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:300;
+  display:none;align-items:center;justify-content:center;padding:16px;
+}
+.crop-overlay.open{display:flex;}
+
+.crop-box{
+  background:var(--bg);border-radius:14px;max-width:480px;width:100%;
+  max-height:90vh;overflow:hidden;display:flex;flex-direction:column;
+}
+
+.crop-header{padding:16px 20px;border-bottom:1px solid var(--border);font-weight:900;}
+
+.crop-image-area{
+  flex:1;min-height:0;background:#1a1a1a;display:flex;align-items:center;justify-content:center;
+  max-height:400px;overflow:hidden;
+}
+.crop-image-area img{display:block;max-width:100%;}
+
+.crop-actions{
+  padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px;
+}
+
+.crop-btn{
+  flex:1;padding:12px;border:none;border-radius:8px;cursor:pointer;
+  font-family:'Tajawal',sans-serif;font-weight:700;font-size:0.9rem;transition:all .2s;
+}
+.crop-btn:active{transform:scale(0.97);}
+.crop-btn-confirm{background:var(--success);color:#fff;}
+.crop-btn-cancel{background:var(--bg2);color:var(--text);border:1px solid var(--border);}
+
 @media(max-width:600px){
   .container{padding:16px 12px;}
   .expandable-header{padding:12px 14px;}
@@ -245,11 +278,11 @@ tr:hover{background:var(--bg2);}
 
   <!-- ========== NAVIGATION ========== -->
   <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showPage('links',this)">📋 الروابط</button>
-    <button class="nav-tab" onclick="showPage('socials',this)">🌐 حساباتي</button>
-    <button class="nav-tab" onclick="showPage('design',this)">🎨 التصميم</button>
-    <button class="nav-tab" onclick="showPage('profile',this)">👤 ملفي</button>
-    <button class="nav-tab" onclick="showPage('stats',this)">📊 إحصائيات</button>
+    <button class="nav-tab active" onclick="showPage('links',this)">الروابط</button>
+    <button class="nav-tab" onclick="showPage('socials',this)">تواصل معنا</button>
+    <button class="nav-tab" onclick="showPage('design',this)">التصميم</button>
+    <button class="nav-tab" onclick="showPage('profile',this)">ملفي</button>
+    <button class="nav-tab" onclick="showPage('stats',this)">إحصائيات</button>
   </div>
 
   <!-- ===== PAGE: LINKS ===== -->
@@ -263,23 +296,27 @@ tr:hover{background:var(--bg2);}
       <div class="expandable-content" style="display:block;">
         <div class="form-row">
           <div class="form-group">
-            <label>الرقم (1-9)</label>
+            <label>الرقم (1-9) *</label>
             <input type="number" id="linkNum" placeholder="1" min="1" max="9">
           </div>
           <div class="form-group">
-            <label>العنوان (20 حرف)</label>
+            <label>العنوان (20 حرف) *</label>
             <input type="text" id="linkTitle" placeholder="اكتب العنوان" maxlength="20">
           </div>
         </div>
         <div class="form-group">
-          <label>الوصف</label>
+          <label>الوصف (اختياري)</label>
           <textarea id="linkDesc" placeholder="وصف الرابط"></textarea>
         </div>
         <div class="form-group">
-          <label>الرابط</label>
+          <label>الرابط *</label>
           <input type="url" id="linkUrl" placeholder="https://example.com" dir="ltr">
         </div>
-        <button class="btn-add" onclick="addLink()">✅ إضافة الرابط</button>
+        <div class="form-group" style="display:flex;align-items:center;gap:8px;">
+          <input type="checkbox" id="linkFeatured" style="width:auto;">
+          <label style="margin:0;">إضافة هذا الرابط لقسم "اخترنا لك"</label>
+        </div>
+        <button class="btn-add" onclick="addLink()">إضافة الرابط</button>
       </div>
     </div>
 
@@ -290,9 +327,9 @@ tr:hover{background:var(--bg2);}
         <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content" style="display:block;">
-        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">📊 دراسة جدوى لجماهيرية وفاعلية نشاط روابطك</div>
+        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">دراسة جدوى لجماهيرية وفاعلية نشاط روابطك</div>
         <div id="linksRegistry"></div>
-        <button class="btn-pdf" onclick="goToStats()">📥 PDF</button>
+        <button class="btn-pdf" onclick="goToStats()"> PDF</button>
       </div>
     </div>
   </div>
@@ -301,11 +338,11 @@ tr:hover{background:var(--bg2);}
   <div class="page" id="page-socials">
     <div class="expandable">
       <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
-        <div class="expandable-title"><div class="expandable-icon">ح</div><span>حساباتي</span></div>
+        <div class="expandable-title"><div class="expandable-icon">ح</div><span>تواصل معنا</span></div>
         <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content" style="display:block;">
-        <button class="btn-add" onclick="openSocialForm()" style="margin-bottom:16px;">➕ إضافة حساب</button>
+        <button class="btn-add" onclick="openSocialForm()" style="margin-bottom:16px;">إضافة حساب</button>
         
         <div id="socialFormBox" style="display:none;margin-bottom:20px;padding:16px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);">
           <div class="form-group">
@@ -324,8 +361,8 @@ tr:hover{background:var(--bg2);}
             </div>
           </div>
           <div style="display:flex;gap:10px;">
-            <button class="btn-add" onclick="saveSocial()">✅ حفظ الحساب</button>
-            <button class="btn-add" style="background:var(--muted);" onclick="closeSocialForm()">❌ إلغاء</button>
+            <button class="btn-add" onclick="saveSocial()">حفظ الحساب</button>
+            <button class="btn-add" style="background:var(--muted);" onclick="closeSocialForm()">إلغاء</button>
           </div>
         </div>
 
@@ -354,7 +391,7 @@ tr:hover{background:var(--bg2);}
           <label>صورة البروفايل</label>
           <input type="file" id="avatarInput" accept="image/*" onchange="selectAvatar(this)">
         </div>
-        <button class="btn-add" onclick="saveDesign()" style="background:var(--primary);">💾 حفظ التصميم</button>
+        <button class="btn-add" onclick="saveDesign()" style="background:var(--primary);">حفظ التصميم</button>
       </div>
     </div>
   </div>
@@ -391,7 +428,7 @@ tr:hover{background:var(--bg2);}
           <label>الموقع</label>
           <input type="text" id="pfLocation">
         </div>
-        <button class="btn-add" onclick="saveProfile()" style="background:var(--primary);">💾 حفظ</button>
+        <button class="btn-add" onclick="saveProfile()" style="background:var(--primary);">حفظ</button>
       </div>
     </div>
   </div>
@@ -431,10 +468,27 @@ tr:hover{background:var(--bg2);}
 <!-- ========== TOAST ========== -->
 <div class="toast" id="toast"></div>
 
+<!-- ========== مودال قص الصورة ========== -->
+<div class="crop-overlay" id="cropOverlay">
+  <div class="crop-box">
+    <div class="crop-header" id="cropTitle">حدد منطقة الصورة</div>
+    <div class="crop-image-area">
+      <img id="cropImage" src="" alt="صورة للقص">
+    </div>
+    <div class="crop-actions">
+      <button class="crop-btn crop-btn-confirm" onclick="confirmCrop()">تأكيد واستخدام</button>
+      <button class="crop-btn crop-btn-cancel" onclick="cancelCrop()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
 <!-- ========== FIREBASE ========== -->
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+<!-- ========== CROPPER.JS (أداة قص الصور) ========== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 
 <script>
 const cfg={apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",authDomain:"electrwni-link.firebaseapp.com",projectId:"electrwni-link",storageBucket:"electrwni-link.firebasestorage.app",messagingSenderId:"712490301263",appId:"1:712490301263:web:2084210da3f687285ab73a"};
@@ -460,13 +514,13 @@ function toast(msg){
 // ========== بوابة المصادقة الحقيقية ==========
 auth.onAuthStateChanged(async (fbUser)=>{
   if(!fbUser){
-    // لا يوجد جلسة Firebase حقيقية -> ارجع لتسجيل الدخول دائماً
+    // لا يوجد جلسة Firebase حقيقية ->ارجع لتسجيل الدخول دائماً
     localStorage.removeItem('elUserUsername');
     window.location.href='signin.html';
     return;
   }
   if(!fbUser.emailVerified){
-    toast('⚠️ يرجى تأكيد بريدك أولاً');
+    toast('يرجى تأكيد بريدك أولاً');
     await auth.signOut();
     window.location.href='signin.html';
     return;
@@ -480,7 +534,7 @@ async function loadUserData(){
     const ref=db.collection('users').doc(currentUid);
     const doc=await ref.get();
     if(!doc.exists){
-      toast('❌ بيانات الحساب غير موجودة');
+      toast('بيانات الحساب غير موجودة');
       await auth.signOut();
       window.location.href='signin.html';
       return;
@@ -525,19 +579,19 @@ async function loadUserData(){
 
   }catch(e){
     console.error('loadUserData error:',e);
-    toast('❌ خطأ بتحميل البيانات: '+e.message);
+    toast('خطأ بتحميل البيانات: '+e.message);
   }
 }
 
 // ========== دالة حفظ موحّدة، تستخدم uid الحقيقي دائماً ==========
 async function saveField(fields){
-  if(!currentUid){toast('❌ لست مسجل دخول');return false;}
+  if(!currentUid){toast('لست مسجل دخول');return false;}
   try{
     await db.collection('users').doc(currentUid).update(fields);
     return true;
   }catch(e){
     console.error('saveField error:',e);
-    toast('❌ فشل الحفظ: '+e.message);
+    toast('فشل الحفظ: '+e.message);
     return false;
   }
 }
@@ -559,17 +613,29 @@ function renderRegistry(){
   document.getElementById('linksRegistry').innerHTML=allLinks.map(l=>`
     <div class="item" onclick="this.classList.toggle('open')">
       <div style="flex:1;">
-        <div class="item-header">${l.num} — ${l.label}</div>
+        <div class="item-header">${l.num} — ${l.label}${l.featured?' <span style="font-size:0.7rem;background:var(--primary);color:#fff;padding:2px 6px;border-radius:6px;">مميّز</span>':''}</div>
         <div class="item-details">
           <div class="detail-row"><span class="detail-label">الوصف:</span> ${l.desc||'-'}</div>
           <div class="detail-row"><span class="detail-label">الرابط:</span> <a href="${l.url}" target="_blank" style="color:var(--primary);">فتح</a></div>
           <div class="detail-row"><span class="detail-label">المشاهدات:</span> ${l.clicks||0}</div>
-          <button class="btn-delete" onclick="deleteLink(${l.id},event)" style="margin-top:8px;">🗑️ حذف</button>
+          <button class="btn-delete" onclick="toggleFeatured(${l.id},event)" style="margin-top:8px;background:var(--primary);">${l.featured?'إلغاء التمييز':'تمييز كـ اخترنا لك'}</button>
+          <button class="btn-delete" onclick="deleteLink(${l.id},event)" style="margin-top:8px;">حذف</button>
         </div>
       </div>
       <div class="item-toggle">▼</div>
     </div>
   `).join('');
+}
+
+async function toggleFeatured(id,event){
+  event.stopPropagation();
+  const link=allLinks.find(l=>l.id===id);
+  if(!link)return;
+  link.featured=!link.featured;
+  renderRegistry();
+  toast('جاري الحفظ...');
+  const ok=await saveField({links:allLinks});
+  if(ok)toast(link.featured?'تم التمييز':'تم إلغاء التمييز');
 }
 
 function renderStats(){
@@ -633,24 +699,27 @@ async function addLink(){
   const title=document.getElementById('linkTitle').value.trim();
   const desc=document.getElementById('linkDesc').value.trim();
   const url=document.getElementById('linkUrl').value.trim();
+  const featured=document.getElementById('linkFeatured').checked;
 
-  if(!num||num<1||num>9){toast('⚠️ الرقم يجب أن يكون بين 1 و 9');return;}
-  if(!title){toast('⚠️ اكتب عنواناً للرابط');return;}
-  if(!url){toast('⚠️ اكتب الرابط');return;}
-  try{ new URL(url); }catch(_){ toast('⚠️ صيغة الرابط غير صحيحة (يجب أن يبدأ بـ https://)');return; }
+  if(!num||num<1||num>9){toast('الرقم يجب أن يكون بين 1 و 9');return;}
+  if(!title){toast('العنوان إلزامي، اكتب عنواناً للرابط');return;}
+  if(title.length<2){toast('العنوان قصير جداً');return;}
+  if(!url){toast('الرابط إلزامي، اكتب الرابط');return;}
+  try{ new URL(url); }catch(_){ toast('صيغة الرابط غير صحيحة (يجب أن يبدأ بـ https://)');return; }
 
   const exist=allLinks.find(l=>l.num===num);
   if(exist)allLinks=allLinks.filter(l=>l.id!==exist.id);
-  allLinks.push({id:Date.now(),num,label:title,desc,url,clicks:0});
+  allLinks.push({id:Date.now(),num,label:title,desc,url,featured,clicks:0});
 
   document.getElementById('linkNum').value='';
   document.getElementById('linkTitle').value='';
   document.getElementById('linkDesc').value='';
   document.getElementById('linkUrl').value='';
+  document.getElementById('linkFeatured').checked=false;
 
-  toast('💾 جاري الحفظ...');
+  toast('جاري الحفظ...');
   const ok=await saveField({links:allLinks});
-  if(ok)toast('✅ تمت إضافة الرابط!');
+  if(ok)toast('تمت إضافة الرابط!');
 }
 
 async function deleteLink(id,event){
@@ -659,9 +728,9 @@ async function deleteLink(id,event){
   const backup=allLinks;
   allLinks=allLinks.filter(l=>l.id!==id);
   renderRegistry();renderStats();
-  toast('💾 جاري الحذف...');
+  toast('جاري الحذف...');
   const ok=await saveField({links:allLinks});
-  if(ok)toast('✅ تم الحذف!');
+  if(ok)toast('تم الحذف!');
   else allLinks=backup;
 }
 
@@ -708,7 +777,7 @@ function renderSocials(){
           <div style="font-size:0.75rem;color:var(--muted);direction:ltr;text-align:right;word-break:break-all;">${s.url}</div>
         </div>
       </div>
-      <button class="btn-delete" onclick="deleteSocial('${s.id}')">🗑️</button>
+      <button class="btn-delete" onclick="deleteSocial('${s.id}')"></button>
     </div>
   `).join('');
 }
@@ -716,15 +785,15 @@ function renderSocials(){
 async function saveSocial(){
   const name=document.getElementById('socName').value.trim();
   const url=document.getElementById('socUrl').value.trim();
-  if(!name){toast('⚠️ اكتب اسم الحساب');return;}
-  if(!url){toast('⚠️ اكتب رابط الحساب');return;}
-  try{ new URL(url); }catch(_){ toast('⚠️ صيغة الرابط غير صحيحة');return; }
+  if(!name){toast('اكتب اسم الحساب');return;}
+  if(!url){toast('اكتب رابط الحساب');return;}
+  try{ new URL(url); }catch(_){ toast('صيغة الرابط غير صحيحة');return; }
 
   allSocials.push({id:Date.now()+'',name,url,icon:pendingSocIcon||''});
   closeSocialForm();
-  toast('💾 جاري الحفظ...');
+  toast('جاري الحفظ...');
   const ok=await saveField({socials:allSocials});
-  if(ok)toast('✅ تمت إضافة الحساب!');
+  if(ok)toast('تمت إضافة الحساب!');
 }
 
 async function deleteSocial(id){
@@ -732,47 +801,106 @@ async function deleteSocial(id){
   const backup=allSocials;
   allSocials=allSocials.filter(s=>s.id!==id);
   renderSocials();
-  toast('💾 جاري الحذف...');
+  toast('جاري الحذف...');
   const ok=await saveField({socials:allSocials});
-  if(ok)toast('✅ تم الحذف!');
+  if(ok)toast('تم الحذف!');
   else allSocials=backup;
 }
 
 // ========== التصميم (الغلاف والصورة الشخصية) ==========
+// ========== أداة قص الصور ==========
+let cropperInstance=null;
+let cropTargetType=null; // 'banner' أو 'avatar'
+
 function selectBanner(inp){
   const f=inp.files[0];
   if(!f)return;
-  if(f.size>2*1024*1024){toast('⚠️ الصورة كبيرة جداً (الحد الأقصى 2MB)');return;}
-  const r=new FileReader();
-  r.onload=async e=>{
-    user.bannerImage=e.target.result;
-    document.getElementById('bannerPreview').style.backgroundImage=`url(${user.bannerImage})`;
-    toast('💾 جاري الحفظ...');
-    const ok=await saveField({bannerImage:user.bannerImage});
-    if(ok)toast('✅ تم حفظ الغلاف!');
-  };
-  r.readAsDataURL(f);
+  if(f.size>5*1024*1024){toast('الصورة كبيرة جداً (الحد الأقصى 5MB)');inp.value='';return;}
+  cropTargetType='banner';
+  openCropper(f,3/1,'حدد منطقة صورة الغلاف');
 }
 
 function selectAvatar(inp){
   const f=inp.files[0];
   if(!f)return;
-  if(f.size>2*1024*1024){toast('⚠️ الصورة كبيرة جداً (الحد الأقصى 2MB)');return;}
-  const r=new FileReader();
-  r.onload=async e=>{
-    user.avatar=e.target.result;
-    document.getElementById('avatarPreview').innerHTML=`<img src="${user.avatar}" style="width:100%;height:100%;object-fit:cover;">`;
-    toast('💾 جاري الحفظ...');
-    const ok=await saveField({avatar:user.avatar});
-    if(ok)toast('✅ تم حفظ الصورة الشخصية!');
+  if(f.size>5*1024*1024){toast('الصورة كبيرة جداً (الحد الأقصى 5MB)');inp.value='';return;}
+  cropTargetType='avatar';
+  openCropper(f,1/1,'حدد منطقة الصورة الشخصية');
+}
+
+function openCropper(file,aspectRatio,title){
+  const reader=new FileReader();
+  reader.onload=e=>{
+    document.getElementById('cropTitle').textContent=title;
+    const img=document.getElementById('cropImage');
+    img.src=e.target.result;
+    document.getElementById('cropOverlay').classList.add('open');
+
+    if(cropperInstance){cropperInstance.destroy();cropperInstance=null;}
+
+    // ننتظر تحميل الصورة فعلياً بالـ DOM قبل تفعيل Cropper عليها
+    img.onload=()=>{
+      cropperInstance=new Cropper(img,{
+        aspectRatio:aspectRatio,
+        viewMode:1,
+        autoCropArea:1,
+        background:false,
+        responsive:true,
+      });
+    };
   };
-  r.readAsDataURL(f);
+  reader.readAsDataURL(file);
+}
+
+function cancelCrop(){
+  if(cropperInstance){cropperInstance.destroy();cropperInstance=null;}
+  document.getElementById('cropOverlay').classList.remove('open');
+  document.getElementById('cropImage').src='';
+  // نفرّغ حقل الملف عشان لو المستخدم يحاول يرفع نفس الملف مرة ثانية يشتغل onchange
+  if(cropTargetType==='banner')document.getElementById('bannerInput').value='';
+  if(cropTargetType==='avatar')document.getElementById('avatarInput').value='';
+  cropTargetType=null;
+}
+
+async function confirmCrop(){
+  if(!cropperInstance){toast('حدث خطأ بأداة القص');return;}
+
+  // نحدد دقة إخراج مناسبة: البنر عريض، الأفتار مربع صغير، عشان الحجم بقاعدة البيانات يبقى معقول
+  const outputWidth=cropTargetType==='banner'?900:400;
+  const canvas=cropperInstance.getCroppedCanvas({
+    width:outputWidth,
+    imageSmoothingQuality:'high',
+  });
+
+  const dataUrl=canvas.toDataURL('image/jpeg',0.85);
+
+  cropperInstance.destroy();
+  cropperInstance=null;
+  document.getElementById('cropOverlay').classList.remove('open');
+  document.getElementById('cropImage').src='';
+
+  if(cropTargetType==='banner'){
+    user.bannerImage=dataUrl;
+    document.getElementById('bannerPreview').style.backgroundImage=`url(${dataUrl})`;
+    document.getElementById('bannerInput').value='';
+    toast('جاري الحفظ...');
+    const ok=await saveField({bannerImage:dataUrl});
+    if(ok)toast('تم حفظ الغلاف!');
+  }else if(cropTargetType==='avatar'){
+    user.avatar=dataUrl;
+    document.getElementById('avatarPreview').innerHTML=`<img src="${dataUrl}" style="width:100%;height:100%;object-fit:cover;">`;
+    document.getElementById('avatarInput').value='';
+    toast('جاري الحفظ...');
+    const ok=await saveField({avatar:dataUrl});
+    if(ok)toast('تم حفظ الصورة الشخصية!');
+  }
+  cropTargetType=null;
 }
 
 async function saveDesign(){
-  toast('💾 جاري الحفظ...');
+  toast('جاري الحفظ...');
   const ok=await saveField({bannerImage:user.bannerImage||'',avatar:user.avatar||''});
-  if(ok)toast('✅ تم حفظ التصميم!');
+  if(ok)toast('تم حفظ التصميم!');
 }
 
 // ========== الملف الشخصي ==========
@@ -782,11 +910,11 @@ async function saveProfile(){
   const bio=document.getElementById('pfBio').value.trim();
   const location=document.getElementById('pfLocation').value.trim();
 
-  toast('💾 جاري الحفظ...');
+  toast('جاري الحفظ...');
   const ok=await saveField({displayName,phone,bio,location});
   if(ok){
     user.displayName=displayName;user.phone=phone;user.bio=bio;user.location=location;
-    toast('✅ تم حفظ ملفك الشخصي!');
+    toast('تم حفظ ملفك الشخصي!');
   }
 }
 
@@ -832,7 +960,7 @@ function logout(){
     localStorage.removeItem('elUserUsername');
     window.location.href='index.html';
   }).catch(e=>{
-    toast('❌ خطأ بتسجيل الخروج: '+e.message);
+    toast('خطأ بتسجيل الخروج: '+e.message);
   });
 }
 </script>
