@@ -37,7 +37,10 @@ nav{
   background-size:cover;background-position:center;
 }
 
-.avatar-container{position:relative;z-index:10;margin-bottom:-60px;}
+.avatar-container{
+  position:relative;z-index:10;margin-top:-60px;margin-bottom:10px;
+  display:flex;justify-content:center;
+}
 
 .avatar-circle{
   width:120px;height:120px;border-radius:50%;background:var(--surface);
@@ -49,7 +52,7 @@ nav{
 .avatar-circle img{width:100%;height:100%;object-fit:cover;}
 
 /* ========== CONTENT ========== */
-.content{padding:70px 24px 30px;max-width:500px;margin:0 auto;}
+.content{padding:0 24px 30px;max-width:500px;margin:0 auto;}
 
 .profile-info{text-align:center;margin-bottom:30px;}
 .profile-name{font-size:1.6rem;font-weight:900;margin-bottom:6px;}
@@ -138,7 +141,7 @@ td{border-bottom:1px solid var(--border);color:var(--text2);}
 .loading{text-align:center;padding:60px 20px;}
 
 @media(max-width:600px){
-  .content{padding:60px 16px 20px;}
+  .content{padding:0 16px 20px;}
   .hero-banner{height:200px;}
   .avatar-circle{width:100px;height:100px;font-size:2.2rem;}
   .profile-name{font-size:1.4rem;}
@@ -152,18 +155,16 @@ td{border-bottom:1px solid var(--border);color:var(--text2);}
 
 <nav>
   <a href="index.html" class="logo">electrwni<em>.link</em></a>
-  <button class="logout-btn" onclick="window.location.href='dashboard.html'">⚙️ لوحة التحكم</button>
+  <button class="logout-btn" onclick="window.location.href='dashboard.html'">لوحة التحكم</button>
 </nav>
 
-<div class="hero-banner" id="heroBanner">
-  <div class="avatar-container">
-    <div class="avatar-circle" id="avatar">-</div>
-  </div>
+<div class="hero-banner" id="heroBanner"></div>
+<div class="avatar-container">
+  <div class="avatar-circle" id="avatar">-</div>
 </div>
 
 <div class="content" id="content">
   <div class="loading">
-    <div style="font-size:2rem;">⏳</div>
     <p style="margin-top:12px;color:var(--muted);">جاري التحميل...</p>
   </div>
 </div>
@@ -188,10 +189,21 @@ function getUsername(){
 }
 
 function arabicToEnglish(s){
-  const ar=['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
-  const en=['0','1','2','3','4','5','6','7','8','9'];
-  let r=s;
-  ar.forEach((a,i)=>{r=r.replaceAll(a,en[i]);});
+  // يحوّل أي رقم مكتوب بأي نظام عددي (عربي، فارسي/أردو، هندي، بنغالي... إلخ) إلى أرقام إنجليزية 0-9
+  let r='';
+  for(const ch of s){
+    const code=ch.codePointAt(0);
+    // أرقام عربية-هندية (٠-٩): U+0660–U+0669
+    if(code>=0x0660&&code<=0x0669){r+=String(code-0x0660);continue;}
+    // أرقام فارسية/أردو (۰-۹): U+06F0–U+06F9
+    if(code>=0x06F0&&code<=0x06F9){r+=String(code-0x06F0);continue;}
+    // أرقام هندية ديفاناغاري (٠-९): U+0966–U+096F
+    if(code>=0x0966&&code<=0x096F){r+=String(code-0x0966);continue;}
+    // أرقام بنغالية: U+09E6–U+09EF
+    if(code>=0x09E6&&code<=0x09EF){r+=String(code-0x09E6);continue;}
+    // إنجليزية بالفعل أو أي حرف آخر، يُترك كما هو
+    r+=ch;
+  }
   return r;
 }
 
@@ -306,9 +318,9 @@ function render(user){
     </div>
 
     <div class="input-section">
-      <input class="input-box" type="tel" id="numIn" placeholder="أكتب الرقم" maxlength="1" inputmode="none" oninput="convertNum()">
+      <input class="input-box" type="text" id="numIn" placeholder="أكتب الرقم" maxlength="1" inputmode="text" oninput="convertNum()">
       <button class="btn-go" onclick="goNav()">أذهب الآن</button>
-      <div class="error-msg" id="errMsg">❌ الرقم غير موجود</div>
+      <div class="error-msg" id="errMsg">الرقم غير موجود</div>
       <div class="quick-buttons">${quickBtns}</div>
     </div>
 
@@ -317,21 +329,21 @@ function render(user){
     <div class="stat-row">
       <div class="stat-box">
         <div class="stat-num">${topLink?topLink.label:'-'}</div>
-        <div class="stat-label">🔥 أعلى رابط</div>
+        <div class="stat-label">أعلى رابط</div>
       </div>
       <div class="stat-box">
         <div class="stat-num">${thisMonth}</div>
-        <div class="stat-label">📅 نشط هذا الشهر</div>
+        <div class="stat-label">نشط هذا الشهر</div>
       </div>
     </div>
     <div class="stat-row">
       <div class="stat-box">
         <div class="stat-num">${lastAdded?lastAdded.label:'-'}</div>
-        <div class="stat-label">✨ آخر إضافة</div>
+        <div class="stat-label">آخر إضافة</div>
       </div>
       <div class="stat-box">
         <div class="stat-num">${userLinks.length}</div>
-        <div class="stat-label">📊 عدد الروابط</div>
+        <div class="stat-label">عدد الروابط</div>
       </div>
     </div>
 
@@ -366,7 +378,6 @@ function goNav(){
 function show404(msg){
   document.getElementById('content').innerHTML=`
     <div class="empty-state" style="padding:80px 20px;">
-      <div style="font-size:3rem;margin-bottom:20px;">❌</div>
       <h2 style="font-weight:900;margin-bottom:10px;font-size:1.2rem;">${msg}</h2>
       <a href="index.html" style="display:inline-block;margin-top:20px;padding:10px 24px;background:var(--accent);color:#fff;border-radius:8px;text-decoration:none;font-weight:700;">العودة للرئيسية</a>
     </div>
