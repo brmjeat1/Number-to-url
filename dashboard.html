@@ -228,9 +228,16 @@ tr:hover{background:var(--bg2);}
 <div class="topbar">
   <div class="topbar-brand">electrwni.link</div>
   <div class="topbar-btns">
-    <button class="btn btn-white" onclick="window.location.href='page.html'">👁 صفحتك</button>
-    <button class="btn btn-logout" onclick="logout()">🚪 خروج</button>
+    <button class="btn btn-white" id="viewPageBtn" onclick="openMyPage()">صفحتك</button>
+    <button class="btn btn-logout" onclick="logout()">خروج</button>
   </div>
+</div>
+
+<!-- ========== شريط الرابط الكامل ========== -->
+<div id="linkBar" style="background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;">
+  <span style="font-size:0.85rem;color:var(--text2);">رابط صفحتك:</span>
+  <span id="myFullLink" dir="ltr" style="font-family:'Space Mono',monospace;font-size:0.85rem;color:var(--primary);font-weight:700;direction:ltr;">—</span>
+  <button class="btn btn-white" style="color:var(--primary);border:1px solid var(--border);" onclick="copyMyLink()">نسخ الرابط</button>
 </div>
 
 <!-- ========== CONTAINER ========== -->
@@ -250,7 +257,7 @@ tr:hover{background:var(--bg2);}
     <!-- Box 1: Add Link -->
     <div class="expandable">
       <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
-        <div class="expandable-title"><div class="expandable-icon">➕</div><span>أضف رابط</span></div>
+        <div class="expandable-title"><div class="expandable-icon">+</div><span>أضف رابط</span></div>
         <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content" style="display:block;">
@@ -279,7 +286,7 @@ tr:hover{background:var(--bg2);}
     <!-- Box 2: Links Registry -->
     <div class="expandable">
       <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
-        <div class="expandable-title"><div class="expandable-icon">📋</div><span>سجل الروابط</span></div>
+        <div class="expandable-title"><div class="expandable-icon">س</div><span>سجل الروابط</span></div>
         <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content" style="display:block;">
@@ -294,7 +301,7 @@ tr:hover{background:var(--bg2);}
   <div class="page" id="page-socials">
     <div class="expandable">
       <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
-        <div class="expandable-title"><div class="expandable-icon">🌐</div><span>حساباتي</span></div>
+        <div class="expandable-title"><div class="expandable-icon">ح</div><span>حساباتي</span></div>
         <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content" style="display:block;">
@@ -331,7 +338,7 @@ tr:hover{background:var(--bg2);}
   <div class="page" id="page-design">
     <div class="expandable">
       <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
-        <div class="expandable-title"><div class="expandable-icon">🎨</div><span>تصميم صفحتك</span></div>
+        <div class="expandable-title"><div class="expandable-icon">T</div><span>تصميم صفحتك</span></div>
         <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content" style="display:block;">
@@ -356,7 +363,7 @@ tr:hover{background:var(--bg2);}
   <div class="page" id="page-profile">
     <div class="expandable">
       <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
-        <div class="expandable-title"><div class="expandable-icon">👤</div><span>بيانات ملفي</span></div>
+        <div class="expandable-title"><div class="expandable-icon">م</div><span>بيانات ملفي</span></div>
         <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content" style="display:block;">
@@ -393,7 +400,7 @@ tr:hover{background:var(--bg2);}
   <div class="page" id="page-stats">
     <div class="expandable">
       <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
-        <div class="expandable-title"><div class="expandable-icon">📊</div><span>إحصائيات</span></div>
+        <div class="expandable-title"><div class="expandable-icon">إ</div><span>إحصائيات</span></div>
         <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content" style="display:block;">
@@ -486,6 +493,7 @@ async function loadUserData(){
     allSocials=user.socials||[];
 
     document.getElementById('pfUser').value=user.username||'';
+    document.getElementById('myFullLink').textContent='electrwni.link/page.html#'+user.username;
     document.getElementById('pfEmail').value=user.email||'';
     document.getElementById('pfName').value=user.displayName||'';
     document.getElementById('pfPhone').value=user.phone||'';
@@ -783,6 +791,41 @@ async function saveProfile(){
 }
 
 // ========== تسجيل الخروج الحقيقي ==========
+function openMyPage(){
+  if(!user||!user.username){toast('جاري التحميل، حاول بعد لحظة');return;}
+  window.open('page.html#'+user.username,'_blank');
+}
+
+function copyMyLink(){
+  if(!user||!user.username){toast('جاري التحميل، حاول بعد لحظة');return;}
+  const link='https://electrwni.link/page.html#'+user.username;
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(link).then(()=>{
+      toast('تم نسخ الرابط');
+    }).catch(()=>{
+      fallbackCopy(link);
+    });
+  }else{
+    fallbackCopy(link);
+  }
+}
+
+function fallbackCopy(text){
+  const ta=document.createElement('textarea');
+  ta.value=text;
+  ta.style.position='fixed';
+  ta.style.opacity='0';
+  document.body.appendChild(ta);
+  ta.select();
+  try{
+    document.execCommand('copy');
+    toast('تم نسخ الرابط');
+  }catch(e){
+    toast('تعذر النسخ، انسخه يدوياً: '+text);
+  }
+  document.body.removeChild(ta);
+}
+
 function logout(){
   if(!confirm('هل تريد تسجيل الخروج؟'))return;
   auth.signOut().then(()=>{
