@@ -8,7 +8,7 @@
 <style>
 :root{
   --bg:#ffffff;--surface:#f9f9f9;--border:#e8ecf5;
-  --accent:#3d5af1;--accent2:#c9a961;--text:#0f1535;--text2:#3a4270;--muted:#9aa2c8;
+  --accent:#3d5af1;--accent2:#f5c518;--text:#0f1535;--text2:#3a4270;--muted:#9aa2c8;
 }
 
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -44,7 +44,7 @@ nav{
 
 .avatar-circle{
   width:120px;height:120px;border-radius:50%;background:var(--surface);
-  border:6px solid var(--accent2);display:flex;align-items:center;justify-content:center;
+  border:6px solid transparent;display:flex;align-items:center;justify-content:center;
   color:var(--accent);font-weight:900;font-size:2.6rem;overflow:hidden;
   box-shadow:0 10px 40px rgba(0,0,0,0.15);
 }
@@ -107,28 +107,47 @@ nav{
 .social-btn:active{transform:scale(0.92);}
 .social-btn img{width:100%;height:100%;object-fit:cover;}
 
-/* ========== ANALYTICS ========== */
-.stat-row{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:30px;}
+/* ========== اخترنا لك / آخر روابط (مربعان فقط) ========== */
+.pick-row{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:20px;}
 
-.stat-box{
+.pick-box{
   background:linear-gradient(135deg,#3d5af1,#6c8fff);border-radius:12px;
-  padding:18px;text-align:center;color:#fff;
+  padding:16px;color:#fff;display:flex;flex-direction:column;gap:8px;
 }
 
-.stat-num{font-size:1.6rem;font-weight:900;margin-bottom:4px;}
-.stat-label{font-size:0.8rem;font-weight:700;opacity:0.9;}
+.pick-title{font-size:0.9rem;font-weight:900;margin-bottom:4px;}
 
-/* ========== LINKS TABLE ========== */
-.table-title{font-size:1rem;font-weight:900;color:var(--text);margin-bottom:12px;text-align:center;}
+.pick-list{display:flex;flex-direction:column;gap:6px;}
 
-table{width:100%;border-collapse:collapse;background:var(--surface);border-radius:12px;overflow:hidden;}
+.pick-item{
+  background:rgba(255,255,255,0.15);border-radius:8px;padding:8px 10px;
+  color:#fff;text-decoration:none;font-size:0.8rem;font-weight:700;
+  display:block;transition:background .15s;
+}
+.pick-item:active{background:rgba(255,255,255,0.3);}
 
-th,td{padding:12px 10px;text-align:center;font-size:0.85rem;}
+.registry-toggle{
+  margin-top:6px;background:#fff;color:var(--accent);border:none;border-radius:8px;
+  padding:8px;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif;
+}
+.registry-toggle:active{transform:scale(0.97);}
 
-th{background:linear-gradient(135deg,#3d5af1,#6c8fff);color:#fff;font-weight:900;}
-td{border-bottom:1px solid var(--border);color:var(--text2);}
+/* ========== سجل الروابط (شبكة متجاورة) ========== */
+.registry-section{margin-bottom:20px;}
 
-.link-num{font-weight:900;color:var(--accent);font-family:'Space Mono',monospace;}
+.registry-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;
+}
+
+.registry-item{
+  background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  padding:12px 8px;text-align:center;text-decoration:none;color:var(--text);
+  display:flex;flex-direction:column;align-items:center;gap:4px;transition:transform .15s;
+}
+.registry-item:active{transform:scale(0.95);}
+
+.registry-num{font-weight:900;color:var(--accent);font-family:'Space Mono',monospace;font-size:0.95rem;}
+.registry-label{font-size:0.75rem;color:var(--text2);word-break:break-word;}
 
 /* ========== FOOTER ========== */
 .footer{text-align:center;font-size:0.8rem;color:var(--muted);padding:20px 0;border-top:1px solid var(--border);margin-top:30px;}
@@ -278,7 +297,7 @@ function render(user){
   let socialsHtml='';
   if(socials.length){
     socialsHtml=`
-      <div class="section-title">حساباتي</div>
+      <div class="section-title">تواصل معنا</div>
       <div class="socials-box">
         ${socials.map(s=>`
           <a href="${s.url}" target="_blank" class="social-btn" title="${s.name}">
@@ -289,22 +308,25 @@ function render(user){
     `;
   }
   
-  // Analytics
-  const topLink=userLinks.reduce((a,b)=>(a&&a.clicks||0)>(b.clicks||0)?a:b,userLinks[0]||null);
-  const thisMonth=userLinks.filter(l=>(l.clicks||0)>5).length;
-  const lastAdded=userLinks[userLinks.length-1];
+  // اخترنا لك: الروابط اللي حددها المستخدم يدوياً بالداشبورد (featured:true)
+  const featuredLinks=userLinks.filter(l=>l.featured);
+  const recentLinks=[...userLinks].slice(-5).reverse();
+
+  const featuredHtml=featuredLinks.length
+    ? featuredLinks.map(l=>`<a href="${l.url}" target="_blank" class="pick-item">${l.label}</a>`).join('')
+    : '<div class="empty-state" style="padding:14px;">لم يتم اختيار روابط بعد</div>';
+
+  const recentHtml=recentLinks.length
+    ? recentLinks.map(l=>`<a href="${l.url}" target="_blank" class="pick-item">${l.label}</a>`).join('')
+    : '<div class="empty-state" style="padding:14px;">لا توجد روابط بعد</div>';
   
   // Links table
   let tableHtml='';
   if(userLinks.length){
     tableHtml=`
-      <div class="table-title">جميع الروابط</div>
-      <table>
-        <thead><tr><th>الرقم</th><th>العنوان</th><th>الضغطات</th></tr></thead>
-        <tbody>
-          ${userLinks.map(l=>`<tr><td class="link-num">${l.num}</td><td>${l.label}</td><td>${l.clicks||0}</td></tr>`).join('')}
-        </tbody>
-      </table>
+      <div class="registry-grid">
+        ${userLinks.map(l=>`<a href="${l.url}" target="_blank" class="registry-item"><span class="registry-num">${l.num}</span><span class="registry-label">${l.label}</span></a>`).join('')}
+      </div>
     `;
   }else{
     tableHtml='<div class="empty-state">لا توجد روابط بعد</div>';
@@ -324,38 +346,39 @@ function render(user){
       <div class="quick-buttons">${quickBtns}</div>
     </div>
 
+    <div class="pick-row">
+      <div class="pick-box">
+        <div class="pick-title">اخترنا لك</div>
+        <div class="pick-list">${featuredHtml}</div>
+      </div>
+      <div class="pick-box">
+        <div class="pick-title">آخر روابط</div>
+        <div class="pick-list">${recentHtml}</div>
+        <button class="registry-toggle" onclick="toggleRegistry()" id="registryToggleBtn">سجل الروابط</button>
+      </div>
+    </div>
+
+    <div class="registry-section" id="registrySection" style="display:none;">
+      ${tableHtml}
+    </div>
+
     ${socialsHtml}
 
-    <div class="stat-row">
-      <div class="stat-box">
-        <div class="stat-num">${topLink?topLink.label:'-'}</div>
-        <div class="stat-label">أعلى رابط</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-num">${thisMonth}</div>
-        <div class="stat-label">نشط هذا الشهر</div>
-      </div>
-    </div>
-    <div class="stat-row">
-      <div class="stat-box">
-        <div class="stat-num">${lastAdded?lastAdded.label:'-'}</div>
-        <div class="stat-label">آخر إضافة</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-num">${userLinks.length}</div>
-        <div class="stat-label">عدد الروابط</div>
-      </div>
-    </div>
-
-    ${tableHtml}
-
-    <div class="footer">بواسطة <a href="index.html">electrwni.link</a> • 2026</div>
+    <div class="footer">بنية بمعمارية عالية الأداء بواسطة: إلكتروني electrwni — الكويت، 2026</div>
   `;
 }
 
 function convertNum(){
   const inp=document.getElementById('numIn');
   inp.value=arabicToEnglish(inp.value);
+}
+
+function toggleRegistry(){
+  const sec=document.getElementById('registrySection');
+  const btn=document.getElementById('registryToggleBtn');
+  const isOpen=sec.style.display!=='none';
+  sec.style.display=isOpen?'none':'block';
+  btn.textContent=isOpen?'سجل الروابط':'إخفاء السجل';
 }
 
 function quickGo(n){
