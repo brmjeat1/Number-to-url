@@ -103,6 +103,19 @@ function showSuccess(msg){
   el.classList.add('show');
 }
 
+function showSignupSuccess(username){
+  const el=document.getElementById('success');
+  document.getElementById('error').classList.remove('show');
+  const link='electrwni.link/page.html#'+username;
+  el.innerHTML=
+    'تم إنشاء حسابك. افتح بريدك الإلكتروني واضغط رابط التحقق، ثم سجل دخولك.'+
+    '<div style="margin-top:10px;padding:10px;background:#fff;border-radius:8px;border:1px solid #cfc;">'+
+    '<div style="font-size:0.8rem;color:#3a4270;margin-bottom:4px;">رابط صفحتك الشخصية:</div>'+
+    '<div dir="ltr" style="font-family:\'Space Mono\',monospace;font-weight:700;word-break:break-all;">'+link+'</div>'+
+    '</div>';
+  el.classList.add('show');
+}
+
 function setLoading(loading){
   const btn=document.getElementById('submitBtn');
   btn.disabled=loading;
@@ -168,7 +181,7 @@ async function signup(){
     // 6. تسجيل الخروج فوراً لإجبار التحقق من البريد قبل أول دخول
     await auth.signOut();
 
-    showSuccess('✅ تم إنشاء حسابك! افتح بريدك الإلكتروني واضغط رابط التحقق، ثم سجل دخولك.');
+    showSignupSuccess(username);
     document.querySelector('form').reset();
     setLoading(false);
 
