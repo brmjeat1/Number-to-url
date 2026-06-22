@@ -1,391 +1,164 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم الإدارية | electrwni</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Tajawal', sans-serif; background-color: #f4f7f6; color: #333; padding: 20px; }
-        .container { max-width: 1000px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-        
-        /* الهيدر العلوي */
-        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eceff1; padding-bottom: 20px; margin-bottom: 30px; }
-        .header h1 { font-size: 1.8rem; font-weight: 900; color: #1d3557; }
-        .user-badge { background: #3a86ff; color: #fff; padding: 6px 15px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; }
-        
-        /* قسم إدارة الهوية الجديد */
-        .profile-settings-card { background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 12px; padding: 20px; margin-bottom: 30px; }
-        .profile-settings-card h2 { font-size: 1.2rem; font-weight: 700; color: #1d3557; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
-        .grid-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
-        .form-group { display: flex; flex-direction: column; gap: 5px; }
-        .form-group label { font-size: 0.85rem; font-weight: 700; color: #495057; }
-        .form-group input { height: 42px; border: 2px solid #ced4da; border-radius: 8px; padding: 0 10px; font-family: 'Tajawal', sans-serif; font-size: 0.95rem; outline: none; transition: border-color 0.2s; }
-        .form-group input:focus { border-color: #3a86ff; }
-        
-        /* أزرار التحكم الفورية */
-        .btn-flex { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
-        .btn { height: 45px; padding: 0 20px; border: none; border-radius: 8px; font-family: 'Tajawal', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: opacity 0.2s; }
-        .btn:hover { opacity: 0.9; }
-        .btn-primary { background: #3a86ff; color: white; }
-        .btn-success { background: #2a9d8f; color: white; }
-        .btn-danger { background: #e63946; color: white; }
-        .btn-secondary { background: #6c757d; color: white; }
-        
-        /* جدول عرض البيانات الحالي */
-        .table-wrapper { overflow-x: auto; margin-top: 20px; }
-        table { width: 100%; border-collapse: collapse; text-align: right; }
-        th, td { padding: 12px 15px; border-bottom: 1px solid #e9ecef; }
-        th { background: #1d3557; color: white; font-weight: 700; }
-        tr:hover { background: #f8f9fa; }
-        .action-link { color: #3a86ff; text-decoration: none; font-weight: 700; }
-        
-        /* النافذة المنبثقة للتعديل وإضافة الروابط */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
-        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 100%; max-width: 500px; position: relative; }
-        .close-modal { position: absolute; top: 15px; left: 15px; cursor: pointer; font-size: 1.5rem; font-weight: 900; color: #6c757d; }
-    </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>لوحة الإدارة — electrwni.link</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f0f4ff;--text:#0f1535;--text2:#3a4270;--accent:#3d5af1;--accent2:#c9a961;--border:rgba(100,130,255,0.18);--surface:#ffffff;--muted:#7b84b0;--error:#e8436a;}
+[data-theme="dark"]{--bg:#050810;--text:#e8eeff;--text2:#a0aad0;--accent:#6c8fff;--accent2:#d9c08a;--border:rgba(100,130,255,0.16);--surface:rgba(12,18,45,0.9);--muted:#5a6490;--error:#ff6584;}
+*{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation;}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+nav{display:flex;justify-content:space-between;align-items:center;padding:16px 40px;border-bottom:1px solid var(--border);background:var(--surface);}
+.logo{font-family:'Space Mono',monospace;font-size:1.1rem;color:var(--accent);text-decoration:none;font-weight:700;}
+.logo em{color:var(--accent2);}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.btn{padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;font-size:0.85rem;transition:transform .15s;}
+.btn:active{transform:scale(0.96);}
+.btn-primary{background:var(--accent);color:#fff;}
+.container{max-width:1200px;margin:0 auto;padding:40px 20px;}
+h1{font-size:2rem;margin-bottom:10px;}
+.subtitle{color:var(--muted);margin-bottom:30px;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:40px;}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;}
+.stat-num{font-size:2rem;font-weight:900;color:var(--accent);}
+.stat-label{color:var(--muted);font-size:0.85rem;margin-top:6px;}
+.search-box{margin-bottom:20px;}
+input{width:100%;max-width:400px;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'Tajawal',sans-serif;background:var(--surface);color:var(--text);outline:none;}
+input:focus{border-color:var(--accent);}
+table{width:100%;border-collapse:collapse;background:var(--surface);border-radius:12px;overflow:hidden;border:1px solid var(--border);}
+th,td{padding:14px;text-align:right;border-bottom:1px solid var(--border);}
+th{font-weight:900;background:rgba(100,130,255,0.08);}
+tr:last-child td{border:none;}
+.user-link{color:var(--accent);text-decoration:none;font-weight:700;}
+.badge{display:inline-block;padding:4px 10px;border-radius:100px;font-size:0.75rem;font-weight:700;}
+.badge-ok{background:rgba(10,184,122,0.2);color:#0ab87a;}
+.footer{text-align:center;color:var(--muted);font-size:0.8rem;margin-top:60px;padding-top:20px;border-top:1px solid var(--border);}
+</style>
 </head>
 <body>
+<nav>
+  <a href="index.html" class="logo">electrwni<em>.link</em></a>
+  <div class="nav-right">
+    <button class="btn btn-primary" onclick="logout()">خروج</button>
+  </div>
+</nav>
 
 <div class="container">
-    <div class="header">
-        <h1>electrwni | لوحة الإدارة الذكية</h1>
-        <div class="user-badge" id="userDisplay">جاري التحقق...</div>
-    </div>
+  <h1>لوحة الإدارة</h1>
+  <p class="subtitle">إدارة المستخدمين والإحصائيات</p>
 
-    <div class="profile-settings-card">
-        <h2>⚙️ إعدادات الهوية والـ Bio الخاص بجمهورك</h2>
-        <div class="grid-inputs">
-            <div class="form-group">
-                <label>اسم العرض بالموقع</label>
-                <input type="text" id="profileNameInput" placeholder="مثال: خالد الهذال">
-            </div>
-            <div class="form-group">
-                <label>رابط صورة الأفاتار الشخصية</label>
-                <input type="url" id="avatarUrlInput" placeholder="https://domain.com/image.jpg">
-            </div>
-            <div class="form-group">
-                <label>رابط حساب إنستغرام</label>
-                <input type="url" id="instagramInput" placeholder="https://instagram.com/username">
-            </div>
-            <div class="form-group">
-                <label>رابط قناة تليغرام</label>
-                <input type="url" id="telegramInput" placeholder="https://t.me/username">
-            </div>
-            <div class="form-group">
-                <label>رابط حساب سناب شات</label>
-                <input type="url" id="snapchatInput" placeholder="https://snapchat.com/add/username">
-            </div>
-        </div>
-        <button class="btn btn-success" onclick="saveProfileSettings()">💾 حفظ إعدادات الهوية والبايو</button>
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num" id="totalUsers">0</div>
+      <div class="stat-label">المستخدمين</div>
     </div>
-
-    <div class="btn-flex">
-        <button class="btn btn-primary" onclick="openLinkModal(false)">➕ إضافة رقم ورابط جديد</button>
-        <button class="btn btn-secondary" onclick="printPDFReport()">🖨️ طباعة تقرير PDF</button>
-        <button class="btn btn-danger" onclick="adminLogout()">🚪 تسجيل الخروج</button>
-        <button class="btn btn-danger" style="background:#b70918;" onclick="deleteAccountPermanently()">🚨 حذف الحساب نهائياً</button>
+    <div class="stat">
+      <div class="stat-num" id="totalLinks">0</div>
+      <div class="stat-label">الروابط</div>
     </div>
-
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th>الرقم الكودي</th>
-                    <th>الرابط المستهدف</th>
-                    <th>الوصف</th>
-                    <th>الزيارات</th>
-                    <th>الإجراءات</th>
-                </tr>
-            </thead>
-            <tbody id="linksTableBody">
-                <tr>
-                    <td colspan="5" style="text-align:center;">جاري تحميل الروابط المسجلة...</td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="stat">
+      <div class="stat-num" id="totalClicks">0</div>
+      <div class="stat-label">الضغطات</div>
     </div>
-</div>
+  </div>
 
-<div class="modal" id="linkModal" onclick="closeModalOnOutsideClick(event)">
-    <div class="modal-content">
-        <span class="close-modal" onclick="closeLinkModal()">&times;</span>
-        <h3 id="modalTitle" style="margin-bottom:20px; font-weight:900; color:#1d3557;">إضافة كود تحويل جديد</h3>
-        
-        <div class="form-group" style="margin-bottom:15px;">
-            <label>الرقم الكودي المباشر</label>
-            <input type="number" id="linkCodeInput" placeholder="مثال: 501" inputmode="numeric">
-        </div>
-        <div class="form-group" style="margin-bottom:15px;">
-            <label>رابط التوجيه (URL)</label>
-            <input type="url" id="linkUrlInput" placeholder="https://example.com" dir="ltr">
-        </div>
-        <div class="form-group" style="margin-bottom:20px;">
-            <label>وصف الرابط (اختياري)</label>
-            <input type="text" id="linkDescInput" placeholder="وصف مقتضب للرابط">
-        </div>
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="البحث عن مستخدم..." oninput="filterUsers()">
+  </div>
 
-        <div style="display:flex; gap:10px;">
-            <button class="btn btn-primary" id="saveLinkBtn" onclick="submitLinkData()">حفظ البيانات</button>
-            <button class="btn btn-danger" id="deleteLinkBtn" style="display:none;" onclick="removeSingleLink()">حذف الكود</button>
-        </div>
-    </div>
+  <table>
+    <thead>
+      <tr>
+        <th>المستخدم</th>
+        <th>الاسم</th>
+        <th>البريد</th>
+        <th>الروابط</th>
+        <th>الضغطات</th>
+        <th>التاريخ</th>
+        <th>الحالة</th>
+      </tr>
+    </thead>
+    <tbody id="usersList"></tbody>
+  </table>
+
+  <div class="footer">
+    <p>© 2026 electrwni.link Admin Panel</p>
+  </div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 <script>
-// إعدادات البيئة لـ Firebase المعتمدة لمشروعك electrwni-link
-const firebaseConfig = {
-  apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
-  authDomain: "electrwni-link.firebaseapp.com",
-  projectId: "electrwni-link",
-  storageBucket: "electrwni-link.firebasestorage.app",
-  messagingSenderId: "712490301263",
-  appId: "1:712490301263:web:2084210da3f687285ab73a",
-  databaseURL: "https://electrwni-link-default-rtdb.firebaseio.com/"
-};
+const firebaseConfig={apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",authDomain:"electrwni-link.firebaseapp.com",projectId:"electrwni-link",storageBucket:"electrwni-link.firebasestorage.app",messagingSenderId:"712490301263",appId:"1:712490301263:web:2084210da3f687285ab73a"};
+if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth();
+const db=firebase.firestore();
 
-if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-const rtdb = firebase.database();
-const auth = firebase.auth();
+const ADMIN_PASS='Electrwni@2026!';
+let allUsers=[];
 
-let currentUsername = "";
-let allLinksArray = [];
-let editingIndex = -1;
-
-// 1. مراقبة حالة تسجيل الدخول وتأمين الصفحة
-auth.onAuthStateChanged(user => {
-    if (user) {
-        currentUsername = user.displayName || user.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '');
-        document.getElementById('userDisplay').innerText = `مرحباً: ${currentUsername.toUpperCase()}`;
-        fetchProfileAndLinks();
-    } else {
-        alert("🔒 يرجى تسجيل الدخول للوصول إلى لوحة الإدارة.");
-        window.location.href = "login.html";
-    }
-});
-
-// 2. جلب بيانات الهوية والروابط معاً من قاعدة البيانات
-function fetchProfileAndLinks() {
-    rtdb.ref(`links/${currentUsername}`).on('value', snapshot => {
-        const data = snapshot.val();
-        const tbody = document.getElementById('linksTableBody');
-        tbody.innerHTML = "";
-        allLinksArray = [];
-
-        if (data) {
-            // ملء حقول الهوية بأعلى اللوحة إذا كانت مسجلة مسبقاً
-            document.getElementById('profileNameInput').value = data.displayName || "";
-            document.getElementById('avatarUrlInput').value = data.avatarUrl || "";
-            document.getElementById('instagramInput').value = data.instagram || "";
-            document.getElementById('telegramInput').value = data.telegram || "";
-            document.getElementById('snapchatInput').value = data.snapchat || "";
-
-            // معالجة الروابط وعرضها بالجدول
-            if (data.links) {
-                if (Array.isArray(data.links)) {
-                    allLinksArray = data.links;
-                } else {
-                    // تحويل الكائن إلى مصفوفة للمرونة في التعامل
-                    for (let key in data.links) {
-                        if(data.links[key]) {
-                            allLinksArray[key] = data.links[key];
-                        }
-                    }
-                }
-            }
-        }
-
-        const validItems = allLinksArray.filter(item => item !== null && item !== undefined);
-        if (validItems.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">لا توجد أكواد أو روابط مسجلة حالياً. قم بإضافة الكود الأول الخاص بك!</td></tr>`;
-            return;
-        }
-
-        allLinksArray.forEach((item, index) => {
-            if (!item) return;
-            const code = item.number || item.code || "-";
-            const url = item.url || item.link || "";
-            const desc = item.description || item.desc || "بلا وصف";
-            const clicks = item.clicks || 0;
-
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td style="font-weight:900; color:#3a86ff;">${code}</td>
-                <td dir="ltr" style="max-width:250px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${url}</td>
-                <td>${desc}</td>
-                <td style="font-weight:700; color:#2a9d8f;">${clicks}</td>
-                <td>
-                    <a href="#" class="action-link" style="margin-left:12px;" onclick="openLinkModal(true, ${index})">تعديل</a>
-                    <a href="${url}" target="_blank" class="action-link" style="color:#1d3557;">اذهب</a>
-                </td>
-            `;
-            tbody.appendChild(tr);
-        });
-    });
+async function checkAuth(){
+  const pass=prompt('كلمة المرور:');
+  if(pass!==ADMIN_PASS){alert('كلمة المرور خاطئة');window.location.href='index.html';return;}
+  loadData();
 }
 
-// 3. دالة حفظ الملف الشخصي وتحديث الهوية لتنعكس فوراً على صفحة بايو المتابعين
-function saveProfileSettings() {
-    const name = document.getElementById('profileNameInput').value.trim();
-    const avatar = document.getElementById('avatarUrlInput').value.trim();
-    const insta = document.getElementById('instagramInput').value.trim();
-    const tele = document.getElementById('telegramInput').value.trim();
-    const snap = document.getElementById('snapchatInput').value.trim();
-
-    const updates = {
-        displayName: name,
-        avatarUrl: avatar,
-        instagram: insta,
-        telegram: tele,
-        snapchat: snap
-    };
-
-    rtdb.ref(`links/${currentUsername}`).update(updates).then(() => {
-        alert("✅ تم حفظ إعدادات الهوية والـ Bio بنجاح، ستنعكس التحديثات مباشرة على صفحة الجمهور!");
-    }).catch(err => alert("❌ فشل حفظ الإعدادات الشخصية: " + err.message));
+async function loadData(){
+  try{
+    const snap=await db.collection('users').get();
+    allUsers=snap.docs.map(d=>d.data());
+    const totalLinks=allUsers.reduce((s,u)=>s+(u.links||[]).length,0);
+    const totalClicks=allUsers.reduce((s,u)=>s+(u.links||[]).reduce((ss,l)=>ss+(l.clicks||0),0),0);
+    document.getElementById('totalUsers').textContent=allUsers.length;
+    document.getElementById('totalLinks').textContent=totalLinks;
+    document.getElementById('totalClicks').textContent=totalClicks;
+    renderUsers();
+  }catch(e){alert('خطأ: '+e.message);}
 }
 
-// 4. التحكم في فتح وإغلاق النافذة المنبثقة للروابط والأرقام
-function openLinkModal(isEdit, index = -1) {
-    document.getElementById('linkModal').style.display = 'flex';
-    editingIndex = index;
-
-    if (isEdit && index !== -1) {
-        document.getElementById('modalTitle').innerText = "تعديل الكود والروابط الحالية";
-        const target = allLinksArray[index];
-        document.getElementById('linkCodeInput').value = target.number || target.code || "";
-        document.getElementById('linkUrlInput').value = target.url || target.link || "";
-        document.getElementById('linkDescInput').value = target.description || target.desc || "";
-        document.getElementById('deleteLinkBtn').style.display = 'inline-flex';
-    } else {
-        document.getElementById('modalTitle').innerText = "إضافة كود تحويل رقمي جديد";
-        document.getElementById('linkCodeInput').value = "";
-        document.getElementById('linkUrlInput').value = "";
-        document.getElementById('linkDescInput').value = "";
-        document.getElementById('deleteLinkBtn').style.display = 'none';
-    }
+function renderUsers(){
+  const html=allUsers.map(u=>{
+    const clicks=(u.links||[]).reduce((s,l)=>s+(l.clicks||0),0);
+    const created=u.createdAt?new Date(u.createdAt).toLocaleDateString('ar-SA'):'—';
+    return `<tr>
+      <td><a href="page.html#${u.username}" target="_blank" class="user-link">${u.username}</a></td>
+      <td>${u.displayName||'—'}</td>
+      <td style="font-family:'Space Mono',monospace;font-size:0.8rem;direction:ltr;text-align:left;">${u.email||'—'}</td>
+      <td>${(u.links||[]).length}</td>
+      <td>${clicks}</td>
+      <td style="font-size:0.82rem;">${created}</td>
+      <td><span class="badge badge-ok">✓ نشط</span></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('usersList').innerHTML=html;
 }
 
-function closeLinkModal() {
-    document.getElementById('linkModal').style.display = 'none';
-    editingIndex = -1;
+function filterUsers(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  if(!q){renderUsers();return;}
+  const filtered=allUsers.filter(u=>u.username.includes(q)||u.displayName.toLowerCase().includes(q)||u.email.toLowerCase().includes(q));
+  const html=filtered.map(u=>{
+    const clicks=(u.links||[]).reduce((s,l)=>s+(l.clicks||0),0);
+    const created=u.createdAt?new Date(u.createdAt).toLocaleDateString('ar-SA'):'—';
+    return `<tr>
+      <td><a href="page.html#${u.username}" target="_blank" class="user-link">${u.username}</a></td>
+      <td>${u.displayName||'—'}</td>
+      <td style="font-family:'Space Mono',monospace;font-size:0.8rem;direction:ltr;text-align:left;">${u.email||'—'}</td>
+      <td>${(u.links||[]).length}</td>
+      <td>${clicks}</td>
+      <td style="font-size:0.82rem;">${created}</td>
+      <td><span class="badge badge-ok">✓ نشط</span></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('usersList').innerHTML=html||'<tr><td colspan="7" style="text-align:center;color:var(--muted);">لا توجد نتائج</td></tr>';
 }
 
-function closeModalOnOutsideClick(e) {
-    if (e.target.id === 'linkModal') closeLinkModal();
-}
+function logout(){if(confirm('تسجيل خروج؟')){window.location.href='index.html';}}
 
-// 5. دالة إرسال وحفظ بيانات الأرقام والروابط المضافة أو المعدلة
-function submitLinkData() {
-    const codeVal = document.getElementById('linkCodeInput').value.trim();
-    const urlVal = document.getElementById('linkUrlInput').value.trim();
-    const descVal = document.getElementById('linkDescInput').value.trim();
-
-    if (!codeVal || !urlVal) {
-        alert("⚠️ حقول الكود والرابط المستهدف هي حقول إلزامية الحفظ.");
-        return;
-    }
-
-    const linkObject = {
-        number: parseInt(codeVal, 10),
-        code: parseInt(codeVal, 10),
-        url: urlVal,
-        link: urlVal,
-        description: descVal,
-        desc: descVal,
-        clicks: (editingIndex !== -1 && allLinksArray[editingIndex]) ? (allLinksArray[editingIndex].clicks || 0) : 0
-    };
-
-    if (editingIndex !== -1) {
-        allLinksArray[editingIndex] = linkObject;
-    } else {
-        allLinksArray.push(linkObject);
-    }
-
-    rtdb.ref(`links/${currentUsername}/links`).set(allLinksArray).then(() => {
-        alert("✅ تم حفظ وتحديث بيانات الكود بنجاح.");
-        closeLinkModal();
-    }).catch(err => alert("❌ فشل إجراء الحفظ: " + err.message));
-}
-
-// 6. حذف كود وحيد ومحدد من الجدول
-function removeSingleLink() {
-    if (editingIndex === -1) return;
-    if (!confirm("هل أنت متأكد من رغبتك بحذف هذا الكود بشكل نهائي؟")) return;
-
-    allLinksArray.splice(editingIndex, 1);
-    rtdb.ref(`links/${currentUsername}/links`).set(allLinksArray).then(() => {
-        alert("🗑️ تم حذف الكود بنجاح.");
-        closeLinkModal();
-    }).catch(err => alert("❌ فشل عملية الحذف: " + err.message));
-}
-
-// 7. دالة طباعة تقارير الروابط إلى مستند PDF مع دعم النص العربي
-function printPDFReport() {
-    const element = document.querySelector('table');
-    const today = new Date();
-    const dateStr = `${today.getFullYear()}/${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')}`;
-    
-    const opt = {
-        margin: 15,
-        filename: `تقرير_روابط_electrwni_${dateStr}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
-    };
-
-    alert("📸 جاري تحضير وتجميع تقرير الأرقام والتحويلات للطباعة المباشرة...");
-    html2pdf().set(opt).from(element).save();
-}
-
-// 8. دالة تسجيل الخروج الآمن والكامل
-function adminLogout() {
-    auth.signOut().then(() => {
-        alert("🚪 تم تسجيل خروجك بنجاح. نراك لاحقاً!");
-        window.location.href = "login.html";
-    }).catch(err => alert("❌ فشل تسجيل الخروج: " + err.message));
-}
-
-// 9. دالة حذف الحساب بالكامل وتطهير البيانات من RTDB والـ Auth نهائياً وبأمان
-function deleteAccountPermanently() {
-    const user = auth.currentUser;
-    if (!user) {
-        alert("⚠️ لم يتم التعرف على مستخدم نشط حالياً لإتمام العملية.");
-        return;
-    }
-
-    const firstCheck = confirm("🚨 تحذير صارم ونهائي: هل أنت متأكد تماماً من تدمير حسابك وحذف كافة بياناتك بشكل قطعي؟ سيتم مسح جميع الروابط، الأكواد، الإحصائيات، والهوية الشخصية فوراً دون أدنى إمكانية للاسترجاع!");
-    if (!firstCheck) return;
-
-    const secondCheck = prompt("تأكيداً نهائياً للحذف المباشر، يرجى كتابة كلمة 'حذف' في الحقل أدناه:");
-    if (secondCheck !== "حذف") {
-        alert("❌ تم إلغاء عملية الحذف؛ لعدم تطابق الكلمة التأكيدية المكتوبة.");
-        return;
-    }
-
-    // أ: مسح كامل بيانات مجلد المستخدم من قاعدة البيانات المباشرة أولاً
-    rtdb.ref(`links/${currentUsername}`).remove().then(() => {
-        // ب: تدمير ومسح الحساب من نظام الـ Authentication الخاص بـ Firebase للبريد الإلكتروني
-        user.delete().then(() => {
-            alert("🔒 تم إغلاق وتصفية حسابك وإزالة كافة بياناتك وتوجيهاتك الرقمية من المنصة نهائياً.");
-            window.location.href = "signup.html";
-        }).catch(err => {
-            if (err.code === 'auth/requires-recent-login') {
-                alert("🔒 لدواعي الحماية والأمان الصارم: يرجى تسجيل الدخول مجدداً إلى حسابك قبل لحظات قليلة من طلب الحذف للتأكد من هويتك الفردية.");
-                auth.signOut().then(() => { window.location.href = "login.html"; });
-            } else {
-                alert("❌ حدث خطأ غير متوقع أثناء تدمير الحساب: " + err.message);
-            }
-        });
-    }).catch(err => alert("❌ خطأ أثناء تصفية البيانات في قاعدة البيانات: " + err.message));
-}
+checkAuth();
 </script>
 </body>
 </html>
