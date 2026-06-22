@@ -8,7 +8,8 @@
 <style>
 :root{
   --bg:#ffffff;--surface:#f9f9f9;--border:#e8ecf5;
-  --accent:#3d5af1;--accent2:#f5c518;--text:#0f1535;--text2:#3a4270;--muted:#9aa2c8;
+  --accent:#3d5af1;--accent-light:#6c8fff;--accent2:#f5c518;--text:#0f1535;--text2:#3a4270;--muted:#9aa2c8;
+  --user-gradient:linear-gradient(135deg,var(--accent) 0%,var(--accent-light) 100%);
 }
 
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -32,7 +33,7 @@ nav{
 /* ========== HERO BANNER ========== */
 .hero-banner{
   position:relative;width:100%;height:240px;
-  background:linear-gradient(135deg,#3d5af1 0%,#6c8fff 100%);
+  background:var(--user-gradient);
   overflow:hidden;display:flex;align-items:flex-end;justify-content:center;
   background-size:cover;background-position:center;
 }
@@ -61,7 +62,7 @@ nav{
 
 /* ========== INPUT SECTION ========== */
 .input-section{
-  background:linear-gradient(135deg,#3d5af1,#6c8fff);border-radius:16px;
+  background:var(--user-gradient);border-radius:16px;
   padding:24px;margin-bottom:30px;
 }
 
@@ -84,15 +85,6 @@ nav{
 .error-msg{color:#ffeb3b;font-size:0.85rem;margin-top:8px;text-align:center;display:none;font-weight:700;}
 .error-msg.show{display:block;}
 
-.quick-buttons{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px;}
-
-.quick-btn{
-  width:42px;height:42px;border-radius:10px;border:2px solid #fff;
-  background:transparent;color:#fff;font-weight:700;cursor:pointer;font-size:0.95rem;
-}
-
-.quick-btn:active{transform:scale(0.9);}
-
 /* ========== SOCIALS SECTION ========== */
 .section-title{font-size:1.1rem;font-weight:900;color:var(--accent);text-align:center;margin:32px 0 18px;}
 
@@ -111,43 +103,45 @@ nav{
 .pick-row{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:20px;}
 
 .pick-box{
-  background:linear-gradient(135deg,#3d5af1,#6c8fff);border-radius:12px;
-  padding:16px;color:#fff;display:flex;flex-direction:column;gap:8px;
+  background:var(--user-gradient);border-radius:12px;
+  padding:14px 12px;color:#fff;display:flex;align-items:center;justify-content:center;
+  min-height:54px;cursor:pointer;border:none;width:100%;
+  font-family:'Tajawal',sans-serif;transition:transform .15s,filter .15s;
+}
+.pick-box:active{transform:scale(0.97);filter:brightness(0.95);}
+
+.pick-title{font-size:0.95rem;font-weight:900;text-align:center;}
+
+/* ========== قسم منفصل كامل لعرض السجل عند الضغط على أحد المربعين ========== */
+.section-overlay{
+  position:fixed;inset:0;background:var(--bg);z-index:250;
+  display:none;flex-direction:column;overflow-y:auto;
+}
+.section-overlay.open{display:flex;}
+
+.section-overlay-header{
+  position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--border);
+  padding:14px 20px;display:flex;align-items:center;gap:12px;z-index:5;
 }
 
-.pick-title{font-size:0.9rem;font-weight:900;margin-bottom:4px;}
-
-.pick-list{display:flex;flex-direction:column;gap:6px;}
-
-.pick-item{
-  background:rgba(255,255,255,0.15);border-radius:8px;padding:8px 10px;
-  color:#fff;text-decoration:none;font-size:0.8rem;font-weight:700;
-  display:block;transition:background .15s;
-}
-.pick-item:active{background:rgba(255,255,255,0.3);}
-
-.registry-toggle{
-  margin-top:6px;background:#fff;color:var(--accent);border:none;border-radius:8px;
-  padding:8px;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif;
-}
-.registry-toggle:active{transform:scale(0.97);}
-
-/* ========== سجل الروابط (شبكة متجاورة) ========== */
-.registry-section{margin-bottom:20px;}
-
-.registry-grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;
+.section-overlay-back{
+  background:transparent;border:none;font-size:1.3rem;cursor:pointer;color:var(--text);
+  padding:4px 8px;font-family:'Tajawal',sans-serif;
 }
 
-.registry-item{
+.section-overlay-title{font-size:1.05rem;font-weight:900;}
+
+.section-overlay-body{padding:20px;max-width:500px;margin:0 auto;width:100%;}
+
+.overlay-list{display:flex;flex-direction:column;gap:8px;}
+
+.overlay-item{
   background:var(--surface);border:1px solid var(--border);border-radius:10px;
-  padding:12px 8px;text-align:center;text-decoration:none;color:var(--text);
-  display:flex;flex-direction:column;align-items:center;gap:4px;transition:transform .15s;
+  padding:14px;text-decoration:none;color:var(--text);font-weight:700;
+  display:flex;align-items:center;justify-content:space-between;transition:transform .15s;
 }
-.registry-item:active{transform:scale(0.95);}
-
-.registry-num{font-weight:900;color:var(--accent);font-family:'Space Mono',monospace;font-size:0.95rem;}
-.registry-label{font-size:0.75rem;color:var(--text2);word-break:break-word;}
+.overlay-item:active{transform:scale(0.98);}
+.overlay-item .ov-num{font-family:'Space Mono',monospace;color:var(--accent);font-weight:900;}
 
 /* ========== FOOTER ========== */
 .footer{text-align:center;font-size:0.8rem;color:var(--muted);padding:20px 0;border-top:1px solid var(--border);margin-top:30px;}
@@ -186,6 +180,15 @@ nav{
   <div class="loading">
     <p style="margin-top:12px;color:var(--muted);">جاري التحميل...</p>
   </div>
+</div>
+
+<!-- ========== قسم منفصل كامل (يظهر عند الضغط على اخترنا لك / آخر روابط) ========== -->
+<div class="section-overlay" id="sectionOverlay">
+  <div class="section-overlay-header">
+    <button class="section-overlay-back" onclick="closeSection()">→</button>
+    <div class="section-overlay-title" id="sectionOverlayTitle">العنوان</div>
+  </div>
+  <div class="section-overlay-body" id="sectionOverlayBody"></div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -279,7 +282,28 @@ async function init(){
   }
 }
 
+function applyThemeColor(hex){
+  // نتحقق إن القيمة فعلاً كود لون صحيح، احتياطاً ضد بيانات تالفة
+  if(!/^#[0-9A-Fa-f]{6}$/.test(hex))return;
+
+  document.documentElement.style.setProperty('--accent',hex);
+
+  // نحسب نسخة أفتح من نفس اللون تلقائياً لاستخدامها بنهاية التدرج (بدل ما نطلب من المستخدم لونين)
+  const r=parseInt(hex.slice(1,3),16);
+  const g=parseInt(hex.slice(3,5),16);
+  const b=parseInt(hex.slice(5,7),16);
+  const lighten=v=>Math.min(255,Math.round(v+(255-v)*0.35));
+  const lightHex='#'+[lighten(r),lighten(g),lighten(b)].map(v=>v.toString(16).padStart(2,'0')).join('');
+
+  document.documentElement.style.setProperty('--accent-light',lightHex);
+}
+
 function render(user){
+  // اللون المخصص للمستخدم (إن وُجد) - يُطبّق على المتغيرات اللي تتحكم بكل التدرجات بالصفحة
+  if(user.themeColor){
+    applyThemeColor(user.themeColor);
+  }
+
   // Avatar
   const avatarHtml=user.avatar?`<img src="${user.avatar}">`:(user.displayName?user.displayName[0].toUpperCase():'-');
   document.getElementById('avatar').innerHTML=avatarHtml;
@@ -288,9 +312,6 @@ function render(user){
   if(user.bannerImage){
     document.getElementById('heroBanner').style.backgroundImage=`url(${user.bannerImage})`;
   }
-  
-  // Quick buttons
-  const quickBtns=userLinks.map(l=>`<button class="quick-btn" onclick="quickGo(${l.num})">${l.num}</button>`).join('');
   
   // Socials
   const socials=user.socials||[];
@@ -312,25 +333,8 @@ function render(user){
   const featuredLinks=userLinks.filter(l=>l.featured);
   const recentLinks=[...userLinks].slice(-5).reverse();
 
-  const featuredHtml=featuredLinks.length
-    ? featuredLinks.map(l=>`<a href="${l.url}" target="_blank" class="pick-item">${l.label}</a>`).join('')
-    : '<div class="empty-state" style="padding:14px;">لم يتم اختيار روابط بعد</div>';
-
-  const recentHtml=recentLinks.length
-    ? recentLinks.map(l=>`<a href="${l.url}" target="_blank" class="pick-item">${l.label}</a>`).join('')
-    : '<div class="empty-state" style="padding:14px;">لا توجد روابط بعد</div>';
-  
-  // Links table
-  let tableHtml='';
-  if(userLinks.length){
-    tableHtml=`
-      <div class="registry-grid">
-        ${userLinks.map(l=>`<a href="${l.url}" target="_blank" class="registry-item"><span class="registry-num">${l.num}</span><span class="registry-label">${l.label}</span></a>`).join('')}
-      </div>
-    `;
-  }else{
-    tableHtml='<div class="empty-state">لا توجد روابط بعد</div>';
-  }
+  // نخزّن القوائم بمتغير عام يقدر يوصله الـ overlay وقت الفتح، بدل ما نبني HTML داخل الصندوق الصغير
+  window.__pageData={featuredLinks,recentLinks,allLinks:userLinks};
   
   document.getElementById('content').innerHTML=`
     <div class="profile-info">
@@ -343,23 +347,15 @@ function render(user){
       <input class="input-box" type="text" id="numIn" placeholder="أكتب الرقم" maxlength="1" inputmode="text" oninput="convertNum()">
       <button class="btn-go" onclick="goNav()">أذهب الآن</button>
       <div class="error-msg" id="errMsg">الرقم غير موجود</div>
-      <div class="quick-buttons">${quickBtns}</div>
     </div>
 
     <div class="pick-row">
-      <div class="pick-box">
+      <button class="pick-box" onclick="openSection('featured')">
         <div class="pick-title">اخترنا لك</div>
-        <div class="pick-list">${featuredHtml}</div>
-      </div>
-      <div class="pick-box">
+      </button>
+      <button class="pick-box" onclick="openSection('recent')">
         <div class="pick-title">آخر روابط</div>
-        <div class="pick-list">${recentHtml}</div>
-        <button class="registry-toggle" onclick="toggleRegistry()" id="registryToggleBtn">سجل الروابط</button>
-      </div>
-    </div>
-
-    <div class="registry-section" id="registrySection" style="display:none;">
-      ${tableHtml}
+      </button>
     </div>
 
     ${socialsHtml}
@@ -368,22 +364,42 @@ function render(user){
   `;
 }
 
+function openSection(type){
+  const data=window.__pageData;
+  if(!data)return;
+
+  let title='',links=[];
+  if(type==='featured'){
+    title='اخترنا لك';
+    links=data.featuredLinks;
+  }else if(type==='recent'){
+    title='آخر روابط';
+    links=data.recentLinks;
+  }
+
+  document.getElementById('sectionOverlayTitle').textContent=title;
+
+  const body=document.getElementById('sectionOverlayBody');
+  if(!links.length){
+    body.innerHTML='<div class="empty-state">لا توجد روابط هنا بعد</div>';
+  }else{
+    body.innerHTML=`
+      <div class="overlay-list">
+        ${links.map(l=>`<a href="${l.url}" target="_blank" class="overlay-item"><span>${l.label}</span><span class="ov-num">${l.num}</span></a>`).join('')}
+      </div>
+    `;
+  }
+
+  document.getElementById('sectionOverlay').classList.add('open');
+}
+
+function closeSection(){
+  document.getElementById('sectionOverlay').classList.remove('open');
+}
+
 function convertNum(){
   const inp=document.getElementById('numIn');
   inp.value=arabicToEnglish(inp.value);
-}
-
-function toggleRegistry(){
-  const sec=document.getElementById('registrySection');
-  const btn=document.getElementById('registryToggleBtn');
-  const isOpen=sec.style.display!=='none';
-  sec.style.display=isOpen?'none':'block';
-  btn.textContent=isOpen?'سجل الروابط':'إخفاء السجل';
-}
-
-function quickGo(n){
-  document.getElementById('numIn').value=n;
-  goNav();
 }
 
 function goNav(){
