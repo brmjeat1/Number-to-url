@@ -391,6 +391,16 @@ tr:hover{background:var(--bg2);}
           <label>صورة البروفايل</label>
           <input type="file" id="avatarInput" accept="image/*" onchange="selectAvatar(this)">
         </div>
+
+        <div class="form-group">
+          <label>لون صفحتك الشخصية</label>
+          <div id="colorPalette" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;"></div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <input type="color" id="colorPicker" value="#3d5af1" onchange="onColorPick(this.value)" style="width:50px;height:40px;padding:2px;cursor:pointer;">
+            <input type="text" id="colorHexInput" placeholder="#3d5af1" maxlength="7" dir="ltr" onchange="onColorHexInput(this.value)" style="flex:1;font-family:'Space Mono',monospace;">
+          </div>
+        </div>
+
         <button class="btn-add" onclick="saveDesign()" style="background:var(--primary);">حفظ التصميم</button>
       </div>
     </div>
@@ -560,6 +570,11 @@ async function loadUserData(){
     }else if(user.displayName){
       document.getElementById('avatarPreview').textContent=user.displayName[0].toUpperCase();
     }
+
+    selectedThemeColor=user.themeColor||'#3d5af1';
+    document.getElementById('colorPicker').value=selectedThemeColor;
+    document.getElementById('colorHexInput').value=selectedThemeColor;
+    renderColorPalette();
 
     renderRegistry();
     renderStats();
@@ -897,10 +912,41 @@ async function confirmCrop(){
   cropTargetType=null;
 }
 
+// ========== لون صفحة المستخدم ==========
+const THEME_COLORS=['#3d5af1','#e8436a','#0ab87a','#ff9f43','#9b59b6','#16a085','#2c3e50','#d35400'];
+let selectedThemeColor='#3d5af1';
+
+function renderColorPalette(){
+  document.getElementById('colorPalette').innerHTML=THEME_COLORS.map(c=>
+    `<button onclick="onColorPick('${c}')" style="width:32px;height:32px;border-radius:8px;border:2px solid ${c===selectedThemeColor?'var(--text)':'transparent'};background:${c};cursor:pointer;"></button>`
+  ).join('');
+}
+
+function onColorPick(hex){
+  selectedThemeColor=hex;
+  document.getElementById('colorPicker').value=hex;
+  document.getElementById('colorHexInput').value=hex;
+  renderColorPalette();
+}
+
+function onColorHexInput(val){
+  let hex=val.trim();
+  if(!hex.startsWith('#'))hex='#'+hex;
+  if(!/^#[0-9A-Fa-f]{6}$/.test(hex)){
+    toast('كود اللون غير صحيح، الصيغة الصحيحة مثل: #3d5af1');
+    document.getElementById('colorHexInput').value=selectedThemeColor;
+    return;
+  }
+  onColorPick(hex);
+}
+
 async function saveDesign(){
   toast('جاري الحفظ...');
-  const ok=await saveField({bannerImage:user.bannerImage||'',avatar:user.avatar||''});
-  if(ok)toast('تم حفظ التصميم!');
+  const ok=await saveField({bannerImage:user.bannerImage||'',avatar:user.avatar||'',themeColor:selectedThemeColor});
+  if(ok){
+    user.themeColor=selectedThemeColor;
+    toast('تم حفظ التصميم!');
+  }
 }
 
 // ========== الملف الشخصي ==========
