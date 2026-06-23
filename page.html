@@ -22,7 +22,6 @@ nav{
   align-items:center;padding:12px 20px;background:var(--surface);
   border-bottom:1px solid var(--border);
 }
-
 .logo{font-family:'Space Mono',monospace;font-size:0.95rem;color:var(--accent);text-decoration:none;font-weight:700;}
 .logo em{color:var(--accent2);font-style:normal;}
 .logout-btn{
@@ -37,24 +36,20 @@ nav{
   overflow:hidden;display:flex;align-items:flex-end;justify-content:center;
   background-size:cover;background-position:center;
 }
-
 .avatar-container{
   position:relative;z-index:10;margin-top:-60px;margin-bottom:10px;
   display:flex;justify-content:center;
 }
-
 .avatar-circle{
   width:120px;height:120px;border-radius:50%;background:var(--surface);
   border:6px solid transparent;display:flex;align-items:center;justify-content:center;
   color:var(--accent);font-weight:900;font-size:2.6rem;overflow:hidden;
   box-shadow:0 10px 40px rgba(0,0,0,0.15);
 }
-
 .avatar-circle img{width:100%;height:100%;object-fit:cover;}
 
 /* ========== CONTENT ========== */
 .content{padding:0 24px 30px;max-width:500px;margin:0 auto;}
-
 .profile-info{text-align:center;margin-bottom:30px;}
 .profile-name{font-size:1.6rem;font-weight:900;margin-bottom:6px;}
 .profile-handle{font-family:'Space Mono',monospace;font-size:0.8rem;color:var(--text2);direction:ltr;margin-bottom:10px;}
@@ -65,43 +60,60 @@ nav{
   background:var(--user-gradient);border-radius:16px;
   padding:24px;margin-bottom:30px;
 }
-
 .input-box{
   width:100%;background:#fff;border:2.5px solid #fff;border-radius:12px;
   padding:16px;color:var(--accent);font-size:1.2rem;font-weight:700;
   font-family:'Space Mono',monospace;outline:none;text-align:center;
   margin-bottom:12px;
 }
-
 .input-box::placeholder{color:var(--muted);}
-
 .btn-go{
   width:100%;background:#fff;color:var(--accent);border:none;border-radius:12px;
   padding:16px;font-size:1rem;font-weight:700;cursor:pointer;
 }
-
 .btn-go:active{transform:scale(0.98);}
-
 .error-msg{color:#ffeb3b;font-size:0.85rem;margin-top:8px;text-align:center;display:none;font-weight:700;}
 .error-msg.show{display:block;}
 
-/* ========== SOCIALS SECTION ========== */
+/* ========== SECTION TITLE ========== */
 .section-title{font-size:1.1rem;font-weight:900;color:var(--accent);text-align:center;margin:32px 0 18px;}
 
-.socials-box{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-bottom:32px;}
+/* ========== SOCIALS ROW ========== */
+.socials-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:32px;}
 
+/* أيقونات المنصات الاجتماعية */
 .social-btn{
   display:flex;align-items:center;justify-content:center;width:64px;height:64px;
   border-radius:18px;background:var(--surface);border:2px solid var(--border);
   text-decoration:none;transition:transform .15s;overflow:hidden;
 }
-
 .social-btn:active{transform:scale(0.92);}
 .social-btn img{width:100%;height:100%;object-fit:cover;}
 
-/* ========== اخترنا لك / آخر روابط (مربعان فقط) ========== */
-.pick-row{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:20px;}
+/* بطاقات التواصل (أرقام/موقع/خريطة) */
+.contact-card{
+  display:flex;align-items:center;gap:10px;
+  background:var(--surface);border:1.5px solid var(--border);border-radius:14px;
+  padding:12px 16px;text-decoration:none;color:var(--text);
+  font-weight:700;font-size:0.9rem;transition:transform .15s,box-shadow .15s;
+  width:100%;
+}
+.contact-card:active{transform:scale(0.97);}
+.contact-card:hover{box-shadow:0 4px 14px rgba(0,0,0,0.08);}
+.contact-card .cc-icon{
+  width:38px;height:38px;border-radius:10px;
+  background:var(--user-gradient);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:1.1rem;color:#fff;
+}
+.contact-card .cc-body{flex:1;}
+.contact-card .cc-label{font-size:0.75rem;color:var(--muted);margin-bottom:2px;}
+.contact-card .cc-value{font-size:0.9rem;font-weight:700;direction:ltr;text-align:right;}
 
+.contacts-list{display:flex;flex-direction:column;gap:10px;margin-bottom:32px;}
+
+/* ========== اخترنا لك / آخر روابط ========== */
+.pick-row{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:20px;}
 .pick-box{
   background:var(--user-gradient);border-radius:12px;
   padding:14px 12px;color:#fff;display:flex;align-items:center;justify-content:center;
@@ -109,32 +121,26 @@ nav{
   font-family:'Tajawal',sans-serif;transition:transform .15s,filter .15s;
 }
 .pick-box:active{transform:scale(0.97);filter:brightness(0.95);}
+.pick-title{font-size:0.95rem;font-weight:900;text-align:center;line-height:1.4;}
+.pick-sub{font-size:0.65rem;opacity:0.8;display:block;}
 
-.pick-title{font-size:0.95rem;font-weight:900;text-align:center;}
-
-/* ========== قسم منفصل كامل لعرض السجل عند الضغط على أحد المربعين ========== */
+/* ========== OVERLAY ========== */
 .section-overlay{
   position:fixed;inset:0;background:var(--bg);z-index:250;
   display:none;flex-direction:column;overflow-y:auto;
 }
 .section-overlay.open{display:flex;}
-
 .section-overlay-header{
   position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--border);
   padding:14px 20px;display:flex;align-items:center;gap:12px;z-index:5;
 }
-
 .section-overlay-back{
   background:transparent;border:none;font-size:1.3rem;cursor:pointer;color:var(--text);
   padding:4px 8px;font-family:'Tajawal',sans-serif;
 }
-
 .section-overlay-title{font-size:1.05rem;font-weight:900;}
-
 .section-overlay-body{padding:20px;max-width:500px;margin:0 auto;width:100%;}
-
 .overlay-list{display:flex;flex-direction:column;gap:8px;}
-
 .overlay-item{
   background:var(--surface);border:1px solid var(--border);border-radius:10px;
   padding:14px;text-decoration:none;color:var(--text);font-weight:700;
@@ -144,13 +150,20 @@ nav{
 .overlay-item .ov-num{font-family:'Space Mono',monospace;color:var(--accent);font-weight:900;}
 
 /* ========== FOOTER ========== */
-.footer{text-align:center;font-size:0.8rem;color:var(--muted);padding:20px 0;border-top:1px solid var(--border);margin-top:30px;}
-.footer a{color:var(--accent);text-decoration:none;font-weight:700;}
+.footer{
+  text-align:center;padding:24px 16px 20px;border-top:1px solid var(--border);margin-top:30px;
+}
+.footer-brand{
+  font-size:0.85rem;font-weight:900;color:var(--accent);
+  background:var(--user-gradient);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:4px;
+}
+.footer-sub{font-size:0.72rem;color:var(--muted);}
+.footer-sub a{color:var(--accent);text-decoration:none;font-weight:700;}
 
-/* ========== EMPTY ========== */
+/* ========== EMPTY / LOADING ========== */
 .empty-state{text-align:center;padding:30px 20px;color:var(--muted);}
-
-/* ========== LOADING ========== */
 .loading{text-align:center;padding:60px 20px;}
 
 @media(max-width:600px){
@@ -159,8 +172,6 @@ nav{
   .avatar-circle{width:100px;height:100px;font-size:2.2rem;}
   .profile-name{font-size:1.4rem;}
   .social-btn{width:56px;height:56px;border-radius:16px;}
-  table{font-size:0.78rem;}
-  th,td{padding:9px 6px;}
 }
 </style>
 </head>
@@ -168,7 +179,7 @@ nav{
 
 <nav>
   <a href="index.html" class="logo">electrwni<em>.link</em></a>
-  <button class="logout-btn" onclick="window.location.href='dashboard.html'">لوحة التحكم</button>
+  <button class="logout-btn" onclick="window.location.href='dashboard.html'">لوحة التحكم <span style="font-size:0.7rem;opacity:0.6;display:block;">Dashboard</span></button>
 </nav>
 
 <div class="hero-banner" id="heroBanner"></div>
@@ -178,11 +189,11 @@ nav{
 
 <div class="content" id="content">
   <div class="loading">
-    <p style="margin-top:12px;color:var(--muted);">جاري التحميل...</p>
+    <p style="margin-top:12px;color:var(--muted);">جاري التحميل... <span style="font-size:0.8rem;display:block;">Loading...</span></p>
   </div>
 </div>
 
-<!-- ========== قسم منفصل كامل (يظهر عند الضغط على اخترنا لك / آخر روابط) ========== -->
+<!-- OVERLAY -->
 <div class="section-overlay" id="sectionOverlay">
   <div class="section-overlay-header">
     <button class="section-overlay-back" onclick="closeSection()">→</button>
@@ -200,10 +211,8 @@ if(!firebase.apps.length)firebase.initializeApp(cfg);
 const db=firebase.firestore();
 
 function getUsername(){
-  // First try hash
   let h=window.location.hash.substring(1);
   if(h)return h;
-  // Then try URL path
   const path=window.location.pathname;
   const match=path.match(/\/([^\/]+)\/?$/);
   if(match&&match[1]&&match[1]!=='page.html')return match[1];
@@ -211,19 +220,13 @@ function getUsername(){
 }
 
 function arabicToEnglish(s){
-  // يحوّل أي رقم مكتوب بأي نظام عددي (عربي، فارسي/أردو، هندي، بنغالي... إلخ) إلى أرقام إنجليزية 0-9
   let r='';
   for(const ch of s){
     const code=ch.codePointAt(0);
-    // أرقام عربية-هندية (٠-٩): U+0660–U+0669
     if(code>=0x0660&&code<=0x0669){r+=String(code-0x0660);continue;}
-    // أرقام فارسية/أردو (۰-۹): U+06F0–U+06F9
     if(code>=0x06F0&&code<=0x06F9){r+=String(code-0x06F0);continue;}
-    // أرقام هندية ديفاناغاري (٠-९): U+0966–U+096F
     if(code>=0x0966&&code<=0x096F){r+=String(code-0x0966);continue;}
-    // أرقام بنغالية: U+09E6–U+09EF
     if(code>=0x09E6&&code<=0x09EF){r+=String(code-0x09E6);continue;}
-    // إنجليزية بالفعل أو أي حرف آخر، يُترك كما هو
     r+=ch;
   }
   return r;
@@ -233,42 +236,18 @@ let userLinks=[];
 
 async function init(){
   const u=getUsername();
-  console.log('Username from URL:', u);
-
-  if(!u){
-    show404('لم يتم تحديد المستخدم في الرابط');
-    return;
-  }
-
+  if(!u){show404('لم يتم تحديد المستخدم في الرابط');return;}
   const username=u.toLowerCase();
-
   try{
-    // الخطوة 1: نبحث عن uid عبر مجموعة الفهرسة usernames (بنية جديدة)
     const idxDoc=await db.collection('usernames').doc(username).get();
-
-    if(!idxDoc.exists){
-      console.log('Username index not found:', username);
-      show404('الحساب غير موجود: '+username);
-      return;
-    }
-
+    if(!idxDoc.exists){show404('الحساب غير موجود: '+username);return;}
     const uid=idxDoc.data().uid;
-
-    // الخطوة 2: نجيب بيانات المستخدم الفعلية بمعرّف uid
     const ref=db.collection('users').doc(uid);
     const doc=await ref.get();
-
-    if(!doc.exists){
-      console.log('User data not found for uid:', uid);
-      show404('بيانات الحساب غير موجودة');
-      return;
-    }
-
+    if(!doc.exists){show404('بيانات الحساب غير موجودة');return;}
     const user=doc.data();
-    console.log('User data:', user);
     userLinks=(user.links||[]).sort((a,b)=>a.num-b.num);
     render(user);
-
     ref.onSnapshot(d=>{
       if(d.exists){
         const updated=d.data();
@@ -276,50 +255,89 @@ async function init(){
         render(updated);
       }
     });
-  }catch(e){
-    console.error('Error loading user:', e);
-    show404('خطأ في التحميل: '+e.message);
-  }
+  }catch(e){show404('خطأ في التحميل: '+e.message);}
 }
 
 function applyThemeColor(hex){
-  // نتحقق إن القيمة فعلاً كود لون صحيح، احتياطاً ضد بيانات تالفة
   if(!/^#[0-9A-Fa-f]{6}$/.test(hex))return;
-
   document.documentElement.style.setProperty('--accent',hex);
-
-  // نحسب نسخة أفتح من نفس اللون تلقائياً لاستخدامها بنهاية التدرج (بدل ما نطلب من المستخدم لونين)
   const r=parseInt(hex.slice(1,3),16);
   const g=parseInt(hex.slice(3,5),16);
   const b=parseInt(hex.slice(5,7),16);
   const lighten=v=>Math.min(255,Math.round(v+(255-v)*0.35));
   const lightHex='#'+[lighten(r),lighten(g),lighten(b)].map(v=>v.toString(16).padStart(2,'0')).join('');
-
   document.documentElement.style.setProperty('--accent-light',lightHex);
 }
 
-function render(user){
-  // اللون المخصص للمستخدم (إن وُجد) - يُطبّق على المتغيرات اللي تتحكم بكل التدرجات بالصفحة
-  if(user.themeColor){
-    applyThemeColor(user.themeColor);
+function buildContactsHtml(user){
+  const phones=user.phones||[];
+  const website=user.website||'';
+  const mapUrl=user.mapUrl||'';
+
+  let html='';
+
+  if(!phones.length&&!website&&!mapUrl)return '';
+
+  html+=`<div class="section-title">تواصل <span style="font-size:0.7rem;font-weight:400;color:var(--muted);display:block;">Contact</span></div>`;
+  html+=`<div class="contacts-list">`;
+
+  phones.forEach(p=>{
+    const label=p.label||'هاتف / Phone';
+    const num=p.number||'';
+    if(!num)return;
+    html+=`
+      <a href="tel:${num}" class="contact-card">
+        <div class="cc-icon">📞</div>
+        <div class="cc-body">
+          <div class="cc-label">${label}</div>
+          <div class="cc-value">${num}</div>
+        </div>
+      </a>`;
+  });
+
+  if(website){
+    html+=`
+      <a href="${website}" target="_blank" class="contact-card">
+        <div class="cc-icon">🌐</div>
+        <div class="cc-body">
+          <div class="cc-label">موقع إلكتروني / Website</div>
+          <div class="cc-value">${website.replace(/^https?:\/\//,'')}</div>
+        </div>
+      </a>`;
   }
 
-  // Avatar
+  if(mapUrl){
+    html+=`
+      <a href="${mapUrl}" target="_blank" class="contact-card">
+        <div class="cc-icon">📍</div>
+        <div class="cc-body">
+          <div class="cc-label">خريطة موقعنا / Our Location</div>
+          <div class="cc-value">افتح الخريطة · Open Map</div>
+        </div>
+      </a>`;
+  }
+
+  html+=`</div>`;
+  return html;
+}
+
+function render(user){
+  if(user.themeColor)applyThemeColor(user.themeColor);
+
   const avatarHtml=user.avatar?`<img src="${user.avatar}">`:(user.displayName?user.displayName[0].toUpperCase():'-');
   document.getElementById('avatar').innerHTML=avatarHtml;
-  
-  // Banner
+
   if(user.bannerImage){
     document.getElementById('heroBanner').style.backgroundImage=`url(${user.bannerImage})`;
   }
-  
-  // Socials
+
+  // حسابات التواصل الاجتماعي (الأيقونات)
   const socials=user.socials||[];
   let socialsHtml='';
   if(socials.length){
     socialsHtml=`
-      <div class="section-title">تواصل </div>
-      <div class="socials-box">
+      <div class="section-title">حسابات التواصل <span style="font-size:0.7rem;font-weight:400;color:var(--muted);display:block;">Social Accounts</span></div>
+      <div class="socials-row">
         ${socials.map(s=>`
           <a href="${s.url}" target="_blank" class="social-btn" title="${s.name}">
             ${s.icon?`<img src="${s.icon}">`:s.name[0].toUpperCase()}
@@ -328,14 +346,14 @@ function render(user){
       </div>
     `;
   }
-  
-  // اخترنا لك: الروابط اللي حددها المستخدم يدوياً بالداشبورد (featured:true)
+
+  // بطاقات التواصل (أرقام/موقع/خريطة)
+  const contactsHtml=buildContactsHtml(user);
+
   const featuredLinks=userLinks.filter(l=>l.featured);
   const recentLinks=[...userLinks].slice(-5).reverse();
-
-  // نخزّن القوائم بمتغير عام يقدر يوصله الـ overlay وقت الفتح، بدل ما نبني HTML داخل الصندوق الصغير
   window.__pageData={featuredLinks,recentLinks,allLinks:userLinks};
-  
+
   document.getElementById('content').innerHTML=`
     <div class="profile-info">
       <div class="profile-name">${user.displayName||user.username}</div>
@@ -344,52 +362,48 @@ function render(user){
     </div>
 
     <div class="input-section">
-      <input class="input-box" type="text" id="numIn" placeholder="أكتب الرقم" maxlength="1" inputmode="text" oninput="convertNum()">
-      <button class="btn-go" onclick="goNav()">أذهب الآن</button>
-      <div class="error-msg" id="errMsg">الرقم غير موجود</div>
+      <input class="input-box" type="text" id="numIn"
+        placeholder="أكتب الرقم · Enter Number"
+        maxlength="1" inputmode="text" oninput="convertNum()">
+      <button class="btn-go" onclick="goNav()">أذهب الآن · Go Now</button>
+      <div class="error-msg" id="errMsg">الرقم غير موجود · Number not found</div>
     </div>
 
     <div class="pick-row">
       <button class="pick-box" onclick="openSection('featured')">
-        <div class="pick-title">اخترنا لك</div>
+        <div class="pick-title">اخترنا لك<span class="pick-sub">Picked for You</span></div>
       </button>
       <button class="pick-box" onclick="openSection('recent')">
-        <div class="pick-title">آخر روابط</div>
+        <div class="pick-title">آخر روابط<span class="pick-sub">Latest Links</span></div>
       </button>
     </div>
 
     ${socialsHtml}
+    ${contactsHtml}
 
-    <div class="footer">بنية بمعمارية عالية الأداء بواسطة: إلكتروني electrwni — الكويت، 2026</div>
+    <div class="footer">
+      <div class="footer-brand">بنية بمعمارية عالية الأداء · High-Performance Architecture</div>
+      <div class="footer-sub">بواسطة <a href="https://electrwni.link">electrwni.link</a> — الكويت 2026</div>
+    </div>
   `;
 }
 
 function openSection(type){
   const data=window.__pageData;
   if(!data)return;
-
   let title='',links=[];
-  if(type==='featured'){
-    title='اخترنا لك';
-    links=data.featuredLinks;
-  }else if(type==='recent'){
-    title='آخر روابط';
-    links=data.recentLinks;
-  }
-
+  if(type==='featured'){title='اخترنا لك · Picked for You';links=data.featuredLinks;}
+  else if(type==='recent'){title='آخر روابط · Latest Links';links=data.recentLinks;}
   document.getElementById('sectionOverlayTitle').textContent=title;
-
   const body=document.getElementById('sectionOverlayBody');
   if(!links.length){
-    body.innerHTML='<div class="empty-state">لا توجد روابط هنا بعد</div>';
+    body.innerHTML='<div class="empty-state">لا توجد روابط هنا بعد · No links yet</div>';
   }else{
     body.innerHTML=`
       <div class="overlay-list">
         ${links.map(l=>`<a href="${l.url}" target="_blank" class="overlay-item"><span>${l.label}</span><span class="ov-num">${l.num}</span></a>`).join('')}
-      </div>
-    `;
+      </div>`;
   }
-
   document.getElementById('sectionOverlay').classList.add('open');
 }
 
@@ -418,9 +432,8 @@ function show404(msg){
   document.getElementById('content').innerHTML=`
     <div class="empty-state" style="padding:80px 20px;">
       <h2 style="font-weight:900;margin-bottom:10px;font-size:1.2rem;">${msg}</h2>
-      <a href="index.html" style="display:inline-block;margin-top:20px;padding:10px 24px;background:var(--accent);color:#fff;border-radius:8px;text-decoration:none;font-weight:700;">العودة للرئيسية</a>
-    </div>
-  `;
+      <a href="index.html" style="display:inline-block;margin-top:20px;padding:10px 24px;background:var(--accent);color:#fff;border-radius:8px;text-decoration:none;font-weight:700;">العودة للرئيسية · Back Home</a>
+    </div>`;
 }
 
 init();
