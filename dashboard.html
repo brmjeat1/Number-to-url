@@ -178,13 +178,41 @@ tr:hover{background:var(--bg2);}
 <div class="container">
 
   <!-- TABS -->
-  <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showPage('links',this)">الروابط<span class="tab-sub">Links</span></button>
-    <button class="nav-tab" onclick="showPage('socials',this)">تواصل<span class="tab-sub">Contact</span></button>
-    <button class="nav-tab" onclick="showPage('design',this)">التصميم<span class="tab-sub">Design</span></button>
-    <button class="nav-tab" onclick="showPage('profile',this)">ملفي<span class="tab-sub">Profile</span></button>
-    <button class="nav-tab" onclick="showPage('stats',this)">إحصائيات<span class="tab-sub">Stats</span></button>
-  </div>
+
+window.showPage = function(pageId, btn) {
+    try {
+        document.querySelectorAll('.page, .content-section, section').forEach(p => { 
+            p.classList.remove('active'); 
+            p.style.display = 'none'; 
+        });
+        const target = document.getElementById('page-' + pageId) || document.getElementById(pageId);
+        if (target) { 
+            target.classList.add('active'); 
+            target.style.display = 'block'; 
+        }
+        document.querySelectorAll('.nav-tab, .sidebar-item').forEach(t => t.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+    } catch (e) { console.error("عطل التنقل:", e); }
+};
+
+window.toggleBgLock = function() {
+    const controls = document.getElementById('bgColorControls');
+    if (controls) {
+        const isLocked = controls.style.pointerEvents === 'none';
+        controls.style.pointerEvents = isLocked ? 'auto' : 'none';
+        controls.style.opacity = isLocked ? '1' : '0.4';
+        const icon = document.getElementById('bgLockIcon');
+        const label = document.getElementById('bgLockLabel');
+        if (icon) icon.textContent = isLocked ? '🔓' : '🔒';
+        if (label) label.textContent = isLocked ? 'مفتوح · Unlocked' : 'مقفل · Locked';
+    }
+};
+
+window.suggestBgWithAI = function() {
+    const box = document.getElementById('aiSuggestionBox');
+    if (box) box.style.display = 'block';
+};
+
 
   <!-- PAGE: LINKS -->
   <div class="page active" id="page-links">
