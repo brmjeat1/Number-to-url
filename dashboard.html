@@ -64,8 +64,8 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min
 .expandable-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
 .expandable-toggle{font-size:1.2rem;transition:transform .3s;}
 .expandable-header.open .expandable-toggle{transform:rotate(180deg);}
-.expandable-content{display:none;padding:20px;max-height:0;overflow:hidden;transition:all .3s;border-top:1px solid var(--border);background:var(--bg);}
-.expandable-header.open+.expandable-content{display:block;max-height:4000px;}
+.expandable-content{display:none;padding:20px;border-top:1px solid var(--border);background:var(--bg);}
+.expandable-content.open{display:block;}
 
 /* FORM */
 .form-group{margin-bottom:14px;}
@@ -189,11 +189,11 @@ tr:hover{background:var(--bg2);}
   <!-- PAGE: LINKS -->
   <div class="page active" id="page-links">
     <div class="expandable">
-      <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
         <div class="expandable-title"><div class="expandable-icon">+</div><span>أضف رابط<span class="title-sub">Add Link</span></span></div>
         <div class="expandable-toggle">▼</div>
       </div>
-      <div class="expandable-content" style="display:block;">
+      <div class="expandable-content open">
         <div class="form-row">
           <div class="form-group">
             <label>الرقم (1-9) <span class="lbl-sub">/ Number</span> *</label>
@@ -221,11 +221,11 @@ tr:hover{background:var(--bg2);}
     </div>
 
     <div class="expandable">
-      <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
         <div class="expandable-title"><div class="expandable-icon">س</div><span>سجل الروابط<span class="title-sub">Links Registry</span></span></div>
         <div class="expandable-toggle">▼</div>
       </div>
-      <div class="expandable-content" style="display:block;">
+      <div class="expandable-content open">
         <div style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">دراسة جدوى لجماهيرية وفاعلية نشاط روابطك · Link performance analysis</div>
         <div id="linksRegistry"></div>
         <button class="btn-pdf" onclick="goToStats()">PDF</button>
@@ -238,11 +238,11 @@ tr:hover{background:var(--bg2);}
 
     <!-- حسابات التواصل الاجتماعي -->
     <div class="expandable">
-      <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
         <div class="expandable-title"><div class="expandable-icon">ح</div><span>حسابات التواصل<span class="title-sub">Social Accounts</span></span></div>
         <div class="expandable-toggle">▼</div>
       </div>
-      <div class="expandable-content" style="display:block;">
+      <div class="expandable-content open">
 
         <!-- Quick-Add Buttons -->
         <div style="margin-bottom:16px;">
@@ -318,11 +318,11 @@ tr:hover{background:var(--bg2);}
 
     <!-- أرقام التواصل -->
     <div class="expandable">
-      <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
         <div class="expandable-title"><div class="expandable-icon">📞</div><span>أرقام التواصل<span class="title-sub">Phone Numbers</span></span></div>
         <div class="expandable-toggle">▼</div>
       </div>
-      <div class="expandable-content" style="display:block;">
+      <div class="expandable-content open">
         <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">تظهر في صفحتك العامة مع إمكانية الاتصال المباشر · Shown on your public page for direct calls</p>
         <div id="phonesContainer"></div>
         <button class="btn-add" onclick="addPhoneEntry()" style="background:var(--primary);margin-bottom:12px;">+ إضافة رقم · Add Number</button>
@@ -332,11 +332,11 @@ tr:hover{background:var(--bg2);}
 
     <!-- الموقع الإلكتروني -->
     <div class="expandable">
-      <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
         <div class="expandable-title"><div class="expandable-icon">🌐</div><span>الموقع الإلكتروني<span class="title-sub">Website</span></span></div>
         <div class="expandable-toggle">▼</div>
       </div>
-      <div class="expandable-content" style="display:block;">
+      <div class="expandable-content open">
         <div class="form-group">
           <label>رابط موقعك أو متجرك <span class="lbl-sub">/ Your website or store URL</span></label>
           <input type="url" id="websiteInput" placeholder="https://yoursite.com" dir="ltr">
@@ -347,11 +347,11 @@ tr:hover{background:var(--bg2);}
 
     <!-- الموقع الملاحي -->
     <div class="expandable">
-      <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
         <div class="expandable-title"><div class="expandable-icon">📍</div><span>الموقع الملاحي<span class="title-sub">Map Location</span></span></div>
         <div class="expandable-toggle">▼</div>
       </div>
-      <div class="expandable-content" style="display:block;">
+      <div class="expandable-content open">
         <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">يظهر في صفحتك كـ "خريطة موقعنا" مع رابط مباشر للخريطة · Shows as "Our Location" map link</p>
         <div class="form-group">
           <label>رابط خرائط Google أو Apple Maps <span class="lbl-sub">/ Google or Apple Maps link</span></label>
@@ -366,11 +366,11 @@ tr:hover{background:var(--bg2);}
   <!-- PAGE: DESIGN -->
   <div class="page" id="page-design">
     <div class="expandable">
-      <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
         <div class="expandable-title"><div class="expandable-icon">T</div><span>تصميم صفحتك<span class="title-sub">Page Design</span></span></div>
         <div class="expandable-toggle">▼</div>
       </div>
-      <div class="expandable-content" style="display:block;">
+      <div class="expandable-content open">
         <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:20px;padding:16px;background:var(--bg2);border-radius:12px;">
           <div id="bannerPreview" style="width:100%;height:100px;border-radius:10px;background:linear-gradient(135deg,#3d5af1,#6c8fff);background-size:cover;background-position:center;"></div>
           <div id="avatarPreview" style="width:70px;height:70px;border-radius:50%;background:var(--bg);border:3px solid var(--primary-light);margin-top:-45px;display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--primary);font-size:1.5rem;overflow:hidden;">-</div>
@@ -442,11 +442,11 @@ tr:hover{background:var(--bg2);}
   <!-- PAGE: PROFILE -->
   <div class="page" id="page-profile">
     <div class="expandable">
-      <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
         <div class="expandable-title"><div class="expandable-icon">م</div><span>بيانات ملفي<span class="title-sub">My Profile</span></span></div>
         <div class="expandable-toggle">▼</div>
       </div>
-      <div class="expandable-content" style="display:block;">
+      <div class="expandable-content open">
         <div class="form-group">
           <label>الاسم الكامل <span class="lbl-sub">/ Full Name</span></label>
           <input type="text" id="pfName" placeholder="اسمك / Your name">
@@ -469,14 +469,14 @@ tr:hover{background:var(--bg2);}
 
     <!-- حذف الحساب -->
     <div class="expandable" style="border-color:#ffd0d8;">
-      <div class="expandable-header" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'" style="background:#fff5f7;">
+      <div class="expandable-header" onclick="toggleExpand(this)" style="background:#fff5f7;">
         <div class="expandable-title" style="color:var(--error);">
           <div class="expandable-icon" style="background:var(--error);">🗑</div>
           <span>حذف الحساب<span class="title-sub" style="color:#e8436a;">Delete Account</span></span>
         </div>
         <div class="expandable-toggle" style="color:var(--error);">▼</div>
       </div>
-      <div class="expandable-content" style="display:none;">
+      <div class="expandable-content">
         <p style="color:var(--error);font-size:0.9rem;margin-bottom:16px;line-height:1.6;">
           ⚠️ سيتم حذف حسابك وجميع بياناتك وروابطك بشكل نهائي ولا يمكن التراجع عن هذا الإجراء.<br>
           <span style="font-size:0.75rem;color:var(--muted);">Your account and all data will be permanently deleted. This action cannot be undone.</span>
@@ -489,11 +489,11 @@ tr:hover{background:var(--bg2);}
   <!-- PAGE: STATS -->
   <div class="page" id="page-stats">
     <div class="expandable">
-      <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
         <div class="expandable-title"><div class="expandable-icon">إ</div><span>إحصائيات<span class="title-sub">Statistics</span></span></div>
         <div class="expandable-toggle">▼</div>
       </div>
-      <div class="expandable-content" style="display:block;">
+      <div class="expandable-content open">
         <div class="form-group">
           <label>عدد الروابط في الصفحة <span class="lbl-sub">/ Links per page</span></label>
           <select id="pageSize" onchange="updateStats()">
@@ -634,12 +634,57 @@ async function saveField(fields){
   catch(e){console.error('saveField error:',e);toast('فشل الحفظ: '+e.message);return false;}
 }
 
-function showPage(n,el){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('page-'+n).classList.add('active');
-  if(el)el.classList.add('active');
+function toggleExpand(header){
+  header.classList.toggle('open');
+  const content=header.nextElementSibling;
+  if(content&&content.classList.contains('expandable-content')){
+    content.classList.toggle('open',header.classList.contains('open'));
+  }
 }
+
+// ===== SVG أيقونات المنصات الرسمية =====
+const PLATFORM_SVGS={
+  instagram:`<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>`,
+  snapchat:`<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M12.065.001C9.063-.002 6.31 1.64 4.898 4.23c-.63 1.153-.808 2.34-.808 3.574 0 .667.044 1.326.133 1.98-.198.1-.408.153-.622.156-.379 0-.817-.172-1.298-.512l-.032-.022c-.116-.077-.245-.12-.378-.126a.624.624 0 00-.423.142.597.597 0 00-.21.448c-.005.376.249.7.616.783.046.01 1.144.27 1.737 1.422.008.015-.006.046-.036.074-.268.248-1.17.673-2.37.868-.519.084-.884.508-.884.994 0 .038.002.076.008.114.089.581.816.98 1.95 1.094.064.007.127.034.17.08.047.052.065.123.057.227l-.004.039c-.057.28-.23 1.011-.724 1.011-.17 0-.354-.07-.544-.207-.145-.103-.304-.156-.468-.156-.218 0-.429.095-.577.261-.14.158-.205.362-.178.568.094.706 1.003 1.185 2.84 1.459.01.002.017.01.019.022.002.012-.003.024-.012.03-.13.09-.9.658-.9 1.385 0 .065.008.13.023.194.104.45.588.758 1.341.836.498.052.919.19 1.25.412.517.343 1.068 1.274 2.073 1.85a5.11 5.11 0 002.558.682c.493 0 .997-.085 1.498-.254.496-.167.912-.254 1.236-.258.324.004.74.091 1.236.258.501.169 1.005.254 1.498.254.912 0 1.763-.236 2.558-.682 1.005-.576 1.556-1.507 2.073-1.85.331-.222.752-.36 1.25-.412.753-.078 1.237-.387 1.341-.836a.987.987 0 00.023-.194c0-.727-.77-1.295-.9-1.385-.01-.007-.014-.018-.012-.03.002-.012.009-.02.019-.022 1.837-.274 2.746-.753 2.84-1.459a.797.797 0 00-.178-.568.772.772 0 00-.577-.261c-.164 0-.323.053-.468.156-.19.137-.374.207-.544.207-.494 0-.667-.73-.724-1.011l-.004-.039c-.008-.104.01-.175.057-.227.043-.046.106-.073.17-.08 1.134-.113 1.861-.513 1.95-1.094a.938.938 0 00.008-.114c0-.486-.365-.91-.884-.994-1.2-.195-2.102-.62-2.37-.868-.03-.028-.044-.06-.036-.074.593-1.152 1.691-1.413 1.737-1.422.367-.083.621-.407.616-.783a.597.597 0 00-.21-.448.624.624 0 00-.423-.142c-.133.006-.262.049-.378.126l-.032.022c-.481.34-.919.512-1.298.512-.214-.003-.424-.056-.622-.156.089-.654.133-1.313.133-1.98 0-1.281-.194-2.459-.808-3.574C17.755 1.65 15.047-.002 12.065 0z"/></svg>`,
+  tiktok:`<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.29 6.29 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.19 8.19 0 004.79 1.52V6.76a4.85 4.85 0 01-1.02-.07z"/></svg>`,
+  x:`<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`,
+  threads:`<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 1.336-.02 2.491-.158 3.441-.479 1.193-.4 1.956-1.033 2.338-1.943.302-.72.317-1.624-.009-2.749-.251-.887-.743-1.603-1.467-2.136-.684-.52-1.531-.823-2.519-.902-.209 2.26-.926 3.876-2.149 4.798-1.149.867-2.545 1.138-4.155.846-1.424-.263-2.578-.951-3.315-1.937-.663-.892-.89-1.981-.643-3.065.47-2.073 2.425-3.413 5.245-3.588.738-.045 1.399-.027 1.968.025-.04-.25-.09-.502-.153-.75-.408-1.625-1.498-2.461-3.244-2.497-.966.02-1.764.338-2.374.946l-1.437-1.426c.955-.956 2.247-1.458 3.833-1.493 2.671.06 4.392 1.504 5.026 4.15.195.829.289 1.659.281 2.473.348.037.694.088 1.032.152 2.07.382 3.73 1.51 4.828 3.251.865 1.382 1.203 2.985.965 4.607-.193 1.309-.766 2.411-1.703 3.276-1.179 1.085-2.845 1.763-5.023 2.063-.547.076-1.119.116-1.712.119zm-.013-8.956c-1.866.022-2.934.587-3.092 1.266-.086.374.014.754.307 1.147.47.638 1.283 1.034 2.29 1.218 1.031.187 1.884.004 2.558-.55.832-.683 1.306-1.963 1.418-3.808-.45-.064-.943-.104-1.481-.104-.003 0-.006 0-.009 0h.009z"/></svg>`,
+  whatsapp:`<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`,
+  telegram:`<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>`,
+  youtube:`<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`,
+  linkedin:`<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>`,
+  facebook:`<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>`,
+  pinterest:`<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M12 0C5.373 0 0 5.372 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>`,
+  github:`<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>`,
+  discord:`<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.08.11 18.1.128 18.11a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>`,
+  twitch:`<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg>`,
+  bereal:`<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><circle cx="12" cy="12" r="10"/><text x="12" y="16" text-anchor="middle" font-size="8" fill="white" font-weight="bold">Be</text></svg>`,
+  clubhouse:`<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M16.85 9.07l2.92-2.92-1.36-1.36-2.92 2.92c-.74-.46-1.59-.71-2.49-.71s-1.75.25-2.49.71L7.59 4.79 6.23 6.15l2.92 2.92C8.69 9.81 8.44 10.66 8.44 11.56s.25 1.75.71 2.49l-2.92 2.92 1.36 1.36 2.92-2.92c.74.46 1.59.71 2.49.71s1.75-.25 2.49-.71l2.92 2.92 1.36-1.36-2.92-2.92c.46-.74.71-1.59.71-2.49s-.25-1.75-.71-2.49zM12 14.28c-1.5 0-2.72-1.22-2.72-2.72S10.5 8.84 12 8.84s2.72 1.22 2.72 2.72-1.22 2.72-2.72 2.72z"/></svg>`,
+};
+
+function getPlatformSVG(platformId, color='currentColor', size=28){
+  const svg=PLATFORM_SVGS[platformId];
+  if(!svg)return null;
+  return svg.replace('fill="currentColor"',`fill="${color}"`).replace('<svg ',`<svg width="${size}" height="${size}" `);
+}
+
+function renderIconInEl(el, platformId, bgColor, colorMode){
+  const isLight=isLightColor(bgColor);
+  const iconColor= isLight ? '#1a1a1a' : '#ffffff';
+  const svg=getPlatformSVG(platformId, iconColor, 26);
+  if(svg){
+    el.style.background=bgColor;
+    el.innerHTML=svg;
+    el.style.display='flex';
+    el.style.alignItems='center';
+    el.style.justifyContent='center';
+  }else{
+    el.style.background=bgColor;
+    el.style.color=iconColor;
+    el.style.fontSize='1.2rem';
+  }
+}
+
 
 // ========== LINKS ==========
 function renderRegistry(){
@@ -865,17 +910,13 @@ function showDetectedPreview(p,url){
   const nameEl=document.getElementById('socDetectedName');
   const urlEl=document.getElementById('socDetectedUrl');
 
-  // لون الأيقونة حسب الوضع
   const bgColor=socColorMode==='theme'?(user&&user.themeColor?user.themeColor:'#3d5af1'):p.brand;
-  const textColor=isLightColor(bgColor)?'#0f1535':'#ffffff';
 
   if(pendingSocIcon){
     iconEl.style.background='transparent';
     iconEl.innerHTML=`<img src="${pendingSocIcon}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;">`;
   }else{
-    iconEl.style.background=bgColor;
-    iconEl.style.color=textColor;
-    iconEl.innerHTML=`<span style="font-size:1.4rem;">${p.emoji}</span>`;
+    renderIconInEl(iconEl, p.id, bgColor, socColorMode);
   }
 
   nameEl.textContent=p.name;
@@ -941,16 +982,21 @@ function renderSocials(){
   const reg=document.getElementById('socialsRegistry');
   if(!allSocials.length){reg.innerHTML='<div class="empty">لا توجد حسابات بعد · No accounts yet</div>';return;}
   reg.innerHTML=allSocials.map(s=>{
-    const bgStyle=s.iconBg?`background:${s.iconBg};`:'background:var(--primary);';
-    const textStyle=s.iconBg&&isLightColor(s.iconBg)?'color:#0f1535;':'color:#fff;';
-    const iconContent=s.icon
-      ?`<img src="${s.icon}" style="width:100%;height:100%;object-fit:cover;">`
-      :`<span style="font-size:1.3rem;">${s.emoji||s.name[0]}</span>`;
+    const bg=s.iconBg||'var(--primary)';
+    const isLt=s.iconBg?isLightColor(s.iconBg):false;
+    const ic=isLt?'#1a1a1a':'#ffffff';
+    let iconHtml='';
+    if(s.icon){
+      iconHtml=`<img src="${s.icon}" style="width:100%;height:100%;object-fit:cover;">`;
+    }else{
+      const svg=getPlatformSVG(s.platformId,ic,26);
+      iconHtml=svg||`<span style="font-size:1.2rem;color:${ic};">${s.emoji||s.name[0]}</span>`;
+    }
     return `
     <div class="item" style="cursor:default;">
       <div style="display:flex;align-items:center;gap:12px;flex:1;">
-        <div style="width:46px;height:46px;border-radius:12px;overflow:hidden;flex-shrink:0;${bgStyle}${textStyle}display:flex;align-items:center;justify-content:center;">
-          ${iconContent}
+        <div style="width:46px;height:46px;border-radius:12px;overflow:hidden;flex-shrink:0;background:${bg};display:flex;align-items:center;justify-content:center;">
+          ${iconHtml}
         </div>
         <div style="flex:1;min-width:0;">
           <div style="font-weight:900;">${s.name}</div>
@@ -987,7 +1033,7 @@ async function saveSocial(){
     icon:pendingSocIcon||'',
     iconBg:socColorMode==='upload'?'':iconBg,
     colorMode:socColorMode,
-    platformId:p.id
+    platformId:p.id||'custom'
   };
 
   allSocials.push(entry);
