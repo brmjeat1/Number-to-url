@@ -634,6 +634,15 @@ async function saveField(fields){
   catch(e){console.error('saveField error:',e);toast('فشل الحفظ: '+e.message);return false;}
 }
 
+function showPage(n,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  const target=document.getElementById('page-'+n);
+  if(target)target.classList.add('active');
+  if(el)el.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
 function toggleExpand(header){
   header.classList.toggle('open');
   const content=header.nextElementSibling;
@@ -1349,7 +1358,7 @@ async function deleteAccount(){
   if(!confirm1)return;
   const confirm2=confirm('تأكيد أخير: هذا الإجراء لا يمكن التراجع عنه.\nFinal confirmation: This cannot be undone.');
   if(!confirm2)return;
-  toast('جاري حذف الحساب...'); 
+  toast('جاري حذف الحساب...');
   try{
     await db.collection('users').doc(currentUid).delete();
     // حذف index يوزرنيم إن وجد
