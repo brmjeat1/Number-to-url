@@ -12,239 +12,134 @@
   --border:#e8ecf5;--text:#0f1535;--text2:#3a4270;--muted:#9aa2c8;
   --success:#0ab87a;--error:#e8436a;
 }
-
 *{margin:0;padding:0;box-sizing:border-box;}
-body{
-  font-family:'Tajawal',sans-serif;background:var(--bg);
-  color:var(--text);min-height:100vh;
-}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 
-/* ========== TOPBAR ========== */
+/* TOPBAR */
 .topbar{
   background:linear-gradient(135deg,var(--primary),var(--primary-light));
   color:#fff;padding:12px 20px;display:flex;justify-content:space-between;
   align-items:center;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,0.05);
 }
-
 .topbar-brand{font-family:'Space Mono',monospace;font-size:1rem;font-weight:900;}
-
 .topbar-btns{display:flex;gap:8px;}
-
 .btn{
   padding:8px 16px;border:none;border-radius:8px;cursor:pointer;
-  font-family:'Tajawal',sans-serif;font-weight:700;font-size:0.85rem;
-  transition:all .2s;
+  font-family:'Tajawal',sans-serif;font-weight:700;font-size:0.85rem;transition:all .2s;
 }
-
 .btn-white{background:#fff;color:var(--primary);}
 .btn-white:active{transform:scale(0.95);}
-
 .btn-logout{background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.4);}
 .btn-logout:active{transform:scale(0.95);}
 
-/* ========== CONTAINER ========== */
+/* CONTAINER */
 .container{max-width:900px;margin:0 auto;padding:24px 20px;}
 
-/* ========== NAV TABS ========== */
+/* NAV TABS */
 .nav-tabs{
-  display:flex;gap:10px;margin-bottom:24px;border-bottom:2px solid var(--border);
+  display:flex;gap:6px;margin-bottom:24px;border-bottom:2px solid var(--border);
   overflow-x:auto;padding-bottom:0;
 }
-
 .nav-tab{
   background:transparent;border:none;color:var(--text2);
-  padding:12px 16px;font-weight:700;cursor:pointer;
-  border-bottom:3px solid transparent;transition:all .2s;font-size:0.95rem;
+  padding:10px 12px;font-weight:700;cursor:pointer;
+  border-bottom:3px solid transparent;transition:all .2s;font-size:0.85rem;
+  white-space:nowrap;
 }
-
+.nav-tab .tab-sub{font-size:0.6rem;display:block;opacity:0.6;font-weight:400;}
 .nav-tab:active{transform:scale(0.98);}
 .nav-tab.active{color:var(--primary);border-bottom-color:var(--primary);}
 
-/* ========== PAGES ========== */
+/* PAGES */
 .page{display:none;}
 .page.active{display:block;}
 
-/* ========== EXPANDABLE BOX ========== */
-.expandable{
-  background:var(--bg2);border:1px solid var(--border);border-radius:12px;
-  margin-bottom:16px;overflow:hidden;
-}
-
-.expandable-header{
-  padding:16px 20px;cursor:pointer;display:flex;justify-content:space-between;
-  align-items:center;transition:all .2s;
-}
-
+/* EXPANDABLE */
+.expandable{background:var(--bg2);border:1px solid var(--border);border-radius:12px;margin-bottom:16px;overflow:hidden;}
+.expandable-header{padding:16px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:all .2s;}
 .expandable-header:hover{background:#f5f5f5;}
 .expandable-header.open{background:var(--primary-light);color:#fff;}
-
 .expandable-title{font-size:1rem;font-weight:900;display:flex;align-items:center;gap:8px;}
-
-.expandable-icon{
-  width:32px;height:32px;border-radius:8px;
-  background:linear-gradient(135deg,var(--primary),var(--primary-light));
-  color:#fff;display:flex;align-items:center;justify-content:center;
-  font-size:1.1rem;flex-shrink:0;
-}
-
+.expandable-title .title-sub{font-size:0.65rem;font-weight:400;opacity:0.75;display:block;}
+.expandable-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
 .expandable-toggle{font-size:1.2rem;transition:transform .3s;}
 .expandable-header.open .expandable-toggle{transform:rotate(180deg);}
+.expandable-content{display:none;padding:20px;max-height:0;overflow:hidden;transition:all .3s;border-top:1px solid var(--border);background:var(--bg);}
+.expandable-header.open+.expandable-content{display:block;max-height:4000px;}
 
-.expandable-content{
-  display:none;padding:20px;max-height:0;overflow:hidden;transition:all .3s;
-  border-top:1px solid var(--border);background:var(--bg);
-}
-
-.expandable-header.open+.expandable-content{
-  display:block;max-height:3000px;
-}
-
-/* ========== FORM ========== */
+/* FORM */
 .form-group{margin-bottom:14px;}
-
-label{
-  display:block;font-size:0.85rem;font-weight:700;margin-bottom:6px;
-  color:var(--text2);
-}
-
+label{display:block;font-size:0.85rem;font-weight:700;margin-bottom:6px;color:var(--text2);}
+label .lbl-sub{font-size:0.7rem;font-weight:400;color:var(--muted);}
 input[type=text],input[type=url],input[type=number],input[type=email],input[type=tel],textarea,select{
   width:100%;padding:10px 12px;border:1.5px solid var(--border);
   border-radius:8px;font-family:'Tajawal',sans-serif;font-size:0.9rem;
   outline:none;transition:border .2s;background:var(--bg);
 }
-
 input:focus,textarea:focus,select:focus{border-color:var(--primary);}
-
 textarea{resize:vertical;min-height:60px;}
-
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:600px){.form-row{grid-template-columns:1fr;}}
 
-@media(max-width:600px){
-  .form-row{grid-template-columns:1fr;}
-}
-
-/* ========== BUTTONS ========== */
-.btn-add{
-  background:var(--success);color:#fff;padding:12px 24px;border:none;
-  border-radius:8px;cursor:pointer;font-weight:700;font-family:'Tajawal',sans-serif;
-  width:100%;transition:all .2s;font-size:0.95rem;
-}
-
+/* BUTTONS */
+.btn-add{background:var(--success);color:#fff;padding:12px 24px;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-family:'Tajawal',sans-serif;width:100%;transition:all .2s;font-size:0.95rem;}
 .btn-add:active{transform:scale(0.98);}
-
-.btn-pdf{
-  background:var(--error);color:#fff;padding:12px 24px;border:none;
-  border-radius:8px;cursor:pointer;font-weight:700;font-family:'Tajawal',sans-serif;
-  width:100%;margin-top:16px;font-size:0.95rem;transition:all .2s;
-}
-
+.btn-pdf{background:var(--error);color:#fff;padding:12px 24px;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-family:'Tajawal',sans-serif;width:100%;margin-top:16px;font-size:0.95rem;transition:all .2s;}
 .btn-pdf:active{transform:scale(0.98);}
+.btn-danger{background:var(--error);color:#fff;padding:12px 24px;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-family:'Tajawal',sans-serif;width:100%;font-size:0.95rem;transition:all .2s;}
+.btn-danger:active{transform:scale(0.98);}
 
-/* ========== ITEMS ========== */
-.item{
-  background:var(--bg);border:1px solid var(--border);border-radius:8px;
-  padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:all .2s;
-  display:flex;justify-content:space-between;align-items:center;
-}
-
+/* ITEMS */
+.item{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:all .2s;display:flex;justify-content:space-between;align-items:center;}
 .item:hover{border-color:var(--primary);background:#f9f9f9;}
 .item.open{background:var(--primary-light);color:#fff;border-color:var(--primary);}
-
 .item-header{flex:1;font-weight:700;font-size:0.95rem;}
 .item-toggle{font-size:1.1rem;transition:transform .3s;}
 .item.open .item-toggle{transform:rotate(180deg);}
-
-.item-details{
-  display:none;margin-top:10px;padding-top:10px;
-  border-top:1px solid rgba(0,0,0,0.1);
-}
-
+.item-details{display:none;margin-top:10px;padding-top:10px;border-top:1px solid rgba(0,0,0,0.1);}
 .item.open .item-details{display:block;}
-
 .detail-row{display:flex;gap:8px;margin-bottom:6px;font-size:0.85rem;}
 .detail-label{font-weight:700;min-width:60px;}
-
-.btn-delete{
-  background:var(--error);color:#fff;padding:6px 12px;border:none;
-  border-radius:6px;cursor:pointer;font-size:0.8rem;font-weight:700;
-  transition:all .2s;
-}
-
+.btn-delete{background:var(--error);color:#fff;padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-size:0.8rem;font-weight:700;transition:all .2s;}
 .btn-delete:active{transform:scale(0.95);}
 
-/* ========== TABLE ========== */
+/* TABLE */
 table{width:100%;border-collapse:collapse;font-size:0.85rem;margin-top:12px;}
-
 th,td{padding:10px;text-align:right;border-bottom:1px solid var(--border);}
-
-th{
-  background:linear-gradient(135deg,var(--primary),var(--primary-light));
-  color:#fff;font-weight:900;
-}
-
+th{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;font-weight:900;}
 tr:hover{background:var(--bg2);}
 
-/* ========== PAGINATION ========== */
-.pagination{
-  display:flex;gap:6px;justify-content:center;margin-top:14px;flex-wrap:wrap;
-}
-
-.pagination button{
-  padding:6px 10px;border:1px solid var(--border);border-radius:6px;
-  background:var(--bg);cursor:pointer;font-weight:700;font-size:0.9rem;
-  transition:all .2s;
-}
-
-.pagination button.active{
-  background:var(--primary);color:#fff;border-color:var(--primary);
-}
-
+/* PAGINATION */
+.pagination{display:flex;gap:6px;justify-content:center;margin-top:14px;flex-wrap:wrap;}
+.pagination button{padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);cursor:pointer;font-weight:700;font-size:0.9rem;transition:all .2s;}
+.pagination button.active{background:var(--primary);color:#fff;border-color:var(--primary);}
 .pagination button:active{transform:scale(0.95);}
 
-/* ========== EMPTY ========== */
+/* EMPTY */
 .empty{text-align:center;padding:30px;color:var(--muted);}
 
-/* ========== TOAST ========== */
-.toast{
-  position:fixed;bottom:20px;left:20px;background:var(--text);
-  color:var(--bg);padding:12px 20px;border-radius:8px;
-  font-weight:700;font-size:0.9rem;opacity:0;transform:translateY(20px);
-  transition:all .3s;z-index:100;
-}
-
+/* TOAST */
+.toast{position:fixed;bottom:20px;left:20px;background:var(--text);color:var(--bg);padding:12px 20px;border-radius:8px;font-weight:700;font-size:0.9rem;opacity:0;transform:translateY(20px);transition:all .3s;z-index:100;}
 .toast.show{opacity:1;transform:translateY(0);}
 
-/* ========== أداة قص الصور (Cropper Modal) ========== */
-.crop-overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:300;
-  display:none;align-items:center;justify-content:center;padding:16px;
-}
+/* CROP MODAL */
+.crop-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:300;display:none;align-items:center;justify-content:center;padding:16px;}
 .crop-overlay.open{display:flex;}
-
-.crop-box{
-  background:var(--bg);border-radius:14px;max-width:480px;width:100%;
-  max-height:90vh;overflow:hidden;display:flex;flex-direction:column;
-}
-
+.crop-box{background:var(--bg);border-radius:14px;max-width:480px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;}
 .crop-header{padding:16px 20px;border-bottom:1px solid var(--border);font-weight:900;}
-
-.crop-image-area{
-  flex:1;min-height:0;background:#1a1a1a;display:flex;align-items:center;justify-content:center;
-  max-height:400px;overflow:hidden;
-}
+.crop-image-area{flex:1;min-height:0;background:#1a1a1a;display:flex;align-items:center;justify-content:center;max-height:400px;overflow:hidden;}
 .crop-image-area img{display:block;max-width:100%;}
-
-.crop-actions{
-  padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px;
-}
-
-.crop-btn{
-  flex:1;padding:12px;border:none;border-radius:8px;cursor:pointer;
-  font-family:'Tajawal',sans-serif;font-weight:700;font-size:0.9rem;transition:all .2s;
-}
+.crop-actions{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px;}
+.crop-btn{flex:1;padding:12px;border:none;border-radius:8px;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;font-size:0.9rem;transition:all .2s;}
 .crop-btn:active{transform:scale(0.97);}
 .crop-btn-confirm{background:var(--success);color:#fff;}
 .crop-btn-cancel{background:var(--bg2);color:var(--text);border:1px solid var(--border);}
+
+/* رقم قابل للإضافة */
+.phone-entry{display:flex;gap:8px;align-items:flex-start;margin-bottom:10px;padding:12px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);}
+.phone-entry-fields{flex:1;display:flex;flex-direction:column;gap:6px;}
+.phone-entry input{margin:0;}
+.btn-remove-phone{background:var(--error);color:#fff;border:none;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:0.8rem;font-weight:700;flex-shrink:0;margin-top:2px;}
 
 @media(max-width:600px){
   .container{padding:16px 12px;}
@@ -257,125 +152,168 @@ tr:hover{background:var(--bg2);}
 </head>
 <body>
 
-<!-- ========== TOPBAR ========== -->
+<!-- TOPBAR -->
 <div class="topbar">
   <div class="topbar-brand">electrwni.link</div>
   <div class="topbar-btns">
-    <button class="btn btn-white" id="viewPageBtn" onclick="openMyPage()">صفحتك</button>
-    <button class="btn btn-logout" onclick="logout()">خروج</button>
+    <button class="btn btn-white" id="viewPageBtn" onclick="openMyPage()">صفحتك <span style="font-size:0.65rem;display:block;opacity:0.7;">My Page</span></button>
+    <button class="btn btn-logout" onclick="logout()">خروج <span style="font-size:0.65rem;display:block;opacity:0.8;">Logout</span></button>
   </div>
 </div>
 
-<!-- ========== شريط الرابط الكامل ========== -->
+<!-- شريط الرابط -->
 <div id="linkBar" style="background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;">
-  <span style="font-size:0.85rem;color:var(--text2);">رابط صفحتك:</span>
+  <span style="font-size:0.85rem;color:var(--text2);">رابطك / Your Link:</span>
   <span id="myFullLink" dir="ltr" style="font-family:'Space Mono',monospace;font-size:0.85rem;color:var(--primary);font-weight:700;direction:ltr;">—</span>
-  <button class="btn btn-white" style="color:var(--primary);border:1px solid var(--border);" onclick="copyMyLink()">نسخ الرابط</button>
+  <button class="btn btn-white" style="color:var(--primary);border:1px solid var(--border);" onclick="copyMyLink()">نسخ الرابط <span style="font-size:0.65rem;display:block;opacity:0.7;">Copy Link</span></button>
 </div>
 
-<!-- ========== CONTAINER ========== -->
 <div class="container">
 
-  <!-- ========== NAVIGATION ========== -->
+  <!-- TABS -->
   <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showPage('links',this)">الروابط</button>
-    <button class="nav-tab" onclick="showPage('socials',this)">تواصل </button>
-    <button class="nav-tab" onclick="showPage('design',this)">التصميم</button>
-    <button class="nav-tab" onclick="showPage('profile',this)">ملفي</button>
-    <button class="nav-tab" onclick="showPage('stats',this)">إحصائيات</button>
+    <button class="nav-tab active" onclick="showPage('links',this)">الروابط<span class="tab-sub">Links</span></button>
+    <button class="nav-tab" onclick="showPage('socials',this)">تواصل<span class="tab-sub">Contact</span></button>
+    <button class="nav-tab" onclick="showPage('design',this)">التصميم<span class="tab-sub">Design</span></button>
+    <button class="nav-tab" onclick="showPage('profile',this)">ملفي<span class="tab-sub">Profile</span></button>
+    <button class="nav-tab" onclick="showPage('stats',this)">إحصائيات<span class="tab-sub">Stats</span></button>
   </div>
 
-  <!-- ===== PAGE: LINKS ===== -->
+  <!-- PAGE: LINKS -->
   <div class="page active" id="page-links">
-    <!-- Box 1: Add Link -->
     <div class="expandable">
       <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
-        <div class="expandable-title"><div class="expandable-icon">+</div><span>أضف رابط</span></div>
+        <div class="expandable-title"><div class="expandable-icon">+</div><span>أضف رابط<span class="title-sub">Add Link</span></span></div>
         <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content" style="display:block;">
         <div class="form-row">
           <div class="form-group">
-            <label>الرقم (1-9) *</label>
+            <label>الرقم (1-9) <span class="lbl-sub">/ Number</span> *</label>
             <input type="number" id="linkNum" placeholder="1" min="1" max="9">
           </div>
           <div class="form-group">
-            <label>العنوان (20 حرف) *</label>
+            <label>العنوان <span class="lbl-sub">/ Title</span> *</label>
             <input type="text" id="linkTitle" placeholder="اكتب العنوان" maxlength="20">
           </div>
         </div>
         <div class="form-group">
-          <label>الوصف (اختياري)</label>
-          <textarea id="linkDesc" placeholder="وصف الرابط"></textarea>
+          <label>الوصف <span class="lbl-sub">/ Description (optional)</span></label>
+          <textarea id="linkDesc" placeholder="وصف الرابط / Link description"></textarea>
         </div>
         <div class="form-group">
-          <label>الرابط *</label>
+          <label>الرابط <span class="lbl-sub">/ URL</span> *</label>
           <input type="url" id="linkUrl" placeholder="https://example.com" dir="ltr">
         </div>
         <div class="form-group" style="display:flex;align-items:center;gap:8px;">
           <input type="checkbox" id="linkFeatured" style="width:auto;">
-          <label style="margin:0;">إضافة هذا الرابط لقسم "اخترنا لك"</label>
+          <label style="margin:0;">إضافة لقسم "اخترنا لك" <span class="lbl-sub">/ Add to "Picked for You"</span></label>
         </div>
-        <button class="btn-add" onclick="addLink()">إضافة الرابط</button>
+        <button class="btn-add" onclick="addLink()">إضافة الرابط · Add Link</button>
       </div>
     </div>
 
-    <!-- Box 2: Links Registry -->
     <div class="expandable">
       <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
-        <div class="expandable-title"><div class="expandable-icon">س</div><span>سجل الروابط</span></div>
+        <div class="expandable-title"><div class="expandable-icon">س</div><span>سجل الروابط<span class="title-sub">Links Registry</span></span></div>
         <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content" style="display:block;">
-        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">دراسة جدوى لجماهيرية وفاعلية نشاط روابطك</div>
+        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">دراسة جدوى لجماهيرية وفاعلية نشاط روابطك · Link performance analysis</div>
         <div id="linksRegistry"></div>
-        <button class="btn-pdf" onclick="goToStats()"> PDF</button>
+        <button class="btn-pdf" onclick="goToStats()">PDF</button>
       </div>
     </div>
   </div>
 
-  <!-- ===== PAGE: SOCIALS ===== -->
+  <!-- PAGE: SOCIALS / CONTACT -->
   <div class="page" id="page-socials">
+
+    <!-- حسابات التواصل الاجتماعي -->
     <div class="expandable">
       <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
-        <div class="expandable-title"><div class="expandable-icon">ح</div><span>تواصل </span></div>
+        <div class="expandable-title"><div class="expandable-icon">ح</div><span>حسابات التواصل<span class="title-sub">Social Accounts</span></span></div>
         <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content" style="display:block;">
-        <button class="btn-add" onclick="openSocialForm()" style="margin-bottom:16px;">إضافة حساب</button>
-        
+        <button class="btn-add" onclick="openSocialForm()" style="margin-bottom:16px;">إضافة حساب · Add Account</button>
         <div id="socialFormBox" style="display:none;margin-bottom:20px;padding:16px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);">
           <div class="form-group">
-            <label>اسم الحساب (مثال: X, انستقرام, تيك توك)</label>
-            <input type="text" id="socName" placeholder="اسم المنصة">
+            <label>اسم الحساب <span class="lbl-sub">/ Account Name (e.g. X, Instagram)</span></label>
+            <input type="text" id="socName" placeholder="اسم المنصة / Platform name">
           </div>
           <div class="form-group">
-            <label>رابط الحساب (URL)</label>
+            <label>رابط الحساب <span class="lbl-sub">/ Profile URL</span></label>
             <input type="url" id="socUrl" placeholder="https://x.com/username" dir="ltr">
           </div>
           <div class="form-group">
-            <label>أيقونة الحساب</label>
+            <label>أيقونة الحساب <span class="lbl-sub">/ Account Icon</span></label>
             <input type="file" id="socIcon" accept="image/*" onchange="previewSocIcon(this)">
             <div id="socIconPreview" style="margin-top:10px;display:none;">
               <img id="socIconImg" style="width:60px;height:60px;border-radius:14px;object-fit:cover;border:2px solid var(--border);">
             </div>
           </div>
           <div style="display:flex;gap:10px;">
-            <button class="btn-add" onclick="saveSocial()">حفظ الحساب</button>
-            <button class="btn-add" style="background:var(--muted);" onclick="closeSocialForm()">إلغاء</button>
+            <button class="btn-add" onclick="saveSocial()">حفظ · Save</button>
+            <button class="btn-add" style="background:var(--muted);" onclick="closeSocialForm()">إلغاء · Cancel</button>
           </div>
         </div>
-
         <div id="socialsRegistry"></div>
       </div>
     </div>
+
+    <!-- أرقام التواصل -->
+    <div class="expandable">
+      <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
+        <div class="expandable-title"><div class="expandable-icon">📞</div><span>أرقام التواصل<span class="title-sub">Phone Numbers</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content" style="display:block;">
+        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">تظهر في صفحتك العامة مع إمكانية الاتصال المباشر · Shown on your public page for direct calls</p>
+        <div id="phonesContainer"></div>
+        <button class="btn-add" onclick="addPhoneEntry()" style="background:var(--primary);margin-bottom:12px;">+ إضافة رقم · Add Number</button>
+        <button class="btn-add" onclick="savePhones()">حفظ الأرقام · Save Numbers</button>
+      </div>
+    </div>
+
+    <!-- الموقع الإلكتروني -->
+    <div class="expandable">
+      <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
+        <div class="expandable-title"><div class="expandable-icon">🌐</div><span>الموقع الإلكتروني<span class="title-sub">Website</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content" style="display:block;">
+        <div class="form-group">
+          <label>رابط موقعك أو متجرك <span class="lbl-sub">/ Your website or store URL</span></label>
+          <input type="url" id="websiteInput" placeholder="https://yoursite.com" dir="ltr">
+        </div>
+        <button class="btn-add" onclick="saveWebsite()">حفظ الموقع · Save Website</button>
+      </div>
+    </div>
+
+    <!-- الموقع الملاحي -->
+    <div class="expandable">
+      <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
+        <div class="expandable-title"><div class="expandable-icon">📍</div><span>الموقع الملاحي<span class="title-sub">Map Location</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content" style="display:block;">
+        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">يظهر في صفحتك كـ "خريطة موقعنا" مع رابط مباشر للخريطة · Shows as "Our Location" map link</p>
+        <div class="form-group">
+          <label>رابط خرائط Google أو Apple Maps <span class="lbl-sub">/ Google or Apple Maps link</span></label>
+          <input type="url" id="mapInput" placeholder="https://maps.google.com/..." dir="ltr">
+        </div>
+        <button class="btn-add" onclick="saveMap()">حفظ الموقع الملاحي · Save Map</button>
+      </div>
+    </div>
+
   </div>
 
-  <!-- ===== PAGE: DESIGN ===== -->
+  <!-- PAGE: DESIGN -->
   <div class="page" id="page-design">
     <div class="expandable">
       <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
-        <div class="expandable-title"><div class="expandable-icon">T</div><span>تصميم صفحتك</span></div>
+        <div class="expandable-title"><div class="expandable-icon">T</div><span>تصميم صفحتك<span class="title-sub">Page Design</span></span></div>
         <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content" style="display:block;">
@@ -384,75 +322,83 @@ tr:hover{background:var(--bg2);}
           <div id="avatarPreview" style="width:70px;height:70px;border-radius:50%;background:var(--bg);border:3px solid var(--primary-light);margin-top:-45px;display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--primary);font-size:1.5rem;overflow:hidden;">-</div>
         </div>
         <div class="form-group">
-          <label>صورة الغلاف</label>
+          <label>صورة الغلاف <span class="lbl-sub">/ Cover Image</span></label>
           <input type="file" id="bannerInput" accept="image/*" onchange="selectBanner(this)">
         </div>
         <div class="form-group">
-          <label>صورة البروفايل</label>
+          <label>صورة البروفايل <span class="lbl-sub">/ Profile Picture</span></label>
           <input type="file" id="avatarInput" accept="image/*" onchange="selectAvatar(this)">
         </div>
-
         <div class="form-group">
-          <label>لون صفحتك الشخصية</label>
+          <label>لون صفحتك <span class="lbl-sub">/ Page Color</span></label>
           <div id="colorPalette" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;"></div>
           <div style="display:flex;align-items:center;gap:10px;">
             <input type="color" id="colorPicker" value="#3d5af1" onchange="onColorPick(this.value)" style="width:50px;height:40px;padding:2px;cursor:pointer;">
             <input type="text" id="colorHexInput" placeholder="#3d5af1" maxlength="7" dir="ltr" onchange="onColorHexInput(this.value)" style="flex:1;font-family:'Space Mono',monospace;">
           </div>
         </div>
-
-        <button class="btn-add" onclick="saveDesign()" style="background:var(--primary);">حفظ التصميم</button>
+        <button class="btn-add" onclick="saveDesign()" style="background:var(--primary);">حفظ التصميم · Save Design</button>
       </div>
     </div>
   </div>
 
-  <!-- ===== PAGE: PROFILE ===== -->
+  <!-- PAGE: PROFILE -->
   <div class="page" id="page-profile">
     <div class="expandable">
       <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
-        <div class="expandable-title"><div class="expandable-icon">م</div><span>بيانات ملفي</span></div>
+        <div class="expandable-title"><div class="expandable-icon">م</div><span>بيانات ملفي<span class="title-sub">My Profile</span></span></div>
         <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content" style="display:block;">
         <div class="form-group">
-          <label>الاسم الكامل</label>
-          <input type="text" id="pfName" placeholder="اسمك">
+          <label>الاسم الكامل <span class="lbl-sub">/ Full Name</span></label>
+          <input type="text" id="pfName" placeholder="اسمك / Your name">
         </div>
         <div class="form-group">
-          <label>اسم المستخدم</label>
+          <label>اسم المستخدم <span class="lbl-sub">/ Username</span></label>
           <input type="text" id="pfUser" dir="ltr" disabled style="opacity:0.6;">
         </div>
         <div class="form-group">
-          <label>البريد</label>
+          <label>البريد الإلكتروني <span class="lbl-sub">/ Email</span></label>
           <input type="email" id="pfEmail" dir="ltr" disabled style="opacity:0.6;">
         </div>
         <div class="form-group">
-          <label>الجوال</label>
-          <input type="tel" id="pfPhone" dir="ltr">
+          <label>النبذة التعريفية <span class="lbl-sub">/ Bio</span></label>
+          <textarea id="pfBio" placeholder="عرّف نفسك / Introduce yourself"></textarea>
         </div>
-        <div class="form-group">
-          <label>النبذة</label>
-          <textarea id="pfBio" placeholder="عريف نفسك"></textarea>
+        <button class="btn-add" onclick="saveProfile()" style="background:var(--primary);">حفظ <span style="font-size:0.75rem;">/ Save</span></button>
+      </div>
+    </div>
+
+    <!-- حذف الحساب -->
+    <div class="expandable" style="border-color:#ffd0d8;">
+      <div class="expandable-header" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'" style="background:#fff5f7;">
+        <div class="expandable-title" style="color:var(--error);">
+          <div class="expandable-icon" style="background:var(--error);">🗑</div>
+          <span>حذف الحساب<span class="title-sub" style="color:#e8436a;">Delete Account</span></span>
         </div>
-        <div class="form-group">
-          <label>الموقع</label>
-          <input type="text" id="pfLocation">
-        </div>
-        <button class="btn-add" onclick="saveProfile()" style="background:var(--primary);">حفظ</button>
+        <div class="expandable-toggle" style="color:var(--error);">▼</div>
+      </div>
+      <div class="expandable-content" style="display:none;">
+        <p style="color:var(--error);font-size:0.9rem;margin-bottom:16px;line-height:1.6;">
+          ⚠️ سيتم حذف حسابك وجميع بياناتك وروابطك بشكل نهائي ولا يمكن التراجع عن هذا الإجراء.<br>
+          <span style="font-size:0.75rem;color:var(--muted);">Your account and all data will be permanently deleted. This action cannot be undone.</span>
+        </p>
+        <button class="btn-danger" onclick="deleteAccount()">حذف حسابي نهائياً · Delete My Account Permanently</button>
       </div>
     </div>
   </div>
 
-  <!-- ===== PAGE: STATISTICS ===== -->
+  <!-- PAGE: STATS -->
   <div class="page" id="page-stats">
     <div class="expandable">
       <div class="expandable-header open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
-        <div class="expandable-title"><div class="expandable-icon">إ</div><span>إحصائيات</span></div>
+        <div class="expandable-title"><div class="expandable-icon">إ</div><span>إحصائيات<span class="title-sub">Statistics</span></span></div>
         <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content" style="display:block;">
         <div class="form-group">
-          <label>عدد الروابط</label>
+          <label>عدد الروابط في الصفحة <span class="lbl-sub">/ Links per page</span></label>
           <select id="pageSize" onchange="updateStats()">
             <option value="10">10</option>
             <option value="25">25</option>
@@ -462,10 +408,16 @@ tr:hover{background:var(--bg2);}
         </div>
         <table>
           <thead>
-            <tr><th style="max-width:50px;">الرقم</th><th>العنوان</th><th>الوصف</th><th>الرابط</th><th style="max-width:60px;">المشاهدات</th></tr>
+            <tr>
+              <th style="max-width:50px;">الرقم<br><span style="font-size:0.65rem;font-weight:400;">#</span></th>
+              <th>العنوان<br><span style="font-size:0.65rem;font-weight:400;">Title</span></th>
+              <th>الوصف<br><span style="font-size:0.65rem;font-weight:400;">Desc</span></th>
+              <th>الرابط<br><span style="font-size:0.65rem;font-weight:400;">Link</span></th>
+              <th style="max-width:60px;">المشاهدات<br><span style="font-size:0.65rem;font-weight:400;">Views</span></th>
+            </tr>
           </thead>
           <tbody id="statsTbody">
-            <tr><td colspan="5" class="empty">لا توجد روابط</td></tr>
+            <tr><td colspan="5" class="empty">لا توجد روابط / No links</td></tr>
           </tbody>
         </table>
         <div class="pagination" id="pagination"></div>
@@ -475,29 +427,25 @@ tr:hover{background:var(--bg2);}
 
 </div>
 
-<!-- ========== TOAST ========== -->
+<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- ========== مودال قص الصورة ========== -->
+<!-- CROP MODAL -->
 <div class="crop-overlay" id="cropOverlay">
   <div class="crop-box">
-    <div class="crop-header" id="cropTitle">حدد منطقة الصورة</div>
-    <div class="crop-image-area">
-      <img id="cropImage" src="" alt="صورة للقص">
-    </div>
+    <div class="crop-header" id="cropTitle">حدد منطقة الصورة / Crop Image</div>
+    <div class="crop-image-area"><img id="cropImage" src="" alt="crop"></div>
     <div class="crop-actions">
-      <button class="crop-btn crop-btn-confirm" onclick="confirmCrop()">تأكيد واستخدام</button>
-      <button class="crop-btn crop-btn-cancel" onclick="cancelCrop()">إلغاء</button>
+      <button class="crop-btn crop-btn-confirm" onclick="confirmCrop()">تأكيد · Confirm</button>
+      <button class="crop-btn crop-btn-cancel" onclick="cancelCrop()">إلغاء · Cancel</button>
     </div>
   </div>
 </div>
 
-<!-- ========== FIREBASE ========== -->
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-
-<!-- ========== CROPPER.JS (أداة قص الصور) ========== -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 
 <script>
@@ -506,13 +454,10 @@ if(!firebase.apps.length)firebase.initializeApp(cfg);
 const auth=firebase.auth();
 const db=firebase.firestore();
 
-// ========================================================================
-// هوية المستخدم بالكامل تُشتق من auth.currentUser.uid فقط.
-// لا نثق بـ localStorage كمصدر هوية إطلاقاً — هو فقط cache للعرض.
-// ========================================================================
 let currentUid=null;
 let user=null,allLinks=[],currentPage=1;
 let allSocials=[],pendingSocIcon=null;
+let phoneEntries=[];
 
 function toast(msg){
   const el=document.getElementById('toast');
@@ -521,20 +466,9 @@ function toast(msg){
   setTimeout(()=>el.classList.remove('show'),3000);
 }
 
-// ========== بوابة المصادقة الحقيقية ==========
 auth.onAuthStateChanged(async (fbUser)=>{
-  if(!fbUser){
-    // لا يوجد جلسة Firebase حقيقية ->ارجع لتسجيل الدخول دائماً
-    localStorage.removeItem('elUserUsername');
-    window.location.href='signin.html';
-    return;
-  }
-  if(!fbUser.emailVerified){
-    toast('يرجى تأكيد بريدك أولاً');
-    await auth.signOut();
-    window.location.href='signin.html';
-    return;
-  }
+  if(!fbUser){localStorage.removeItem('elUserUsername');window.location.href='signin.html';return;}
+  if(!fbUser.emailVerified){toast('يرجى تأكيد بريدك أولاً');await auth.signOut();window.location.href='signin.html';return;}
   currentUid=fbUser.uid;
   await loadUserData();
 });
@@ -543,26 +477,20 @@ async function loadUserData(){
   try{
     const ref=db.collection('users').doc(currentUid);
     const doc=await ref.get();
-    if(!doc.exists){
-      toast('بيانات الحساب غير موجودة');
-      await auth.signOut();
-      window.location.href='signin.html';
-      return;
-    }
-
+    if(!doc.exists){toast('بيانات الحساب غير موجودة');await auth.signOut();window.location.href='signin.html';return;}
     user=doc.data();
-    localStorage.setItem('elUserUsername',user.username); // cache فقط، ليس مصدر الهوية
-
+    localStorage.setItem('elUserUsername',user.username);
     allLinks=(user.links||[]).sort((a,b)=>a.num-b.num);
     allSocials=user.socials||[];
+    phoneEntries=user.phones||[];
 
     document.getElementById('pfUser').value=user.username||'';
     document.getElementById('myFullLink').textContent='electrwni.link/page.html#'+user.username;
     document.getElementById('pfEmail').value=user.email||'';
     document.getElementById('pfName').value=user.displayName||'';
-    document.getElementById('pfPhone').value=user.phone||'';
     document.getElementById('pfBio').value=user.bio||'';
-    document.getElementById('pfLocation').value=user.location||'';
+    document.getElementById('websiteInput').value=user.website||'';
+    document.getElementById('mapInput').value=user.mapUrl||'';
 
     if(user.bannerImage)document.getElementById('bannerPreview').style.backgroundImage=`url(${user.bannerImage})`;
     if(user.avatar){
@@ -575,43 +503,32 @@ async function loadUserData(){
     document.getElementById('colorPicker').value=selectedThemeColor;
     document.getElementById('colorHexInput').value=selectedThemeColor;
     renderColorPalette();
-
     renderRegistry();
     renderStats();
     renderSocials();
+    renderPhones();
 
-    // مزامنة فورية: أي تغيير بقاعدة البيانات (من جهاز آخر مثلاً) ينعكس هنا تلقائياً
     ref.onSnapshot(d=>{
       if(d.exists){
         user=d.data();
         allLinks=(user.links||[]).sort((a,b)=>a.num-b.num);
         allSocials=user.socials||[];
+        phoneEntries=user.phones||[];
         renderRegistry();
         renderStats();
         renderSocials();
+        renderPhones();
       }
     });
-
-  }catch(e){
-    console.error('loadUserData error:',e);
-    toast('خطأ بتحميل البيانات: '+e.message);
-  }
+  }catch(e){console.error('loadUserData error:',e);toast('خطأ بتحميل البيانات: '+e.message);}
 }
 
-// ========== دالة حفظ موحّدة، تستخدم uid الحقيقي دائماً ==========
 async function saveField(fields){
   if(!currentUid){toast('لست مسجل دخول');return false;}
-  try{
-    await db.collection('users').doc(currentUid).update(fields);
-    return true;
-  }catch(e){
-    console.error('saveField error:',e);
-    toast('فشل الحفظ: '+e.message);
-    return false;
-  }
+  try{await db.collection('users').doc(currentUid).update(fields);return true;}
+  catch(e){console.error('saveField error:',e);toast('فشل الحفظ: '+e.message);return false;}
 }
 
-// ========== التنقل بين الصفحات ==========
 function showPage(n,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
@@ -619,27 +536,23 @@ function showPage(n,el){
   if(el)el.classList.add('active');
 }
 
-// ========== سجل الروابط ==========
+// ========== LINKS ==========
 function renderRegistry(){
-  if(!allLinks.length){
-    document.getElementById('linksRegistry').innerHTML='<div class="empty">لا توجد روابط</div>';
-    return;
-  }
+  if(!allLinks.length){document.getElementById('linksRegistry').innerHTML='<div class="empty">لا توجد روابط / No links</div>';return;}
   document.getElementById('linksRegistry').innerHTML=allLinks.map(l=>`
     <div class="item" onclick="this.classList.toggle('open')">
       <div style="flex:1;">
         <div class="item-header">${l.num} — ${l.label}${l.featured?' <span style="font-size:0.7rem;background:var(--primary);color:#fff;padding:2px 6px;border-radius:6px;">مميّز</span>':''}</div>
         <div class="item-details">
           <div class="detail-row"><span class="detail-label">الوصف:</span> ${l.desc||'-'}</div>
-          <div class="detail-row"><span class="detail-label">الرابط:</span> <a href="${l.url}" target="_blank" style="color:var(--primary);">فتح</a></div>
+          <div class="detail-row"><span class="detail-label">الرابط:</span> <a href="${l.url}" target="_blank" style="color:var(--primary);">فتح · Open</a></div>
           <div class="detail-row"><span class="detail-label">المشاهدات:</span> ${l.clicks||0}</div>
-          <button class="btn-delete" onclick="toggleFeatured(${l.id},event)" style="margin-top:8px;background:var(--primary);">${l.featured?'إلغاء التمييز':'تمييز كـ اخترنا لك'}</button>
-          <button class="btn-delete" onclick="deleteLink(${l.id},event)" style="margin-top:8px;">حذف</button>
+          <button class="btn-delete" onclick="toggleFeatured(${l.id},event)" style="margin-top:8px;background:var(--primary);">${l.featured?'إلغاء التمييز · Remove Featured':'تمييز كـ اخترنا لك · Feature'}</button>
+          <button class="btn-delete" onclick="deleteLink(${l.id},event)" style="margin-top:8px;">حذف · Delete</button>
         </div>
       </div>
       <div class="item-toggle">▼</div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
 async function toggleFeatured(id,event){
@@ -653,38 +566,67 @@ async function toggleFeatured(id,event){
   if(ok)toast(link.featured?'تم التمييز':'تم إلغاء التمييز');
 }
 
+async function addLink(){
+  const num=parseInt(document.getElementById('linkNum').value);
+  const title=document.getElementById('linkTitle').value.trim();
+  const desc=document.getElementById('linkDesc').value.trim();
+  const url=document.getElementById('linkUrl').value.trim();
+  const featured=document.getElementById('linkFeatured').checked;
+  if(!num||num<1||num>9){toast('الرقم يجب أن يكون بين 1 و 9');return;}
+  if(!title){toast('العنوان إلزامي');return;}
+  if(title.length<2){toast('العنوان قصير جداً');return;}
+  if(!url){toast('الرابط إلزامي');return;}
+  try{new URL(url);}catch(_){toast('صيغة الرابط غير صحيحة (يجب أن يبدأ بـ https://)');return;}
+  const exist=allLinks.find(l=>l.num===num);
+  if(exist)allLinks=allLinks.filter(l=>l.id!==exist.id);
+  allLinks.push({id:Date.now(),num,label:title,desc,url,featured,clicks:0});
+  document.getElementById('linkNum').value='';
+  document.getElementById('linkTitle').value='';
+  document.getElementById('linkDesc').value='';
+  document.getElementById('linkUrl').value='';
+  document.getElementById('linkFeatured').checked=false;
+  toast('جاري الحفظ...');
+  const ok=await saveField({links:allLinks});
+  if(ok)toast('تمت إضافة الرابط!');
+}
+
+async function deleteLink(id,event){
+  event.stopPropagation();
+  if(!confirm('حذف هذا الرابط؟ / Delete this link?'))return;
+  const backup=allLinks;
+  allLinks=allLinks.filter(l=>l.id!==id);
+  renderRegistry();renderStats();
+  toast('جاري الحذف...');
+  const ok=await saveField({links:allLinks});
+  if(ok)toast('تم الحذف!');
+  else allLinks=backup;
+}
+
+// ========== STATS ==========
 function renderStats(){
   currentPage=1;
   const ps=parseInt(document.getElementById('pageSize').value)||10;
   const totalPages=Math.ceil(allLinks.length/ps)||1;
   const start=(currentPage-1)*ps;
   const pageLinks=allLinks.slice(start,start+ps);
-
   if(!allLinks.length){
-    document.getElementById('statsTbody').innerHTML='<tr><td colspan="5" class="empty">لا توجد روابط</td></tr>';
+    document.getElementById('statsTbody').innerHTML='<tr><td colspan="5" class="empty">لا توجد روابط / No links</td></tr>';
     document.getElementById('pagination').innerHTML='';
     return;
   }
-
   document.getElementById('statsTbody').innerHTML=pageLinks.map(l=>`
     <tr>
       <td><strong>${l.num}</strong></td>
       <td>${l.label}</td>
       <td>${(l.desc||'').substring(0,20)}</td>
-      <td><a href="${l.url}" target="_blank" style="color:var(--primary);">رابط</a></td>
+      <td><a href="${l.url}" target="_blank" style="color:var(--primary);">رابط · Link</a></td>
       <td>${l.clicks||0}</td>
-    </tr>
-  `).join('');
-
+    </tr>`).join('');
   let paginationHtml='';
-  for(let i=1;i<=totalPages;i++){
-    paginationHtml+=`<button ${i===currentPage?'class="active"':''} onclick="goPage(${i})">${i}</button>`;
-  }
+  for(let i=1;i<=totalPages;i++)paginationHtml+=`<button ${i===currentPage?'class="active"':''} onclick="goPage(${i})">${i}</button>`;
   document.getElementById('pagination').innerHTML=paginationHtml;
 }
-
 function updateStats(){renderStats();}
-
 function goPage(page){
   currentPage=page;
   const ps=parseInt(document.getElementById('pageSize').value)||10;
@@ -697,90 +639,15 @@ function goPage(page){
       <td>${(l.desc||'').substring(0,20)}</td>
       <td><a href="${l.url}" target="_blank" style="color:var(--primary);">رابط</a></td>
       <td>${l.clicks||0}</td>
-    </tr>
-  `).join('');
+    </tr>`).join('');
   document.querySelectorAll('.pagination button').forEach((b,i)=>b.classList.toggle('active',i+1===page));
   document.querySelector('table').scrollIntoView({behavior:'smooth'});
 }
+function goToStats(){showPage('stats',document.querySelectorAll('.nav-tab')[4]);window.scrollTo({top:0,behavior:'smooth'});}
 
-function goToStats(){
-  showPage('stats',document.querySelectorAll('.nav-tab')[3]);
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-// ========== إضافة/حذف رابط ==========
-async function addLink(){
-  const num=parseInt(document.getElementById('linkNum').value);
-  const title=document.getElementById('linkTitle').value.trim();
-  const desc=document.getElementById('linkDesc').value.trim();
-  const url=document.getElementById('linkUrl').value.trim();
-  const featured=document.getElementById('linkFeatured').checked;
-
-  if(!num||num<1||num>9){toast('الرقم يجب أن يكون بين 1 و 9');return;}
-  if(!title){toast('العنوان إلزامي، اكتب عنواناً للرابط');return;}
-  if(title.length<2){toast('العنوان قصير جداً');return;}
-  if(!url){toast('الرابط إلزامي، اكتب الرابط');return;}
-  try{ new URL(url); }catch(_){ toast('صيغة الرابط غير صحيحة (يجب أن يبدأ بـ https://)');return; }
-
-  const exist=allLinks.find(l=>l.num===num);
-  if(exist)allLinks=allLinks.filter(l=>l.id!==exist.id);
-  allLinks.push({id:Date.now(),num,label:title,desc,url,featured,clicks:0});
-
-  document.getElementById('linkNum').value='';
-  document.getElementById('linkTitle').value='';
-  document.getElementById('linkDesc').value='';
-  document.getElementById('linkUrl').value='';
-  document.getElementById('linkFeatured').checked=false;
-
-  toast('جاري الحفظ...');
-  const ok=await saveField({links:allLinks});
-  if(ok)toast('تمت إضافة الرابط!');
-}
-
-async function deleteLink(id,event){
-  event.stopPropagation();
-  if(!confirm('حذف هذا الرابط؟'))return;
-  const backup=allLinks;
-  allLinks=allLinks.filter(l=>l.id!==id);
-  renderRegistry();renderStats();
-  toast('جاري الحذف...');
-  const ok=await saveField({links:allLinks});
-  if(ok)toast('تم الحذف!');
-  else allLinks=backup;
-}
-
-// ========== حسابات التواصل ==========
-function openSocialForm(){
-  document.getElementById('socName').value='';
-  document.getElementById('socUrl').value='';
-  document.getElementById('socIcon').value='';
-  document.getElementById('socIconPreview').style.display='none';
-  pendingSocIcon=null;
-  document.getElementById('socialFormBox').style.display='block';
-}
-
-function closeSocialForm(){
-  document.getElementById('socialFormBox').style.display='none';
-  pendingSocIcon=null;
-}
-
-function previewSocIcon(inp){
-  const f=inp.files[0];
-  if(!f)return;
-  const r=new FileReader();
-  r.onload=e=>{
-    pendingSocIcon=e.target.result;
-    document.getElementById('socIconImg').src=pendingSocIcon;
-    document.getElementById('socIconPreview').style.display='block';
-  };
-  r.readAsDataURL(f);
-}
-
+// ========== SOCIALS ==========
 function renderSocials(){
-  if(!allSocials.length){
-    document.getElementById('socialsRegistry').innerHTML='<div class="empty">لا توجد حسابات بعد</div>';
-    return;
-  }
+  if(!allSocials.length){document.getElementById('socialsRegistry').innerHTML='<div class="empty">لا توجد حسابات بعد / No accounts yet</div>';return;}
   document.getElementById('socialsRegistry').innerHTML=allSocials.map(s=>`
     <div class="item" style="cursor:default;">
       <div style="display:flex;align-items:center;gap:12px;flex:1;">
@@ -792,222 +659,194 @@ function renderSocials(){
           <div style="font-size:0.75rem;color:var(--muted);direction:ltr;text-align:right;word-break:break-all;">${s.url}</div>
         </div>
       </div>
-      <button class="btn-delete" onclick="deleteSocial('${s.id}')"></button>
-    </div>
-  `).join('');
+      <button class="btn-delete" onclick="deleteSocial('${s.id}')">حذف</button>
+    </div>`).join('');
 }
-
+function openSocialForm(){
+  document.getElementById('socName').value='';document.getElementById('socUrl').value='';
+  document.getElementById('socIcon').value='';document.getElementById('socIconPreview').style.display='none';
+  pendingSocIcon=null;document.getElementById('socialFormBox').style.display='block';
+}
+function closeSocialForm(){document.getElementById('socialFormBox').style.display='none';pendingSocIcon=null;}
+function previewSocIcon(inp){
+  const f=inp.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{pendingSocIcon=e.target.result;document.getElementById('socIconImg').src=pendingSocIcon;document.getElementById('socIconPreview').style.display='block';};
+  r.readAsDataURL(f);
+}
 async function saveSocial(){
   const name=document.getElementById('socName').value.trim();
   const url=document.getElementById('socUrl').value.trim();
   if(!name){toast('اكتب اسم الحساب');return;}
   if(!url){toast('اكتب رابط الحساب');return;}
-  try{ new URL(url); }catch(_){ toast('صيغة الرابط غير صحيحة');return; }
-
+  try{new URL(url);}catch(_){toast('صيغة الرابط غير صحيحة');return;}
   allSocials.push({id:Date.now()+'',name,url,icon:pendingSocIcon||''});
-  closeSocialForm();
-  toast('جاري الحفظ...');
+  closeSocialForm();toast('جاري الحفظ...');
   const ok=await saveField({socials:allSocials});
   if(ok)toast('تمت إضافة الحساب!');
 }
-
 async function deleteSocial(id){
-  if(!confirm('حذف هذا الحساب؟'))return;
-  const backup=allSocials;
-  allSocials=allSocials.filter(s=>s.id!==id);
-  renderSocials();
-  toast('جاري الحذف...');
+  if(!confirm('حذف هذا الحساب؟ / Delete this account?'))return;
+  const backup=allSocials;allSocials=allSocials.filter(s=>s.id!==id);renderSocials();toast('جاري الحذف...');
   const ok=await saveField({socials:allSocials});
-  if(ok)toast('تم الحذف!');
-  else allSocials=backup;
+  if(ok)toast('تم الحذف!');else allSocials=backup;
 }
 
-// ========== التصميم (الغلاف والصورة الشخصية) ==========
-// ========== أداة قص الصور ==========
-let cropperInstance=null;
-let cropTargetType=null; // 'banner' أو 'avatar'
-
-function selectBanner(inp){
-  const f=inp.files[0];
-  if(!f)return;
-  if(f.size>5*1024*1024){toast('الصورة كبيرة جداً (الحد الأقصى 5MB)');inp.value='';return;}
-  cropTargetType='banner';
-  openCropper(f,3/1,'حدد منطقة صورة الغلاف');
+// ========== PHONES ==========
+function renderPhones(){
+  const c=document.getElementById('phonesContainer');
+  c.innerHTML='';
+  phoneEntries.forEach((p,i)=>{
+    const div=document.createElement('div');
+    div.className='phone-entry';
+    div.innerHTML=`
+      <div class="phone-entry-fields">
+        <input type="text" placeholder="التسمية · Label (e.g. واتساب, مبيعات)" value="${p.label||''}" oninput="phoneEntries[${i}].label=this.value">
+        <input type="tel" dir="ltr" placeholder="+965XXXXXXXX" value="${p.number||''}" oninput="phoneEntries[${i}].number=this.value">
+      </div>
+      <button class="btn-remove-phone" onclick="removePhone(${i})">✕</button>`;
+    c.appendChild(div);
+  });
+}
+function addPhoneEntry(){
+  phoneEntries.push({label:'',number:''});
+  renderPhones();
+  // scroll to last entry
+  const c=document.getElementById('phonesContainer');
+  if(c.lastChild)c.lastChild.scrollIntoView({behavior:'smooth'});
+}
+function removePhone(i){
+  phoneEntries.splice(i,1);renderPhones();
+}
+async function savePhones(){
+  const cleaned=phoneEntries.filter(p=>p.number.trim());
+  toast('جاري الحفظ...');
+  const ok=await saveField({phones:cleaned});
+  if(ok){phoneEntries=cleaned;renderPhones();toast('تم حفظ الأرقام!');}
 }
 
-function selectAvatar(inp){
-  const f=inp.files[0];
-  if(!f)return;
-  if(f.size>5*1024*1024){toast('الصورة كبيرة جداً (الحد الأقصى 5MB)');inp.value='';return;}
-  cropTargetType='avatar';
-  openCropper(f,1/1,'حدد منطقة الصورة الشخصية');
+// ========== WEBSITE ==========
+async function saveWebsite(){
+  const url=document.getElementById('websiteInput').value.trim();
+  if(url){try{new URL(url);}catch(_){toast('صيغة الرابط غير صحيحة');return;}}
+  toast('جاري الحفظ...');
+  const ok=await saveField({website:url});
+  if(ok)toast('تم حفظ الموقع الإلكتروني!');
 }
 
+// ========== MAP ==========
+async function saveMap(){
+  const url=document.getElementById('mapInput').value.trim();
+  if(url){try{new URL(url);}catch(_){toast('صيغة الرابط غير صحيحة');return;}}
+  toast('جاري الحفظ...');
+  const ok=await saveField({mapUrl:url});
+  if(ok)toast('تم حفظ الموقع الملاحي!');
+}
+
+// ========== DESIGN ==========
+let cropperInstance=null,cropTargetType=null;
+function selectBanner(inp){const f=inp.files[0];if(!f)return;if(f.size>5*1024*1024){toast('الصورة كبيرة جداً (الحد الأقصى 5MB)');inp.value='';return;}cropTargetType='banner';openCropper(f,3/1,'حدد منطقة صورة الغلاف / Crop Cover');}
+function selectAvatar(inp){const f=inp.files[0];if(!f)return;if(f.size>5*1024*1024){toast('الصورة كبيرة جداً (الحد الأقصى 5MB)');inp.value='';return;}cropTargetType='avatar';openCropper(f,1/1,'حدد منطقة الصورة الشخصية / Crop Avatar');}
 function openCropper(file,aspectRatio,title){
   const reader=new FileReader();
   reader.onload=e=>{
     document.getElementById('cropTitle').textContent=title;
-    const img=document.getElementById('cropImage');
-    img.src=e.target.result;
+    const img=document.getElementById('cropImage');img.src=e.target.result;
     document.getElementById('cropOverlay').classList.add('open');
-
     if(cropperInstance){cropperInstance.destroy();cropperInstance=null;}
-
-    // ننتظر تحميل الصورة فعلياً بالـ DOM قبل تفعيل Cropper عليها
-    img.onload=()=>{
-      cropperInstance=new Cropper(img,{
-        aspectRatio:aspectRatio,
-        viewMode:1,
-        autoCropArea:1,
-        background:false,
-        responsive:true,
-      });
-    };
+    img.onload=()=>{cropperInstance=new Cropper(img,{aspectRatio,viewMode:1,autoCropArea:1,background:false,responsive:true});};
   };
   reader.readAsDataURL(file);
 }
-
 function cancelCrop(){
   if(cropperInstance){cropperInstance.destroy();cropperInstance=null;}
-  document.getElementById('cropOverlay').classList.remove('open');
-  document.getElementById('cropImage').src='';
-  // نفرّغ حقل الملف عشان لو المستخدم يحاول يرفع نفس الملف مرة ثانية يشتغل onchange
+  document.getElementById('cropOverlay').classList.remove('open');document.getElementById('cropImage').src='';
   if(cropTargetType==='banner')document.getElementById('bannerInput').value='';
   if(cropTargetType==='avatar')document.getElementById('avatarInput').value='';
   cropTargetType=null;
 }
-
 async function confirmCrop(){
   if(!cropperInstance){toast('حدث خطأ بأداة القص');return;}
-
-  // نحدد دقة إخراج مناسبة: البنر عريض، الأفتار مربع صغير، عشان الحجم بقاعدة البيانات يبقى معقول
   const outputWidth=cropTargetType==='banner'?900:400;
-  const canvas=cropperInstance.getCroppedCanvas({
-    width:outputWidth,
-    imageSmoothingQuality:'high',
-  });
-
+  const canvas=cropperInstance.getCroppedCanvas({width:outputWidth,imageSmoothingQuality:'high'});
   const dataUrl=canvas.toDataURL('image/jpeg',0.85);
-
-  cropperInstance.destroy();
-  cropperInstance=null;
-  document.getElementById('cropOverlay').classList.remove('open');
-  document.getElementById('cropImage').src='';
-
+  cropperInstance.destroy();cropperInstance=null;
+  document.getElementById('cropOverlay').classList.remove('open');document.getElementById('cropImage').src='';
   if(cropTargetType==='banner'){
-    user.bannerImage=dataUrl;
-    document.getElementById('bannerPreview').style.backgroundImage=`url(${dataUrl})`;
-    document.getElementById('bannerInput').value='';
-    toast('جاري الحفظ...');
-    const ok=await saveField({bannerImage:dataUrl});
-    if(ok)toast('تم حفظ الغلاف!');
+    user.bannerImage=dataUrl;document.getElementById('bannerPreview').style.backgroundImage=`url(${dataUrl})`;document.getElementById('bannerInput').value='';
+    toast('جاري الحفظ...');const ok=await saveField({bannerImage:dataUrl});if(ok)toast('تم حفظ الغلاف!');
   }else if(cropTargetType==='avatar'){
-    user.avatar=dataUrl;
-    document.getElementById('avatarPreview').innerHTML=`<img src="${dataUrl}" style="width:100%;height:100%;object-fit:cover;">`;
-    document.getElementById('avatarInput').value='';
-    toast('جاري الحفظ...');
-    const ok=await saveField({avatar:dataUrl});
-    if(ok)toast('تم حفظ الصورة الشخصية!');
+    user.avatar=dataUrl;document.getElementById('avatarPreview').innerHTML=`<img src="${dataUrl}" style="width:100%;height:100%;object-fit:cover;">`;document.getElementById('avatarInput').value='';
+    toast('جاري الحفظ...');const ok=await saveField({avatar:dataUrl});if(ok)toast('تم حفظ الصورة الشخصية!');
   }
   cropTargetType=null;
 }
 
-// ========== لون صفحة المستخدم ==========
 const THEME_COLORS=['#3d5af1','#e8436a','#0ab87a','#ff9f43','#9b59b6','#16a085','#2c3e50','#d35400'];
 let selectedThemeColor='#3d5af1';
-
 function renderColorPalette(){
   document.getElementById('colorPalette').innerHTML=THEME_COLORS.map(c=>
     `<button onclick="onColorPick('${c}')" style="width:32px;height:32px;border-radius:8px;border:2px solid ${c===selectedThemeColor?'var(--text)':'transparent'};background:${c};cursor:pointer;"></button>`
   ).join('');
 }
-
-function onColorPick(hex){
-  selectedThemeColor=hex;
-  document.getElementById('colorPicker').value=hex;
-  document.getElementById('colorHexInput').value=hex;
-  renderColorPalette();
-}
-
+function onColorPick(hex){selectedThemeColor=hex;document.getElementById('colorPicker').value=hex;document.getElementById('colorHexInput').value=hex;renderColorPalette();}
 function onColorHexInput(val){
-  let hex=val.trim();
-  if(!hex.startsWith('#'))hex='#'+hex;
-  if(!/^#[0-9A-Fa-f]{6}$/.test(hex)){
-    toast('كود اللون غير صحيح، الصيغة الصحيحة مثل: #3d5af1');
-    document.getElementById('colorHexInput').value=selectedThemeColor;
-    return;
-  }
+  let hex=val.trim();if(!hex.startsWith('#'))hex='#'+hex;
+  if(!/^#[0-9A-Fa-f]{6}$/.test(hex)){toast('كود اللون غير صحيح، الصيغة: #3d5af1');document.getElementById('colorHexInput').value=selectedThemeColor;return;}
   onColorPick(hex);
 }
-
 async function saveDesign(){
   toast('جاري الحفظ...');
   const ok=await saveField({bannerImage:user.bannerImage||'',avatar:user.avatar||'',themeColor:selectedThemeColor});
-  if(ok){
-    user.themeColor=selectedThemeColor;
-    toast('تم حفظ التصميم!');
-  }
+  if(ok){user.themeColor=selectedThemeColor;toast('تم حفظ التصميم!');}
 }
 
-// ========== الملف الشخصي ==========
+// ========== PROFILE ==========
 async function saveProfile(){
   const displayName=document.getElementById('pfName').value.trim();
-  const phone=document.getElementById('pfPhone').value.trim();
   const bio=document.getElementById('pfBio').value.trim();
-  const location=document.getElementById('pfLocation').value.trim();
-
   toast('جاري الحفظ...');
-  const ok=await saveField({displayName,phone,bio,location});
-  if(ok){
-    user.displayName=displayName;user.phone=phone;user.bio=bio;user.location=location;
-    toast('تم حفظ ملفك الشخصي!');
-  }
+  const ok=await saveField({displayName,bio});
+  if(ok){user.displayName=displayName;user.bio=bio;toast('تم حفظ ملفك الشخصي!');}
 }
 
-// ========== تسجيل الخروج الحقيقي ==========
-function openMyPage(){
-  if(!user||!user.username){toast('جاري التحميل، حاول بعد لحظة');return;}
-  window.open('page.html#'+user.username,'_blank');
-}
-
-function copyMyLink(){
-  if(!user||!user.username){toast('جاري التحميل، حاول بعد لحظة');return;}
-  const link='https://electrwni.link/page.html#'+user.username;
-  if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(link).then(()=>{
-      toast('تم نسخ الرابط');
-    }).catch(()=>{
-      fallbackCopy(link);
-    });
-  }else{
-    fallbackCopy(link);
-  }
-}
-
-function fallbackCopy(text){
-  const ta=document.createElement('textarea');
-  ta.value=text;
-  ta.style.position='fixed';
-  ta.style.opacity='0';
-  document.body.appendChild(ta);
-  ta.select();
+// ========== DELETE ACCOUNT ==========
+async function deleteAccount(){
+  const confirm1=confirm('⚠️ هل أنت متأكد؟ سيتم حذف حسابك نهائياً\nAre you sure? Your account will be permanently deleted.');
+  if(!confirm1)return;
+  const confirm2=confirm('تأكيد أخير: هذا الإجراء لا يمكن التراجع عنه.\nFinal confirmation: This cannot be undone.');
+  if(!confirm2)return;
+  toast('جاري حذف الحساب...');
   try{
-    document.execCommand('copy');
-    toast('تم نسخ الرابط');
-  }catch(e){
-    toast('تعذر النسخ، انسخه يدوياً: '+text);
-  }
-  document.body.removeChild(ta);
-}
-
-function logout(){
-  if(!confirm('هل تريد تسجيل الخروج؟'))return;
-  auth.signOut().then(()=>{
+    await db.collection('users').doc(currentUid).delete();
+    // حذف index يوزرنيم إن وجد
+    if(user&&user.username){
+      try{await db.collection('usernames').doc(user.username).delete();}catch(_){}
+    }
+    await auth.currentUser.delete();
     localStorage.removeItem('elUserUsername');
     window.location.href='index.html';
-  }).catch(e=>{
-    toast('خطأ بتسجيل الخروج: '+e.message);
-  });
+  }catch(e){
+    toast('خطأ بحذف الحساب: '+e.message);
+  }
+}
+
+// ========== MISC ==========
+function openMyPage(){if(!user||!user.username){toast('جاري التحميل...');return;}window.open('page.html#'+user.username,'_blank');}
+function copyMyLink(){
+  if(!user||!user.username){toast('جاري التحميل...');return;}
+  const link='https://electrwni.link/page.html#'+user.username;
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(link).then(()=>toast('تم نسخ الرابط')).catch(()=>fallbackCopy(link));}
+  else fallbackCopy(link);
+}
+function fallbackCopy(text){
+  const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy');toast('تم نسخ الرابط');}catch(e){toast('انسخه يدوياً: '+text);}
+  document.body.removeChild(ta);
+}
+function logout(){
+  if(!confirm('هل تريد تسجيل الخروج؟ / Logout?'))return;
+  auth.signOut().then(()=>{localStorage.removeItem('elUserUsername');window.location.href='index.html';}).catch(e=>toast('خطأ: '+e.message));
 }
 </script>
 </body>
