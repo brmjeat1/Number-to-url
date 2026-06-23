@@ -323,6 +323,11 @@ function buildContactsHtml(user){
 
 function render(user){
   if(user.themeColor)applyThemeColor(user.themeColor);
+  // تطبيق لون الخلفية المخصص إن وُجد
+  if(user.bgColor&&/^#[0-9A-Fa-f]{6}$/.test(user.bgColor)){
+    document.documentElement.style.setProperty('--bg',user.bgColor);
+    document.documentElement.style.setProperty('--surface',user.bgColor);
+  }
 
   const avatarHtml=user.avatar?`<img src="${user.avatar}">`:(user.displayName?user.displayName[0].toUpperCase():'-');
   document.getElementById('avatar').innerHTML=avatarHtml;
