@@ -243,75 +243,28 @@ tr:hover{background:var(--bg2);}
         <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content" style="display:block;">
-
-        <!-- Quick-Add Buttons -->
-        <div style="margin-bottom:16px;">
-          <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">إضافة سريعة · Quick Add</div>
-          <div id="quickAddGrid" style="display:flex;flex-wrap:wrap;gap:7px;"></div>
-        </div>
-
-        <!-- نموذج الإضافة -->
-        <div id="socialFormBox" style="display:none;margin-bottom:16px;padding:16px;background:var(--bg2);border-radius:12px;border:1px solid var(--border);">
-
-          <!-- معاينة الاكتشاف -->
-          <div id="socDetectedPreview" style="display:none;align-items:center;gap:12px;padding:12px;background:#fff;border-radius:10px;border:1.5px solid var(--primary);margin-bottom:14px;">
-            <div id="socDetectedIcon" style="width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;overflow:hidden;"></div>
-            <div style="flex:1;min-width:0;">
-              <div id="socDetectedName" style="font-weight:900;font-size:0.95rem;"></div>
-              <div id="socDetectedUrl" style="font-size:0.72rem;color:var(--muted);direction:ltr;word-break:break-all;margin-top:2px;"></div>
-            </div>
-            <div id="socDetectedCheck" style="font-size:1.4rem;color:var(--success);flex-shrink:0;">✓</div>
-          </div>
-
-          <!-- حقل الرابط -->
+        <button class="btn-add" onclick="openSocialForm()" style="margin-bottom:16px;">إضافة حساب · Add Account</button>
+        <div id="socialFormBox" style="display:none;margin-bottom:20px;padding:16px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);">
           <div class="form-group">
-            <label id="socUrlLabel">الرابط أو اسم المستخدم <span class="lbl-sub">/ URL or @username</span></label>
-            <div style="display:flex;gap:8px;">
-              <input type="text" id="socUrl" placeholder="https://instagram.com/username أو @username" dir="ltr"
-                style="flex:1;" oninput="debounceDetect(this.value)">
-              <button onclick="detectNow()"
-                style="padding:0 13px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.85rem;white-space:nowrap;font-family:'Tajawal',sans-serif;flex-shrink:0;">
-                فحص
-              </button>
-            </div>
-            <div id="socDetectHint" style="font-size:0.72rem;color:var(--muted);margin-top:4px;min-height:16px;"></div>
+            <label>اسم الحساب <span class="lbl-sub">/ Account Name (e.g. X, Instagram)</span></label>
+            <input type="text" id="socName" placeholder="اسم المنصة / Platform name">
           </div>
-
-          <!-- خيار لون الأيقونة -->
-          <div id="socColorModeGroup" style="display:none;margin-bottom:14px;">
-            <label style="margin-bottom:8px;display:block;font-size:0.84rem;font-weight:700;color:var(--text2);">
-              لون الأيقونة <span style="font-size:0.7rem;font-weight:400;color:var(--muted);">/ Icon Style</span>
-            </label>
-            <div style="display:flex;gap:7px;flex-wrap:wrap;">
-              <button onclick="setSocColorMode('brand')" id="cmBrand"
-                style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">
-                🎨 لون المنصة
-              </button>
-              <button onclick="setSocColorMode('theme')" id="cmTheme"
-                style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">
-                ✦ لون الموقع
-              </button>
-              <button onclick="setSocColorMode('upload')" id="cmUpload"
-                style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">
-                🖼 رفع صورة
-              </button>
-            </div>
-            <!-- رفع صورة مخصصة -->
-            <div id="customIconUpload" style="display:none;margin-top:10px;">
-              <input type="file" id="socIconFile" accept="image/*" onchange="previewCustomIcon(this)">
-              <div id="socIconPreview" style="margin-top:8px;display:none;">
-                <img id="socIconImg" style="width:52px;height:52px;border-radius:12px;object-fit:cover;border:2px solid var(--border);">
-              </div>
+          <div class="form-group">
+            <label>رابط الحساب <span class="lbl-sub">/ Profile URL</span></label>
+            <input type="url" id="socUrl" placeholder="https://x.com/username" dir="ltr">
+          </div>
+          <div class="form-group">
+            <label>أيقونة الحساب <span class="lbl-sub">/ Account Icon</span></label>
+            <input type="file" id="socIcon" accept="image/*" onchange="previewSocIcon(this)">
+            <div id="socIconPreview" style="margin-top:10px;display:none;">
+              <img id="socIconImg" style="width:60px;height:60px;border-radius:14px;object-fit:cover;border:2px solid var(--border);">
             </div>
           </div>
-
-          <div style="display:flex;gap:8px;">
+          <div style="display:flex;gap:10px;">
             <button class="btn-add" onclick="saveSocial()">حفظ · Save</button>
             <button class="btn-add" style="background:var(--muted);" onclick="closeSocialForm()">إلغاء · Cancel</button>
           </div>
         </div>
-
-        <!-- قائمة الحسابات المضافة -->
         <div id="socialsRegistry"></div>
       </div>
     </div>
@@ -606,7 +559,6 @@ async function loadUserData(){
     renderColorPalette();
     renderBgPalette();
     updateColorPreviews();
-    renderQuickAdd();
     renderRegistry();
     renderStats();
     renderSocials();
@@ -618,7 +570,6 @@ async function loadUserData(){
         allLinks=(user.links||[]).sort((a,b)=>a.num-b.num);
         allSocials=user.socials||[];
         phoneEntries=user.phones||[];
-        renderQuickAdd();
         renderRegistry();
         renderStats();
         renderSocials();
@@ -750,262 +701,51 @@ function goPage(page){
 }
 function goToStats(){showPage('stats',document.querySelectorAll('.nav-tab')[4]);window.scrollTo({top:0,behavior:'smooth'});}
 
-// ========== SOCIALS — نظام الاكتشاف التلقائي ==========
-
-// قاموس المنصات: pattern → { name, emoji, brandColor, urlTemplate }
-const PLATFORMS=[
-  {id:'instagram', pattern:/instagram\.com|instagr\.am/i,       name:'Instagram', emoji:'📸', brand:'#E1306C', url:'https://instagram.com/'},
-  {id:'snapchat',  pattern:/snapchat\.com|snap\.com/i,          name:'Snapchat',  emoji:'👻', brand:'#FFFC00', url:'https://snapchat.com/add/'},
-  {id:'tiktok',    pattern:/tiktok\.com/i,                       name:'TikTok',    emoji:'🎵', brand:'#010101', url:'https://tiktok.com/@'},
-  {id:'x',         pattern:/twitter\.com|x\.com/i,              name:'X',         emoji:'✕',  brand:'#000000', url:'https://x.com/'},
-  {id:'threads',   pattern:/threads\.net/i,                      name:'Threads',   emoji:'🧵', brand:'#000000', url:'https://threads.net/@'},
-  {id:'whatsapp',  pattern:/wa\.me|whatsapp\.com/i,              name:'WhatsApp',  emoji:'💬', brand:'#25D366', url:'https://wa.me/'},
-  {id:'telegram',  pattern:/t\.me|telegram\.me|telegram\.org/i, name:'Telegram',  emoji:'✈️', brand:'#229ED9', url:'https://t.me/'},
-  {id:'youtube',   pattern:/youtube\.com|youtu\.be/i,            name:'YouTube',   emoji:'▶️', brand:'#FF0000', url:'https://youtube.com/@'},
-  {id:'linkedin',  pattern:/linkedin\.com/i,                     name:'LinkedIn',  emoji:'💼', brand:'#0A66C2', url:'https://linkedin.com/in/'},
-  {id:'facebook',  pattern:/facebook\.com|fb\.com/i,            name:'Facebook',  emoji:'f',  brand:'#1877F2', url:'https://facebook.com/'},
-  {id:'pinterest', pattern:/pinterest\.com/i,                    name:'Pinterest', emoji:'📌', brand:'#E60023', url:'https://pinterest.com/'},
-  {id:'github',    pattern:/github\.com/i,                       name:'GitHub',    emoji:'⌨️', brand:'#181717', url:'https://github.com/'},
-  {id:'discord',   pattern:/discord\.com|discord\.gg/i,         name:'Discord',   emoji:'🎮', brand:'#5865F2', url:'https://discord.gg/'},
-  {id:'twitch',    pattern:/twitch\.tv/i,                        name:'Twitch',    emoji:'🟣', brand:'#9146FF', url:'https://twitch.tv/'},
-  {id:'bereal',    pattern:/bere\.al/i,                          name:'BeReal',    emoji:'📷', brand:'#000000', url:'https://bere.al/'},
-  {id:'clubhouse', pattern:/clubhouse\.com/i,                    name:'Clubhouse', emoji:'🎤', brand:'#F1EFE7', url:'https://clubhouse.com/@'},
-];
-
-// الأزرار السريعة
-const QUICK_PLATFORMS=['instagram','snapchat','tiktok','x','threads','whatsapp','telegram','youtube','linkedin','facebook'];
-
-let detectedPlatform=null; // المنصة المكتشفة حالياً
-let socColorMode='brand';   // brand | theme | upload
-let pendingSocIcon=null;    // base64 لصورة مرفوعة
-let detectTimer=null;
-
-function renderQuickAdd(){
-  const grid=document.getElementById('quickAddGrid');
-  if(!grid)return;
-  grid.innerHTML=QUICK_PLATFORMS.map(pid=>{
-    const p=PLATFORMS.find(x=>x.id===pid);
-    if(!p)return '';
-    return `<button onclick="quickAdd('${pid}')"
-      title="+ ${p.name}"
-      style="display:flex;align-items:center;gap:5px;padding:7px 11px;border:1.5px solid var(--border);border-radius:20px;background:var(--bg);cursor:pointer;font-family:'Tajawal',sans-serif;font-size:0.8rem;font-weight:700;transition:all .18s;white-space:nowrap;"
-      onmouseover="this.style.borderColor='${p.brand}';this.style.background='${p.brand}18'"
-      onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--bg)'">
-      <span>${p.emoji}</span><span>${p.name}</span>
-    </button>`;
-  }).join('');
-}
-
-function quickAdd(pid){
-  const p=PLATFORMS.find(x=>x.id===pid);
-  if(!p)return;
-  detectedPlatform=p;
-  document.getElementById('socUrlLabel').innerHTML=`أضف اسم مستخدم أو رابط <span style="font-weight:900;color:var(--primary);">${p.name}</span> <span class="lbl-sub">/ ${p.name} URL or @username</span>`;
-  document.getElementById('socUrl').value='';
-  document.getElementById('socUrl').placeholder=`@username أو ${p.url}username`;
-  document.getElementById('socDetectHint').textContent='';
-  // عرض المعاينة فوراً بدون قيمة
-  showDetectedPreview(p,'');
-  document.getElementById('socColorModeGroup').style.display='block';
-  setSocColorMode('brand');
-  document.getElementById('socialFormBox').style.display='block';
-  document.getElementById('socUrl').focus();
-}
-
-function debounceDetect(val){
-  clearTimeout(detectTimer);
-  if(val.length<3){hideDetectedPreview();document.getElementById('socDetectHint').textContent='';return;}
-  detectTimer=setTimeout(()=>detectNow(),500);
-}
-
-function detectNow(){
-  const raw=document.getElementById('socUrl').value.trim();
-  if(!raw){toast('أدخل رابطاً أو اسم مستخدم');return;}
-
-  // تحويل @username لرابط إن كانت منصة محددة مسبقاً
-  let urlToCheck=raw;
-  if(detectedPlatform&&raw.startsWith('@')){
-    urlToCheck=detectedPlatform.url+raw.slice(1);
-    document.getElementById('socUrl').value=urlToCheck;
-  }else if(!raw.startsWith('http')&&!raw.includes('.')){
-    // مجرد username بدون @ وبدون رابط
-    document.getElementById('socDetectHint').textContent='⚠️ أضف @ قبل اسم المستخدم أو الصق رابطاً كاملاً';
-    return;
-  }
-
-  // فحص المنصة
-  let found=null;
-  for(const p of PLATFORMS){
-    if(p.pattern.test(urlToCheck)){found=p;break;}
-  }
-
-  if(found){
-    detectedPlatform=found;
-    showDetectedPreview(found,urlToCheck);
-    document.getElementById('socColorModeGroup').style.display='block';
-    setSocColorMode(socColorMode);
-    document.getElementById('socDetectHint').innerHTML=`<span style="color:var(--success);">✓ تم التعرف: ${found.name}</span>`;
-  }else{
-    detectedPlatform={id:'custom',name:extractDomain(urlToCheck),emoji:'🔗',brand:'#3d5af1',url:''};
-    showDetectedPreview(detectedPlatform,urlToCheck);
-    document.getElementById('socColorModeGroup').style.display='block';
-    setSocColorMode(socColorMode);
-    document.getElementById('socDetectHint').innerHTML=`<span style="color:var(--muted);">رابط مخصص · Custom link</span>`;
-  }
-}
-
-function extractDomain(url){
-  try{return new URL(url.startsWith('http')?url:'https://'+url).hostname.replace('www.','');}
-  catch(_){return url.substring(0,20);}
-}
-
-function showDetectedPreview(p,url){
-  const box=document.getElementById('socDetectedPreview');
-  const iconEl=document.getElementById('socDetectedIcon');
-  const nameEl=document.getElementById('socDetectedName');
-  const urlEl=document.getElementById('socDetectedUrl');
-
-  // لون الأيقونة حسب الوضع
-  const bgColor=socColorMode==='theme'?(user&&user.themeColor?user.themeColor:'#3d5af1'):p.brand;
-  const textColor=isLightColor(bgColor)?'#0f1535':'#ffffff';
-
-  if(pendingSocIcon){
-    iconEl.style.background='transparent';
-    iconEl.innerHTML=`<img src="${pendingSocIcon}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;">`;
-  }else{
-    iconEl.style.background=bgColor;
-    iconEl.style.color=textColor;
-    iconEl.innerHTML=`<span style="font-size:1.4rem;">${p.emoji}</span>`;
-  }
-
-  nameEl.textContent=p.name;
-  urlEl.textContent=url||'';
-  box.style.display='flex';
-}
-
-function hideDetectedPreview(){
-  document.getElementById('socDetectedPreview').style.display='none';
-}
-
-function isLightColor(hex){
-  const r=parseInt(hex.slice(1,3),16);
-  const g=parseInt(hex.slice(3,5),16);
-  const b=parseInt(hex.slice(5,7),16);
-  return(r*299+g*587+b*114)/1000>128;
-}
-
-function setSocColorMode(mode){
-  socColorMode=mode;
-  ['brand','theme','upload'].forEach(m=>{
-    const btn=document.getElementById('cm'+m.charAt(0).toUpperCase()+m.slice(1));
-    if(btn){
-      btn.style.borderColor=m===mode?'var(--primary)':'var(--border)';
-      btn.style.background=m===mode?'#f0f4ff':'var(--bg)';
-      btn.style.color=m===mode?'var(--primary)':'var(--text2)';
-    }
-  });
-  document.getElementById('customIconUpload').style.display=mode==='upload'?'block':'none';
-  if(mode!=='upload')pendingSocIcon=null;
-  // تحديث المعاينة
-  if(detectedPlatform){
-    showDetectedPreview(detectedPlatform,document.getElementById('socUrl').value.trim());
-  }
-}
-
-function previewCustomIcon(inp){
-  const f=inp.files[0];if(!f)return;
-  const r=new FileReader();
-  r.onload=e=>{
-    pendingSocIcon=e.target.result;
-    document.getElementById('socIconImg').src=pendingSocIcon;
-    document.getElementById('socIconPreview').style.display='block';
-    if(detectedPlatform)showDetectedPreview(detectedPlatform,document.getElementById('socUrl').value.trim());
-  };
-  r.readAsDataURL(f);
-}
-
-function closeSocialForm(){
-  document.getElementById('socialFormBox').style.display='none';
-  document.getElementById('socUrl').value='';
-  document.getElementById('socDetectHint').textContent='';
-  hideDetectedPreview();
-  document.getElementById('socColorModeGroup').style.display='none';
-  document.getElementById('customIconUpload').style.display='none';
-  document.getElementById('socIconPreview').style.display='none';
-  document.getElementById('socUrlLabel').innerHTML='الرابط أو اسم المستخدم <span class="lbl-sub">/ URL or @username</span>';
-  document.getElementById('socUrl').placeholder='https://instagram.com/username أو @username';
-  detectedPlatform=null;pendingSocIcon=null;socColorMode='brand';
-}
-
+// ========== SOCIALS ==========
 function renderSocials(){
-  const reg=document.getElementById('socialsRegistry');
-  if(!allSocials.length){reg.innerHTML='<div class="empty">لا توجد حسابات بعد · No accounts yet</div>';return;}
-  reg.innerHTML=allSocials.map(s=>{
-    const bgStyle=s.iconBg?`background:${s.iconBg};`:'background:var(--primary);';
-    const textStyle=s.iconBg&&isLightColor(s.iconBg)?'color:#0f1535;':'color:#fff;';
-    const iconContent=s.icon
-      ?`<img src="${s.icon}" style="width:100%;height:100%;object-fit:cover;">`
-      :`<span style="font-size:1.3rem;">${s.emoji||s.name[0]}</span>`;
-    return `
+  if(!allSocials.length){document.getElementById('socialsRegistry').innerHTML='<div class="empty">لا توجد حسابات بعد / No accounts yet</div>';return;}
+  document.getElementById('socialsRegistry').innerHTML=allSocials.map(s=>`
     <div class="item" style="cursor:default;">
       <div style="display:flex;align-items:center;gap:12px;flex:1;">
-        <div style="width:46px;height:46px;border-radius:12px;overflow:hidden;flex-shrink:0;${bgStyle}${textStyle}display:flex;align-items:center;justify-content:center;">
-          ${iconContent}
+        <div style="width:48px;height:48px;border-radius:12px;overflow:hidden;flex-shrink:0;background:var(--bg2);display:flex;align-items:center;justify-content:center;border:1px solid var(--border);">
+          ${s.icon?`<img src="${s.icon}" style="width:100%;height:100%;object-fit:cover;">`:`<span style="font-weight:900;color:var(--primary);">${s.name[0].toUpperCase()}</span>`}
         </div>
-        <div style="flex:1;min-width:0;">
-          <div style="font-weight:900;">${s.name}</div>
-          <div style="font-size:0.72rem;color:var(--muted);direction:ltr;word-break:break-all;margin-top:2px;">${s.url}</div>
+        <div style="flex:1;">
+          <div style="font-weight:700;">${s.name}</div>
+          <div style="font-size:0.75rem;color:var(--muted);direction:ltr;text-align:right;word-break:break-all;">${s.url}</div>
         </div>
       </div>
       <button class="btn-delete" onclick="deleteSocial('${s.id}')">حذف</button>
-    </div>`;
-  }).join('');
+    </div>`).join('');
 }
-
+function openSocialForm(){
+  document.getElementById('socName').value='';document.getElementById('socUrl').value='';
+  document.getElementById('socIcon').value='';document.getElementById('socIconPreview').style.display='none';
+  pendingSocIcon=null;document.getElementById('socialFormBox').style.display='block';
+}
+function closeSocialForm(){document.getElementById('socialFormBox').style.display='none';pendingSocIcon=null;}
+function previewSocIcon(inp){
+  const f=inp.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{pendingSocIcon=e.target.result;document.getElementById('socIconImg').src=pendingSocIcon;document.getElementById('socIconPreview').style.display='block';};
+  r.readAsDataURL(f);
+}
 async function saveSocial(){
+  const name=document.getElementById('socName').value.trim();
   const url=document.getElementById('socUrl').value.trim();
-  if(!url){toast('أدخل رابطاً أو اسم مستخدم · Enter URL or username');return;}
-
-  // لو لم يتم الكشف بعد، نكشف الآن
-  if(!detectedPlatform)detectNow();
-
-  let finalUrl=url;
-  // إذا كان اسم مستخدم فقط (بدون http) ومنصة محددة
-  if(detectedPlatform&&detectedPlatform.url&&!url.startsWith('http')){
-    const u=url.startsWith('@')?url.slice(1):url;
-    finalUrl=detectedPlatform.url+u;
-  }
-
-  const p=detectedPlatform||{id:'custom',name:extractDomain(finalUrl),emoji:'🔗',brand:'#3d5af1'};
-  const iconBg=socColorMode==='theme'?(user&&user.themeColor?user.themeColor:'#3d5af1'):p.brand;
-
-  const entry={
-    id:Date.now()+'',
-    name:p.name,
-    url:finalUrl,
-    emoji:p.emoji||'🔗',
-    icon:pendingSocIcon||'',
-    iconBg:socColorMode==='upload'?'':iconBg,
-    colorMode:socColorMode,
-    platformId:p.id
-  };
-
-  allSocials.push(entry);
-  closeSocialForm();
-  renderSocials();
-  toast('جاري الحفظ...');
+  if(!name){toast('اكتب اسم الحساب');return;}
+  if(!url){toast('اكتب رابط الحساب');return;}
+  try{new URL(url);}catch(_){toast('صيغة الرابط غير صحيحة');return;}
+  allSocials.push({id:Date.now()+'',name,url,icon:pendingSocIcon||''});
+  closeSocialForm();toast('جاري الحفظ...');
   const ok=await saveField({socials:allSocials});
-  if(ok)toast('✓ تمت إضافة '+p.name+'!');
+  if(ok)toast('تمت إضافة الحساب!');
 }
-
 async function deleteSocial(id){
   if(!confirm('حذف هذا الحساب؟ / Delete this account?'))return;
-  const backup=[...allSocials];
-  allSocials=allSocials.filter(s=>s.id!==id);
-  renderSocials();
-  toast('جاري الحذف...');
+  const backup=allSocials;allSocials=allSocials.filter(s=>s.id!==id);renderSocials();toast('جاري الحذف...');
   const ok=await saveField({socials:allSocials});
-  if(ok)toast('تم الحذف!');else{allSocials=backup;renderSocials();}
+  if(ok)toast('تم الحذف!');else allSocials=backup;
 }
 
 // ========== PHONES ==========
