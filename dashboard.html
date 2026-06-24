@@ -634,15 +634,6 @@ async function saveField(fields){
   catch(e){console.error('saveField error:',e);toast('فشل الحفظ: '+e.message);return false;}
 }
 
-function showPage(n,el){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  const pg=document.getElementById('page-'+n);
-  if(pg)pg.classList.add('active');
-  if(el)el.classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
 function toggleExpand(header){
   header.classList.toggle('open');
   const content=header.nextElementSibling;
