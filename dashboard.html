@@ -1365,7 +1365,7 @@ async function deleteAccount(){
   if(!confirm1)return;
   const confirm2=confirm('تأكيد أخير: هذا الإجراء لا يمكن التراجع عنه.\nFinal confirmation: This cannot be undone.');
   if(!confirm2)return;
-  toast('جاري حذف الحساب...');
+  toast('جاري حذف الحساب...'); 
   try{
     await db.collection('users').doc(currentUid).delete();
     // حذف index يوزرنيم إن وجد
