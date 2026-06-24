@@ -1393,38 +1393,30 @@ function logout(){
 </script>
 
 <script>
-  window.showPage = function(pageId, btn) {
-    try {
-      // 1. إخفاء كافة الأقسام بشكل صارم
-      document.querySelectorAll('.page, .content-section, section, [id^="page-"]').forEach(p => {
-        p.style.setProperty('display', 'none', 'important');
-        p.classList.remove('active');
-      });
-      
-      // 2. إظهار القسم المطلوب المطابق للمعرف
-      const target = document.getElementById('page-' + pageId) || document.getElementById(pageId);
-      if (target) {
-        target.style.setProperty('display', 'block', 'important');
-        target.classList.add('active');
-      }
-      
-      // 3. تحديث مظهر الزر النشط في القائمة
-      document.querySelectorAll('.nav-tab, .sidebar-item, .menu-item').forEach(t => t.classList.remove('active'));
-      if (btn) btn.classList.add('active');
-    } catch (e) {
-      console.error("عطل نظام التنقل:", e);
-    }
-  };
-
-  // دوال إضافية محمية
-  window.toggleBgLock = function() {
-    const controls = document.getElementById('bgColorControls');
-    if (controls) {
-      const isLocked = controls.style.pointerEvents === 'none';
-      controls.style.pointerEvents = isLocked ? 'auto' : 'none';
-      controls.style.opacity = isLocked ? '1' : '0.4';
-    }
-  };
+window.addEventListener('DOMContentLoaded', () => {
+    window.showPage = function(pageId, btn) {
+        try {
+            // إخفاء كافة الأقسام فوراً وبشكل صارم
+            document.querySelectorAll('.page, .content-section, section, [id^="page-"]').forEach(p => {
+                p.style.setProperty('display', 'none', 'important');
+                p.classList.remove('active');
+            });
+            
+            // إظهار القسم المطلوب المطابق للمعرف
+            const target = document.getElementById('page-' + pageId) || document.getElementById(pageId);
+            if (target) {
+                target.style.setProperty('display', 'block', 'important');
+                target.classList.add('active');
+            }
+            
+            // تحديث حالة الأزرار النشطة في القائمة
+            document.querySelectorAll('.nav-tab, .sidebar-item, .menu-item').forEach(t => t.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+        } catch (e) {
+            console.error("عطل نظام التنقل الداخلي:", e);
+        }
+    };
+});
 </script>
 
 </body>
