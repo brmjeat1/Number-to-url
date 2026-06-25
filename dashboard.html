@@ -17,7 +17,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min
 
 /* TOPBAR */
 .topbar{
-  background:linear-gradient(135deg,var(--primary),var(--primary-light));
+  background:linear-gradient(135deg,#e8436a,#ff6b6b);
   color:#fff;padding:12px 20px;display:flex;justify-content:space-between;
   align-items:center;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,0.05);
 }
@@ -51,7 +51,8 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min
 .nav-tab.active{color:var(--primary);border-bottom-color:var(--primary);}
 
 /* PAGES */
-.page{display:none !important;}.page.active{display:block !important;}
+.page{display:none;}
+.page.active{display:block;}
 .page.active{display:block;}
 
 /* EXPANDABLE */
@@ -634,6 +635,16 @@ async function saveField(fields){
   catch(e){console.error('saveField error:',e);toast('فشل الحفظ: '+e.message);return false;}
 }
 
+function showPage(n,el){
+  document.querySelectorAll('.page').forEach(p=>{p.classList.remove('active');p.style.display='none';});
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  const pg=document.getElementById('page-'+n);
+  if(pg){pg.classList.add('active');pg.style.display='block';}
+  if(el)el.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+window.showPage=showPage;
+
 function toggleExpand(header){
   header.classList.toggle('open');
   const content=header.nextElementSibling;
@@ -793,22 +804,6 @@ function goPage(page){
   document.querySelectorAll('.pagination button').forEach((b,i)=>b.classList.toggle('active',i+1===page));
   document.querySelector('table').scrollIntoView({behavior:'smooth'});
 }
-function showPage(n,el){
-  try{
-    document.querySelectorAll('.page').forEach(p=>{
-      p.classList.remove('active');
-      p.style.display='none';
-    });
-    document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-    const pg=document.getElementById('page-'+n);
-    if(pg){pg.classList.add('active');pg.style.display='block';}
-    if(el)el.classList.add('active');
-    window.scrollTo({top:0,behavior:'smooth'});
-  }catch(e){alert('showPage error: '+e.message);}
-}
-// تعريف عالمي للتأكد
-window.showPage=showPage;
-
 function goToStats(){showPage('stats',document.querySelectorAll('.nav-tab')[4]);window.scrollTo({top:0,behavior:'smooth'});}
 
 // ========== SOCIALS — نظام الاكتشاف التلقائي ==========
