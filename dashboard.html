@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>لوحة التحكم — electrwni.link</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+<style>
+:root{
+  --primary:#3d5af1;--primary-light:#6c8fff;--bg:#ffffff;--bg2:#f9f9f9;
+  --border:#e8ecf5;--text:#0f1535;--text2:#3a4270;--muted:#9aa2c8;
+  --success:#0ab87a;--error:#e8436a;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* TOPBAR */
+.topbar{
+  background:linear-gradient(135deg,var(--primary),var(--primary-light));
+  color:#fff;padding:12px 20px;display:flex;justify-content:space-between;
+  align-items:center;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,0.05);
+}
+.topbar-brand{font-family:'Space Mono',monospace;font-size:1rem;font-weight:900;}
+.topbar-btns{display:flex;gap:8px;}
+.btn{
+  padding:8px 16px;border:none;border-radius:8px;cursor:pointer;
+  font-family:'Tajawal',sans-serif;font-weight:700;font-size:0.85rem;transition:all .2s;
+}
+.btn-white{background:#fff;color:var(--primary);}
+.btn-white:active{transform:scale(0.95);}
+.btn-logout{background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.4);}
+.btn-logout:active{transform:scale(0.95);}
+
+/* CONTAINER */
+.container{max-width:900px;margin:0 auto;padding:24px 20px;}
+
+/* NAV TABS */
+.nav-tabs{
+  display:flex;gap:6px;margin-bottom:24px;border-bottom:2px solid var(--border);
+  overflow-x:auto;padding-bottom:0;
+}
+.nav-tab{
+  background:transparent;border:none;color:var(--text2);
+  padding:10px 12px;font-weight:700;cursor:pointer;
+  border-bottom:3px solid transparent;transition:all .2s;font-size:0.85rem;
+  white-space:nowrap;
+}
+.nav-tab .tab-sub{font-size:0.6rem;display:block;opacity:0.6;font-weight:400;}
+.nav-tab:active{transform:scale(0.98);}
+.nav-tab.active{color:var(--primary);border-bottom-color:var(--primary);}
+
+/* PAGES */
+.page{display:none;}
+.page.active{display:block;}
+
+/* EXPANDABLE */
+.expandable{background:var(--bg2);border:1px solid var(--border);border-radius:12px;margin-bottom:16px;overflow:hidden;}
+.expandable-header{padding:16px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:all .2s;}
+.expandable-header:hover{background:#f5f5f5;}
+.expandable-header.open{background:var(--primary-light);color:#fff;}
+.expandable-title{font-size:1rem;font-weight:900;display:flex;align-items:center;gap:8px;}
+.expandable-title .title-sub{font-size:0.65rem;font-weight:400;opacity:0.75;display:block;}
+.expandable-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.expandable-toggle{font-size:1.2rem;transition:transform .3s;}
+.expandable-header.open .expandable-toggle{transform:rotate(180deg);}
+.expandable-content{display:none;padding:20px;border-top:1px solid var(--border);background:var(--bg);}
+.expandable-content.open{display:block;}
+
+/* FORM */
+.form-group{margin-bottom:14px;}
+label{display:block;font-size:0.85rem;font-weight:700;margin-bottom:6px;color:var(--text2);}
+label .lbl-sub{font-size:0.7rem;font-weight:400;color:var(--muted);}
+input[type=text],input[type=url],input[type=number],input[type=email],input[type=tel],textarea,select{
+  width:100%;padding:10px 12px;border:1.5px solid var(--border);
+  border-radius:8px;font-family:'Tajawal',sans-serif;font-size:0.9rem;
+  outline:none;transition:border .2s;background:var(--bg);
+}
+input:focus,textarea:focus,select:focus{border-color:var(--primary);}
+textarea{resize:vertical;min-height:60px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:600px){.form-row{grid-template-columns:1fr;}}
+
+/* BUTTONS */
+.btn-add{background:var(--success);color:#fff;padding:12px 24px;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-family:'Tajawal',sans-serif;width:100%;transition:all .2s;font-size:0.95rem;}
+.btn-add:active{transform:scale(0.98);}
+.btn-pdf{background:var(--error);color:#fff;padding:12px 24px;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-family:'Tajawal',sans-serif;width:100%;margin-top:16px;font-size:0.95rem;transition:all .2s;}
+.btn-pdf:active{transform:scale(0.98);}
+.btn-danger{background:var(--error);color:#fff;padding:12px 24px;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-family:'Tajawal',sans-serif;width:100%;font-size:0.95rem;transition:all .2s;}
+.btn-danger:active{transform:scale(0.98);}
+
+/* ITEMS */
+.item{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:all .2s;display:flex;justify-content:space-between;align-items:center;}
+.item:hover{border-color:var(--primary);background:#f9f9f9;}
+.item.open{background:var(--primary-light);color:#fff;border-color:var(--primary);}
+.item-header{flex:1;font-weight:700;font-size:0.95rem;}
+.item-toggle{font-size:1.1rem;transition:transform .3s;}
+.item.open .item-toggle{transform:rotate(180deg);}
+.item-details{display:none;margin-top:10px;padding-top:10px;border-top:1px solid rgba(0,0,0,0.1);}
+.item.open .item-details{display:block;}
+.detail-row{display:flex;gap:8px;margin-bottom:6px;font-size:0.85rem;}
+.detail-label{font-weight:700;min-width:60px;}
+.btn-delete{background:var(--error);color:#fff;padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-size:0.8rem;font-weight:700;transition:all .2s;}
+.btn-delete:active{transform:scale(0.95);}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:0.85rem;margin-top:12px;}
+th,td{padding:10px;text-align:right;border-bottom:1px solid var(--border);}
+th{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;font-weight:900;}
+tr:hover{background:var(--bg2);}
+
+/* PAGINATION */
+.pagination{display:flex;gap:6px;justify-content:center;margin-top:14px;flex-wrap:wrap;}
+.pagination button{padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);cursor:pointer;font-weight:700;font-size:0.9rem;transition:all .2s;}
+.pagination button.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+.pagination button:active{transform:scale(0.95);}
+
+/* EMPTY */
+.empty{text-align:center;padding:30px;color:var(--muted);}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;left:20px;background:var(--text);color:var(--bg);padding:12px 20px;border-radius:8px;font-weight:700;font-size:0.9rem;opacity:0;transform:translateY(20px);transition:all .3s;z-index:100;}
+.toast.show{opacity:1;transform:translateY(0);}
+
+/* CROP MODAL */
+.crop-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:300;display:none;align-items:center;justify-content:center;padding:16px;}
+.crop-overlay.open{display:flex;}
+.crop-box{background:var(--bg);border-radius:14px;max-width:480px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;}
+.crop-header{padding:16px 20px;border-bottom:1px solid var(--border);font-weight:900;}
+.crop-image-area{flex:1;min-height:0;background:#1a1a1a;display:flex;align-items:center;justify-content:center;max-height:400px;overflow:hidden;}
+.crop-image-area img{display:block;max-width:100%;}
+.crop-actions{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px;}
+.crop-btn{flex:1;padding:12px;border:none;border-radius:8px;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;font-size:0.9rem;transition:all .2s;}
+.crop-btn:active{transform:scale(0.97);}
+.crop-btn-confirm{background:var(--success);color:#fff;}
+.crop-btn-cancel{background:var(--bg2);color:var(--text);border:1px solid var(--border);}
+
+/* AI suggestion box pulse */
+@keyframes aiPulse{0%{box-shadow:0 0 0 0 rgba(61,90,241,0.3);}70%{box-shadow:0 0 0 8px rgba(61,90,241,0);}100%{box-shadow:0 0 0 0 rgba(61,90,241,0);}}
+
+
+/* color preview gradient strip */
+#bgColorPreview{transition:background .3s;}
+.desc-clamp{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.4;max-width:200px;font-size:0.8rem;}
+
+
+/* رقم قابل للإضافة */
+.phone-entry{display:flex;gap:8px;align-items:flex-start;margin-bottom:10px;padding:12px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);}
+.phone-entry-fields{flex:1;display:flex;flex-direction:column;gap:6px;}
+.phone-entry input{margin:0;}
+.btn-remove-phone{background:var(--error);color:#fff;border:none;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:0.8rem;font-weight:700;flex-shrink:0;margin-top:2px;}
+
+@media(max-width:600px){
+  .container{padding:16px 12px;}
+  .expandable-header{padding:12px 14px;}
+  .expandable-content{padding:14px;}
+  table{font-size:0.8rem;}
+  th,td{padding:8px;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-brand">electrwni.link</div>
+  <div class="topbar-btns">
+    <button class="btn btn-white" id="viewPageBtn" onclick="openMyPage()">صفحتك <span style="font-size:0.65rem;display:block;opacity:0.7;">My Page</span></button>
+    <button class="btn btn-logout" onclick="logout()">خروج <span style="font-size:0.65rem;display:block;opacity:0.8;">Logout</span></button>
+  </div>
+</div>
+
+<!-- شريط الرابط -->
+<div id="linkBar" style="background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;">
+  <span style="font-size:0.85rem;color:var(--text2);">رابطك / Your Link:</span>
+  <span id="myFullLink" dir="ltr" style="font-family:'Space Mono',monospace;font-size:0.85rem;color:var(--primary);font-weight:700;direction:ltr;">—</span>
+  <button class="btn btn-white" style="color:var(--primary);border:1px solid var(--border);" onclick="copyMyLink()">نسخ الرابط <span style="font-size:0.65rem;display:block;opacity:0.7;">Copy Link</span></button>
+</div>
+
+<div class="container">
+
+  <!-- TABS -->
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('links',this)">الروابط<span class="tab-sub">Links</span></button>
+    <button class="nav-tab" onclick="showPage('socials',this)">تواصل<span class="tab-sub">Contact</span></button>
+    <button class="nav-tab" onclick="showPage('design',this)">التصميم<span class="tab-sub">Design</span></button>
+    <button class="nav-tab" onclick="showPage('profile',this)">ملفي<span class="tab-sub">Profile</span></button>
+    <button class="nav-tab" onclick="showPage('stats',this)">إحصائيات<span class="tab-sub">Stats</span></button>
+  </div>
+
+  <!-- PAGE: LINKS -->
+  <div class="page active" id="page-links">
+    <div class="expandable">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon">+</div><span>أضف رابط<span class="title-sub">Add Link</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content open">
+        <div class="form-row">
+          <div class="form-group">
+            <label>الرقم (1-9) <span class="lbl-sub">/ Number</span> *</label>
+            <input type="number" id="linkNum" placeholder="1" min="1" max="9">
+          </div>
+          <div class="form-group">
+            <label>العنوان <span class="lbl-sub">/ Title</span> * <span id="titleCounter" style="float:left;font-size:0.72rem;font-weight:700;color:var(--muted);">20</span></label>
+            <input type="text" id="linkTitle" placeholder="اكتب العنوان" maxlength="20" oninput="updateTitleCounter(this)">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>الوصف <span class="lbl-sub">/ Description (optional)</span></label>
+          <textarea id="linkDesc" placeholder="وصف الرابط / Link description"></textarea>
+        </div>
+        <div class="form-group">
+          <label>الرابط <span class="lbl-sub">/ URL</span> *</label>
+          <input type="url" id="linkUrl" placeholder="https://example.com" dir="ltr">
+        </div>
+        <div class="form-group" style="display:flex;align-items:center;gap:8px;">
+          <input type="checkbox" id="linkFeatured" style="width:auto;">
+          <label style="margin:0;">إضافة لقسم "اخترنا لك" <span class="lbl-sub">/ Add to "Picked for You"</span></label>
+        </div>
+        <button class="btn-add" onclick="addLink()">إضافة الرابط · Add Link</button>
+      </div>
+    </div>
+
+    <div class="expandable">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon">س</div><span>سجل الروابط<span class="title-sub">Links Registry</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content open">
+        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">دراسة جدوى لجماهيرية وفاعلية نشاط روابطك · Link performance analysis</div>
+        <div id="linksRegistry"></div>
+        <button class="btn-pdf" onclick="goToStats()">PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: SOCIALS / CONTACT -->
+  <div class="page" id="page-socials">
+    <div class="expandable">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon">ح</div><span>حسابات التواصل<span class="title-sub">Social Accounts</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content open">
+        <div style="margin-bottom:16px;">
+          <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">ألصق رابط حسابك · Paste your account URL</div>
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="pasteUrlInput" placeholder="https://instagram.com/username" dir="ltr" style="flex:1;" oninput="onPasteUrl(this.value)">
+            <button onclick="detectFromPaste()" style="padding:0 14px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.85rem;white-space:nowrap;font-family:'Tajawal',sans-serif;flex-shrink:0;">تعرّف</button>
+          </div>
+          <div id="pasteHint" style="font-size:0.72rem;color:var(--muted);margin-top:6px;min-height:16px;"></div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px;margin:14px 0;">
+          <div style="flex:1;height:1px;background:var(--border);"></div>
+          <span style="font-size:0.8rem;font-weight:700;color:var(--muted);">أو · OR</span>
+          <div style="flex:1;height:1px;background:var(--border);"></div>
+        </div>
+
+        <div style="margin-bottom:16px;">
+          <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">اختر منصة · Choose Platform</div>
+          <div id="quickAddGrid" style="display:flex;flex-wrap:wrap;gap:7px;"></div>
+          <button id="moreBtn" onclick="toggleMorePlatforms()" style="margin-top:8px;background:none;border:1.5px dashed var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;font-size:0.78rem;color:var(--text2);">المزيد · More</button>
+        </div>
+
+        <div id="socialFormBox" style="display:none;margin-bottom:16px;padding:16px;background:var(--bg2);border-radius:12px;border:1px solid var(--border);">
+          <div id="socDetectedPreview" style="display:none;align-items:center;gap:12px;padding:12px;background:#fff;border-radius:10px;border:1.5px solid var(--primary);margin-bottom:14px;">
+            <div id="socDetectedIcon" style="width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;overflow:hidden;"></div>
+            <div style="flex:1;min-width:0;">
+              <div id="socDetectedName" style="font-weight:900;font-size:0.95rem;"></div>
+              <div id="socDetectedUrl" style="font-size:0.72rem;color:var(--muted);direction:ltr;word-break:break-all;margin-top:2px;"></div>
+            </div>
+            <div id="socDetectedCheck" style="font-size:1.4rem;color:var(--success);flex-shrink:0;">✓</div>
+          </div>
+
+          <div class="form-group">
+            <label id="socUrlLabel">الرابط أو اسم المستخدم <span class="lbl-sub">/ URL or @username</span></label>
+            <div style="display:flex;gap:8px;">
+              <input type="text" id="socUrl" placeholder="https://instagram.com/username أو @username" dir="ltr" style="flex:1;" oninput="debounceDetect(this.value)">
+              <button onclick="detectNow()" style="padding:0 13px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.85rem;white-space:nowrap;font-family:'Tajawal',sans-serif;flex-shrink:0;">فحص</button>
+            </div>
+            <div id="socDetectHint" style="font-size:0.72rem;color:var(--muted);margin-top:4px;min-height:16px;"></div>
+          </div>
+
+          <div id="socColorModeGroup" style="display:none;margin-bottom:14px;">
+            <label style="margin-bottom:8px;display:block;font-size:0.84rem;font-weight:700;color:var(--text2);">لون الأيقونة <span style="font-size:0.7rem;font-weight:400;color:var(--muted);">/ Icon Style</span></label>
+            <div style="display:flex;gap:7px;flex-wrap:wrap;">
+              <button onclick="setSocColorMode('brand')" id="cmBrand" style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">لون المنصة</button>
+              <button onclick="setSocColorMode('theme')" id="cmTheme" style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">لون الموقع</button>
+              <button onclick="setSocColorMode('upload')" id="cmUpload" style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">رفع صورة</button>
+            </div>
+            <div id="customIconUpload" style="display:none;margin-top:10px;">
+              <input type="file" id="socIconFile" accept="image/*" onchange="previewCustomIcon(this)">
+              <div id="socIconPreview" style="margin-top:8px;display:none;">
+                <img id="socIconImg" style="width:52px;height:52px;border-radius:12px;object-fit:cover;border:2px solid var(--border);">
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:8px;">
+            <button class="btn-add" onclick="saveSocial()">حفظ · Save</button>
+            <button class="btn-add" style="background:var(--muted);" onclick="closeSocialForm()">إلغاء · Cancel</button>
+          </div>
+        </div>
+
+        <div id="socialsRegistry"></div>
+      </div>
+    </div>
+
+    <div class="expandable">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M6.62 10.79a15.15 15.15 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24 11.36 11.36 0 003.56.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z"/></svg></div><span>أرقام التواصل<span class="title-sub">Phone Numbers</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content open">
+        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">تظهر في صفحتك العامة مع إمكانية الاتصال المباشر · Shown on your public page for direct calls</p>
+        <div id="phonesContainer"></div>
+        <button class="btn-add" onclick="addPhoneEntry()" style="background:var(--primary);margin-bottom:12px;">+ إضافة رقم · Add Number</button>
+        <button class="btn-add" onclick="savePhones()">حفظ الأرقام · Save Numbers</button>
+      </div>
+    </div>
+
+    <div class="expandable">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm6.93 6h-2.95a15.65 15.65 0 00-1.38-3.56A8.03 8.03 0 0118.93 8zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14a7.96 7.96 0 010-4h3.38a16.5 16.5 0 000 4H4.26zm.81 2h2.95c.3 1.26.77 2.46 1.38 3.56A7.99 7.99 0 015.07 16zm2.95-8H5.07a7.99 7.99 0 014.33-3.56C8.8 5.54 8.33 6.74 8.02 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66a14.6 14.6 0 010-4h4.68a14.6 14.6 0 010 4zm.25 5.56c.61-1.1 1.08-2.3 1.38-3.56h2.95a7.99 7.99 0 01-4.33 3.56zM16.36 14a16.5 16.5 0 000-4h3.38a7.96 7.96 0 010 4h-3.38z"/></svg></div><span>الموقع الإلكتروني<span class="title-sub">Website</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content open">
+        <div class="form-group">
+          <label>رابط موقعك أو متجرك <span class="lbl-sub">/ Your website or store URL</span></label>
+          <input type="url" id="websiteInput" placeholder="https://yoursite.com" dir="ltr">
+        </div>
+        <button class="btn-add" onclick="saveWebsite()">حفظ الموقع · Save Website</button>
+      </div>
+    </div>
+
+    <div class="expandable">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M12 2a7 7 0 00-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 00-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg></div><span>الموقع الملاحي<span class="title-sub">Map Location</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content open">
+        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">يظهر في صفحتك كـ "خريطة موقعنا" مع رابط مباشر للخريطة · Shows as "Our Location" map link</p>
+        <div class="form-group">
+          <label>رابط خرائط Google أو Apple Maps <span class="lbl-sub">/ Google or Apple Maps link</span></label>
+          <input type="url" id="mapInput" placeholder="https://maps.google.com/..." dir="ltr">
+        </div>
+        <button class="btn-add" onclick="saveMap()">حفظ الموقع الملاحي · Save Map</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: DESIGN -->
+  <div class="page" id="page-design">
+    <div class="expandable">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon">T</div><span>تصميم صفحتك<span class="title-sub">Page Design</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content open">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:20px;padding:16px;background:var(--bg2);border-radius:12px;">
+          <div id="bannerPreview" style="width:100%;height:100px;border-radius:10px;background:linear-gradient(135deg,#3d5af1,#6c8fff);background-size:cover;background-position:center;"></div>
+          <div id="avatarPreview" style="width:70px;height:70px;border-radius:50%;background:var(--bg);border:3px solid var(--primary-light);margin-top:-45px;display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--primary);font-size:1.5rem;overflow:hidden;">-</div>
+        </div>
+        <div class="form-group">
+          <label>صورة الغلاف <span class="lbl-sub">/ Cover Image</span></label>
+          <input type="file" id="bannerInput" accept="image/*" onchange="selectBanner(this)">
+        </div>
+        <div class="form-group">
+          <label>صورة الشعار <span class="lbl-sub">/ Logo Image</span></label>
+          <input type="file" id="avatarInput" accept="image/*" onchange="selectAvatar(this)">
+        </div>
+        <div class="form-group">
+          <label>اللون الأساسي <span class="lbl-sub">/ Primary Color</span> <span style="font-size:0.68rem;color:var(--success);font-weight:700;">• حر · Free</span></label>
+          <div id="colorPalette" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;"></div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <input type="color" id="colorPicker" value="#3d5af1" onchange="onColorPick(this.value)" style="width:50px;height:40px;padding:2px;cursor:pointer;">
+            <input type="text" id="colorHexInput" placeholder="#3d5af1" maxlength="7" dir="ltr" onchange="onColorHexInput(this.value)" style="flex:1;font-family:'Space Mono',monospace;">
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top:20px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+            <label style="margin:0;">لون النص <span class="lbl-sub">/ Text Color</span></label>
+            <button id="textLockBtn" onclick="toggleTextLock()" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:4px 10px;cursor:pointer;font-size:0.85rem;font-weight:700;color:var(--text2);display:flex;align-items:center;gap:5px;">
+              <span id="textLockIcon"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" style="vertical-align:-2px;"><path d="M12 1a5 5 0 00-5 5v3H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2v-9a2 2 0 00-2-2h-1V6a5 5 0 00-5-5zm0 2a3 3 0 013 3v3H9V6a3 3 0 013-3zm0 11a2 2 0 011 3.73V19a1 1 0 01-2 0v-1.27A2 2 0 0112 14z"/></svg></span><span id="textLockLabel">مرتبط بالأساسي · Linked</span>
+            </button>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center;">
+            <div id="textColorPreview" style="flex:1;height:36px;border-radius:8px;border:1px solid var(--border);transition:.3s;background:#3d5af1;"></div>
+          </div>
+
+          <div id="textColorControls" style="opacity:0.4;pointer-events:none;transition:opacity .3s;">
+            <div id="textPalette" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;"></div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+              <input type="color" id="textColorPicker" value="#3d5af1" onchange="onTextColorPick(this.value)" style="width:50px;height:40px;padding:2px;cursor:pointer;">
+              <input type="text" id="textHexInput" placeholder="#3d5af1" maxlength="7" dir="ltr" onchange="onTextHexInput(this.value)" style="flex:1;font-family:'Space Mono',monospace;">
+            </div>
+            <button onclick="resetTextColor()" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--text2);font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer;font-size:0.85rem;">↺ العودة للأساسي · Reset to Primary</button>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top:20px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+            <label style="margin:0;">لون الخلفية <span class="lbl-sub">/ Background Color</span></label>
+            <button id="bgLockBtn" onclick="toggleBgLock()" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:4px 10px;cursor:pointer;font-size:0.85rem;font-weight:700;color:var(--text2);display:flex;align-items:center;gap:5px;">
+              <span id="bgLockIcon"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" style="vertical-align:-2px;"><path d="M12 1a5 5 0 00-5 5v3H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2v-9a2 2 0 00-2-2h-1V6a5 5 0 00-5-5zm0 2a3 3 0 013 3v3H9V6a3 3 0 013-3zm0 11a2 2 0 011 3.73V19a1 1 0 01-2 0v-1.27A2 2 0 0112 14z"/></svg></span><span id="bgLockLabel">أبيض · White</span>
+            </button>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center;">
+            <div style="flex:1;height:36px;border-radius:8px;border:1px solid var(--border);transition:.3s;background:#ffffff;" id="bgColorPreview"></div>
+          </div>
+
+          <div id="bgColorControls" style="opacity:0.4;pointer-events:none;transition:opacity .3s;">
+            <div id="bgPalette" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;"></div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+              <input type="color" id="bgColorPicker" value="#ffffff" onchange="onBgColorPick(this.value)" style="width:50px;height:40px;padding:2px;cursor:pointer;">
+              <input type="text" id="bgHexInput" placeholder="#ffffff" maxlength="7" dir="ltr" onchange="onBgHexInput(this.value)" style="flex:1;font-family:'Space Mono',monospace;">
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button onclick="resetBgColor()" style="flex:1;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--text2);font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer;font-size:0.85rem;transition:all .2s;">↺ العودة للأبيض · Reset to White</button>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-add" onclick="saveDesign()" style="background:var(--primary);margin-top:8px;">حفظ التصميم · Save Design</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: PROFILE -->
+  <div class="page" id="page-profile">
+    <div class="expandable">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon">م</div><span>بيانات ملفي<span class="title-sub">My Profile</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content open">
+        <div class="form-group">
+          <label>الاسم الكامل <span class="lbl-sub">/ Full Name</span></label>
+          <input type="text" id="pfName" placeholder="اسمك / Your name">
+        </div>
+        <div class="form-group">
+          <label>اسم المستخدم <span class="lbl-sub">/ Username</span></label>
+          <input type="text" id="pfUser" dir="ltr" disabled style="opacity:0.6;">
+        </div>
+        <div class="form-group">
+          <label>البريد الإلكتروني <span class="lbl-sub">/ Email</span></label>
+          <input type="email" id="pfEmail" dir="ltr" disabled style="opacity:0.6;">
+        </div>
+        <div class="form-group">
+          <label>النبذة التعريفية <span class="lbl-sub">/ Bio</span></label>
+          <textarea id="pfBio" placeholder="عرّف نفسك / Introduce yourself"></textarea>
+        </div>
+        <button class="btn-add" onclick="saveProfile()" style="background:var(--primary);">حفظ <span style="font-size:0.75rem;">/ Save</span></button>
+      </div>
+    </div>
+
+    <div class="expandable">
+      <div class="expandable-header" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon">P</div><span>تغيير كلمة المرور<span class="title-sub">Change Password</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content">
+        <div class="form-group">
+          <label>كلمة المرور القديمة <span class="lbl-sub">/ Old Password</span></label>
+          <input type="password" id="pwOld" dir="ltr" placeholder="••••••••">
+        </div>
+        <div class="form-group">
+          <label>كلمة المرور الجديدة <span class="lbl-sub">/ New Password</span></label>
+          <input type="password" id="pwNew" dir="ltr" placeholder="••••••••">
+        </div>
+        <div class="form-group">
+          <label>تأكيد كلمة المرور الجديدة <span class="lbl-sub">/ Confirm New Password</span></label>
+          <input type="password" id="pwConfirm" dir="ltr" placeholder="••••••••">
+        </div>
+        <button class="btn-add" onclick="changePassword()" style="background:var(--primary);">تحديث كلمة المرور · Update Password</button>
+      </div>
+    </div>
+
+    <div class="expandable" style="border-color:#ffd0d8;">
+      <div class="expandable-header" onclick="toggleExpand(this)" style="background:#fff5f7;">
+        <div class="expandable-title" style="color:var(--error);">
+          <div class="expandable-icon" style="background:var(--error);"><svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M6 7h12l-1 14H7L6 7zm3-3h6l1 2H8l1-2zM4 6h16v1H4V6z"/></svg></div>
+          <span>حذف الحساب<span class="title-sub" style="color:#e8436a;">Delete Account</span></span>
+        </div>
+        <div class="expandable-toggle" style="color:var(--error);">▼</div>
+      </div>
+      <div class="expandable-content">
+        <p style="color:var(--error);font-size:0.9rem;margin-bottom:16px;line-height:1.6;">
+          تنبيه: سيتم حذف حسابك وجميع بياناتك وروابطك بشكل نهائي ولا يمكن التراجع عن هذا الإجراء.<br>
+          <span style="font-size:0.75rem;color:var(--muted);">Your account and all data will be permanently deleted. This action cannot be undone.</span>
+        </p>
+        <button class="btn-add" onclick="backupBeforeDelete()" style="background:#0ab87a;margin-bottom:14px;">⬇ تنزيل نسخة احتياطية أولاً · Download Backup First</button>
+        <div class="form-group">
+          <label style="color:var(--error);">أدخل كلمة المرور للتأكيد <span class="lbl-sub">/ Enter password to confirm</span></label>
+          <input type="password" id="deletePw" dir="ltr" placeholder="••••••••">
+        </div>
+        <button class="btn-danger" onclick="deleteAccount()">حذف حسابي نهائياً · Delete My Account Permanently</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: STATS -->
+  <div class="page" id="page-stats">
+    <div class="expandable">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon">إ</div><span>إحصائيات<span class="title-sub">Statistics</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content open">
+        <div class="form-group">
+          <label>عدد الروابط في الصفحة <span class="lbl-sub">/ Links per page</span></label>
+          <select id="pageSize" onchange="updateStats()">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th style="max-width:50px;">الرقم<br><span style="font-size:0.65rem;font-weight:400;">#</span></th>
+              <th>العنوان<br><span style="font-size:0.65rem;font-weight:400;">Title</span></th>
+              <th>الوصف<br><span style="font-size:0.65rem;font-weight:400;">Desc</span></th>
+              <th>الرابط<br><span style="font-size:0.65rem;font-weight:400;">Link</span></th>
+              <th style="max-width:60px;">المشاهدات<br><span style="font-size:0.65rem;font-weight:400;">Views</span></th>
+            </tr>
+          </thead>
+          <tbody id="statsTbody">
+            <tr><td colspan="5" class="empty">لا توجد روابط / No links</td></tr>
+          </tbody>
+        </table>
+        <div class="pagination" id="pagination"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- CROP MODAL -->
+<div class="crop-overlay" id="cropOverlay">
+  <div class="crop-box">
+    <div class="crop-header" id="cropTitle">حدد منطقة الصورة / Crop Image</div>
+    <div class="crop-image-area"><img id="cropImage" src="" alt="crop"></div>
+    <div class="crop-actions">
+      <button class="crop-btn crop-btn-confirm" onclick="confirmCrop()">تأكيد · Confirm</button>
+      <button class="crop-btn crop-btn-cancel" onclick="cancelCrop()">إلغاء · Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- CROPPER ENGINE -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+
+<!-- FIREBASE SDK V10 MODULES -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut, deleteUser, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, getDocs, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getStorage, ref, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+
+  // إعدادات Firebase الخاصة بمشروعك الحقيقي لحل مشكلة الآيفون
+  const firebaseConfig = {
+    apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
+    authDomain: "electrwni.link", 
+    projectId: "electrwni-link",
+    storageBucket: "electrwni-link.firebasestorage.app",
+    messagingSenderId: "712490301263",
+    appId: "1:712490301263:web:2084210da3f687285ab73a"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+
+  // المتغيرات العامة لإدارة الحالة
+  let currentUser = null;
+  let cropper = null;
+  let currentCropType = ''; 
+  let selectedSocialPlatform = null;
+  let socialColorMode = 'brand';
+  let isBgLocked = true;
+  let isTextLocked = true;
+  let croppedAvatarBase64 = null;
+  let croppedBannerBase64 = null;
+  let customSocialIconBase64 = null;
+
+  // مكتبة أيقونات SVG للمنصات (بدل الإيموجي)
+  const PLATFORM_SVG = {
+    instagram:'<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.15 3.23-1.66 4.77-4.92 4.92-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85C2.38 3.92 3.9 2.38 7.15 2.23 8.42 2.17 8.8 2.16 12 2.16zm0-2.16C8.74 0 8.33.01 7.05.07 2.7.27.27 2.69.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.2 4.36 2.62 6.78 6.98 6.98C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c4.35-.2 6.78-2.62 6.98-6.98.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.2-4.35-2.62-6.78-6.98-6.98C15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 100 12.32 6.16 6.16 0 000-12.32zM12 16a4 4 0 110-8 4 4 0 010 8zm6.41-10.85a1.44 1.44 0 100 2.88 1.44 1.44 0 000-2.88z"/></svg>',
+    twitter:'<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.41l-5.8-7.58-6.64 7.58H.46l8.6-9.83L0 1.15h7.59l5.24 6.93 6.07-6.93zm-1.29 19.5h2.04L6.49 3.24H4.3L17.61 20.65z"/></svg>',
+    snapchat:'<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12.2 0c.83 0 3.27.23 4.42 2.8.39.87.3 2.35.22 3.54v.05c0 .12-.02.25-.02.37.06.03.16.07.32.07.24-.01.53-.1.85-.32a.78.78 0 01.84-.06c.31.11.5.36.5.64.01.36-.33.67-1.02.94l-.28.1c-.36.11-.9.29-1.05.64-.08.18-.05.42.08.7l.01.02c.04.1 1.05 2.49 3.39 2.87.18.03.32.19.31.38a.46.46 0 01-.03.15c-.16.37-.83.65-2.05.85-.13.02-.18.2-.24.46l-.09.34c-.04.16-.15.24-.32.24h-.04c-.12 0-.29-.03-.5-.07a6.27 6.27 0 00-1.19-.14c-.29 0-.59.03-.89.08-.59.1-1.08.45-1.65.85-.81.59-1.74 1.25-3.17 1.25l-.13-.01h-.1c-1.43 0-2.35-.66-3.16-1.24-.58-.41-1.07-.76-1.66-.86-.3-.05-.6-.08-.89-.08-.51 0-.91.08-1.19.14-.2.04-.37.07-.5.07-.22 0-.3-.13-.34-.25l-.09-.34c-.06-.26-.11-.43-.24-.46-1.22-.2-1.89-.48-2.05-.86a.4.4 0 01-.03-.14c-.01-.19.13-.35.31-.38 2.34-.38 3.35-2.77 3.39-2.87l.01-.02c.13-.28.16-.52.08-.7-.15-.35-.69-.53-1.05-.64l-.28-.1c-.93-.37-1.05-.78-1-.99.07-.31.46-.51.77-.51.09 0 .17.01.24.04.36.16.68.25.96.25.31 0 .47-.1.5-.12-.01-.13-.02-.26-.03-.4v-.02c-.08-1.19-.17-2.67.22-3.54C8.91.23 11.35 0 12.18 0z"/></svg>',
+    tiktok:'<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 013.5-4.53V9.4a6.33 6.33 0 00-5.94 10.5A6.33 6.33 0 0015.7 15.7V8.66a8.18 8.18 0 004.83 1.55V6.69h-.94z"/></svg>',
+    whatsapp:'<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.64.07-.3-.15-1.25-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.01-1.04 2.48 0 1.46 1.06 2.87 1.21 3.07.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.69.62.71.23 1.36.2 1.87.12.57-.08 1.76-.72 2-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.34zM12.05 21.5h-.01a9.5 9.5 0 01-4.84-1.32l-.35-.21-3.6.94.96-3.51-.23-.36a9.5 9.5 0 01-1.45-5.05c0-5.24 4.27-9.5 9.52-9.5a9.5 9.5 0 019.5 9.5c0 5.24-4.27 9.5-9.51 9.5z"/></svg>',
+    telegram:'<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M11.94 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0zm4.96 7.22c.1 0 .32.02.46.14a.5.5 0 01.17.32c.02.1.04.3.02.47-.18 1.9-.96 6.5-1.36 8.63-.17.9-.5 1.2-.82 1.23-.7.06-1.22-.46-1.9-.9-1.05-.7-1.65-1.12-2.67-1.8-1.19-.78-.42-1.21.26-1.91.18-.18 3.25-2.98 3.3-3.23.01-.03.01-.15-.05-.21s-.17-.04-.25-.02c-.1.02-1.8 1.14-5.08 3.36-.48.33-.92.5-1.3.48-.43-.01-1.25-.24-1.86-.44-.75-.24-1.35-.37-1.3-.79.03-.21.33-.43.89-.66 3.5-1.52 5.82-2.53 6.98-3.01 3.33-1.39 4.02-1.63 4.47-1.63z"/></svg>',
+    youtube:'<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.5A3.02 3.02 0 00.5 6.19C0 8.07 0 12 0 12s0 3.93.5 5.81a3.02 3.02 0 002.12 2.14c1.88.5 9.38.5 9.38.5s7.5 0 9.38-.5a3.02 3.02 0 002.12-2.14C24 15.93 24 12 24 12s0-3.93-.5-5.81zM9.55 15.57V8.43L15.82 12l-6.27 3.57z"/></svg>',
+    facebook:'<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07c0 6.02 4.39 11.01 10.13 11.93v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.8-4.69 4.54-4.69 1.31 0 2.69.24 2.69.24v2.97h-1.52c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8v8.44C19.61 23.08 24 18.09 24 12.07z"/></svg>',
+    linkedin:'<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.07 2.07 0 110-4.13 2.07 2.07 0 010 4.13zm1.78 13.02H3.56V9h3.56v11.45zM22.22 0H1.77C.8 0 0 .78 0 1.73v20.53C0 23.22.8 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .78 23.2 0 22.22 0z"/></svg>',
+    wechat:'<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8.69 11.52c-.5 0-.9-.4-.9-.9s.4-.9.9-.9.9.4.9.9-.4.9-.9.9zm5.05 0c-.5 0-.9-.4-.9-.9s.4-.9.9-.9.9.4.9.9-.4.9-.9.9zM8.5 3C4.36 3 1 5.91 1 9.5c0 1.97 1.02 3.73 2.62 4.92L3 17l2.6-1.3c.78.22 1.6.36 2.43.4-.1-.43-.16-.87-.16-1.33 0-3.2 3.04-5.77 6.79-5.77.25 0 .5.02.74.05C14.7 5.42 11.87 3 8.5 3zm9.5 6.77c-3.31 0-6 2.24-6 5 0 2.77 2.69 5 6 5 .67 0 1.32-.1 1.93-.29L23 21l-.86-2.06C23.28 18.05 24 16.6 24 15c0-2.76-2.69-5-6-5zm-2 4.23c-.4 0-.72-.32-.72-.72s.32-.72.72-.72.72.32.72.72-.32.72-.72.72zm4 0c-.4 0-.72-.32-.72-.72s.32-.72.72-.72.72.32.72.72-.32.72-.72.72z"/></svg>',
+    imessage:'<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 2.78 1.48 5.25 3.79 6.86-.13 1.13-.6 2.42-1.42 3.39 0 0 1.97-.27 3.6-1.5.34-.26.6-.5.78-.68.86.22 1.78.34 2.73.34h.74C18.52 19.4 22 15.5 22 10.75 22 5.92 17.52 2 12 2z"/></svg>',
+    website:'<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm6.93 6h-2.95a15.65 15.65 0 00-1.38-3.56A8.03 8.03 0 0118.93 8zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14a7.96 7.96 0 010-4h3.38a16.5 16.5 0 000 4H4.26zm.81 2h2.95c.3 1.26.77 2.46 1.38 3.56A7.99 7.99 0 015.07 16zm2.95-8H5.07a7.99 7.99 0 014.33-3.56C8.8 5.54 8.33 6.74 8.02 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66a14.6 14.6 0 010-4h4.68a14.6 14.6 0 010 4zm.25 5.56c.61-1.1 1.08-2.3 1.38-3.56h2.95a7.99 7.99 0 01-4.33 3.56zM16.36 14a16.5 16.5 0 000-4h3.38a7.96 7.96 0 010 4h-3.38z"/></svg>'
+  };
+  function platSvg(id){ return PLATFORM_SVG[id] || PLATFORM_SVG.website; }
+
+  // المنصات المتاحة للإضافة السريعة في قسم التواصل (أيقونات SVG)
+  const platforms = [
+    { id: 'instagram', name: 'إنستغرام', color: '#E1306C', prefix: 'https://instagram.com/' },
+    { id: 'twitter', name: 'إكس', color: '#000000', prefix: 'https://x.com/' },
+    { id: 'snapchat', name: 'سناب شات', color: '#FFC400', prefix: 'https://snapchat.com/add/' },
+    { id: 'tiktok', name: 'تيك توك', color: '#000000', prefix: 'https://tiktok.com/@' },
+    { id: 'whatsapp', name: 'واتساب', color: '#25D366', prefix: 'https://wa.me/' },
+    { id: 'telegram', name: 'تيليجرام', color: '#229ED9', prefix: 'https://t.me/' },
+    { id: 'youtube', name: 'يوتيوب', color: '#FF0000', prefix: 'https://youtube.com/@' },
+    { id: 'facebook', name: 'فيسبوك', color: '#1877F2', prefix: 'https://facebook.com/' },
+    { id: 'linkedin', name: 'لينكدإن', color: '#0A66C2', prefix: 'https://linkedin.com/in/' },
+    { id: 'wechat', name: 'وي تشات', color: '#07C160', prefix: '' },
+    { id: 'imessage', name: 'iMessage', color: '#34DA50', prefix: 'sms:' }
+  ];
+  let showAllPlatforms = false;
+  function detectPlatformFromUrl(url){
+    const u=(url||'').toLowerCase();
+    for(const p of platforms){
+      const key=p.id==='twitter'?'x.com':p.id;
+      if(u.includes(key))return p;
+      if(p.id==='twitter'&&u.includes('twitter'))return p;
+      if(p.id==='whatsapp'&&u.includes('wa.me'))return p;
+      if(p.id==='telegram'&&u.includes('t.me'))return p;
+      if(p.id==='wechat'&&(u.includes('wechat')||u.includes('weixin')))return p;
+      if(p.id==='imessage'&&(u.startsWith('sms:')||u.includes('imessage')))return p;
+    }
+    return null;
+  }
+
+  // 1. فحص الجلسة ومنع طرد السفاري (آيفون)
+  async function checkAuth() {
+    await auth.authStateReady(); 
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        currentUser = user;
+        console.log("تمت استعادة الجلسة بنجاح:", user.uid);
+        await initDashboard();
+      } else {
+        window.location.href = "signin.html";
+      }
+    });
+  }
+
+  // 2. تهيئة وتنزيل البيانات الكلية للمستخدم من الـ Database
+  async function initDashboard() {
+    const userDocRef = doc(db, "users", currentUser.uid);
+    const userDoc = await getDoc(userDocRef);
+    let username = currentUser.email.split('@')[0];
+
+    if (userDoc.exists()) {
+      const data = userDoc.data();
+      username = data.username || username;
+      document.getElementById('pfName').value = data.fullName || '';
+      document.getElementById('pfBio').value = data.bio || '';
+      document.getElementById('websiteInput').value = data.website || '';
+      document.getElementById('mapInput').value = data.mapLocation || '';
+      
+      if (data.phones && Array.isArray(data.phones)) {
+        document.getElementById('phonesContainer').innerHTML = '';
+        data.phones.forEach(p => addPhoneFieldHTML(p.label, p.number));
+      }
+      // === تحميل التصميم ===
+      // اللون الأساسي
+      const savedPrimary = data.primaryColor || data.themeColor;
+      if (savedPrimary) {
+        document.getElementById('colorPicker').value = savedPrimary;
+        document.getElementById('colorHexInput').value = savedPrimary;
+        window.onColorPick(savedPrimary);
+      }
+      // قفل لون النص
+      if (typeof data.textLocked === 'boolean') isTextLocked = data.textLocked;
+      if (data.textColor && !isTextLocked && document.getElementById('textColorPicker')) {
+        document.getElementById('textColorPicker').value = data.textColor;
+        window.onTextColorPick(data.textColor);
+      }
+      updateTextLockUI();
+      // قفل وخلفية
+      if (typeof data.bgLocked === 'boolean') isBgLocked = data.bgLocked;
+      if (data.bgColor && !isBgLocked) {
+        document.getElementById('bgColorPicker').value = data.bgColor;
+        document.getElementById('bgHexInput').value = data.bgColor;
+        window.onBgColorPick(data.bgColor);
+      }
+      updateBgLockUI();
+      // الصور (base64 من Firestore) — أسماء موحّدة مع page.html
+      if (data.avatar) document.getElementById('avatarPreview').innerHTML = `<img src="${data.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+      if (data.bannerImage) document.getElementById('bannerPreview').style.backgroundImage = `url(${data.bannerImage})`;
+    } else {
+      await setDoc(userDocRef, { username, email: currentUser.email, createdAt: new Date() }, { merge: true });
+    }
+
+    document.getElementById('pfUser').value = username;
+    document.getElementById('pfEmail').value = currentUser.email;
+    document.getElementById('myFullLink').textContent = `electrwni.link/${username}`;
+
+    initQuickAddGrid();
+    initColorPalettes();
+    updateBgLockUI();
+    updateTextLockUI();
+    loadLinks();
+    loadSocials();
+  }
+
+  // 3. ربط الوظائف البرمجية الأساسية بـ واجهة المستخدم (Window Object Mapping)
+  window.showPage = function(pageId, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(`page-${pageId}`).classList.add('active');
+    if(btn) btn.classList.add('active');
+  };
+
+  window.toggleExpand = function(header) {
+    header.classList.toggle('open');
+    header.nextElementSibling.classList.toggle('open');
+  };
+
+  window.showToast = function(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+  };
+
+  window.copyMyLink = function() {
+    navigator.clipboard.writeText(document.getElementById('myFullLink').textContent);
+    window.showToast("تم نسخ الرابط بنجاح");
+  };
+
+  window.openMyPage = function() {
+    const u = (document.getElementById('pfUser').value || '').trim();
+    if(!u){ window.showToast("لا يوجد اسم مستخدم بعد"); return; }
+    // الرابط القصير الأنيق — 404.html يحوّله تلقائياً لصفحة العرض
+    window.open(`https://electrwni.link/${u}`, '_blank');
+  };
+
+  window.logout = function() {
+    signOut(auth).then(() => window.location.href = "signin.html");
+  };
+
+  // 4. محرك إدارة الروابط (Links Page)
+  window.updateTitleCounter = function(input) {
+    const remaining = 20 - input.value.length;
+    const counter = document.getElementById('titleCounter');
+    counter.textContent = remaining;
+    counter.style.color = remaining <= 3 ? 'var(--error)' : (remaining <= 7 ? '#f77f00' : 'var(--muted)');
+  };
+
+  window.addLink = async function() {
+    const num = document.getElementById('linkNum').value;
+    const title = document.getElementById('linkTitle').value;
+    const desc = document.getElementById('linkDesc').value;
+    const url = document.getElementById('linkUrl').value;
+    const featured = document.getElementById('linkFeatured').checked;
+
+    if(!num || !title || !url) {
+      window.showToast("الرجاء ملء الحقول الإلزامية");
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "users", currentUser.uid, "links"), {
+        number: parseInt(num), title, description: desc, url, featured, views: 0, createdAt: new Date()
+      });
+      window.showToast("تمت إضافة الرابط بنجاح");
+      document.getElementById('linkNum').value = '';
+      document.getElementById('linkTitle').value = '';
+      document.getElementById('linkDesc').value = '';
+      document.getElementById('linkUrl').value = '';
+      document.getElementById('linkFeatured').checked = false;
+      const tc=document.getElementById('titleCounter'); if(tc){tc.textContent='20';tc.style.color='var(--muted)';}
+      loadLinks();
+    } catch (e) {
+      window.showToast("حدث خطأ أثناء حفظ الرابط");
+    }
+  };
+
+  async function loadLinks() {
+    if (!currentUser) return;
+    const q = query(collection(db, "users", currentUser.uid, "links"), orderBy("number", "asc"));
+    const snapshot = await getDocs(q);
+    const registry = document.getElementById('linksRegistry');
+    const statsTbody = document.getElementById('statsTbody');
+
+    registry.innerHTML = '';
+    statsTbody.innerHTML = '';
+
+    if (snapshot.empty) {
+      registry.innerHTML = '<div class="empty">لا توجد روابط مضافة بعد</div>';
+      statsTbody.innerHTML = '<tr><td colspan="5" class="empty">لا توجد روابط / No links</td></tr>';
+      return;
+    }
+
+    snapshot.forEach(docSnap => {
+      const link = docSnap.data();
+      const id = docSnap.id;
+      const fullDesc = link.description || '—';
+      // قص الوصف ليناسب سطرين (~60 حرفاً) مع "للمزيد…"
+      const clamped = fullDesc.length > 60 ? fullDesc.slice(0,60).trim() + '… <span style="color:var(--primary);font-weight:700;">للمزيد</span>' : fullDesc;
+
+      const item = document.createElement('div');
+      item.className = 'item';
+      item.innerHTML = `
+        <div class="item-header" onclick="this.parentElement.classList.toggle('open')">
+          [${link.number}] ${link.title}
+          <div class="item-details">
+            <div class="detail-row"><span class="detail-label">الرابط:</span> <span dir="ltr">${link.url}</span></div>
+            <div class="detail-row"><span class="detail-label">الوصف:</span> <span>${fullDesc}</span></div>
+            <div style="margin-top:8px; text-align:left;">
+              <button class="btn-delete" onclick="event.stopPropagation(); deleteLink('${id}')">حذف · Delete</button>
+            </div>
+          </div>
+        </div>
+        <div class="item-toggle">▼</div>`;
+      registry.appendChild(item);
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${link.number}</td><td><b>${link.title}</b></td><td><div class="desc-clamp">${clamped}</div></td><td dir="ltr">${link.url}</td><td><span style="color:var(--primary); font-weight:700;">${link.views || 0}</span></td>`;
+      statsTbody.appendChild(tr);
+    });
+  }
+
+  window.deleteLink = async function(id) {
+    if(confirm("هل أنت متأكد من حذف هذا الرابط؟")) {
+      await deleteDoc(doc(db, "users", currentUser.uid, "links", id));
+      window.showToast("تم حذف الرابط بنجاح.");
+      loadLinks();
+    }
+  };
+
+  window.goToStats = function() { window.showPage('stats'); };
+  window.updateStats = function() { loadLinks(); };
+
+  // 5. محرك التواصل الاجتماعي والشبكات (Socials Accounts)
+  function initQuickAddGrid() {
+    const grid = document.getElementById('quickAddGrid');
+    grid.innerHTML = '';
+    const visible = showAllPlatforms ? platforms : platforms.slice(0,5);
+    visible.forEach(p => {
+      const btn = document.createElement('button');
+      const txtColor = p.id==='snapchat' ? '#000' : '#fff';
+      btn.style.cssText = `padding: 8px 12px; background: ${p.color}; color: ${txtColor}; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; font-family:'Tajawal';`;
+      btn.innerHTML = `<span style="display:flex;width:18px;height:18px;">${platSvg(p.id)}</span> ${p.name}`;
+      btn.onclick = () => {
+        selectedSocialPlatform = p;
+        document.getElementById('socialFormBox').style.display = 'block';
+        document.getElementById('socUrlLabel').innerHTML = `حساب ${p.name} <span class="lbl-sub">/ ${p.id} account</span>`;
+        document.getElementById('socUrl').value = p.prefix;
+        document.getElementById('socColorModeGroup').style.display = 'block';
+        setSocColorMode('brand');
+        detectNow();
+      };
+      grid.appendChild(btn);
+    });
+    const moreBtn = document.getElementById('moreBtn');
+    if(moreBtn) moreBtn.innerHTML = showAllPlatforms ? 'أقل · Less' : 'المزيد · More';
+  }
+
+  window.toggleMorePlatforms = function() {
+    showAllPlatforms = !showAllPlatforms;
+    initQuickAddGrid();
+  };
+
+  // ألصق URL: التعرف التلقائي على المنصة
+  window.onPasteUrl = function(val){
+    const hint = document.getElementById('pasteHint');
+    const p = detectPlatformFromUrl(val);
+    if(p){ hint.style.color='var(--success)'; hint.textContent = `تم التعرف: ${p.name} ✓`; }
+    else if(val.trim()){ hint.style.color='var(--muted)'; hint.textContent = 'لم نتعرف على المنصة — اضغط تعرّف أو اختر منصة يدوياً'; }
+    else { hint.textContent=''; }
+  };
+
+  window.detectFromPaste = function(){
+    const val = document.getElementById('pasteUrlInput').value.trim();
+    if(!val){ document.getElementById('pasteHint').textContent='الصق رابطاً أولاً'; return; }
+    const p = detectPlatformFromUrl(val) || { id:'website', name:'موقع', color:'#3d5af1', prefix:'' };
+    selectedSocialPlatform = p;
+    document.getElementById('socialFormBox').style.display = 'block';
+    document.getElementById('socUrlLabel').innerHTML = `حساب ${p.name}`;
+    document.getElementById('socUrl').value = val;
+    document.getElementById('socColorModeGroup').style.display = 'block';
+    setSocColorMode('brand');
+    detectNow();
+  };
+
+  window.closeSocialForm = function() {
+    document.getElementById('socialFormBox').style.display = 'none';
+    document.getElementById('socDetectedPreview').style.display = 'none';
+  };
+
+  window.setSocColorMode = function(mode) {
+    socialColorMode = mode;
+    document.querySelectorAll('#socColorModeGroup button').forEach(b => b.style.borderColor = 'var(--border)');
+    if(mode === 'brand') document.getElementById('cmBrand').style.borderColor = 'var(--primary)';
+    if(mode === 'theme') document.getElementById('cmTheme').style.borderColor = 'var(--primary)';
+    if(mode === 'upload') document.getElementById('cmUpload').style.borderColor = 'var(--primary)';
+    document.getElementById('customIconUpload').style.display = mode === 'upload' ? 'block' : 'none';
+  };
+
+  let detectTimeout;
+  window.debounceDetect = function() {
+    clearTimeout(detectTimeout);
+    detectTimeout = setTimeout(() => detectNow(), 400);
+  };
+
+  window.detectNow = function() {
+    const val = document.getElementById('socUrl').value.trim();
+    if(!val || !selectedSocialPlatform) return;
+    document.getElementById('socDetectedPreview').style.display = 'flex';
+    const iconEl = document.getElementById('socDetectedIcon');
+    iconEl.innerHTML = `<span style="display:flex;width:24px;height:24px;color:#fff;">${platSvg(selectedSocialPlatform.id)}</span>`;
+    iconEl.style.background = selectedSocialPlatform.color;
+    document.getElementById('socDetectedName').textContent = selectedSocialPlatform.name;
+    document.getElementById('socDetectedUrl').textContent = val;
+    document.getElementById('socDetectHint').textContent = "تم فحص البنية اللغوية وصيغة الحساب جاهزة ✓";
+  };
+
+  window.previewCustomIcon = function(input) {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        customSocialIconBase64 = e.target.result;
+        document.getElementById('socIconPreview').style.display = 'block';
+        document.getElementById('socIconImg').src = e.target.result;
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  };
+
+  window.saveSocial = async function() {
+    const url = document.getElementById('socUrl').value.trim();
+    if(!url || !selectedSocialPlatform) { window.showToast("الرجاء إدخال الرابط واختيار منصة"); return; }
+    if(!currentUser){ window.showToast("لم يتم تسجيل الدخول"); return; }
+    try {
+      const userRef = doc(db, "users", currentUser.uid);
+      const snap = await getDoc(userRef);
+      const data = snap.exists() ? snap.data() : {};
+      const socials = Array.isArray(data.socials) ? data.socials : [];
+      // كائن نظيف بلا أي undefined (Firestore يرفض undefined)
+      const entry = {
+        id: 'soc_' + Date.now(),
+        platformId: selectedSocialPlatform.id || 'website',
+        platformName: selectedSocialPlatform.name || '',
+        name: selectedSocialPlatform.name || '',
+        brandColor: selectedSocialPlatform.color || '#3d5af1',
+        url: url,
+        styleMode: socialColorMode || 'brand',
+        icon: (socialColorMode === 'upload' && customSocialIconBase64) ? customSocialIconBase64 : null
+      };
+      socials.push(entry);
+      // setDoc merge: ينشئ الوثيقة إن لم توجد، ويحدّثها إن وُجدت (أأمن من updateDoc)
+      await setDoc(userRef, { socials: socials }, { merge: true });
+      window.showToast("تم حفظ حساب التواصل بنجاح");
+      closeSocialForm();
+      loadSocials();
+    } catch (e) {
+      console.error('saveSocial error:', e);
+      window.showToast("فشل الحفظ: " + (e.code || e.message || 'خطأ غير معروف'));
+    }
+  };
+
+  async function loadSocials() {
+    if (!currentUser) return;
+    const registry = document.getElementById('socialsRegistry');
+    registry.innerHTML = '';
+    let socials = [];
+    try {
+      const snap = await getDoc(doc(db, "users", currentUser.uid));
+      if(snap.exists() && Array.isArray(snap.data().socials)) socials = snap.data().socials;
+    } catch(e){}
+
+    if(!socials.length) {
+      registry.innerHTML = '<div class="empty">لا توجد شبكات مضافة</div>';
+      return;
+    }
+    socials.forEach(soc => {
+      const id = soc.id;
+      const div = document.createElement('div');
+      div.className = 'item';
+      const iconBg = soc.styleMode==='brand' ? (soc.brandColor||'var(--primary)') : 'var(--primary)';
+      const iconInner = (soc.styleMode==='upload' && soc.icon)
+        ? `<img src="${soc.icon}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`
+        : `<span style="display:flex;width:18px;height:18px;color:#fff;">${platSvg(soc.platformId)}</span>`;
+      div.innerHTML = `
+        <div class="item-header" style="display:flex; align-items:center; gap:10px;">
+          <div style="width:32px; height:32px; background:${iconBg}; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#fff;">
+            ${iconInner}
+          </div>
+          <div><b>${soc.platformName||soc.name||''}</b><div style="font-size:0.75rem; color:var(--muted);">${soc.url}</div></div>
+        </div>
+        <button class="btn-delete" onclick="deleteSocial('${id}')">حذف</button>`;
+      registry.appendChild(div);
+    });
+  }
+
+  window.deleteSocial = async function(id) {
+    if(confirm("هل تريد إزالة هذا الحساب؟")) {
+      try {
+        const userRef = doc(db, "users", currentUser.uid);
+        const snap = await getDoc(userRef);
+        const socials = (snap.exists() && Array.isArray(snap.data().socials) ? snap.data().socials : []).filter(s => s.id !== id);
+        await setDoc(userRef, { socials: socials }, { merge: true });
+        window.showToast("تم الحذف.");
+        loadSocials();
+      } catch(e){ window.showToast("تعذر الحذف: " + (e.message||'')); }
+    }
+  };
+
+  // 6. محرك الأرقام والموقع والخرائط المخصصة (Phone Numbers & Location)
+  function addPhoneFieldHTML(label = '', number = '') {
+    const container = document.getElementById('phonesContainer');
+    const entry = document.createElement('div');
+    entry.className = 'phone-entry';
+    entry.innerHTML = `
+      <div class="phone-entry-fields">
+        <input type="text" placeholder="التصنيف (مثال: الإدارة، المبيعات)" value="${label}" class="phone-label">
+        <input type="tel" placeholder="+966500000000" value="${number}" dir="ltr" class="phone-number">
+      </div>
+      <button class="btn-remove-phone" onclick="this.parentElement.remove()">حذف</button>`;
+    container.appendChild(entry);
+  }
+
+  window.addPhoneEntry = function() { addPhoneFieldHTML(); };
+
+  window.savePhones = async function() {
+    const entries = document.querySelectorAll('.phone-entry');
+    const phonesList = [];
+    entries.forEach(entry => {
+      const lbl = entry.querySelector('.phone-label').value.trim();
+      const num = entry.querySelector('.phone-number').value.trim();
+      if(num) phonesList.push({ label: lbl || 'اتصال', number: num });
+    });
+    try {
+      await setDoc(doc(db, "users", currentUser.uid), { phones: phonesList }, { merge: true });
+      window.showToast("تم حفظ أرقامك بنجاح");
+    } catch(e) { window.showToast("خطأ أثناء الحفظ"); }
+  };
+
+  window.saveWebsite = async function() {
+    const url = document.getElementById('websiteInput').value.trim();
+    await setDoc(doc(db, "users", currentUser.uid), { website: url }, { merge: true });
+    window.showToast("تم حفظ الموقع الإلكتروني");
+  };
+
+  window.saveMap = async function() {
+    const url = document.getElementById('mapInput').value.trim();
+    await setDoc(doc(db, "users", currentUser.uid), { mapLocation: url }, { merge: true });
+    window.showToast("تم حفظ الموقع الملاحي بنجاح");
+  };
+
+  // 7. محرك التصميم المتقدم واقتصاص الصور (Design UI & Cropper Engine)
+  window.toggleBgLock = function() {
+    isBgLocked = !isBgLocked;
+    updateBgLockUI();
+  };
+
+  function updateBgLockUI() {
+    const lockSvg='<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" style="vertical-align:-2px;"><path d="M12 1a5 5 0 00-5 5v3H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2v-9a2 2 0 00-2-2h-1V6a5 5 0 00-5-5zm0 2a3 3 0 013 3v3H9V6a3 3 0 013-3zm0 11a2 2 0 011 3.73V19a1 1 0 01-2 0v-1.27A2 2 0 0112 14z"/></svg>';
+    const unlockSvg='<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" style="vertical-align:-2px;"><path d="M12 1a5 5 0 00-5 5 1 1 0 002 0 3 3 0 016 0v3H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2v-9a2 2 0 00-2-2h-7V6zm0 13a2 2 0 011 3.73V19a1 1 0 01-2 0v-1.27A2 2 0 0112 14z"/></svg>';
+    document.getElementById('bgLockIcon').innerHTML = isBgLocked ? lockSvg : unlockSvg;
+    document.getElementById('bgLockLabel').textContent = isBgLocked ? "أبيض · White" : "مفتوح · Free";
+    document.getElementById('bgColorControls').style.cssText = isBgLocked ? "opacity:0.4; pointer-events:none;" : "opacity:1; pointer-events:auto;";
+    if(isBgLocked){
+      // الخلفية مقفلة = أبيض دائماً
+      document.getElementById('bgColorPreview').style.background = '#ffffff';
+      document.getElementById('bgColorPicker').value = '#ffffff';
+      document.getElementById('bgHexInput').value = '#ffffff';
+    }
+  }
+
+  window.onColorPick = function(color) {
+    document.getElementById('colorHexInput').value = color;
+    document.getElementById('colorPicker').value = color;
+    // لون النص: إن كان مقفلاً يتبع الأساسي
+    if(isTextLocked){
+      const tp = document.getElementById('textColorPreview');
+      if(tp) tp.style.background = color;
+      const tpk = document.getElementById('textColorPicker');
+      if(tpk) tpk.value = color;
+      const thx = document.getElementById('textHexInput');
+      if(thx) thx.value = color;
+    }
+  };
+
+  window.onColorHexInput = function(hex) {
+    if(hex.startsWith('#') && hex.length === 7) {
+      document.getElementById('colorPicker').value = hex;
+      window.onColorPick(hex);
+    }
+  };
+
+  window.onBgColorPick = function(color) {
+    document.getElementById('bgHexInput').value = color;
+    document.getElementById('bgColorPreview').style.background = color;
+  };
+
+  window.onBgHexInput = function(hex) {
+    if(hex.startsWith('#') && hex.length === 7) {
+      document.getElementById('bgColorPicker').value = hex;
+      window.onBgColorPick(hex);
+    }
+  };
+
+  window.resetBgColor = function() {
+    document.getElementById('bgColorPicker').value = '#ffffff';
+    document.getElementById('bgHexInput').value = '#ffffff';
+    document.getElementById('bgColorPreview').style.background = '#ffffff';
+  };
+
+  window.toggleTextLock = function() {
+    isTextLocked = !isTextLocked;
+    updateTextLockUI();
+  };
+
+  function updateTextLockUI() {
+    const lockSvg='<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" style="vertical-align:-2px;"><path d="M12 1a5 5 0 00-5 5v3H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2v-9a2 2 0 00-2-2h-1V6a5 5 0 00-5-5zm0 2a3 3 0 013 3v3H9V6a3 3 0 013-3zm0 11a2 2 0 011 3.73V19a1 1 0 01-2 0v-1.27A2 2 0 0112 14z"/></svg>';
+    const unlockSvg='<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" style="vertical-align:-2px;"><path d="M12 1a5 5 0 00-5 5 1 1 0 002 0 3 3 0 016 0v3H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2v-9a2 2 0 00-2-2h-7V6zm0 13a2 2 0 011 3.73V19a1 1 0 01-2 0v-1.27A2 2 0 0112 14z"/></svg>';
+    document.getElementById('textLockIcon').innerHTML = isTextLocked ? lockSvg : unlockSvg;
+    document.getElementById('textLockLabel').textContent = isTextLocked ? "مرتبط بالأساسي · Linked" : "مفتوح · Free";
+    document.getElementById('textColorControls').style.cssText = isTextLocked ? "opacity:0.4; pointer-events:none;" : "opacity:1; pointer-events:auto;";
+    if(isTextLocked){
+      // مقفل = يتبع اللون الأساسي
+      const primary = document.getElementById('colorPicker').value;
+      document.getElementById('textColorPreview').style.background = primary;
+      document.getElementById('textColorPicker').value = primary;
+      document.getElementById('textHexInput').value = primary;
+    }
+  }
+
+  window.onTextColorPick = function(color) {
+    document.getElementById('textHexInput').value = color;
+    document.getElementById('textColorPicker').value = color;
+    document.getElementById('textColorPreview').style.background = color;
+  };
+
+  window.onTextHexInput = function(hex) {
+    if(hex.startsWith('#') && hex.length === 7) {
+      document.getElementById('textColorPicker').value = hex;
+      window.onTextColorPick(hex);
+    }
+  };
+
+  window.resetTextColor = function() {
+    const primary = document.getElementById('colorPicker').value;
+    window.onTextColorPick(primary);
+  };
+
+  function initColorPalettes() {
+    const defaultColors = ['#3d5af1', '#e8436a', '#0ab87a', '#000000', '#7b2cbf', '#f77f00'];
+    const defaultBgs = ['#ffffff', '#f4f4f9', '#121212', '#fff0f3', '#eef6ff', '#f5f0ff'];
+
+    const cp = document.getElementById('colorPalette');
+    cp.innerHTML = '';
+    defaultColors.forEach(c => {
+      const d = document.createElement('div');
+      d.style.cssText = `width:24px;height:24px;border-radius:50%;background:${c};cursor:pointer;border:1px solid var(--border);`;
+      d.onclick = () => { document.getElementById('colorPicker').value = c; window.onColorPick(c); };
+      cp.appendChild(d);
+    });
+
+    const bp = document.getElementById('bgPalette');
+    bp.innerHTML = '';
+    defaultBgs.forEach(c => {
+      const d = document.createElement('div');
+      d.style.cssText = `width:24px;height:24px;border-radius:4px;background:${c};cursor:pointer;border:1px solid var(--border);`;
+      d.onclick = () => { document.getElementById('bgColorPicker').value = c; window.onBgColorPick(c); };
+      bp.appendChild(d);
+    });
+
+    const tp = document.getElementById('textPalette');
+    if(tp){
+      tp.innerHTML = '';
+      defaultColors.forEach(c => {
+        const d = document.createElement('div');
+        d.style.cssText = `width:24px;height:24px;border-radius:50%;background:${c};cursor:pointer;border:1px solid var(--border);`;
+        d.onclick = () => { document.getElementById('textColorPicker').value = c; window.onTextColorPick(c); };
+        tp.appendChild(d);
+      });
+    }
+  }
+
+  window.selectAvatar = function(input) { if (input.files && input.files[0]) openCropModal(input.files[0], 'avatar', 1); };
+  window.selectBanner = function(input) { if (input.files && input.files[0]) openCropModal(input.files[0], 'banner', 16/6); };
+
+  function openCropModal(file, type, ratio) {
+    currentCropType = type;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      document.getElementById('cropOverlay').classList.add('open');
+      const img = document.getElementById('cropImage');
+      img.src = e.target.result;
+      if(cropper) cropper.destroy();
+      cropper = new Cropper(img, { aspectRatio: ratio, viewMode: 1, autoCropArea: 1, responsive: true, checkOrientation: true });
+    };
+    reader.readAsDataURL(file);
+  }
+
+  window.cancelCrop = function() {
+    document.getElementById('cropOverlay').classList.remove('open');
+    if(cropper) cropper.destroy();
+  };
+
+  window.confirmCrop = function() {
+    if(!cropper) return;
+    // أبعاد محسوبة لإبقاء base64 صغيراً (حد وثيقة Firestore ~1MB)
+    const canvas = cropper.getCroppedCanvas({ width: currentCropType === 'avatar' ? 256 : 640 });
+    const quality = currentCropType === 'avatar' ? 0.85 : 0.75;
+    const base64 = canvas.toDataURL('image/jpeg', quality);
+
+    if (currentCropType === 'avatar') {
+      croppedAvatarBase64 = base64;
+      document.getElementById('avatarPreview').innerHTML = `<img src="${base64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    } else {
+      croppedBannerBase64 = base64;
+      document.getElementById('bannerPreview').style.backgroundImage = `url(${base64})`;
+    }
+    window.cancelCrop();
+    window.showToast("تمت معالجة الصورة، يرجى حفظ التصميم");
+  };
+
+  window.saveDesign = async function() {
+    window.showToast("جاري حفظ التصميم...");
+    try {
+      const primary = document.getElementById('colorPicker').value;
+      const bg = isBgLocked ? '#ffffff' : document.getElementById('bgColorPicker').value;
+      // أسماء موحّدة مع page.html: avatar (الشعار) + bannerImage (الغلاف)
+      const upData = {
+        primaryColor: primary,
+        themeColor: primary,       // توافق مع page.html القديم
+        textColor: isTextLocked ? primary : (document.getElementById('textColorPicker') ? document.getElementById('textColorPicker').value : primary),
+        textLocked: isTextLocked,
+        bgColor: bg,
+        bgLocked: isBgLocked
+      };
+      // حفظ الصور مباشرة كـ base64 في Firestore (لا حاجة لـ Storage)
+      if(croppedAvatarBase64) upData.avatar = croppedAvatarBase64;
+      if(croppedBannerBase64) upData.bannerImage = croppedBannerBase64;
+
+      await setDoc(doc(db, "users", currentUser.uid), upData, { merge: true });
+      window.showToast("تم حفظ التصميم والصور بنجاح");
+    } catch (e) {
+      window.showToast("تعذر الحفظ: " + (e.message || e.code || ''));
+    }
+  };
+
+  // 8. محرك الملف الشخصي وإتلاف الحسابات (Profile & Account Deletion)
+  window.saveProfile = async function() {
+    try {
+      await setDoc(doc(db, "users", currentUser.uid), {
+        fullName: document.getElementById('pfName').value.trim(),
+        bio: document.getElementById('pfBio').value.trim()
+      }, { merge: true });
+      window.showToast("تم تحديث الملف التعريفي");
+    } catch(e) { window.showToast("فشلت المحاولة: " + (e.code||e.message||'')); }
+  };
+
+  window.changePassword = async function() {
+    const oldPw = document.getElementById('pwOld').value;
+    const newPw = document.getElementById('pwNew').value;
+    const confirmPw = document.getElementById('pwConfirm').value;
+    if(!oldPw || !newPw || !confirmPw){ window.showToast("يرجى ملء جميع الحقول · Fill all fields"); return; }
+    if(newPw.length < 6){ window.showToast("كلمة المرور 6 أحرف على الأقل · Min 6 chars"); return; }
+    if(newPw !== confirmPw){ window.showToast("كلمتا المرور غير متطابقتين · Passwords don't match"); return; }
+    try {
+      const cred = EmailAuthProvider.credential(currentUser.email, oldPw);
+      await reauthenticateWithCredential(currentUser, cred);
+      await updatePassword(currentUser, newPw);
+      document.getElementById('pwOld').value='';
+      document.getElementById('pwNew').value='';
+      document.getElementById('pwConfirm').value='';
+      window.showToast("تم تحديث كلمة المرور بنجاح · Password updated");
+    } catch(e) {
+      if(e.code==='auth/wrong-password'||e.code==='auth/invalid-credential') window.showToast("كلمة المرور القديمة غير صحيحة · Wrong old password");
+      else window.showToast("تعذر التحديث: "+e.message);
+    }
+  };
+
+  // تنزيل نسخة احتياطية كاملة قبل الحذف (JSON)
+  window.backupBeforeDelete = async function() {
+    try {
+      const snap = await getDoc(doc(db, "users", currentUser.uid));
+      const data = snap.exists() ? snap.data() : {};
+      // جلب الروابط من subcollection أيضاً
+      let links = [];
+      try {
+        const ls = await getDocs(collection(db, "users", currentUser.uid, "links"));
+        ls.forEach(d => links.push(d.data()));
+      } catch(e){}
+      const backup = {
+        exportedAt: new Date().toISOString(),
+        email: currentUser.email,
+        uid: currentUser.uid,
+        profile: data,
+        links: links
+      };
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `electrwni-backup-${(data.username||'account')}.json`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      window.showToast("تم تنزيل النسخة الاحتياطية");
+    } catch(e) { window.showToast("تعذر التنزيل: " + (e.message||'')); }
+  };
+
+  window.deleteAccount = async function() {
+    const pw = document.getElementById('deletePw').value;
+    if(!pw){ window.showToast("أدخل كلمة المرور للتأكيد"); return; }
+    if(!confirm("تحذير نهائي: هل تود حذف حسابك وملفك بشكل قطعي؟ لا يمكن التراجع!")) return;
+    try {
+      // إعادة مصادقة لحل خطأ requires-recent-login
+      const cred = EmailAuthProvider.credential(currentUser.email, pw);
+      await reauthenticateWithCredential(currentUser, cred);
+      // حذف بيانات Firestore ثم الحساب
+      let uname = null;
+      try {
+        const usnap = await getDoc(doc(db, "users", currentUser.uid));
+        if(usnap.exists()) uname = (usnap.data().username || '').toLowerCase();
+      } catch(e){}
+      try { await deleteDoc(doc(db, "users", currentUser.uid)); } catch(e){}
+      // حذف فهرس اسم المستخدم حتى يتحرر للتسجيل من جديد
+      if(uname){ try { await deleteDoc(doc(db, "usernames", uname)); } catch(e){} }
+      await deleteUser(currentUser);
+      window.location.href = "signup.html";
+    } catch (e) {
+      if(e.code==='auth/wrong-password'||e.code==='auth/invalid-credential')
+        window.showToast("كلمة المرور غير صحيحة");
+      else
+        window.showToast("تعذر الحذف: " + (e.code||e.message||''));
+    }
+  };
+
+  // بدء تشغيل الفحص الأمني والجلسات
+  checkAuth();
+</script>
+
+</body>
+</html>
