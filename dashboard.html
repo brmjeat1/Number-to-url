@@ -499,54 +499,552 @@ tr:hover{background:var(--bg2);}
   </div>
 </div>
 
-<!-- المحرك الحديث لـ FIREBASE والمعدل لحل مشكلة متصفح سفاري للأيفون -->
+<!-- CROPPER ENGINE -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 
+<!-- FIREBASE SDK V10 MODULES -->
 <script type="module">
-  // 1. استيراد حزم الـ Firebase الحديثة (V10)
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged, signOut, deleteUser } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, getDocs, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getStorage, ref, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-  // 2. دمج مفاتيح مشروعك الحقيقية التي استخرجناها بدقة
+  // إعدادات Firebase الخاصة بمشروعك الحقيقي لحل مشكلة الآيفون
   const firebaseConfig = {
     apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
-    authDomain: "electrwni.link", // تم ترك النطاق المخصص هنا لمنع مشكلة طرد الأيفون تماماً
+    authDomain: "electrwni.link", 
     projectId: "electrwni-link",
     storageBucket: "electrwni-link.firebasestorage.app",
     messagingSenderId: "712490301263",
     appId: "1:712490301263:web:2084210da3f687285ab73a"
   };
 
-  // 3. تشغيل الخدمات
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+  const storage = getStorage(app);
 
-  // حيلة برمجية ذكية: ربط المحرك الجديد بأي كود قديم قد تضيفه مستقبلاً لكي لا يحدث تضارب
-  window.auth = auth;
-  window.db = db;
-  window.firebase = {
-    apps: [app],
-    initializeApp: () => app,
-    auth: () => auth,
-    firestore: () => db
-  };
+  // المتغيرات العامة لإدارة الحالة
+  let currentUser = null;
+  let cropper = null;
+  let currentCropType = ''; 
+  let selectedSocialPlatform = null;
+  let socialColorMode = 'brand';
+  let isBgLocked = true;
+  let croppedAvatarBase64 = null;
+  let croppedBannerBase64 = null;
+  let customSocialIconBase64 = null;
 
-  // 4. فحص الجلسة وإجبار الأيفون على انتظار البيانات بدلاً من طردك تلقائياً عند التحديث
+  // المنصات المتاحة للإضافة السريعة في قسم التواصل
+  const platforms = [
+    { id: 'instagram', name: 'إنستغرام', icon: '📸', color: '#E1306C', prefix: 'https://instagram.com/' },
+    { id: 'twitter', name: 'إكس', icon: '🐦', color: '#000000', prefix: 'https://x.com/' },
+    { id: 'snapchat', name: 'سناب شات', icon: '👻', color: '#FFFC00', prefix: 'https://snapchat.com/add/' },
+    { id: 'tiktok', name: 'تيك توك', icon: '🎵', color: '#000000', prefix: 'https://tiktok.com/@' },
+    { id: 'whatsapp', name: 'واتساب', icon: '💬', color: '#25D366', prefix: 'https://wa.me/' }
+  ];
+
+  // 1. فحص الجلسة ومنع طرد السفاري (آيفون)
   async function checkAuth() {
-    await auth.authStateReady(); // انتظر استرداد الجلسة المخفية في Safari للأيفون
-    
-    onAuthStateChanged(auth, (user) => {
+    await auth.authStateReady(); 
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
-        console.log("تمت استعادة الجلسة بأمان لـ المستخدم:", user.uid);
+        currentUser = user;
+        console.log("تمت استعادة الجلسة بنجاح:", user.uid);
+        await initDashboard();
       } else {
-        window.location.href = "signin.html"; // طرد فقط لو قام بتسجيل خروج فعلياً
+        window.location.href = "signin.html";
       }
     });
   }
 
-  // تشغيل الحماية فوراً
+  // 2. تهيئة وتنزيل البيانات الكلية للمستخدم من الـ Database
+  async function initDashboard() {
+    const userDocRef = doc(db, "users", currentUser.uid);
+    const userDoc = await getDoc(userDocRef);
+    let username = currentUser.email.split('@')[0];
+
+    if (userDoc.exists()) {
+      const data = userDoc.data();
+      username = data.username || username;
+      document.getElementById('pfName').value = data.fullName || '';
+      document.getElementById('pfBio').value = data.bio || '';
+      document.getElementById('websiteInput').value = data.website || '';
+      document.getElementById('mapInput').value = data.mapLocation || '';
+      
+      if (data.phones && Array.isArray(data.phones)) {
+        document.getElementById('phonesContainer').innerHTML = '';
+        data.phones.forEach(p => addPhoneFieldHTML(p.label, p.number));
+      }
+      if (data.primaryColor) {
+        document.getElementById('colorPicker').value = data.primaryColor;
+        document.getElementById('colorHexInput').value = data.primaryColor;
+      }
+      if (data.bgColor) {
+        document.getElementById('bgColorPicker').value = data.bgColor;
+        document.getElementById('bgHexInput').value = data.bgColor;
+        document.getElementById('bgColorPreview').style.background = data.bgColor;
+      }
+      if (data.accentColor) document.getElementById('accentColorPreview').style.background = data.accentColor;
+      if (data.avatarUrl) document.getElementById('avatarPreview').innerHTML = `<img src="${data.avatarUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+      if (data.bannerUrl) document.getElementById('bannerPreview').style.backgroundImage = `url(${data.bannerUrl})`;
+      if (data.bgLocked !== undefined) {
+        isBgLocked = data.bgLocked;
+        updateBgLockUI();
+      }
+    } else {
+      await setDoc(userDocRef, { username, email: currentUser.email, createdAt: new Date() }, { merge: true });
+    }
+
+    document.getElementById('pfUser').value = username;
+    document.getElementById('pfEmail').value = currentUser.email;
+    document.getElementById('myFullLink').textContent = `electrwni.link/${username}`;
+
+    initQuickAddGrid();
+    initColorPalettes();
+    loadLinks();
+    loadSocials();
+  }
+
+  // 3. ربط الوظائف البرمجية الأساسية بـ واجهة المستخدم (Window Object Mapping)
+  window.showPage = function(pageId, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(`page-${pageId}`).classList.add('active');
+    if(btn) btn.classList.add('active');
+  };
+
+  window.toggleExpand = function(header) {
+    header.classList.toggle('open');
+    header.nextElementSibling.classList.toggle('open');
+  };
+
+  window.showToast = function(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+  };
+
+  window.copyMyLink = function() {
+    navigator.clipboard.writeText(document.getElementById('myFullLink').textContent);
+    window.showToast("تم نسخ الرابط بنجاح! 🎉");
+  };
+
+  window.openMyPage = function() {
+    window.open(`https://electrwni.link/${document.getElementById('pfUser').value}`, '_blank');
+  };
+
+  window.logout = function() {
+    signOut(auth).then(() => window.location.href = "signin.html");
+  };
+
+  // 4. محرك إدارة الروابط (Links Page)
+  window.addLink = async function() {
+    const num = document.getElementById('linkNum').value;
+    const title = document.getElementById('linkTitle').value;
+    const desc = document.getElementById('linkDesc').value;
+    const url = document.getElementById('linkUrl').value;
+    const featured = document.getElementById('linkFeatured').checked;
+
+    if(!num || !title || !url) {
+      window.showToast("الرجاء ملء الحقول الإلزامية (*) ⚠️");
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "users", currentUser.uid, "links"), {
+        number: parseInt(num), title, description: desc, url, featured, views: 0, createdAt: new Date()
+      });
+      window.showToast("تمت إضافة الرابط بنجاح! 🎉");
+      document.getElementById('linkNum').value = '';
+      document.getElementById('linkTitle').value = '';
+      document.getElementById('linkDesc').value = '';
+      document.getElementById('linkUrl').value = '';
+      document.getElementById('linkFeatured').checked = false;
+      loadLinks();
+    } catch (e) {
+      window.showToast("حدث خطأ أثناء حفظ الرابط ❌");
+    }
+  };
+
+  async function loadLinks() {
+    if (!currentUser) return;
+    const q = query(collection(db, "users", currentUser.uid, "links"), orderBy("number", "asc"));
+    const snapshot = await getDocs(q);
+    const registry = document.getElementById('linksRegistry');
+    const statsTbody = document.getElementById('statsTbody');
+
+    registry.innerHTML = '';
+    statsTbody.innerHTML = '';
+
+    if (snapshot.empty) {
+      registry.innerHTML = '<div class="empty">لا توجد روابط مضافة بعد</div>';
+      statsTbody.innerHTML = '<tr><td colspan="5" class="empty">لا توجد روابط / No links</td></tr>';
+      return;
+    }
+
+    snapshot.forEach(docSnap => {
+      const link = docSnap.data();
+      const id = docSnap.id;
+
+      const item = document.createElement('div');
+      item.className = 'item';
+      item.innerHTML = `
+        <div class="item-header" onclick="this.parentElement.classList.toggle('open')">
+          [${link.number}] ${link.title}
+          <div class="item-details">
+            <div class="detail-row"><span class="detail-label">الرابط:</span> <span dir="ltr">${link.url}</span></div>
+            <div class="detail-row"><span class="detail-label">الوصف:</span> <span>${link.description || '—'}</span></div>
+            <div style="margin-top:8px; text-align:left;">
+              <button class="btn-delete" onclick="event.stopPropagation(); deleteLink('${id}')">حذف · Delete</button>
+            </div>
+          </div>
+        </div>
+        <div class="item-toggle">▼</div>`;
+      registry.appendChild(item);
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${link.number}</td><td><b>${link.title}</b></td><td>${link.description || '—'}</td><td dir="ltr">${link.url}</td><td><span style="color:var(--primary); font-weight:700;">${link.views || 0}</span></td>`;
+      statsTbody.appendChild(tr);
+    });
+  }
+
+  window.deleteLink = async function(id) {
+    if(confirm("هل أنت متأكد من حذف هذا الرابط؟")) {
+      await deleteDoc(doc(db, "users", currentUser.uid, "links", id));
+      window.showToast("تم حذف الرابط بنجاح.");
+      loadLinks();
+    }
+  };
+
+  window.goToStats = function() { window.showPage('stats'); };
+  window.updateStats = function() { loadLinks(); };
+
+  // 5. محرك التواصل الاجتماعي والشبكات (Socials Accounts)
+  function initQuickAddGrid() {
+    const grid = document.getElementById('quickAddGrid');
+    grid.innerHTML = '';
+    platforms.forEach(p => {
+      const btn = document.createElement('button');
+      btn.style.cssText = `padding: 8px 12px; background: ${p.color}; color: ${p.id==='snapchat'?'#000':'#fff'}; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 4px; font-family:'Tajawal';`;
+      btn.innerHTML = `<span>${p.icon}</span> ${p.name}`;
+      btn.onclick = () => {
+        selectedSocialPlatform = p;
+        document.getElementById('socialFormBox').style.display = 'block';
+        document.getElementById('socUrlLabel').innerHTML = `حساب ${p.name}`;
+        document.getElementById('socUrl').value = p.prefix;
+        document.getElementById('socColorModeGroup').style.display = 'block';
+        setSocColorMode('brand');
+        detectNow();
+      };
+      grid.appendChild(btn);
+    });
+  }
+
+  window.closeSocialForm = function() {
+    document.getElementById('socialFormBox').style.display = 'none';
+    document.getElementById('socDetectedPreview').style.display = 'none';
+  };
+
+  window.setSocColorMode = function(mode) {
+    socialColorMode = mode;
+    document.querySelectorAll('#socColorModeGroup button').forEach(b => b.style.borderColor = 'var(--border)');
+    if(mode === 'brand') document.getElementById('cmBrand').style.borderColor = 'var(--primary)';
+    if(mode === 'theme') document.getElementById('cmTheme').style.borderColor = 'var(--primary)';
+    if(mode === 'upload') document.getElementById('cmUpload').style.borderColor = 'var(--primary)';
+    document.getElementById('customIconUpload').style.display = mode === 'upload' ? 'block' : 'none';
+  };
+
+  let detectTimeout;
+  window.debounceDetect = function() {
+    clearTimeout(detectTimeout);
+    detectTimeout = setTimeout(() => detectNow(), 400);
+  };
+
+  window.detectNow = function() {
+    const val = document.getElementById('socUrl').value.trim();
+    if(!val || !selectedSocialPlatform) return;
+    document.getElementById('socDetectedPreview').style.display = 'flex';
+    document.getElementById('socDetectedIcon').textContent = selectedSocialPlatform.icon;
+    document.getElementById('socDetectedIcon').style.background = selectedSocialPlatform.color;
+    document.getElementById('socDetectedName').textContent = selectedSocialPlatform.name;
+    document.getElementById('socDetectedUrl').textContent = val;
+    document.getElementById('socDetectHint').textContent = "تم فحص البنية اللغوية وصيغة الحساب جاهزة ✅";
+  };
+
+  window.previewCustomIcon = function(input) {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        customSocialIconBase64 = e.target.result;
+        document.getElementById('socIconPreview').style.display = 'block';
+        document.getElementById('socIconImg').src = e.target.result;
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  };
+
+  window.saveSocial = async function() {
+    const url = document.getElementById('socUrl').value.trim();
+    if(!url || !selectedSocialPlatform) return;
+    try {
+      await addDoc(collection(db, "users", currentUser.uid, "socials"), {
+        platformId: selectedSocialPlatform.id, platformName: selectedSocialPlatform.name,
+        icon: selectedSocialPlatform.icon, brandColor: selectedSocialPlatform.color,
+        url, styleMode: socialColorMode, customIcon: socialColorMode === 'upload' ? customSocialIconBase64 : null,
+        createdAt: new Date()
+      });
+      window.showToast("تم حفظ حساب التواصل بنجاح! ✨");
+      closeSocialForm();
+      loadSocials();
+    } catch (e) {
+      window.showToast("فشل الحفظ ❌");
+    }
+  };
+
+  async function loadSocials() {
+    if (!currentUser) return;
+    const snapshot = await getDocs(collection(db, "users", currentUser.uid, "socials"));
+    const registry = document.getElementById('socialsRegistry');
+    registry.innerHTML = '';
+
+    if(snapshot.empty) {
+      registry.innerHTML = '<div class="empty">لا توجد شبكات مضافة</div>';
+      return;
+    }
+    snapshot.forEach(docSnap => {
+      const soc = docSnap.data();
+      const id = docSnap.id;
+      const div = document.createElement('div');
+      div.className = 'item';
+      div.innerHTML = `
+        <div class="item-header" style="display:flex; align-items:center; gap:10px;">
+          <div style="width:32px; height:32px; background:${soc.styleMode==='brand'?soc.brandColor:'var(--primary)'}; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#fff;">
+            ${soc.styleMode==='upload'&&soc.customIcon ? `<img src="${soc.customIcon}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">` : soc.icon}
+          </div>
+          <div><b>${soc.platformName}</b><div style="font-size:0.75rem; color:var(--muted);">${soc.url}</div></div>
+        </div>
+        <button class="btn-delete" onclick="deleteSocial('${id}')">حذف</button>`;
+      registry.appendChild(div);
+    });
+  }
+
+  window.deleteSocial = async function(id) {
+    if(confirm("هل تريد إزالة هذا الحساب؟")) {
+      await deleteDoc(doc(db, "users", currentUser.uid, "socials", id));
+      window.showToast("تم الحذف.");
+      loadSocials();
+    }
+  };
+
+  // 6. محرك الأرقام والموقع والخرائط المخصصة (Phone Numbers & Location)
+  function addPhoneFieldHTML(label = '', number = '') {
+    const container = document.getElementById('phonesContainer');
+    const entry = document.createElement('div');
+    entry.className = 'phone-entry';
+    entry.innerHTML = `
+      <div class="phone-entry-fields">
+        <input type="text" placeholder="التصنيف (مثال: الإدارة، المبيعات)" value="${label}" class="phone-label">
+        <input type="tel" placeholder="+966500000000" value="${number}" dir="ltr" class="phone-number">
+      </div>
+      <button class="btn-remove-phone" onclick="this.parentElement.remove()">حذف</button>`;
+    container.appendChild(entry);
+  }
+
+  window.addPhoneEntry = function() { addPhoneFieldHTML(); };
+
+  window.savePhones = async function() {
+    const entries = document.querySelectorAll('.phone-entry');
+    const phonesList = [];
+    entries.forEach(entry => {
+      const lbl = entry.querySelector('.phone-label').value.trim();
+      const num = entry.querySelector('.phone-number').value.trim();
+      if(num) phonesList.push({ label: lbl || 'اتصال', number: num });
+    });
+    try {
+      await updateDoc(doc(db, "users", currentUser.uid), { phones: phonesList });
+      window.showToast("تم حفظ أرقامك بنجاح! 📞");
+    } catch(e) { window.showToast("خطأ أثناء الحفظ ❌"); }
+  };
+
+  window.saveWebsite = async function() {
+    const url = document.getElementById('websiteInput').value.trim();
+    await updateDoc(doc(db, "users", currentUser.uid), { website: url });
+    window.showToast("تم حفظ الموقع الإلكتروني! 🌐");
+  };
+
+  window.saveMap = async function() {
+    const url = document.getElementById('mapInput').value.trim();
+    await updateDoc(doc(db, "users", currentUser.uid), { mapLocation: url });
+    window.showToast("تم حفظ الموقع الملاحي بنجاح! 📍");
+  };
+
+  // 7. محرك التصميم المتقدم واقتصاص الصور (Design UI & Cropper Engine)
+  window.toggleBgLock = function() {
+    isBgLocked = !isBgLocked;
+    updateBgLockUI();
+  };
+
+  function updateBgLockUI() {
+    const btn = document.getElementById('bgLockBtn');
+    document.getElementById('bgLockIcon').textContent = isBgLocked ? "🔒" : "🔓";
+    document.getElementById('bgLockLabel').textContent = isBgLocked ? "مقفل · Locked" : "مفتوح · Unlocked";
+    document.getElementById('bgColorControls').style.cssText = isBgLocked ? "opacity:0.4; pointer-events:none;" : "opacity:1; pointer-events:auto;";
+  }
+
+  window.onColorPick = function(color) {
+    document.getElementById('colorHexInput').value = color;
+    if(isBgLocked) {
+      document.getElementById('bgColorPreview').style.background = color;
+      document.getElementById('accentColorPreview').style.background = color + "1a";
+    }
+  };
+
+  window.onColorHexInput = function(hex) {
+    if(hex.startsWith('#') && hex.length === 7) {
+      document.getElementById('colorPicker').value = hex;
+      window.onColorPick(hex);
+    }
+  };
+
+  window.onBgColorPick = function(color) {
+    document.getElementById('bgHexInput').value = color;
+    document.getElementById('bgColorPreview').style.background = color;
+  };
+
+  window.onBgHexInput = function(hex) {
+    if(hex.startsWith('#') && hex.length === 7) {
+      document.getElementById('bgColorPicker').value = hex;
+      window.onBgColorPick(hex);
+    }
+  };
+
+  function initColorPalettes() {
+    const defaultColors = ['#3d5af1', '#e8436a', '#0ab87a', '#000000', '#7b2cbf', '#f77f00'];
+    const defaultBgs = ['#ffffff', '#f4f4f9', '#121212', '#fff0f3'];
+    
+    const cp = document.getElementById('colorPalette');
+    cp.innerHTML = '';
+    defaultColors.forEach(c => {
+      const d = document.createElement('div');
+      d.style.cssText = `width:24px;height:24px;border-radius:50%;background:${c};cursor:pointer;border:1px solid var(--border);`;
+      d.onclick = () => { document.getElementById('colorPicker').value = c; window.onColorPick(c); };
+      cp.appendChild(d);
+    });
+
+    const bp = document.getElementById('bgPalette');
+    bp.innerHTML = '';
+    defaultBgs.forEach(c => {
+      const d = document.createElement('div');
+      d.style.cssText = `width:24px;height:24px;border-radius:4px;background:${c};cursor:pointer;border:1px solid var(--border);`;
+      d.onclick = () => { document.getElementById('bgColorPicker').value = c; window.onBgColorPick(c); };
+      bp.appendChild(d);
+    });
+  }
+
+  window.selectAvatar = function(input) { if (input.files && input.files[0]) openCropModal(input.files[0], 'avatar', 1); };
+  window.selectBanner = function(input) { if (input.files && input.files[0]) openCropModal(input.files[0], 'banner', 16/6); };
+
+  function openCropModal(file, type, ratio) {
+    currentCropType = type;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      document.getElementById('cropOverlay').classList.add('open');
+      const img = document.getElementById('cropImage');
+      img.src = e.target.result;
+      if(cropper) cropper.destroy();
+      cropper = new Cropper(img, { aspectRatio: ratio, viewMode: 1 });
+    };
+    reader.readAsDataURL(file);
+  }
+
+  window.cancelCrop = function() {
+    document.getElementById('cropOverlay').classList.remove('open');
+    if(cropper) cropper.destroy();
+  };
+
+  window.confirmCrop = function() {
+    if(!cropper) return;
+    const canvas = cropper.getClippedCanvas({ width: currentCropType === 'avatar' ? 200 : 800 });
+    const base64 = canvas.toDataURL('image/jpeg', 0.85);
+    
+    if (currentCropType === 'avatar') {
+      croppedAvatarBase64 = base64;
+      document.getElementById('avatarPreview').innerHTML = `<img src="${base64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    } else {
+      croppedBannerBase64 = base64;
+      document.getElementById('bannerPreview').style.backgroundImage = `url(${base64})`;
+    }
+    window.cancelCrop();
+    window.showToast("تمت المعالجة الصورية بنجاح، يرجى حفظ التصميم النهائي! 📸");
+  };
+
+  window.suggestBgWithAI = function() {
+    const mainColor = document.getElementById('colorPicker').value;
+    document.getElementById('aiSuggestionBox').style.display = 'block';
+    document.getElementById('aiSuggestionContent').innerHTML = `تم ابتكار سمة بصرية متناسقة بناءً على الذكاء الاصطناعي وهويتك الأساسية.`;
+    document.getElementById('bgColorPreview').style.background = mainColor + "0d";
+    document.getElementById('accentColorPreview').style.background = mainColor + "26";
+  };
+
+  window.resetBgColor = function() {
+    document.getElementById('bgColorPicker').value = "#ffffff";
+    document.getElementById('bgColorPreview').style.background = "#ffffff";
+    document.getElementById('accentColorPreview').style.background = "#f4f4f9";
+  };
+
+  window.saveDesign = async function() {
+    window.showToast("جاري رفع وحفظ ملفات التصميم... ⏳");
+    let avatarUrl = null, bannerUrl = null;
+    try {
+      if(croppedAvatarBase64) {
+        const refAv = ref(storage, `users/${currentUser.uid}/avatar.jpg`);
+        await uploadString(refAv, croppedAvatarBase64, 'data_url');
+        avatarUrl = await getDownloadURL(refAv);
+      }
+      if(croppedBannerBase64) {
+        const refBn = ref(storage, `users/${currentUser.uid}/banner.jpg`);
+        await uploadString(refBn, croppedBannerBase64, 'data_url');
+        bannerUrl = await getDownloadURL(refBn);
+      }
+
+      const upData = {
+        primaryColor: document.getElementById('colorPicker').value,
+        bgColor: document.getElementById('bgColorPicker').value,
+        accentColor: document.getElementById('accentColorPreview').style.background || "#f4f4f9",
+        bgLocked: isBgLocked
+      };
+      if(avatarUrl) upData.avatarUrl = avatarUrl;
+      if(bannerUrl) upData.bannerUrl = bannerUrl;
+
+      await updateDoc(doc(db, "users", currentUser.uid), upData);
+      window.showToast("تم تحديث المظهر الخارجي بنجاح! 🎨✨");
+    } catch (e) { window.showToast("تعذر تحديث التصميم ❌"); }
+  };
+
+  // 8. محرك الملف الشخصي وإتلاف الحسابات (Profile & Account Deletion)
+  window.saveProfile = async function() {
+    try {
+      await updateDoc(doc(db, "users", currentUser.uid), {
+        fullName: document.getElementById('pfName').value.trim(),
+        bio: document.getElementById('pfBio').value.trim()
+      });
+      window.showToast("تم تحديث الملف التعريفي! 👤");
+    } catch(e) { window.showToast("فشلت المحاولة ❌"); }
+  };
+
+  window.deleteAccount = async function() {
+    if(confirm("⚠️ تحذير نهائي: هل تود حذف حسابك وملفك بشكل قطعي؟ لا يمكن التراجع!")) {
+      try {
+        await deleteDoc(doc(db, "users", currentUser.uid));
+        await deleteUser(currentUser);
+        window.location.href = "signup.html";
+      } catch (e) { window.showToast("الأمان يتطلب تسجيل دخول حديث لإتمام الإجراء ❌"); }
+    }
+  };
+
+  // بدء تشغيل الفحص الأمني والجلسات
   checkAuth();
 </script>
 
