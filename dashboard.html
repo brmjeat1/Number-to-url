@@ -541,10 +541,43 @@ tr:hover{background:var(--bg2);}
 </div>
 
 <!-- FIREBASE -->
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
+    authDomain: "electrwni.link", 
+    projectId: "electrwni-link",
+    storageBucket: "electrwni-link.firebasestorage.app",
+    messagingSenderId: "712490301263",
+    appId: "1:712490301263:web:2084210da3f687285ab73a"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  window.auth = auth;
+  window.db = db;
+  window.firebase = {
+    auth: () => auth,
+    firestore: () => db
+  };
+
+  async function checkAuth() {
+    await auth.authStateReady();
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = "signin.html";
+      }
+    });
+  }
+
+‏<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 
 <script type="module">
   // 1. استيراد مكتبات Firebase الحديثة
