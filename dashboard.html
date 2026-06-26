@@ -53,7 +53,6 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min
 /* PAGES */
 .page{display:none;}
 .page.active{display:block;}
-.page.active{display:block;}
 
 /* EXPANDABLE */
 .expandable{background:var(--bg2);border:1px solid var(--border);border-radius:12px;margin-bottom:16px;overflow:hidden;}
@@ -236,25 +235,18 @@ tr:hover{background:var(--bg2);}
 
   <!-- PAGE: SOCIALS / CONTACT -->
   <div class="page" id="page-socials">
-
-    <!-- حسابات التواصل الاجتماعي -->
     <div class="expandable">
       <div class="expandable-header open" onclick="toggleExpand(this)">
         <div class="expandable-title"><div class="expandable-icon">ح</div><span>حسابات التواصل<span class="title-sub">Social Accounts</span></span></div>
         <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content open">
-
-        <!-- Quick-Add Buttons -->
         <div style="margin-bottom:16px;">
           <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">إضافة سريعة · Quick Add</div>
           <div id="quickAddGrid" style="display:flex;flex-wrap:wrap;gap:7px;"></div>
         </div>
 
-        <!-- نموذج الإضافة -->
         <div id="socialFormBox" style="display:none;margin-bottom:16px;padding:16px;background:var(--bg2);border-radius:12px;border:1px solid var(--border);">
-
-          <!-- معاينة الاكتشاف -->
           <div id="socDetectedPreview" style="display:none;align-items:center;gap:12px;padding:12px;background:#fff;border-radius:10px;border:1.5px solid var(--primary);margin-bottom:14px;">
             <div id="socDetectedIcon" style="width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;overflow:hidden;"></div>
             <div style="flex:1;min-width:0;">
@@ -264,40 +256,22 @@ tr:hover{background:var(--bg2);}
             <div id="socDetectedCheck" style="font-size:1.4rem;color:var(--success);flex-shrink:0;">✓</div>
           </div>
 
-          <!-- حقل الرابط -->
           <div class="form-group">
             <label id="socUrlLabel">الرابط أو اسم المستخدم <span class="lbl-sub">/ URL or @username</span></label>
             <div style="display:flex;gap:8px;">
-              <input type="text" id="socUrl" placeholder="https://instagram.com/username أو @username" dir="ltr"
-                style="flex:1;" oninput="debounceDetect(this.value)">
-              <button onclick="detectNow()"
-                style="padding:0 13px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.85rem;white-space:nowrap;font-family:'Tajawal',sans-serif;flex-shrink:0;">
-                فحص
-              </button>
+              <input type="text" id="socUrl" placeholder="https://instagram.com/username أو @username" dir="ltr" style="flex:1;" oninput="debounceDetect(this.value)">
+              <button onclick="detectNow()" style="padding:0 13px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.85rem;white-space:nowrap;font-family:'Tajawal',sans-serif;flex-shrink:0;">فحص</button>
             </div>
             <div id="socDetectHint" style="font-size:0.72rem;color:var(--muted);margin-top:4px;min-height:16px;"></div>
           </div>
 
-          <!-- خيار لون الأيقونة -->
           <div id="socColorModeGroup" style="display:none;margin-bottom:14px;">
-            <label style="margin-bottom:8px;display:block;font-size:0.84rem;font-weight:700;color:var(--text2);">
-              لون الأيقونة <span style="font-size:0.7rem;font-weight:400;color:var(--muted);">/ Icon Style</span>
-            </label>
+            <label style="margin-bottom:8px;display:block;font-size:0.84rem;font-weight:700;color:var(--text2);">لون الأيقونة <span style="font-size:0.7rem;font-weight:400;color:var(--muted);">/ Icon Style</span></label>
             <div style="display:flex;gap:7px;flex-wrap:wrap;">
-              <button onclick="setSocColorMode('brand')" id="cmBrand"
-                style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">
-                🎨 لون المنصة
-              </button>
-              <button onclick="setSocColorMode('theme')" id="cmTheme"
-                style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">
-                ✦ لون الموقع
-              </button>
-              <button onclick="setSocColorMode('upload')" id="cmUpload"
-                style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">
-                🖼 رفع صورة
-              </button>
+              <button onclick="setSocColorMode('brand')" id="cmBrand" style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">🎨 لون المنصة</button>
+              <button onclick="setSocColorMode('theme')" id="cmTheme" style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">✦ لون الموقع</button>
+              <button onclick="setSocColorMode('upload')" id="cmUpload" style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">🖼 رفع صورة</button>
             </div>
-            <!-- رفع صورة مخصصة -->
             <div id="customIconUpload" style="display:none;margin-top:10px;">
               <input type="file" id="socIconFile" accept="image/*" onchange="previewCustomIcon(this)">
               <div id="socIconPreview" style="margin-top:8px;display:none;">
@@ -312,12 +286,10 @@ tr:hover{background:var(--bg2);}
           </div>
         </div>
 
-        <!-- قائمة الحسابات المضافة -->
         <div id="socialsRegistry"></div>
       </div>
     </div>
 
-    <!-- أرقام التواصل -->
     <div class="expandable">
       <div class="expandable-header open" onclick="toggleExpand(this)">
         <div class="expandable-title"><div class="expandable-icon">📞</div><span>أرقام التواصل<span class="title-sub">Phone Numbers</span></span></div>
@@ -331,7 +303,6 @@ tr:hover{background:var(--bg2);}
       </div>
     </div>
 
-    <!-- الموقع الإلكتروني -->
     <div class="expandable">
       <div class="expandable-header open" onclick="toggleExpand(this)">
         <div class="expandable-title"><div class="expandable-icon">🌐</div><span>الموقع الإلكتروني<span class="title-sub">Website</span></span></div>
@@ -346,7 +317,6 @@ tr:hover{background:var(--bg2);}
       </div>
     </div>
 
-    <!-- الموقع الملاحي -->
     <div class="expandable">
       <div class="expandable-header open" onclick="toggleExpand(this)">
         <div class="expandable-title"><div class="expandable-icon">📍</div><span>الموقع الملاحي<span class="title-sub">Map Location</span></span></div>
@@ -361,7 +331,6 @@ tr:hover{background:var(--bg2);}
         <button class="btn-add" onclick="saveMap()">حفظ الموقع الملاحي · Save Map</button>
       </div>
     </div>
-
   </div>
 
   <!-- PAGE: DESIGN -->
@@ -384,7 +353,6 @@ tr:hover{background:var(--bg2);}
           <label>صورة البروفايل <span class="lbl-sub">/ Profile Picture</span></label>
           <input type="file" id="avatarInput" accept="image/*" onchange="selectAvatar(this)">
         </div>
-        <!-- اللون الأساسي -->
         <div class="form-group">
           <label>اللون الأساسي <span class="lbl-sub">/ Primary Color</span></label>
           <div id="colorPalette" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;"></div>
@@ -394,7 +362,6 @@ tr:hover{background:var(--bg2);}
           </div>
         </div>
 
-        <!-- لون الخلفية - مقفل -->
         <div class="form-group" style="margin-top:20px;">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
             <label style="margin:0;">لون الخلفية <span class="lbl-sub">/ Background Color</span></label>
@@ -403,7 +370,6 @@ tr:hover{background:var(--bg2);}
             </button>
           </div>
 
-          <!-- معاينة لوني جنب بعض -->
           <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center;">
             <div style="flex:1;height:36px;border-radius:8px;border:1px solid var(--border);transition:.3s;" id="bgColorPreview"></div>
             <span style="font-size:0.75rem;color:var(--muted);">+</span>
@@ -416,18 +382,12 @@ tr:hover{background:var(--bg2);}
               <input type="color" id="bgColorPicker" value="#ffffff" onchange="onBgColorPick(this.value)" style="width:50px;height:40px;padding:2px;cursor:pointer;">
               <input type="text" id="bgHexInput" placeholder="#ffffff" maxlength="7" dir="ltr" onchange="onBgHexInput(this.value)" style="flex:1;font-family:'Space Mono',monospace;">
             </div>
-            <!-- أزرار AI + Reset -->
             <div style="display:flex;gap:8px;">
-              <button onclick="suggestBgWithAI()" id="aiBgBtn"
-                style="flex:1;padding:10px;border:1.5px solid var(--primary);border-radius:8px;background:#f0f4ff;color:var(--primary);font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer;font-size:0.85rem;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s;">
+              <button onclick="suggestBgWithAI()" id="aiBgBtn" style="flex:1;padding:10px;border:1.5px solid var(--primary);border-radius:8px;background:#f0f4ff;color:var(--primary);font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer;font-size:0.85rem;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s;">
                 <span>✦</span> اقتراح AI · AI Suggest
               </button>
-              <button onclick="resetBgColor()"
-                style="padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--text2);font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer;font-size:0.85rem;transition:all .2s;">
-                ↺ إعادة ضبط · Reset
-              </button>
+              <button onclick="resetBgColor()" style="padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--text2);font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer;font-size:0.85rem;transition:all .2s;">↺ إعادة ضبط · Reset</button>
             </div>
-            <!-- نتيجة AI -->
             <div id="aiSuggestionBox" style="display:none;margin-top:12px;padding:12px;background:linear-gradient(135deg,#f0f4ff,#f8f0ff);border-radius:10px;border:1px solid #dde4ff;">
               <div style="font-size:0.8rem;font-weight:700;color:var(--primary);margin-bottom:8px;">✦ اقتراح الذكاء الاصطناعي · AI Suggestion</div>
               <div id="aiSuggestionContent"></div>
@@ -468,7 +428,6 @@ tr:hover{background:var(--bg2);}
       </div>
     </div>
 
-    <!-- حذف الحساب -->
     <div class="expandable" style="border-color:#ffd0d8;">
       <div class="expandable-header" onclick="toggleExpand(this)" style="background:#fff5f7;">
         <div class="expandable-title" style="color:var(--error);">
@@ -540,83 +499,56 @@ tr:hover{background:var(--bg2);}
   </div>
 </div>
 
-<!-- FIREBASE -->
+<!-- المحرك الحديث لـ FIREBASE والمعدل لحل مشكلة متصفح سفاري للأيفون -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 
 <script type="module">
+  // 1. استيراد حزم الـ Firebase الحديثة (V10)
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+  // 2. دمج مفاتيح مشروعك الحقيقية التي استخرجناها بدقة
   const firebaseConfig = {
     apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
-    authDomain: "electrwni.link", 
+    authDomain: "electrwni.link", // تم ترك النطاق المخصص هنا لمنع مشكلة طرد الأيفون تماماً
     projectId: "electrwni-link",
     storageBucket: "electrwni-link.firebasestorage.app",
     messagingSenderId: "712490301263",
     appId: "1:712490301263:web:2084210da3f687285ab73a"
   };
 
+  // 3. تشغيل الخدمات
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
 
+  // حيلة برمجية ذكية: ربط المحرك الجديد بأي كود قديم قد تضيفه مستقبلاً لكي لا يحدث تضارب
   window.auth = auth;
   window.db = db;
   window.firebase = {
+    apps: [app],
+    initializeApp: () => app,
     auth: () => auth,
     firestore: () => db
   };
 
+  // 4. فحص الجلسة وإجبار الأيفون على انتظار البيانات بدلاً من طردك تلقائياً عند التحديث
   async function checkAuth() {
-    await auth.authStateReady();
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        window.location.href = "signin.html";
-      }
-    });
-  }
-
-‏<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
-
-<script type="module">
-  // 1. استيراد مكتبات Firebase الحديثة
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-  // 2. إعدادات Firebase (ضع بيانات موقعك هنا مع ترك authDomain كما هو)
-  const firebaseConfig = {
-    apiKey: "YOUR_API_KEY", 
-    authDomain: "electrwni.link", // تم التعديل لحل مشكلة الآيفون
-    projectId: "YOUR_PROJECT_ID", 
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
-  };
-
-  // 3. تشغيل الـ Firebase
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth();
-
-  // 4. دالة فحص الجلسة ومنع الطرد عند التحديث
-  async function checkAuth() {
-    await auth.authStateReady(); // انتظر استعادة الجلسة في Safari
+    await auth.authStateReady(); // انتظر استرداد الجلسة المخفية في Safari للأيفون
     
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log("تمت استعادة الجلسة بنجاح:", user.uid);
-        // هنا يترك تصميم الصفحة كما هو ليعمل تلقائياً
+        console.log("تمت استعادة الجلسة بأمان لـ المستخدم:", user.uid);
       } else {
-        window.location.href = "signin.html"; // إذا لم يسجل دخول يطرد
+        window.location.href = "signin.html"; // طرد فقط لو قام بتسجيل خروج فعلياً
       }
     });
   }
 
-  // تشغيل الفحص
+  // تشغيل الحماية فوراً
   checkAuth();
 </script>
 
-
-
-‏</body>
+</body>
 </html>
