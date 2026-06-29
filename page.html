@@ -3,27 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>electrwni.link — كل روابطك برقم واحد</title>
-<meta name="description" content="منصة electrwni.link: اجمع كل روابطك ومنتجاتك وحساباتك في صفحة واحدة أنيقة، يصل إليها زوّارك برقم بسيط أو رمز QR. أنشئ صفحتك مجاناً.">
-<meta name="keywords" content="روابط, بايو, لينك, electrwni, روابطي, صفحة روابط, link in bio, الكويت, متجر, منتجات, QR">
-<meta name="robots" content="index, follow">
-<meta name="author" content="electrwni.link">
-<link rel="canonical" href="https://electrwni.link/">
-<!-- Open Graph (المشاركة على واتساب/تويتر/فيسبوك) -->
-<meta property="og:type" content="website">
-<meta property="og:title" content="electrwni.link — كل روابطك برقم واحد">
-<meta property="og:description" content="اجمع كل روابطك ومنتجاتك في صفحة واحدة أنيقة، يصل إليها زوّارك برقم بسيط أو رمز QR.">
-<meta property="og:url" content="https://electrwni.link/">
-<meta property="og:site_name" content="electrwni.link">
-<meta property="og:locale" content="ar_AR">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="electrwni.link — كل روابطك برقم واحد">
-<meta name="twitter:description" content="اجمع كل روابطك في صفحة واحدة أنيقة، يصل إليها زوّارك برقم بسيط أو رمز QR.">
-<meta name="theme-color" content="#3d5af1">
-<!-- Structured Data -->
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebSite","name":"electrwni.link","url":"https://electrwni.link/","description":"منصة لجمع كل روابطك ومنتجاتك في صفحة واحدة يصل إليها زوّارك برقم بسيط أو رمز QR","inLanguage":"ar"}
-</script>
+<title>صفحتك الشخصية — electrwni.link</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -309,46 +289,25 @@ async function init(){
   const u=getUsername();
   if(!u){show404('لم يتم تحديد المستخدم في الرابط');return;}
   const username=u.toLowerCase();
-
-  // ١) عرض فوري من الكاش (إن وُجد لنفس المستخدم) — يلغي الانتظار عند التحديث
-  let renderedFromCache=false;
   try{
-    const cached=localStorage.getItem('elcache_'+username);
-    if(cached){
-      const cu=JSON.parse(cached);
-      userLinks=(cu.links||[]).map(l=>({...l,num:l.num??l.number,label:l.label??l.title})).sort((a,b)=>(a.num||0)-(b.num||0));
-      render(cu);
-      renderedFromCache=true;
-    }
-  }catch(e){}
-
-  try{
-    // ٢) إن كان لدينا uid مخزّن لهذا الاسم، نقرأ users مباشرة (نتخطّى قراءة usernames)
-    let uid=null;
-    try{ uid=localStorage.getItem('eluid_'+username); }catch(e){}
-
-    if(!uid){
-      const idxDoc=await db.collection('usernames').doc(username).get();
-      if(!idxDoc.exists){ if(!renderedFromCache) show404('الحساب "'+username+'" غير مسجّل في النظام. تأكد من اسم المستخدم.'); return; }
-      uid=idxDoc.data().uid;
-      try{ localStorage.setItem('eluid_'+username, uid); }catch(e){}
-    }
+    const idxDoc=await db.collection('usernames').doc(username).get();
+    if(!idxDoc.exists){show404('الحساب "'+username+'" غير مسجّل في النظام. تأكد من اسم المستخدم.');return;}
+    const uid=idxDoc.data().uid;
     setupSmartNav(uid);
-
     const ref=db.collection('users').doc(uid);
-    // الاستماع الحي يتكفّل بأول عرض + كل تحديث (قراءة واحدة كافية)
+    const docSnap=await ref.get();
+    if(!docSnap.exists){show404('بيانات الحساب "'+username+'" غير موجودة (uid: '+uid+').');return;}
+    const user=docSnap.data();
+    userLinks=(user.links||[]).map(l=>({...l,num:l.num??l.number,label:l.label??l.title})).sort((a,b)=>(a.num||0)-(b.num||0));
+    render(user);
     ref.onSnapshot(d=>{
       if(d.exists){
         const updated=d.data();
         userLinks=(updated.links||[]).map(l=>({...l,num:l.num??l.number,label:l.label??l.title})).sort((a,b)=>(a.num||0)-(b.num||0));
         render(updated);
-        // حدّث الكاش للزيارة القادمة
-        try{ localStorage.setItem('elcache_'+username, JSON.stringify(updated)); }catch(e){}
-      }else if(!renderedFromCache){
-        show404('بيانات الحساب "'+username+'" غير موجودة.');
       }
-    }, err=>{ if(!renderedFromCache) show404('خطأ في التحميل: '+err.message); });
-  }catch(e){ if(!renderedFromCache) show404('خطأ في التحميل: '+e.message); }
+    });
+  }catch(e){show404('خطأ في التحميل: '+e.message);}
 }
 
 // الزر الذكي: يُحمّل auth بشكل مؤجّل (لا يحجب عرض الصفحة)
@@ -469,21 +428,6 @@ function buildContactsHtml(user){
 }
 
 function render(user){
-  // تحديث SEO ديناميكياً باسم صاحب الصفحة
-  try{
-    const dn=user.displayName||user.username||'';
-    if(dn){
-      document.title = dn + ' — electrwni.link/' + (user.username||'');
-      const md=document.querySelector('meta[name="description"]');
-      if(md) md.setAttribute('content', (user.bio? user.bio+' · ' : '') + 'كل روابط ' + dn + ' في صفحة واحدة. امسح رمز QR أو اكتب الرقم للوصول.');
-      const ogt=document.querySelector('meta[property="og:title"]');
-      if(ogt) ogt.setAttribute('content', dn + ' — electrwni.link');
-      const ogu=document.querySelector('meta[property="og:url"]');
-      if(ogu) ogu.setAttribute('content', 'https://electrwni.link/' + (user.username||''));
-      const can=document.querySelector('link[rel="canonical"]');
-      if(can) can.setAttribute('href', 'https://electrwni.link/' + (user.username||''));
-    }
-  }catch(e){}
   // نظام الألوان: لون١ (خلفية الأيقونة) + لون٢ (الإطار) + نص + خلفية
   const primary = user.primaryColor || user.themeColor || '#3d5af1';
   const primary2 = user.primaryColor2 || '#6c8fff';
