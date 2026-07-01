@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>electrwni.link — أنشئ صفحتك</title>
+<meta name="description" content="أنشئ صفحة روابطك على electrwni.link: اجمع كل روابطك ومنتجاتك في صفحة واحدة أنيقة، يصل إليها زوّارك برقم بسيط أو رمز QR.">
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--primary:#3d5af1;--primary-light:#6c8fff;--bg:#ffffff;--card:#f9fafc;--border:#e8ecf5;--text:#0f1535;--muted:#8890a8;--ok:#16a34a;--err:#e2231a;}
+body{font-family:'Tajawal',sans-serif;background:radial-gradient(circle at 50% 0%,#eef2ff 0%,#ffffff 55%);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.wrap{max-width:440px;width:100%;}
+.brand{text-align:center;margin-bottom:24px;}
+.brand-title{display:inline-block;background:var(--primary);padding:6px 12px;border-radius:6px;font-family:'Space Mono',monospace;font-size:1.4rem;font-weight:700;letter-spacing:-1px;color:#fff;box-shadow:0 4px 14px rgba(61,90,241,0.22);}
+.brand-title .b{color:#ffd60a;}
+.brand-sub{font-size:0.9rem;color:var(--muted);font-weight:700;margin-top:14px;}
+.card{background:var(--bg);border:1px solid var(--border);border-radius:24px;padding:32px 24px;box-shadow:0 20px 60px rgba(61,90,241,0.08);}
+.card h1{font-size:1.35rem;font-weight:900;text-align:center;margin-bottom:6px;line-height:1.4;}
+.card .lead{font-size:0.9rem;color:var(--muted);text-align:center;margin-bottom:24px;line-height:1.6;}
+.uname-field{display:flex;align-items:stretch;border-radius:16px;overflow:hidden;border:2px solid var(--primary);margin-bottom:8px;background:#fff;transition:border-color .2s;direction:ltr;}
+.uname-field.ok{border-color:var(--ok);}
+.uname-field.err{border-color:var(--err);}
+.uname-prefix{background:var(--primary);color:#fff;display:flex;align-items:center;padding:0 12px;font-family:'Space Mono',monospace;font-size:0.82rem;font-weight:700;direction:ltr;white-space:nowrap;flex:0 0 auto;}
+#unameInput{flex:1;min-width:0;border:none;padding:16px 14px;font-family:'Space Mono',monospace;font-size:1rem;font-weight:700;direction:ltr;text-align:left;background:#fff;color:#0a1a5c;}
+#unameInput::placeholder{color:#a9b4d0;font-weight:400;}
+#unameInput:focus{outline:none;}
+.status{min-height:22px;font-size:0.82rem;font-weight:700;text-align:center;margin-bottom:14px;transition:all .2s;}
+.status.ok{color:var(--ok);}
+.status.err{color:var(--err);}
+.status.checking{color:var(--muted);}
+.btn{width:100%;padding:15px;border:none;border-radius:14px;font-size:0.98rem;font-weight:900;cursor:pointer;font-family:'Tajawal',sans-serif;transition:all .2s;}
+.btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed;}
+.btn-primary:active:not(:disabled){transform:scale(0.98);}
+.divider{text-align:center;margin:18px 0;color:var(--muted);font-size:0.8rem;position:relative;}
+.links-row{text-align:center;font-size:0.85rem;margin-top:16px;line-height:2;}
+.links-row a{color:var(--primary);text-decoration:none;font-weight:700;}
+.links-row a:hover{text-decoration:underline;}
+/* نموذج التسجيل السريع (يظهر بنفس المكان) */
+.quick{display:none;margin-top:18px;padding-top:18px;border-top:1px solid var(--border);}
+.quick.open{display:block;animation:slideDown .3s ease;}
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
+.field{margin-bottom:12px;}
+.field label{display:block;font-size:0.8rem;font-weight:700;margin-bottom:6px;}
+.field input{width:100%;padding:13px 14px;border:2px solid var(--border);border-radius:12px;font-family:'Tajawal',sans-serif;font-size:0.95rem;}
+.field input[dir=ltr]{direction:ltr;text-align:left;font-family:'Space Mono',monospace;}
+.field input:focus{outline:none;border-color:var(--primary);}
+.msg{font-size:0.82rem;font-weight:700;text-align:center;margin:12px 0;min-height:20px;}
+.msg.err{color:var(--err);}
+.msg.ok{color:var(--ok);}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;}
+@keyframes sp{to{transform:rotate(360deg);}}
+.success-box{display:none;text-align:center;padding:20px 0;}
+.success-box.open{display:block;}
+.success-box .ico{font-size:3rem;margin-bottom:12px;}
+.success-box h2{font-size:1.2rem;font-weight:900;color:var(--ok);margin-bottom:10px;}
+.success-box p{font-size:0.9rem;color:var(--muted);line-height:1.7;margin-bottom:8px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">
+    <div class="brand-title">electrwni<span class="b">.link</span></div>
+    <div class="brand-sub">ميز البايو اللي عندك.. حساباتك بصفحة، وروابطك بأرقام</div>
+  </div>
+
+  <div class="card" id="mainCard">
+    <h1>احجز اسمك الآن</h1>
+    <p class="lead">اكتب اسم المستخدم الذي تريده وشاهد إن كان متاحاً</p>
+
+    <div class="uname-field" id="unameField">
+      <span class="uname-prefix">electrwni.link/</span>
+      <input type="text" id="unameInput" placeholder="Your Username" dir="ltr" inputmode="latin" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" name="el_username_field" maxlength="20" oninput="onUnameInput()">
+    </div>
+    <div class="status" id="unameStatus"></div>
+
+    <button class="btn btn-primary" id="claimBtn" onclick="openQuickSignup()" disabled>تحقّق<span style="display:block;font-size:0.72rem;font-weight:400;opacity:0.9;">Check</span></button>
+
+    <!-- نموذج التسجيل السريع -->
+    <div class="quick" id="quickForm">
+      <div class="field">
+        <label>الاسم المعروض · Display Name</label>
+        <input type="text" id="qDisplay" placeholder="اسمك الذي يراه الجمهور" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>البريد الإلكتروني · Email</label>
+        <input type="email" id="qEmail" dir="ltr" placeholder="you@example.com" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>كلمة المرور · Password</label>
+        <input type="password" id="qPass" dir="ltr" placeholder="6 أحرف على الأقل" autocomplete="new-password">
+      </div>
+      <div class="field">
+        <label>تأكيد كلمة المرور · Confirm</label>
+        <input type="password" id="qPass2" dir="ltr" placeholder="أعد كتابة كلمة المرور" autocomplete="new-password">
+      </div>
+      <div class="msg" id="quickMsg"></div>
+      <button class="btn btn-primary" id="quickSubmit" onclick="quickSignup()">إنشاء الحساب · Create</button>
+    </div>
+
+    <!-- رسالة النجاح -->
+    <div class="success-box" id="successBox">
+      <div class="ico">✅</div>
+      <h2>تم إنشاء حسابك!</h2>
+      <p>أرسلنا رسالة تأكيد إلى بريدك. فعّل حسابك ثم سجّل دخولك.</p>
+      <p>رابط صفحتك: <strong id="successLink" style="direction:ltr;display:inline-block;"></strong></p>
+      <button class="btn btn-primary" style="margin-top:14px;" onclick="location.href='signin.html'">تسجيل الدخول · Sign In</button>
+    </div>
+
+    <div class="links-row" id="footerLinks">
+      <a href="signup.html">تسجيل جديد تفصيلي · Full Signup</a><br>
+      لديك حساب؟ <a href="signin.html">تسجيل الدخول · Sign In</a>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+<script>
+const cfg={apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",authDomain:"electrwni-link.firebaseapp.com",projectId:"electrwni-link",storageBucket:"electrwni-link.firebasestorage.app",messagingSenderId:"712490301263",appId:"1:712490301263:web:2084210da3f687285ab73a"};
+if(!firebase.apps.length)firebase.initializeApp(cfg);
+const auth=firebase.auth();
+const db=firebase.firestore();
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(e){});
+
+const reserved=['admin','root','api','www','app','demo','test','page','signin','signup','dashboard','index','electrwni'];
+let checkTimer=null;
+let availableName=null; // آخر اسم مؤكّد أنه متاح
+
+function onUnameInput(){
+  const input=document.getElementById('unameInput');
+  const status=document.getElementById('unameStatus');
+  const btn=document.getElementById('claimBtn');
+  // تنظيف: أحرف صغيرة وأرقام و_
+  let v=input.value.toLowerCase().replace(/[^a-z0-9_]/g,'');
+  if(v!==input.value) input.value=v;
+  availableName=null;
+  const field=document.getElementById('unameField');
+  field.classList.remove('ok','err');
+  btn.disabled=true;
+  btn.innerHTML='تحقّق<span style="display:block;font-size:0.72rem;font-weight:400;opacity:0.9;">Check</span>';
+  if(checkTimer) clearTimeout(checkTimer);
+
+  if(!v){ status.textContent=''; status.className='status'; return; }
+  if(v.length<3){ status.textContent='الاسم قصير (3 أحرف على الأقل)'; status.className='status err'; return; }
+  if(reserved.includes(v)){ status.textContent='هذا الاسم محجوز، جرّب غيره'; status.className='status err'; field.classList.add('err'); return; }
+
+  status.textContent='جاري التحقق...'; status.className='status checking';
+  // تأخير بسيط لتقليل الطلبات أثناء الكتابة
+  checkTimer=setTimeout(()=>checkAvailability(v), 500);
+}
+
+async function checkAvailability(name){
+  const input=document.getElementById('unameInput');
+  const status=document.getElementById('unameStatus');
+  const btn=document.getElementById('claimBtn');
+  // تأكد أن القيمة لم تتغير أثناء الانتظار
+  if(input.value.toLowerCase()!==name) return;
+  try{
+    const snap=await db.collection('usernames').doc(name).get();
+    if(input.value.toLowerCase()!==name) return; // تغيّر أثناء الجلب
+    if(snap.exists){
+      status.textContent='الاسم محجوز، جرّب اسماً آخر';
+      status.className='status err';
+      document.getElementById('unameField').classList.remove('ok'); document.getElementById('unameField').classList.add('err');
+      btn.disabled=true; btn.innerHTML='الاسم محجوز<span style="display:block;font-size:0.72rem;font-weight:400;opacity:0.9;">Taken</span>';
+      availableName=null;
+    }else{
+      status.textContent='✓ الاسم متاح! احجزه الآن';
+      status.className='status ok';
+      document.getElementById('unameField').classList.remove('err'); document.getElementById('unameField').classList.add('ok');
+      btn.disabled=false; btn.innerHTML='احجز هذا الاسم<span style="display:block;font-size:0.72rem;font-weight:400;opacity:0.9;">Claim</span>';
+      availableName=name;
+    }
+  }catch(e){
+    status.textContent='تعذّر التحقق، حاول ثانية';
+    status.className='status err';
+  }
+}
+
+function openQuickSignup(){
+  if(!availableName) return;
+  document.getElementById('quickForm').classList.add('open');
+  document.getElementById('claimBtn').style.display='none';
+  document.getElementById('qDisplay').focus();
+}
+
+async function quickSignup(){
+  const msg=document.getElementById('quickMsg');
+  const btn=document.getElementById('quickSubmit');
+  const username=availableName;
+  const displayName=document.getElementById('qDisplay').value.trim();
+  const email=document.getElementById('qEmail').value.trim();
+  const password=document.getElementById('qPass').value;
+  const password2=document.getElementById('qPass2').value;
+
+  msg.textContent=''; msg.className='msg';
+  if(!username){ msg.textContent='تحقّق من اسم المستخدم أولاً'; msg.className='msg err'; return; }
+  if(!displayName||!email||!password||!password2){ msg.textContent='يرجى ملء جميع الحقول'; msg.className='msg err'; return; }
+  if(password.length<6){ msg.textContent='كلمة المرور 6 أحرف على الأقل'; msg.className='msg err'; return; }
+  if(password!==password2){ msg.textContent='كلمتا المرور غير متطابقتين'; msg.className='msg err'; return; }
+
+  btn.disabled=true; btn.innerHTML='<span class="spin"></span>';
+  try{
+    // تأكد نهائي أن الاسم ما زال متاحاً
+    const idx=await db.collection('usernames').doc(username).get();
+    if(idx.exists){ msg.textContent='عذراً، حُجز الاسم للتو. جرّب غيره'; msg.className='msg err'; btn.disabled=false; btn.textContent='إنشاء الحساب · Create'; return; }
+
+    const cred=await auth.createUserWithEmailAndPassword(email,password);
+    const uid=cred.user.uid;
+    try{ await cred.user.sendEmailVerification(); }catch(e){}
+    await db.collection('users').doc(uid).set({uid,username,email,displayName,bio:'',avatar:'',bannerImage:'',links:[],socials:[],phones:[],website:'',mapUrl:'',createdAt:new Date().toISOString()},{merge:true});
+    await db.collection('usernames').doc(username).set({uid});
+
+    // عرض النجاح
+    document.getElementById('quickForm').classList.remove('open');
+    document.getElementById('footerLinks').style.display='none';
+    document.querySelector('#mainCard h1').style.display='none';
+    document.querySelector('#mainCard .lead').style.display='none';
+    document.querySelector('.uname-field').style.display='none';
+    document.getElementById('unameStatus').style.display='none';
+    document.getElementById('successLink').textContent='electrwni.link/'+username;
+    document.getElementById('successBox').classList.add('open');
+  }catch(e){
+    let m='حدث خطأ، حاول ثانية';
+    if(e.code==='auth/email-already-in-use') m='هذا البريد مسجّل مسبقاً';
+    else if(e.code==='auth/invalid-email') m='البريد غير صالح';
+    else if(e.code==='auth/weak-password') m='كلمة المرور ضعيفة';
+    msg.textContent=m; msg.className='msg err';
+    btn.disabled=false; btn.textContent='إنشاء الحساب · Create';
+  }
+}
+</script>
+</body>
+</html>
