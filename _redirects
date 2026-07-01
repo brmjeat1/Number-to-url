@@ -1,4 +1,3 @@
-/dashboard    /dashboard.html    200
-/signin       /signin.html       200
-/signup       /signup.html       200
-/:user        /page.html         200
+/dashboard  /dashboard.html  200
+/signin     /signin.html     200
+/signup     /signup.html     200
