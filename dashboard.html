@@ -668,7 +668,7 @@ tr:hover{background:var(--bg2);}
 <!-- FIREBASE SDK V10 MODULES -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut, deleteUser, updatePassword, reauthenticateWithCredential, EmailAuthProvider, setPersistence, browserLocalPersistence, indexedDBLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getAuth, onAuthStateChanged, signOut, deleteUser, updatePassword, reauthenticateWithCredential, EmailAuthProvider, setPersistence, browserLocalPersistence, indexedDBLocalPersistence, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, getDoc, collection, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   // إعدادات Firebase الخاصة بمشروعك الحقيقي لحل مشكلة الآيفون
@@ -716,7 +716,9 @@ tr:hover{background:var(--bg2);}
     linkedin:'<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.07 2.07 0 110-4.13 2.07 2.07 0 010 4.13zm1.78 13.02H3.56V9h3.56v11.45zM22.22 0H1.77C.8 0 0 .78 0 1.73v20.53C0 23.22.8 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .78 23.2 0 22.22 0z"/></svg>',
     wechat:'<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8.69 11.52c-.5 0-.9-.4-.9-.9s.4-.9.9-.9.9.4.9.9-.4.9-.9.9zm5.05 0c-.5 0-.9-.4-.9-.9s.4-.9.9-.9.9.4.9.9-.4.9-.9.9zM8.5 3C4.36 3 1 5.91 1 9.5c0 1.97 1.02 3.73 2.62 4.92L3 17l2.6-1.3c.78.22 1.6.36 2.43.4-.1-.43-.16-.87-.16-1.33 0-3.2 3.04-5.77 6.79-5.77.25 0 .5.02.74.05C14.7 5.42 11.87 3 8.5 3zm9.5 6.77c-3.31 0-6 2.24-6 5 0 2.77 2.69 5 6 5 .67 0 1.32-.1 1.93-.29L23 21l-.86-2.06C23.28 18.05 24 16.6 24 15c0-2.76-2.69-5-6-5zm-2 4.23c-.4 0-.72-.32-.72-.72s.32-.72.72-.72.72.32.72.72-.32.72-.72.72zm4 0c-.4 0-.72-.32-.72-.72s.32-.72.72-.72.72.32.72.72-.32.72-.72.72z"/></svg>',
     imessage:'<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 2.78 1.48 5.25 3.79 6.86-.13 1.13-.6 2.42-1.42 3.39 0 0 1.97-.27 3.6-1.5.34-.26.6-.5.78-.68.86.22 1.78.34 2.73.34h.74C18.52 19.4 22 15.5 22 10.75 22 5.92 17.52 2 12 2z"/></svg>',
-    website:'<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm6.93 6h-2.95a15.65 15.65 0 00-1.38-3.56A8.03 8.03 0 0118.93 8zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14a7.96 7.96 0 010-4h3.38a16.5 16.5 0 000 4H4.26zm.81 2h2.95c.3 1.26.77 2.46 1.38 3.56A7.99 7.99 0 015.07 16zm2.95-8H5.07a7.99 7.99 0 014.33-3.56C8.8 5.54 8.33 6.74 8.02 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66a14.6 14.6 0 010-4h4.68a14.6 14.6 0 010 4zm.25 5.56c.61-1.1 1.08-2.3 1.38-3.56h2.95a7.99 7.99 0 01-4.33 3.56zM16.36 14a16.5 16.5 0 000-4h3.38a7.96 7.96 0 010 4h-3.38z"/></svg>'
+    website:'<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm6.93 6h-2.95a15.65 15.65 0 00-1.38-3.56A8.03 8.03 0 0118.93 8zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14a7.96 7.96 0 010-4h3.38a16.5 16.5 0 000 4H4.26zm.81 2h2.95c.3 1.26.77 2.46 1.38 3.56A7.99 7.99 0 015.07 16zm2.95-8H5.07a7.99 7.99 0 014.33-3.56C8.8 5.54 8.33 6.74 8.02 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66a14.6 14.6 0 010-4h4.68a14.6 14.6 0 010 4zm.25 5.56c.61-1.1 1.08-2.3 1.38-3.56h2.95a7.99 7.99 0 01-4.33 3.56zM16.36 14a16.5 16.5 0 000-4h3.38a7.96 7.96 0 010 4h-3.38z"/></svg>',
+    pinterest:'<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12.02 2C6.5 2 3 5.9 3 10.3c0 2.6 1.4 4.9 3.6 5.8.1-.5.2-1.2.3-1.7.1-.4.6-2.6.6-2.6s-.2-.4-.2-1c0-1 .6-1.7 1.3-1.7.6 0 .9.5.9 1 0 .6-.4 1.6-.6 2.4-.2.7.4 1.3 1 1.3 1.2 0 2.2-1.4 2.2-3.4 0-1.8-1.3-3.1-3.1-3.1-2.1 0-3.4 1.6-3.4 3.3 0 .6.2 1.3.5 1.7.1.1.1.2.1.3-.1.2-.2.7-.2.8 0 .1-.1.2-.3.1-1-.4-1.6-1.7-1.6-2.9 0-2.4 1.7-4.5 5-4.5 2.6 0 4.7 1.9 4.7 4.3 0 2.6-1.6 4.7-3.9 4.7-.8 0-1.5-.4-1.7-.9l-.5 1.9c-.2.7-.7 1.6-1 2.1.8.2 1.6.4 2.5.4 5.5 0 9-4 9-8.4C21 5.9 17.5 2 12.02 2z"/></svg>',
+    threads:'<svg viewBox="0 0 24 24" width="16" height="16"><text x="12" y="18" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="18" font-weight="900" fill="currentColor">@</text></svg>'
   };
   function platSvg(id){ return PLATFORM_SVG[id] || PLATFORM_SVG.website; }
 
@@ -731,6 +733,8 @@ tr:hover{background:var(--bg2);}
     { id: 'youtube', name: 'يوتيوب', color: '#FF0000', prefix: 'https://youtube.com/@' },
     { id: 'facebook', name: 'فيسبوك', color: '#1877F2', prefix: 'https://facebook.com/' },
     { id: 'linkedin', name: 'لينكدإن', color: '#0A66C2', prefix: 'https://linkedin.com/in/' },
+    { id: 'threads', name: 'ثريدز', color: '#000000', prefix: 'https://threads.net/@' },
+    { id: 'pinterest', name: 'بينترست', color: '#E60023', prefix: 'https://pinterest.com/' },
     { id: 'wechat', name: 'وي تشات', color: '#07C160', prefix: '' },
     { id: 'imessage', name: 'iMessage', color: '#34DA50', prefix: 'sms:' }
   ];
@@ -745,8 +749,88 @@ tr:hover{background:var(--bg2);}
       if(p.id==='telegram'&&u.includes('t.me'))return p;
       if(p.id==='wechat'&&(u.includes('wechat')||u.includes('weixin')))return p;
       if(p.id==='imessage'&&(u.startsWith('sms:')||u.includes('imessage')))return p;
+      if(p.id==='pinterest'&&u.includes('pin.it'))return p;
+      if(p.id==='threads'&&u.includes('threads.com'))return p;
     }
     return null;
+  }
+
+  // تطبيع إدخال واتساب: يقبل رقم جوال أو يوزر/معرف أو رابط جاهز، ويحوّله لرابط wa.me صحيح
+  function normalizeWhatsApp(raw){
+    let v = (raw || '').trim();
+    if(!v) return '';
+    if(/^https?:\/\//i.test(v)) return v; // رابط جاهز — يُستخدم كما هو
+    const nonPhoneChars = v.replace(/[0-9+\s\-().]/g, '');
+    const digitsOnly = v.replace(/[^0-9]/g, '');
+    if(nonPhoneChars.length === 0 && digitsOnly.length >= 7){
+      // رقم جوال: نحتفظ بالأرقام فقط (رابط wa.me يتطلب الرقم بالصيغة الدولية بدون + أو رموز)
+      return 'https://wa.me/' + digitsOnly;
+    }
+    // يوزر/معرف نصي
+    const uname = v.replace(/^@/, '').replace(/\s+/g, '');
+    return 'https://wa.me/' + uname;
+  }
+
+  // === بوابة تحقق البريد الإلكتروني (لحسابات "التسجيل السريع" من الصفحة الرئيسية) ===
+  // يُسمح بالدخول فوراً بعد إنشاء الحساب، وبعد مهلة سماح (دقيقتين) دون توثيق البريد
+  // تظهر نافذة إلزامية تمنع استخدام لوحة التحكم حتى يوثّق المستخدم بريده أو يطلب إعادة الإرسال
+  const EMAIL_GRACE_MS = 2 * 60 * 1000; // دقيقتان
+  let emailGateTimer = null;
+
+  function showEmailVerifyGate() {
+    if (document.getElementById('emailGateOverlay')) return; // معروضة مسبقاً
+    if (emailGateTimer) { clearTimeout(emailGateTimer); emailGateTimer = null; }
+    const overlay = document.createElement('div');
+    overlay.id = 'emailGateOverlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,21,53,0.75);z-index:5000;display:flex;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(4px);font-family:Tajawal,sans-serif;';
+    overlay.innerHTML = `
+      <div style="background:#fff;border-radius:20px;padding:32px 26px;max-width:360px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+        <div style="font-size:2.4rem;margin-bottom:10px;">🔒</div>
+        <div style="font-weight:900;font-size:1.15rem;color:#0f1535;margin-bottom:8px;">تحقق من بريدك الإلكتروني</div>
+        <div style="font-size:0.85rem;color:#3a4270;line-height:1.7;margin-bottom:20px;">
+          لأمان حسابك، يرجى تأكيد بريدك الإلكتروني قبل متابعة استخدام لوحة التحكم.<br>
+          <span style="font-size:0.75rem;color:#9aa2c8;">For your account's security, please verify your email to continue.</span>
+        </div>
+        <button id="gateResendBtn" style="width:100%;padding:13px;background:linear-gradient(135deg,#3d5af1,#6c8fff);color:#fff;border:none;border-radius:10px;font-weight:700;font-family:inherit;font-size:0.9rem;cursor:pointer;margin-bottom:10px;">📧 إعادة إرسال رابط التحقق · Resend</button>
+        <button id="gateReloadBtn" style="width:100%;padding:13px;background:#f0f4ff;color:#3d5af1;border:2px solid #3d5af1;border-radius:10px;font-weight:700;font-family:inherit;font-size:0.9rem;cursor:pointer;margin-bottom:10px;">✅ تحققت بالفعل، تحديث · I verified, refresh</button>
+        <button id="gateLogoutBtn" style="width:100%;padding:10px;background:transparent;color:#9aa2c8;border:none;font-weight:700;font-family:inherit;font-size:0.82rem;cursor:pointer;">تسجيل الخروج · Sign out</button>
+        <div id="gateMsg" style="font-size:0.78rem;font-weight:700;margin-top:10px;min-height:16px;"></div>
+      </div>`;
+    document.body.appendChild(overlay);
+
+    document.getElementById('gateResendBtn').onclick = async () => {
+      const msg = document.getElementById('gateMsg');
+      msg.style.color = '#3a4270'; msg.textContent = 'جاري الإرسال...';
+      try {
+        await sendEmailVerification(auth.currentUser);
+        msg.style.color = '#0ab87a';
+        msg.textContent = '✅ تم إرسال الرابط، تفقّد بريدك';
+      } catch (e) {
+        msg.style.color = '#e8436a';
+        msg.textContent = e.code === 'auth/too-many-requests' ? '⏳ حاول لاحقاً، محاولات كثيرة' : '❌ تعذر الإرسال';
+      }
+    };
+    document.getElementById('gateReloadBtn').onclick = async () => {
+      const msg = document.getElementById('gateMsg');
+      msg.style.color = '#3a4270'; msg.textContent = 'جاري التحقق...';
+      try {
+        await auth.currentUser.reload();
+        if (auth.currentUser.emailVerified) {
+          overlay.remove();
+          await initDashboard();
+        } else {
+          msg.style.color = '#e8436a';
+          msg.textContent = 'لم يتم التحقق بعد · Not verified yet';
+        }
+      } catch (e) {
+        msg.style.color = '#e8436a';
+        msg.textContent = '❌ تعذر التحقق، حاول مرة أخرى';
+      }
+    };
+    document.getElementById('gateLogoutBtn').onclick = async () => {
+      try { await signOut(auth); } catch (e) {}
+      window.location.href = 'signin.html';
+    };
   }
 
   // 1. فحص الجلسة ومنع طرد السفاري (آيفون)
@@ -758,6 +842,25 @@ tr:hover{background:var(--bg2);}
         // نجحت الجلسة → امسح أي علامة تحويل سابقة
         try { sessionStorage.removeItem('el_redirect_count'); } catch(e){}
         console.log("تمت استعادة الجلسة بنجاح:", user.uid);
+
+        if (!user.emailVerified) {
+          const createdMs = (user.metadata && user.metadata.creationTime) ? new Date(user.metadata.creationTime).getTime() : Date.now();
+          const elapsed = Date.now() - createdMs;
+          if (elapsed >= EMAIL_GRACE_MS) {
+            // انتهت مهلة السماح ولم يوثّق بريده بعد → امنع الدخول
+            showEmailVerifyGate();
+            return;
+          }
+          // ما زال ضمن مهلة السماح: اسمح بالدخول الآن، وجدول التنبيه عند انتهاء المهلة
+          if (emailGateTimer) clearTimeout(emailGateTimer);
+          emailGateTimer = setTimeout(async () => {
+            try { await auth.currentUser.reload(); } catch(e){}
+            if (auth.currentUser && !auth.currentUser.emailVerified) {
+              showEmailVerifyGate();
+            }
+          }, EMAIL_GRACE_MS - elapsed);
+        }
+
         await initDashboard();
       } else {
         // حماية من الحلقة: لا نوجّه أكثر من مرة متتالية دون جلسة
@@ -1365,7 +1468,14 @@ tr:hover{background:var(--bg2);}
         selectedSocialPlatform = p;
         document.getElementById('socialFormBox').style.display = 'block';
         document.getElementById('socUrlLabel').innerHTML = `حساب ${p.name} <span class="lbl-sub">/ ${p.id} account</span>`;
-        document.getElementById('socUrl').value = p.prefix;
+        const socUrlEl = document.getElementById('socUrl');
+        if(p.id === 'whatsapp'){
+          socUrlEl.value = '';
+          socUrlEl.placeholder = 'رقم الجوال أو يوزر أو رابط واتساب · Phone, username, or link';
+        } else {
+          socUrlEl.value = p.prefix;
+          socUrlEl.placeholder = 'https://instagram.com/username أو @username';
+        }
         document.getElementById('socColorModeGroup').style.display = 'block';
         setSocColorMode('brand');
         detectNow();
@@ -1424,8 +1534,9 @@ tr:hover{background:var(--bg2);}
   };
 
   window.detectNow = function() {
-    const val = document.getElementById('socUrl').value.trim();
-    if(!val || !selectedSocialPlatform) return;
+    const raw = document.getElementById('socUrl').value.trim();
+    if(!raw || !selectedSocialPlatform) return;
+    const val = (selectedSocialPlatform.id === 'whatsapp') ? normalizeWhatsApp(raw) : raw;
     document.getElementById('socDetectedPreview').style.display = 'flex';
     const iconEl = document.getElementById('socDetectedIcon');
     iconEl.innerHTML = `<span style="display:flex;width:24px;height:24px;color:#fff;">${platSvg(selectedSocialPlatform.id)}</span>`;
@@ -1448,7 +1559,10 @@ tr:hover{background:var(--bg2);}
   };
 
   window.saveSocial = async function() {
-    const url = document.getElementById('socUrl').value.trim();
+    let url = document.getElementById('socUrl').value.trim();
+    if(selectedSocialPlatform && selectedSocialPlatform.id === 'whatsapp'){
+      url = normalizeWhatsApp(url);
+    }
     if(!url || !selectedSocialPlatform) { window.showToast("الرجاء إدخال الرابط واختيار منصة"); return; }
     if(!currentUser){ window.showToast("لم يتم تسجيل الدخول"); return; }
     try {
