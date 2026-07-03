@@ -1413,13 +1413,13 @@ tr:hover{background:var(--bg2);}
 
       } else if(format === 'pdf'){
         await window.showToast("جاري تجهيز PDF...");
-        await exportLinksAsPdf(links, uname);
-        window.showToast("تم فتح التقرير للمعاينة");
+        const ok = await exportLinksAsPdf(links, uname);
+        if(ok) window.showToast("تم فتح التقرير للمعاينة");
       }
     } catch(e){ window.showToast("تعذر التصدير: " + (e.message||'')); }
   };
 
-  // ===== بناء تقرير PDF احترافي (تقرير كلاسيكي رسمي — معاينة بزر مشاركة وطباعة) =====
+  // ===== بناء تقرير PDF احترافي (معاينة داخل الصفحة نفسها — لا نوافذ منبثقة إطلاقاً) =====
   function buildArabicDateParts(){
     const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
     const now = new Date();
@@ -1442,64 +1442,55 @@ tr:hover{background:var(--bg2);}
     return `<img src="data:image/svg+xml,${encodeURIComponent(svg).replace(/'/g,'%27')}" width="14" height="14" style="display:inline-block;vertical-align:middle;">`;
   }
 
-  // صفحة معاينة مخصّصة (شريط علوي أسود بزرَي مشاركة/طباعة + iframe يعرض الـ PDF)
-  function buildPdfPreviewWrapperHtml(blobUrl, filename, reportTitle){
-    return `<!DOCTYPE html>
-<html dir="rtl" lang="ar"><head><meta charset="UTF-8"><title>${reportTitle}</title>
-<style>
-  *{margin:0;padding:0;box-sizing:border-box;}
-  html,body{height:100%;}
-  body{display:flex;flex-direction:column;font-family:-apple-system,BlinkMacSystemFont,'Tajawal',sans-serif;background:#e9e9ee;}
-  .toolbar{display:flex;align-items:center;justify-content:space-between;padding:11px 18px;background:#000000;color:#ffffff;gap:10px;flex-shrink:0;}
-  .toolbar .t-title{font-weight:900;font-size:14px;}
-  .toolbar .t-actions{display:flex;gap:8px;}
-  .toolbar button{display:flex;align-items:center;gap:6px;padding:8px 16px;border:1.5px solid #ffffff;border-radius:7px;background:transparent;color:#ffffff;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit;transition:all .15s;}
-  .toolbar button:active{transform:scale(0.95);background:rgba(255,255,255,0.15);}
-  iframe{flex:1;border:none;width:100%;background:#e9e9ee;}
-</style></head>
-<body>
-  <div class="toolbar">
-    <div class="t-title">📄 ${reportTitle}</div>
-    <div class="t-actions">
-      <button id="shareBtn">↗ مشاركة</button>
-      <button id="printBtn">🖨 طباعة</button>
-    </div>
-  </div>
-  <iframe id="pdfFrame" src="${blobUrl}"></iframe>
-  <script>
-    document.getElementById('printBtn').onclick = function(){
-      var f = document.getElementById('pdfFrame');
+  // نافذة معاينة داخل الصفحة نفسها (overlay) — بدون window.open إطلاقاً، فلا يوجد أي احتمال لحظر نوافذ منبثقة
+  function showPdfPreviewModal(pdfBlob, filename, reportTitle){
+    const old = document.getElementById('pdfPreviewModal');
+    if(old) old.remove();
+
+    const blobUrl = URL.createObjectURL(pdfBlob);
+    const modal = document.createElement('div');
+    modal.id = 'pdfPreviewModal';
+    modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:#e9e9ee;display:flex;flex-direction:column;';
+    modal.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 16px;background:#000000;color:#ffffff;gap:10px;flex-shrink:0;font-family:-apple-system,BlinkMacSystemFont,'Tajawal',sans-serif;">
+        <div style="font-weight:900;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">📄 ${reportTitle}</div>
+        <div style="display:flex;gap:7px;flex-shrink:0;">
+          <button id="pdfShareBtn" style="padding:8px 13px;border:1.5px solid #ffffff;border-radius:7px;background:transparent;color:#ffffff;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;">↗ مشاركة</button>
+          <button id="pdfPrintBtn" style="padding:8px 13px;border:1.5px solid #ffffff;border-radius:7px;background:transparent;color:#ffffff;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;">🖨 طباعة</button>
+          <button id="pdfCloseBtn" style="padding:8px 13px;border:1.5px solid #ffffff;border-radius:7px;background:transparent;color:#ffffff;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;">✕ إغلاق</button>
+        </div>
+      </div>
+      <iframe id="pdfPreviewFrame" src="${blobUrl}" style="flex:1;border:none;width:100%;background:#e9e9ee;"></iframe>
+    `;
+    document.body.appendChild(modal);
+
+    document.getElementById('pdfCloseBtn').onclick = () => { modal.remove(); URL.revokeObjectURL(blobUrl); };
+    document.getElementById('pdfPrintBtn').onclick = () => {
+      const f = document.getElementById('pdfPreviewFrame');
       try{ f.contentWindow.focus(); f.contentWindow.print(); }
-      catch(e){ try{ window.print(); }catch(e2){} }
+      catch(e){ window.showToast("تعذر فتح نافذة الطباعة"); }
     };
-    document.getElementById('shareBtn').onclick = async function(){
+    document.getElementById('pdfShareBtn').onclick = async () => {
       try{
-        var blob = window.__pdfBlob;
-        if(!blob){ var r = await fetch('${blobUrl}'); blob = await r.blob(); }
-        var file = new File([blob], '${filename}', { type: 'application/pdf' });
+        const file = new File([pdfBlob], filename, { type: 'application/pdf' });
         if(navigator.canShare && navigator.canShare({ files: [file] })){
-          await navigator.share({ files: [file], title: '${reportTitle}' });
+          await navigator.share({ files: [file], title: reportTitle });
         } else {
-          var a = document.createElement('a');
-          a.href = '${blobUrl}'; a.download = '${filename}';
+          const a = document.createElement('a');
+          a.href = blobUrl; a.download = filename;
           document.body.appendChild(a); a.click(); document.body.removeChild(a);
+          window.showToast("المشاركة غير مدعومة بهذا المتصفح، تم تنزيل الملف بدلاً من ذلك");
         }
-      }catch(e){ /* المستخدم ألغى المشاركة أو المتصفح لا يدعمها */ }
+      }catch(e){ /* المستخدم ألغى المشاركة */ }
     };
-  <\/script>
-</body></html>`;
   }
 
   async function exportLinksAsPdf(links, uname){
-    // نفتح نافذة فارغة فوراً وبشكل متزامن (قبل أي await) لتفادي حظر النوافذ المنبثقة تماماً
-    const previewWin = window.open('', '_blank');
-
     if(!window.html2canvas) await window.__ensureHtml2canvas().catch(()=>{});
     if(!window.jspdf) await window.__ensureJsPdf().catch(()=>{});
     if(!window.html2canvas || !window.jspdf){
       window.showToast("تعذر تحميل أدوات التصدير، تحقق من الاتصال");
-      if(previewWin) previewWin.close();
-      return;
+      return false;
     }
 
     const displayName = (document.getElementById('pfName')?.value || uname).trim();
@@ -1595,17 +1586,12 @@ tr:hover{background:var(--bg2);}
       }
 
       const pdfBlob = pdf.output('blob');
-      const blobUrl = URL.createObjectURL(pdfBlob);
-      const filename = `electrwni-${uname}-links.pdf`;
-
-      if(previewWin){
-        previewWin.__pdfBlob = pdfBlob;
-        previewWin.document.open();
-        previewWin.document.write(buildPdfPreviewWrapperHtml(blobUrl, filename, 'تقرير روابط حساب'));
-        previewWin.document.close();
-      } else {
-        window.open(blobUrl, '_blank'); // احتياط إن حُظرت النافذة رغم كل شيء
-      }
+      showPdfPreviewModal(pdfBlob, `electrwni-${uname}-links.pdf`, 'تقرير روابط حساب');
+      return true;
+    } catch(e){
+      console.error('exportLinksAsPdf error:', e);
+      window.showToast("تعذر إنشاء PDF: " + (e.message||''));
+      return false;
     } finally {
       root.remove();
     }
