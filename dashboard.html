@@ -612,8 +612,8 @@ tr:hover{background:var(--bg2);}
             <tr>
               <th style="max-width:50px;">الرقم<br><span style="font-size:0.65rem;font-weight:400;">#</span></th>
               <th>العنوان<br><span style="font-size:0.65rem;font-weight:400;">Title</span></th>
-              <th>الوصف<br><span style="font-size:0.65rem;font-weight:400;">Desc</span></th>
-              <th>الرابط<br><span style="font-size:0.65rem;font-weight:400;">Link</span></th>
+              <th>💬 الوصف<br><span style="font-size:0.65rem;font-weight:400;">Desc</span></th>
+              <th>🔗📝 الرابط / النص<br><span style="font-size:0.65rem;font-weight:400;">Link / Text</span></th>
               <th style="max-width:60px;">المشاهدات<br><span style="font-size:0.65rem;font-weight:400;">Views</span></th>
             </tr>
           </thead>
@@ -663,6 +663,7 @@ tr:hover{background:var(--bg2);}
   };
   window.__ensureQr = function(){ return window.__loadLib('https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'); };
   window.__ensureHtml2canvas = function(){ return window.__loadLib('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'); };
+  window.__ensureJsPdf = function(){ return window.__loadLib('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'); };
 </script>
 
 <!-- FIREBASE SDK V10 MODULES -->
@@ -1263,10 +1264,12 @@ tr:hover{background:var(--bg2);}
       item.setAttribute('data-search', `${num} ${title} ${fullDesc} ${link.url||''}`.toLowerCase());
       item.innerHTML = `
         <div class="item-header" onclick="this.parentElement.classList.toggle('open')">
-          [${num}] ${title}${isText?' <span style="font-size:0.7rem;color:var(--muted);">(نص)</span>':''}
+          ${isText?'📝':'🔗'} [${num}] ${title}${isText?' <span style="font-size:0.7rem;color:var(--muted);">(نص)</span>':''}
           <div class="item-details">
-            ${isText? '' : `<div class="detail-row"><span class="detail-label">الرابط:</span> <span dir="ltr">${link.url||''}</span></div>`}
-            <div class="detail-row"><span class="detail-label">الوصف:</span> <span>${fullDesc}</span></div>
+            ${isText
+              ? `<div class="detail-row"><span class="detail-label">📝 النص:</span> <span>${link.text||''}</span></div>`
+              : `<div class="detail-row"><span class="detail-label">🔗 الرابط:</span> <span dir="ltr">${link.url||''}</span></div>`}
+            <div class="detail-row"><span class="detail-label">💬 الوصف:</span> <span>${fullDesc}</span></div>
             <div style="margin-top:8px; text-align:left; display:flex; gap:8px; justify-content:flex-start;">
               <button class="btn-edit" onclick="event.stopPropagation(); editLink('${ident}')">تعديل · Edit</button>
               <button class="btn-delete" onclick="event.stopPropagation(); deleteLink('${ident}')">حذف · Delete</button>
@@ -1277,7 +1280,8 @@ tr:hover{background:var(--bg2);}
       registry.appendChild(item);
 
       const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${num}</td><td><b>${title}</b></td><td><div class="desc-clamp">${clamped}</div></td><td dir="ltr">${link.url}</td><td><span style="color:var(--primary); font-weight:700;">${link.views || 0}</span></td>`;
+      const trLinkCell = isText ? ('📝 ' + (link.text||'').slice(0,40)) : (link.url ? ('🔗 ' + link.url) : '—');
+      tr.innerHTML = `<td>${num}</td><td>${isText?'📝':'🔗'} <b>${title}</b></td><td><div class="desc-clamp">${clamped}</div></td><td dir="ltr">${trLinkCell}</td><td><span style="color:var(--primary); font-weight:700;">${link.views || 0}</span></td>`;
       statsTbody.appendChild(tr);
     });
   }
@@ -1365,7 +1369,7 @@ tr:hover{background:var(--bg2);}
       if(us.exists() && Array.isArray(us.data().links)) links = us.data().links;
     } catch(e){ console.error('fetch links:', e); }
     const arr = links.map(l => ({
-      number: l.number ?? l.num ?? '', title: l.title ?? l.label ?? '', url: l.url||'', description: l.description||'', views: l.views||0
+      number: l.number ?? l.num ?? '', title: l.title ?? l.label ?? '', url: l.url||'', text: l.text||'', type: l.type||'link', description: l.description||'', views: l.views||0
     }));
     arr.sort((a,b)=>(parseInt(a.number)||0)-(parseInt(b.number)||0));
     return arr;
@@ -1403,19 +1407,132 @@ tr:hover{background:var(--bg2);}
         window.showToast("تم تصدير Excel");
 
       } else if(format === 'pdf'){
-        // نبني HTML للطباعة كـ PDF عبر نافذة الطباعة
-        let rows = links.map(l => `<tr><td>${l.number}</td><td>${escapeHtml(l.title)}</td><td>${escapeHtml(l.url)}</td><td>${escapeHtml(l.description)}</td><td>${l.views}</td></tr>`).join('');
-        const html = `<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"><title>روابط ${uname}</title>
-          <style>body{font-family:Arial,sans-serif;padding:24px;}h1{color:#3d5af1;}table{width:100%;border-collapse:collapse;margin-top:16px;}th,td{border:1px solid #ddd;padding:8px;text-align:right;font-size:13px;}th{background:#3d5af1;color:#fff;}tr:nth-child(even){background:#f7f7f7;}</style>
-          </head><body><h1>روابط @${uname}</h1><p>electrwni.link/${uname} — ${new Date().toLocaleDateString('ar')}</p>
-          <table><thead><tr><th>الرقم</th><th>العنوان</th><th>الرابط</th><th>الوصف</th><th>المشاهدات</th></tr></thead><tbody>${rows}</tbody></table>
-          <script>window.onload=function(){window.print();}<\/script></body></html>`;
-        const w = window.open('', '_blank');
-        if(w){ w.document.write(html); w.document.close(); window.showToast("اختر «حفظ كـ PDF» من نافذة الطباعة"); }
-        else { window.showToast("اسمح بالنوافذ المنبثقة"); }
+        await window.showToast("جاري تجهيز PDF...");
+        await exportLinksAsPdf(links, uname);
+        window.showToast("تم تنزيل ملف PDF");
       }
     } catch(e){ window.showToast("تعذر التصدير: " + (e.message||'')); }
   };
+
+  // ===== بناء تقرير PDF احترافي (لا نوافذ منبثقة — تنزيل مباشر) =====
+  function buildArabicDateParts(){
+    const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+    const now = new Date();
+    const year = String(now.getFullYear());
+    const dayMonth = `${now.getDate()} ${months[now.getMonth()]}`;
+    let h = now.getHours();
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const ampm = h >= 12 ? 'م' : 'ص';
+    h = h % 12; if(h === 0) h = 12;
+    const time = `${h}:${m} ${ampm}`;
+    return { year, dayMonth, time };
+  }
+
+  async function exportLinksAsPdf(links, uname){
+    if(!window.html2canvas) await window.__ensureHtml2canvas().catch(()=>{});
+    if(!window.jspdf) await window.__ensureJsPdf().catch(()=>{});
+    if(!window.html2canvas || !window.jspdf){ window.showToast("تعذر تحميل أدوات التصدير، تحقق من الاتصال"); return; }
+
+    const displayName = (document.getElementById('pfName')?.value || uname).trim();
+    const { year, dayMonth, time } = buildArabicDateParts();
+
+    const rows = links.map(l => {
+      const isText = l.type === 'text';
+      const linkCell = isText
+        ? `📝 ${escapeHtml((l.text||'—').slice(0,60))}`
+        : (l.url ? `🔗 ${escapeHtml(l.url)}` : '—');
+      const descCell = escapeHtml((l.description||'—').slice(0,70));
+      return `<tr style="background:${(l.number%2===0)?'#f9f9fb':'#ffffff'};border-bottom:1px solid #e8ecf5;">
+        <td style="padding:9px 8px;text-align:center;font-weight:700;color:#3d5af1;width:34px;">${l.number}</td>
+        <td style="padding:9px 8px;text-align:right;font-weight:700;">${isText?'📝':'🔗'} ${escapeHtml(l.title)}</td>
+        <td style="padding:9px 8px;text-align:left;direction:ltr;word-break:break-all;">${linkCell}</td>
+        <td style="padding:9px 8px;text-align:right;color:#3a4270;">${descCell}</td>
+        <td style="padding:9px 8px;text-align:center;font-weight:700;color:#3d5af1;width:60px;">${l.views}</td>
+      </tr>`;
+    }).join('');
+
+    const root = document.createElement('div');
+    root.id = 'pdfReportRoot';
+    root.style.cssText = 'position:fixed;left:-99999px;top:0;width:800px;background:#ffffff;direction:rtl;color:#0f1535;font-family:Tajawal,-apple-system,sans-serif;';
+    root.innerHTML = `
+      <div style="padding:34px 38px 6px;">
+        <div style="display:flex;justify-content:space-between;align-items:stretch;gap:14px;">
+          <div style="flex:1;background:linear-gradient(135deg,#3d5af1,#6c8fff);border-radius:16px;padding:16px 14px;color:#fff;text-align:center;">
+            <div style="font-family:'Space Mono',monospace;font-weight:900;font-size:15px;margin-bottom:6px;">electrwni.link</div>
+            <div style="font-weight:900;font-size:14px;margin-bottom:4px;">${escapeHtml(displayName)}</div>
+            <div style="font-family:'Space Mono',monospace;font-size:11px;opacity:.92;direction:ltr;">electrwni.link/${escapeHtml(uname)}</div>
+          </div>
+          <div style="flex:1;background:#f0f4ff;border:1.5px solid #d7e0ff;border-radius:16px;padding:16px 14px;color:#0f1535;text-align:center;">
+            <div style="font-weight:900;font-size:12.5px;color:#3d5af1;margin-bottom:8px;">عبارة التاريخ:</div>
+            <div style="font-size:11px;line-height:1.85;text-align:right;">
+              <div>السنة: <b>${year}</b></div>
+              <div>اليوم والشهر: <b>${dayMonth}</b></div>
+              <div>ساعة الطباعة: <b>${time}</b></div>
+            </div>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:20px;">
+          <div style="font-weight:900;font-size:23px;">تقرير الروابط</div>
+          <div style="width:64px;height:4px;background:linear-gradient(135deg,#3d5af1,#6c8fff);border-radius:2px;margin:8px auto 0;"></div>
+        </div>
+      </div>
+      <div style="padding:6px 38px 24px;">
+        <table style="width:100%;border-collapse:collapse;font-size:11.5px;">
+          <thead>
+            <tr style="background:linear-gradient(135deg,#3d5af1,#6c8fff);color:#fff;">
+              <th style="padding:9px 8px;">#</th>
+              <th style="padding:9px 8px;text-align:right;">العنوان</th>
+              <th style="padding:9px 8px;text-align:left;">🔗📝 الرابط / النص</th>
+              <th style="padding:9px 8px;text-align:right;">💬 الوصف</th>
+              <th style="padding:9px 8px;">المشاهدات</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+      <div style="text-align:center;padding:4px 0 22px;font-size:10px;color:#9aa2c8;">electrwni.link — تقرير مُولَّد آلياً</div>
+    `;
+    document.body.appendChild(root);
+
+    try{
+      const canvas = await window.html2canvas(root, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      const imgW = pageW;
+      const imgH = canvas.height * imgW / canvas.width;
+      const imgData = canvas.toDataURL('image/png');
+
+      let heightLeft = imgH;
+      let position = 0;
+      let pageNum = 1;
+      const totalPages = Math.max(1, Math.ceil(imgH / pageH));
+
+      pdf.addImage(imgData, 'PNG', 0, position, imgW, imgH);
+      addPageNumber(pdf, pageNum, totalPages, pageW, pageH);
+      heightLeft -= pageH;
+
+      while(heightLeft > 0){
+        pageNum++;
+        position = heightLeft - imgH;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgW, imgH);
+        addPageNumber(pdf, pageNum, totalPages, pageW, pageH);
+        heightLeft -= pageH;
+      }
+
+      pdf.save(`electrwni-${uname}-links.pdf`);
+    } finally {
+      root.remove();
+    }
+  }
+
+  function addPageNumber(pdf, pageNum, totalPages, pageW, pageH){
+    pdf.setFontSize(9);
+    pdf.setTextColor(150,150,160);
+    pdf.text(String(pageNum) + ' / ' + String(totalPages), pageW/2, pageH - 6, { align: 'center' });
+  }
 
   function escapeHtml(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
