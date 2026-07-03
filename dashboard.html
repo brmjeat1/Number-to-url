@@ -235,7 +235,8 @@ tr:hover{background:var(--bg2);}
         <div class="form-row">
           <div class="form-group">
             <label>الرقم <span class="lbl-sub">/ Number</span> *</label>
-            <input type="number" id="linkNum" placeholder="1" min="1">
+            <input type="number" id="linkNum" placeholder="1" min="1" oninput="checkReservedNumber(this.value)">
+            <div id="reservedNumWarning" style="display:none;color:var(--error);font-size:0.72rem;font-weight:700;margin-top:4px;">⚠️ هذا الرقم محجوز للنظام · Reserved number</div>
           </div>
           <div class="form-group">
             <label>العنوان <span class="lbl-sub">/ Title</span> * <span id="titleCounter" style="float:left;font-size:0.72rem;font-weight:700;color:var(--muted);">20</span></label>
@@ -611,14 +612,15 @@ tr:hover{background:var(--bg2);}
           <thead>
             <tr>
               <th style="max-width:50px;">الرقم<br><span style="font-size:0.65rem;font-weight:400;">#</span></th>
-              <th style="max-width:44px;">النوع<br><span style="font-size:0.65rem;font-weight:400;">Type</span></th>
+              <th style="max-width:44px;">النوع<br><span style="font-size:0.65rem;font-weight:400;">🔗 / 📄</span></th>
               <th>العنوان<br><span style="font-size:0.65rem;font-weight:400;">Title</span></th>
-              <th>💬 الوصف<br><span style="font-size:0.65rem;font-weight:400;">Desc</span></th>
+              <th>الرابط<br><span style="font-size:0.65rem;font-weight:400;">Link</span></th>
+              <th>الوصف<br><span style="font-size:0.65rem;font-weight:400;">Desc</span></th>
               <th style="max-width:60px;">المشاهدات<br><span style="font-size:0.65rem;font-weight:400;">Views</span></th>
             </tr>
           </thead>
           <tbody id="statsTbody">
-            <tr><td colspan="5" class="empty">لا توجد روابط / No links</td></tr>
+            <tr><td colspan="6" class="empty">لا توجد روابط / No links</td></tr>
           </tbody>
         </table>
         <div class="pagination" id="pagination"></div>
@@ -695,6 +697,8 @@ tr:hover{background:var(--bg2);}
 
   // المتغيرات العامة لإدارة الحالة
   let currentUser = null;
+  // أرقام محجوزة للنظام: 205=رابط الصفحة، 206=روابط مختارة، 210-216=حسابات التواصل تلقائياً
+  const RESERVED_NUMBERS = [205, 206, 210, 211, 212, 213, 214, 215, 216];
   let cropper = null;
   let currentCropType = ''; 
   let selectedSocialPlatform = null;
@@ -1123,6 +1127,42 @@ tr:hover{background:var(--bg2);}
   };
 
   // 4. محرك إدارة الروابط (Links Page)
+  window.checkReservedNumber = function(val){
+    const warn = document.getElementById('reservedNumWarning');
+    if(!warn) return;
+    const n = parseInt(val);
+    warn.style.display = RESERVED_NUMBERS.includes(n) ? 'block' : 'none';
+  };
+
+  // يبني عناصر الروابط "المحجوزة" تلقائياً من بيانات الحساب الحقيقية (لا تُخزَّن كروابط عادية)
+  function buildReservedLinkEntries(userData, uname){
+    const entries = [];
+    if(uname){
+      entries.push({
+        number: 205, reserved: true, type: 'link',
+        title: 'رابط الصفحة', label: 'رابط الصفحة',
+        url: `electrwni.link/${uname}`, text: '',
+        description: 'الرابط العام لصفحتك', views: 0
+      });
+    }
+    entries.push({
+      number: 206, reserved: true, type: 'text',
+      title: 'روابط مختارة', label: 'روابط مختارة',
+      url: '', text: 'روابط مختارة',
+      description: 'قسم الروابط المختارة بصفحتك', views: 0
+    });
+    const socials = Array.isArray(userData?.socials) ? userData.socials : [];
+    socials.slice(0, 7).forEach((s, i) => {
+      entries.push({
+        number: 210 + i, reserved: true, type: 'link', socialId: s.id,
+        title: s.platformName || s.name || 'حساب تواصل', label: s.platformName || s.name || 'حساب تواصل',
+        url: s.url || '', text: '',
+        description: 'حساب تواصل اجتماعي', views: 0
+      });
+    });
+    return entries;
+  }
+
   window.updateTitleCounter = function(input) {
     const max = parseInt(input.getAttribute('maxlength')) || 20;
     const remaining = max - input.value.length;
@@ -1169,6 +1209,12 @@ tr:hover{background:var(--bg2);}
     // للنص: يُشترط النص. للرابط: يُشترط الرابط.
     if(!num || !title || (isText ? !textContent : !url)) {
       window.showToast("الرجاء ملء الحقول الإلزامية");
+      return;
+    }
+
+    const numIntCheck = parseInt(num);
+    if(RESERVED_NUMBERS.includes(numIntCheck)){
+      window.showToast(`⚠️ الرقم ${numIntCheck} محجوز للنظام، اختر رقماً آخر`);
       return;
     }
 
@@ -1241,44 +1287,67 @@ tr:hover{background:var(--bg2);}
     statsTbody.innerHTML = '';
 
     let links = [];
+    let userData = {};
     try {
       const snap = await getDoc(doc(db, "users", currentUser.uid));
-      if(snap.exists() && Array.isArray(snap.data().links)) links = snap.data().links;
+      if(snap.exists()){
+        userData = snap.data();
+        if(Array.isArray(userData.links)) links = userData.links;
+      }
     } catch(e){}
-    // ترتيب حسب الرقم
-    links.sort((a,b)=>(parseInt(a.number??a.num)||0)-(parseInt(b.number??b.num)||0));
 
-    if (!links.length) {
+    const uname = userData.username || (document.getElementById('pfUser')?.value || '').trim();
+    const reservedEntries = buildReservedLinkEntries(userData, uname);
+
+    // ترتيب الروابط العادية حسب الرقم، ثم تتصدّرها الأرقام المحجوزة (205/206/210-216)
+    links.sort((a,b)=>(parseInt(a.number??a.num)||0)-(parseInt(b.number??b.num)||0));
+    const allEntries = [...reservedEntries, ...links];
+
+    if (!allEntries.length) {
       registry.innerHTML = '<div class="empty">لا توجد روابط مضافة بعد</div>';
-      statsTbody.innerHTML = '<tr><td colspan="5" class="empty">لا توجد روابط / No links</td></tr>';
+      statsTbody.innerHTML = '<tr><td colspan="6" class="empty">لا توجد روابط / No links</td></tr>';
       return;
     }
 
-    links.forEach(link => {
+    allEntries.forEach(link => {
       const id = link.id;
       const num = link.number ?? link.num ?? '';
       const title = link.title ?? link.label ?? '';
       const fullDesc = link.description || '—';
       const clamped = fullDesc.length > 60 ? fullDesc.slice(0,60).trim() + '… <span style="color:var(--primary);font-weight:700;">للمزيد</span>' : fullDesc;
+      const isText = link.type === 'text';
+      const isReserved = !!link.reserved;
+      const linkValue = isText ? (link.text || '') : (link.url || '');
 
       // معرّف احتياطي: id إن وُجد، وإلا الرقم (للروابط القديمة بلا id)
       const ident = id ? `id:${id}` : `num:${num}`;
-      const isText = link.type === 'text';
+
+      // أزرار التعديل/الحذف: الروابط المحجوزة لا تُعدَّل، وحذفها يحذف مصدرها الفعلي (حساب التواصل) أو يُمنع (رابط الصفحة/القسم)
+      let actionsHtml;
+      if(isReserved){
+        if(link.socialId){
+          actionsHtml = `<button class="btn-delete" onclick="event.stopPropagation(); deleteSocial('${link.socialId}')">حذف الحساب · Delete</button>`;
+        } else {
+          actionsHtml = `<span style="font-size:0.75rem;color:var(--muted);">🔒 عنصر نظام ثابت · System item</span>`;
+        }
+      } else {
+        actionsHtml = `
+          <button class="btn-edit" onclick="event.stopPropagation(); editLink('${ident}')">تعديل · Edit</button>
+          <button class="btn-delete" onclick="event.stopPropagation(); deleteLink('${ident}')">حذف · Delete</button>`;
+      }
+
       const item = document.createElement('div');
       item.className = 'item';
-      item.setAttribute('data-search', `${num} ${title} ${fullDesc} ${link.url||''}`.toLowerCase());
+      item.setAttribute('data-search', `${num} ${title} ${fullDesc} ${linkValue}`.toLowerCase());
       item.innerHTML = `
         <div class="item-header" onclick="this.parentElement.classList.toggle('open')">
-          ${isText?'📝':'🔗'} [${num}] ${title}${isText?' <span style="font-size:0.7rem;color:var(--muted);">(نص)</span>':''}
+          ${isText?'📄':'🔗'} [${num}] ${title}${isReserved?' <span style="font-size:0.7rem;color:var(--primary);">(محجوز)</span>':(isText?' <span style="font-size:0.7rem;color:var(--muted);">(نص)</span>':'')}
           <div class="item-details">
-            ${isText
-              ? `<div class="detail-row"><span class="detail-label">📝 النص:</span> <span>${link.text||''}</span></div>`
-              : `<div class="detail-row"><span class="detail-label">🔗 الرابط:</span> <span dir="ltr">${link.url||''}</span></div>`}
-            <div class="detail-row"><span class="detail-label">💬 الوصف:</span> <span>${fullDesc}</span></div>
-            <div class="detail-row"><span class="detail-label">👁 المشاهدات:</span> <span>${link.views || 0}</span></div>
+            <div class="detail-row"><span class="detail-label">${isText?'النص:':'الرابط:'}</span> <span dir="ltr">${linkValue}</span></div>
+            <div class="detail-row"><span class="detail-label">الوصف:</span> <span>${fullDesc}</span></div>
+            <div class="detail-row"><span class="detail-label">المشاهدات:</span> <span>${link.views || 0}</span></div>
             <div style="margin-top:8px; text-align:left; display:flex; gap:8px; justify-content:flex-start;">
-              <button class="btn-edit" onclick="event.stopPropagation(); editLink('${ident}')">تعديل · Edit</button>
-              <button class="btn-delete" onclick="event.stopPropagation(); deleteLink('${ident}')">حذف · Delete</button>
+              ${actionsHtml}
             </div>
           </div>
         </div>
@@ -1286,7 +1355,7 @@ tr:hover{background:var(--bg2);}
       registry.appendChild(item);
 
       const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${num}</td><td style="text-align:center;font-size:1.05rem;">${isText?'📄':'🔗'}</td><td><b>${title}</b></td><td><div class="desc-clamp">${clamped}</div></td><td><span style="color:var(--primary); font-weight:700;">${link.views || 0}</span></td>`;
+      tr.innerHTML = `<td>${num}</td><td style="text-align:center;font-size:1.05rem;">${isText?'📄':'🔗'}</td><td><b>${title}</b></td><td dir="ltr" style="word-break:break-all;">${linkValue}</td><td><div class="desc-clamp">${clamped}</div></td><td><span style="color:var(--primary); font-weight:700;">${link.views || 0}</span></td>`;
       statsTbody.appendChild(tr);
     });
   }
@@ -1394,14 +1463,15 @@ tr:hover{background:var(--bg2);}
     try {
       const links = await fetchAllLinks();
       const uname = (document.getElementById('pfUser').value || 'links').trim();
-      if(!links.length){ window.showToast("لا توجد روابط للتصدير"); return; }
 
       if(format === 'json'){
+        if(!links.length){ window.showToast("لا توجد روابط للتصدير"); return; }
         const data = { exportedAt: new Date().toISOString(), username: uname, links };
         downloadBlob(JSON.stringify(data, null, 2), `electrwni-${uname}-links.json`, 'application/json');
         window.showToast("تم تصدير JSON");
 
       } else if(format === 'excel'){
+        if(!links.length){ window.showToast("لا توجد روابط للتصدير"); return; }
         // CSV يفتح في Excel/Numbers (مع BOM لدعم العربية)
         let csv = '\uFEFF' + 'الرقم,العنوان,الرابط,الوصف,المشاهدات\n';
         links.forEach(l => {
@@ -1413,7 +1483,16 @@ tr:hover{background:var(--bg2);}
 
       } else if(format === 'pdf'){
         await window.showToast("جاري تجهيز PDF...");
-        const ok = await exportLinksAsPdf(links, uname);
+        // ندمج الأرقام المحجوزة (رابط الصفحة/روابط مختارة/حسابات التواصل) لتتصدّر التقرير
+        let userData = {};
+        try {
+          const snap = await getDoc(doc(db, "users", currentUser.uid));
+          if(snap.exists()) userData = snap.data();
+        } catch(e){}
+        const reservedEntries = buildReservedLinkEntries(userData, userData.username || uname);
+        const allForPdf = [...reservedEntries, ...links];
+        if(!allForPdf.length){ window.showToast("لا توجد روابط للتصدير"); return; }
+        const ok = await exportLinksAsPdf(allForPdf, uname);
         if(ok) window.showToast("تم فتح التقرير للمعاينة");
       }
     } catch(e){ window.showToast("تعذر التصدير: " + (e.message||'')); }
@@ -1489,13 +1568,13 @@ tr:hover{background:var(--bg2);}
 
     const rows = links.map(l => {
       const isText = l.type === 'text';
-      const linkCell = isText
-        ? `📝 ${escapeHtml((l.text||'—').slice(0,60))}`
-        : (l.url ? `🔗 ${escapeHtml(l.url)}` : '—');
+      const linkVal = isText ? (l.text || '—') : (l.url || '—');
+      const linkCell = escapeHtml(String(linkVal).slice(0,60));
       const descCell = escapeHtml((l.description||'—').slice(0,70));
       return `<tr style="background:${(l.number%2===0)?'#f9f9fb':'#ffffff'};border-bottom:1px solid #e8ecf5;">
         <td style="padding:9px 8px;text-align:center;font-weight:700;color:#3d5af1;width:34px;">${l.number}</td>
-        <td style="padding:9px 8px;text-align:right;font-weight:700;">${isText?'📝':'🔗'} ${escapeHtml(l.title)}</td>
+        <td style="padding:9px 8px;text-align:center;font-size:13px;width:34px;">${isText?'📄':'🔗'}</td>
+        <td style="padding:9px 8px;text-align:right;font-weight:700;">${escapeHtml(l.title)}</td>
         <td style="padding:9px 8px;text-align:left;direction:ltr;word-break:break-all;">${linkCell}</td>
         <td style="padding:9px 8px;text-align:right;color:#3a4270;">${descCell}</td>
         <td style="padding:9px 8px;text-align:center;font-weight:700;color:#3d5af1;width:60px;">${l.views}</td>
@@ -1531,10 +1610,11 @@ tr:hover{background:var(--bg2);}
         <table style="width:100%;border-collapse:collapse;font-size:11.5px;">
           <thead>
             <tr style="background:linear-gradient(135deg,#3d5af1,#6c8fff);color:#fff;">
-              <th style="padding:9px 8px;">#</th>
+              <th style="padding:9px 8px;">الرقم</th>
+              <th style="padding:9px 8px;">النوع</th>
               <th style="padding:9px 8px;text-align:right;">العنوان</th>
-              <th style="padding:9px 8px;text-align:left;">🔗📝 الرابط / النص</th>
-              <th style="padding:9px 8px;text-align:right;">💬 الوصف</th>
+              <th style="padding:9px 8px;text-align:left;">الرابط</th>
+              <th style="padding:9px 8px;text-align:right;">الوصف</th>
               <th style="padding:9px 8px;">المشاهدات</th>
             </tr>
           </thead>
@@ -1611,10 +1691,14 @@ tr:hover{background:var(--bg2);}
         const existing = (snap.exists() && Array.isArray(snap.data().links)) ? snap.data().links : [];
         let maxNum = existing.reduce((m,l)=>Math.max(m, parseInt(l.number??l.num)||0), 0);
         imported.forEach(l => {
-          maxNum++;
-          const n = parseInt(l.number ?? l.num) || maxNum;
+          let n = parseInt(l.number ?? l.num);
+          if(!n || RESERVED_NUMBERS.includes(n) || existing.some(x=>(parseInt(x.number??x.num))===n)){
+            maxNum++;
+            while(RESERVED_NUMBERS.includes(maxNum)) maxNum++;
+            n = maxNum;
+          }
           existing.push({
-            id: 'lnk_' + Date.now() + '_' + maxNum,
+            id: 'lnk_' + Date.now() + '_' + n,
             number: n, num: n,
             title: l.title || l.label || '', label: l.title || l.label || '',
             url: l.url || '',
