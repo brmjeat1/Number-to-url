@@ -1419,7 +1419,7 @@ tr:hover{background:var(--bg2);}
     } catch(e){ window.showToast("تعذر التصدير: " + (e.message||'')); }
   };
 
-  // ===== بناء تقرير PDF احترافي (يُفتح للمعاينة في تبويب جديد — أبيض وأسود بالكامل) =====
+  // ===== بناء تقرير PDF احترافي (تقرير كلاسيكي رسمي — معاينة بزر مشاركة وطباعة) =====
   function buildArabicDateParts(){
     const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
     const now = new Date();
@@ -1433,13 +1433,61 @@ tr:hover{background:var(--bg2);}
     return { year, dayMonth, time };
   }
 
-  // أيقونات SVG (بدل الإيموجي) لتمييز رابط/نص داخل الـ PDF — أسود بالكامل ليطابق التصميم أبيض/أسود
+  // أيقونات SVG (بدل الإيموجي) لتمييز رابط/نص داخل الـ PDF — أسود ليطابق الطابع الرسمي
   function pdfTypeIconTag(kind){
     const inner = kind === 'text'
       ? '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/>'
       : '<path d="M10 13a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.07 0L4.1 13.83a5 5 0 0 0 7.07 7.07l1.5-1.5"/>';
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23000000" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
-    return `<img src="data:image/svg+xml,${encodeURIComponent(svg).replace(/'/g,'%27')}" width="15" height="15" style="display:inline-block;vertical-align:middle;">`;
+    return `<img src="data:image/svg+xml,${encodeURIComponent(svg).replace(/'/g,'%27')}" width="14" height="14" style="display:inline-block;vertical-align:middle;">`;
+  }
+
+  // صفحة معاينة مخصّصة (شريط علوي أسود بزرَي مشاركة/طباعة + iframe يعرض الـ PDF)
+  function buildPdfPreviewWrapperHtml(blobUrl, filename, reportTitle){
+    return `<!DOCTYPE html>
+<html dir="rtl" lang="ar"><head><meta charset="UTF-8"><title>${reportTitle}</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{display:flex;flex-direction:column;font-family:-apple-system,BlinkMacSystemFont,'Tajawal',sans-serif;background:#e9e9ee;}
+  .toolbar{display:flex;align-items:center;justify-content:space-between;padding:11px 18px;background:#000000;color:#ffffff;gap:10px;flex-shrink:0;}
+  .toolbar .t-title{font-weight:900;font-size:14px;}
+  .toolbar .t-actions{display:flex;gap:8px;}
+  .toolbar button{display:flex;align-items:center;gap:6px;padding:8px 16px;border:1.5px solid #ffffff;border-radius:7px;background:transparent;color:#ffffff;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit;transition:all .15s;}
+  .toolbar button:active{transform:scale(0.95);background:rgba(255,255,255,0.15);}
+  iframe{flex:1;border:none;width:100%;background:#e9e9ee;}
+</style></head>
+<body>
+  <div class="toolbar">
+    <div class="t-title">📄 ${reportTitle}</div>
+    <div class="t-actions">
+      <button id="shareBtn">↗ مشاركة</button>
+      <button id="printBtn">🖨 طباعة</button>
+    </div>
+  </div>
+  <iframe id="pdfFrame" src="${blobUrl}"></iframe>
+  <script>
+    document.getElementById('printBtn').onclick = function(){
+      var f = document.getElementById('pdfFrame');
+      try{ f.contentWindow.focus(); f.contentWindow.print(); }
+      catch(e){ try{ window.print(); }catch(e2){} }
+    };
+    document.getElementById('shareBtn').onclick = async function(){
+      try{
+        var blob = window.__pdfBlob;
+        if(!blob){ var r = await fetch('${blobUrl}'); blob = await r.blob(); }
+        var file = new File([blob], '${filename}', { type: 'application/pdf' });
+        if(navigator.canShare && navigator.canShare({ files: [file] })){
+          await navigator.share({ files: [file], title: '${reportTitle}' });
+        } else {
+          var a = document.createElement('a');
+          a.href = '${blobUrl}'; a.download = '${filename}';
+          document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        }
+      }catch(e){ /* المستخدم ألغى المشاركة أو المتصفح لا يدعمها */ }
+    };
+  <\/script>
+</body></html>`;
   }
 
   async function exportLinksAsPdf(links, uname){
@@ -1460,58 +1508,61 @@ tr:hover{background:var(--bg2);}
     const rows = links.map((l, idx) => {
       const isText = l.type === 'text';
       const descCell = escapeHtml((l.description || '—').slice(0, 70));
-      const bg = idx % 2 === 0 ? '#f5f5f5' : '#ffffff';
-      return `
-      <div style="display:flex;align-items:center;gap:8px;background:${bg};border:1px solid #dcdcdc;border-radius:8px;padding:7px 9px;margin-bottom:6px;">
-        <div style="width:34px;flex-shrink:0;text-align:center;">
-          <span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:7px;background:#000000;color:#ffffff;font-weight:900;font-size:11px;">${l.number}</span>
-        </div>
-        <div style="width:28px;flex-shrink:0;text-align:center;">${pdfTypeIconTag(isText?'text':'link')}</div>
-        <div style="width:140px;flex-shrink:0;font-weight:700;color:#000000;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(l.title)}</div>
-        <div style="flex:1;min-width:0;color:#333333;font-size:10.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${descCell}</div>
-        <div style="width:58px;flex-shrink:0;text-align:center;">
-          <span style="display:inline-block;padding:2px 9px;border-radius:20px;background:#000000;color:#ffffff;font-weight:900;font-size:10px;">${l.views}</span>
-        </div>
-      </div>`;
+      const bg = idx % 2 === 0 ? '#f7f7f7' : '#ffffff';
+      return `<tr style="background:${bg};border-bottom:1px solid #dddddd;">
+        <td style="padding:7px 6px;text-align:center;font-weight:700;color:#000000;">${l.number}</td>
+        <td style="padding:7px 6px;text-align:center;">${pdfTypeIconTag(isText?'text':'link')}</td>
+        <td style="padding:7px 6px;text-align:right;font-weight:700;color:#000000;">${escapeHtml(l.title)}</td>
+        <td style="padding:7px 6px;text-align:right;color:#333333;">${descCell}</td>
+        <td style="padding:7px 6px;text-align:center;font-weight:700;color:#000000;">${l.views}</td>
+      </tr>`;
     }).join('');
 
     const root = document.createElement('div');
     root.id = 'pdfReportRoot';
     root.style.cssText = 'position:fixed;left:-99999px;top:0;width:800px;background:#ffffff;direction:rtl;color:#000000;font-family:Tajawal,-apple-system,sans-serif;';
     root.innerHTML = `
-      <div style="padding:22px 34px 4px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
-          <div style="flex:1;text-align:center;border:1px solid #000000;border-radius:8px;padding:6px 10px;">
-            <div style="font-family:'Space Mono',monospace;font-weight:900;font-size:11.5px;color:#000000;">electrwni.link</div>
-            <div style="margin-top:4px;font-weight:700;font-size:10px;color:#000000;">${escapeHtml(displayName)}</div>
+      <div style="padding:26px 36px 4px;">
+        <div style="display:flex;justify-content:space-between;align-items:stretch;gap:12px;">
+          <div style="flex:1;border:1px solid #000000;border-radius:4px;padding:10px 12px;text-align:center;">
+            <span style="display:inline-block;background:linear-gradient(135deg,#3d5af1,#6c8fff);border-radius:5px;padding:5px 14px;">
+              <span style="font-family:'Space Mono',monospace;font-weight:900;font-size:12.5px;color:#ffffff;">electrwni</span><span style="font-family:'Space Mono',monospace;font-weight:900;font-size:12.5px;color:#f5c518;">.link</span>
+            </span>
+            <div style="margin-top:7px;font-weight:700;font-size:10.5px;color:#000000;">${escapeHtml(displayName)}</div>
           </div>
-          <div style="flex:1;text-align:center;border:1px solid #000000;border-radius:8px;padding:6px 10px;">
-            <div style="font-weight:900;font-size:10px;color:#000000;margin-bottom:3px;">عبارة التاريخ:</div>
-            <div style="font-size:9px;line-height:1.6;color:#000000;">
+          <div style="flex:1;border:1px solid #000000;border-radius:4px;padding:10px 12px;text-align:center;">
+            <div style="font-weight:900;font-size:10px;color:#000000;margin-bottom:4px;">عبارة التاريخ:</div>
+            <div style="font-size:9.5px;line-height:1.7;color:#000000;">
               <div>السنة: <b>${year}</b></div>
               <div>اليوم والشهر: <b>${dayMonth}</b></div>
               <div>ساعة الطباعة: <b>${time}</b></div>
             </div>
           </div>
         </div>
+        <div style="border-top:1.5px solid #000000;margin-top:16px;"></div>
         <div style="text-align:center;margin-top:14px;">
-          <div style="font-weight:900;font-size:19px;color:#000000;">تقرير روابط حساب</div>
-          <div style="display:inline-block;margin-top:8px;background:#000000;color:#ffffff;border-radius:7px;padding:6px 16px;font-family:'Space Mono',monospace;font-weight:700;font-size:11px;direction:ltr;">
+          <div style="font-weight:900;font-size:19px;color:#000000;letter-spacing:0.3px;">تقرير روابط حساب</div>
+          <div style="display:inline-block;margin-top:9px;background:#000000;color:#ffffff;border-radius:5px;padding:6px 18px;font-family:'Space Mono',monospace;font-weight:700;font-size:11px;direction:ltr;">
             electrwni.link/${escapeHtml(uname)}
           </div>
         </div>
+        <div style="border-top:1.5px solid #000000;margin-top:16px;"></div>
       </div>
-      <div style="padding:12px 34px 22px;">
-        <div style="display:flex;align-items:center;gap:8px;padding:5px 9px;margin-bottom:7px;border-bottom:2px solid #000000;">
-          <div style="width:34px;flex-shrink:0;text-align:center;font-weight:900;font-size:9.5px;color:#000000;">#</div>
-          <div style="width:28px;flex-shrink:0;text-align:center;font-weight:900;font-size:9.5px;color:#000000;">نوع</div>
-          <div style="width:140px;flex-shrink:0;font-weight:900;font-size:9.5px;color:#000000;">العنوان</div>
-          <div style="flex:1;font-weight:900;font-size:9.5px;color:#000000;">الوصف</div>
-          <div style="width:58px;flex-shrink:0;text-align:center;font-weight:900;font-size:9.5px;color:#000000;">المشاهدات</div>
-        </div>
-        ${rows}
+      <div style="padding:14px 36px 22px;">
+        <table style="width:100%;border-collapse:collapse;font-size:10.5px;">
+          <thead>
+            <tr style="border-bottom:2px solid #000000;">
+              <th style="padding:7px 6px;text-align:center;font-weight:900;color:#000000;width:34px;">#</th>
+              <th style="padding:7px 6px;text-align:center;font-weight:900;color:#000000;width:34px;">نوع</th>
+              <th style="padding:7px 6px;text-align:right;font-weight:900;color:#000000;">العنوان</th>
+              <th style="padding:7px 6px;text-align:right;font-weight:900;color:#000000;">الوصف</th>
+              <th style="padding:7px 6px;text-align:center;font-weight:900;color:#000000;width:60px;">المشاهدات</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
       </div>
-      <div style="text-align:center;padding:4px 0 20px;font-size:9px;color:#888888;">electrwni.link — تقرير مُولَّد آلياً</div>
+      <div style="text-align:center;padding:10px 0 20px;margin:0 36px;border-top:1px solid #dddddd;font-size:9px;color:#888888;">electrwni.link — تقرير مُولَّد آلياً</div>
     `;
     document.body.appendChild(root);
 
@@ -1543,10 +1594,18 @@ tr:hover{background:var(--bg2);}
         heightLeft -= pageH;
       }
 
-      // بدل pdf.save(): افتح المعاينة في التبويب المفتوح مسبقاً — بدون أي تنزيل
-      const blobUrl = pdf.output('bloburl');
-      if(previewWin){ previewWin.location.href = blobUrl; }
-      else { window.open(blobUrl, '_blank'); } // احتياط إن حُظرت النافذة رغم كل شيء
+      const pdfBlob = pdf.output('blob');
+      const blobUrl = URL.createObjectURL(pdfBlob);
+      const filename = `electrwni-${uname}-links.pdf`;
+
+      if(previewWin){
+        previewWin.__pdfBlob = pdfBlob;
+        previewWin.document.open();
+        previewWin.document.write(buildPdfPreviewWrapperHtml(blobUrl, filename, 'تقرير روابط حساب'));
+        previewWin.document.close();
+      } else {
+        window.open(blobUrl, '_blank'); // احتياط إن حُظرت النافذة رغم كل شيء
+      }
     } finally {
       root.remove();
     }
