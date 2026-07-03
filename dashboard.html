@@ -1124,7 +1124,8 @@ tr:hover{background:var(--bg2);}
 
   // 4. محرك إدارة الروابط (Links Page)
   window.updateTitleCounter = function(input) {
-    const remaining = 20 - input.value.length;
+    const max = parseInt(input.getAttribute('maxlength')) || 20;
+    const remaining = max - input.value.length;
     const counter = document.getElementById('titleCounter');
     counter.textContent = remaining;
     counter.style.color = remaining <= 3 ? 'var(--error)' : (remaining <= 7 ? '#f77f00' : 'var(--muted)');
@@ -1138,16 +1139,20 @@ tr:hover{background:var(--bg2);}
     const linkBtn = document.getElementById('modeLinkBtn');
     const textBtn = document.getElementById('modeTextBtn');
     const addBtn = document.getElementById('addLinkBtn');
+    const titleInput = document.getElementById('linkTitle');
     if(mode==='text'){
       urlG.style.display='none'; textG.style.display='';
       textBtn.style.background='var(--primary)'; textBtn.style.color='#fff';
       linkBtn.style.background='transparent'; linkBtn.style.color='var(--text)';
       if(addBtn && !window.__editingIdent) addBtn.textContent='إضافة النص · Add Text';
+      // عنوان النص يسمح بحد أقصى 70 حرفاً (بدل 20 للرابط)
+      if(titleInput){ titleInput.setAttribute('maxlength','70'); updateTitleCounter(titleInput); }
     } else {
       urlG.style.display=''; textG.style.display='none';
       linkBtn.style.background='var(--primary)'; linkBtn.style.color='#fff';
       textBtn.style.background='transparent'; textBtn.style.color='var(--text)';
       if(addBtn && !window.__editingIdent) addBtn.textContent='إضافة الرابط · Add Link';
+      if(titleInput){ titleInput.setAttribute('maxlength','20'); updateTitleCounter(titleInput); }
     }
   };
 
@@ -1428,6 +1433,15 @@ tr:hover{background:var(--bg2);}
     return { year, dayMonth, time };
   }
 
+  // أيقونات SVG (بدل الإيموجي) لتمييز رابط/نص — لون أزرق الموقع الأساسي
+  function pdfTypeIconTag(kind){
+    const inner = kind === 'text'
+      ? '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/>'
+      : '<path d="M10 13a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.07 0L4.1 13.83a5 5 0 0 0 7.07 7.07l1.5-1.5"/>';
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%233d5af1" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
+    return `<img src="data:image/svg+xml,${encodeURIComponent(svg).replace(/'/g,'%27')}" width="16" height="16" style="display:inline-block;vertical-align:middle;">`;
+  }
+
   async function exportLinksAsPdf(links, uname){
     if(!window.html2canvas) await window.__ensureHtml2canvas().catch(()=>{});
     if(!window.jspdf) await window.__ensureJsPdf().catch(()=>{});
@@ -1436,59 +1450,61 @@ tr:hover{background:var(--bg2);}
     const displayName = (document.getElementById('pfName')?.value || uname).trim();
     const { year, dayMonth, time } = buildArabicDateParts();
 
-    const rows = links.map(l => {
+    const rows = links.map((l, idx) => {
       const isText = l.type === 'text';
-      const linkCell = isText
-        ? `📝 ${escapeHtml((l.text||'—').slice(0,60))}`
-        : (l.url ? `🔗 ${escapeHtml(l.url)}` : '—');
-      const descCell = escapeHtml((l.description||'—').slice(0,70));
-      return `<tr style="background:${(l.number%2===0)?'#f9f9fb':'#ffffff'};border-bottom:1px solid #e8ecf5;">
-        <td style="padding:9px 8px;text-align:center;font-weight:700;color:#3d5af1;width:34px;">${l.number}</td>
-        <td style="padding:9px 8px;text-align:right;font-weight:700;">${isText?'📝':'🔗'} ${escapeHtml(l.title)}</td>
-        <td style="padding:9px 8px;text-align:left;direction:ltr;word-break:break-all;">${linkCell}</td>
-        <td style="padding:9px 8px;text-align:right;color:#3a4270;">${descCell}</td>
-        <td style="padding:9px 8px;text-align:center;font-weight:700;color:#3d5af1;width:60px;">${l.views}</td>
-      </tr>`;
+      const descCell = escapeHtml((l.description || '—').slice(0, 70));
+      const bg = idx % 2 === 0 ? 'rgba(61,90,241,0.055)' : 'rgba(61,90,241,0.02)';
+      return `
+      <div style="display:flex;align-items:center;gap:8px;background:${bg};border:1px solid rgba(61,90,241,0.16);border-radius:10px;padding:8px 10px;margin-bottom:7px;">
+        <div style="width:38px;flex-shrink:0;text-align:center;">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#3d5af1,#6c8fff);color:#fff;font-weight:900;font-size:11.5px;">${l.number}</span>
+        </div>
+        <div style="width:32px;flex-shrink:0;text-align:center;">${pdfTypeIconTag(isText?'text':'link')}</div>
+        <div style="width:150px;flex-shrink:0;font-weight:700;color:#000000;font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(l.title)}</div>
+        <div style="flex:1;min-width:0;color:#000000;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${descCell}</div>
+        <div style="width:64px;flex-shrink:0;text-align:center;">
+          <span style="display:inline-block;padding:3px 10px;border-radius:20px;background:linear-gradient(135deg,#3d5af1,#6c8fff);color:#fff;font-weight:900;font-size:10.5px;">${l.views}</span>
+        </div>
+      </div>`;
     }).join('');
 
     const root = document.createElement('div');
     root.id = 'pdfReportRoot';
-    root.style.cssText = 'position:fixed;left:-99999px;top:0;width:800px;background:#ffffff;direction:rtl;color:#0f1535;font-family:Tajawal,-apple-system,sans-serif;';
+    root.style.cssText = 'position:fixed;left:-99999px;top:0;width:800px;background:#ffffff;direction:rtl;color:#000000;font-family:Tajawal,-apple-system,sans-serif;';
     root.innerHTML = `
-      <div style="padding:34px 38px 6px;">
-        <div style="display:flex;justify-content:space-between;align-items:stretch;gap:14px;">
-          <div style="flex:1;background:linear-gradient(135deg,#3d5af1,#6c8fff);border-radius:16px;padding:16px 14px;color:#fff;text-align:center;">
-            <div style="font-family:'Space Mono',monospace;font-weight:900;font-size:15px;margin-bottom:6px;">electrwni.link</div>
-            <div style="font-weight:900;font-size:14px;margin-bottom:4px;">${escapeHtml(displayName)}</div>
-            <div style="font-family:'Space Mono',monospace;font-size:11px;opacity:.92;direction:ltr;">electrwni.link/${escapeHtml(uname)}</div>
+      <div style="padding:30px 38px 4px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;">
+          <div style="flex:1;text-align:center;">
+            <span style="display:inline-block;background:linear-gradient(135deg,#3d5af1,#6c8fff);border-radius:8px;padding:7px 16px;font-family:'Space Mono',monospace;font-weight:900;font-size:14px;">
+              <span style="color:#ffffff;">electrwni</span><span style="color:#f5c518;">.link</span>
+            </span>
+            <div style="margin-top:8px;font-weight:900;font-size:12.5px;color:#000000;">${escapeHtml(displayName)}</div>
           </div>
-          <div style="flex:1;background:#f0f4ff;border:1.5px solid #d7e0ff;border-radius:16px;padding:16px 14px;color:#0f1535;text-align:center;">
-            <div style="font-weight:900;font-size:12.5px;color:#3d5af1;margin-bottom:8px;">عبارة التاريخ:</div>
-            <div style="font-size:11px;line-height:1.85;text-align:right;">
+          <div style="flex:1;text-align:center;border:1.5px solid #e0e6f5;border-radius:12px;padding:10px 12px;">
+            <div style="font-weight:900;font-size:11.5px;color:#3d5af1;margin-bottom:6px;">عبارة التاريخ:</div>
+            <div style="font-size:10.5px;line-height:1.85;color:#000000;">
               <div>السنة: <b>${year}</b></div>
               <div>اليوم والشهر: <b>${dayMonth}</b></div>
               <div>ساعة الطباعة: <b>${time}</b></div>
             </div>
           </div>
         </div>
-        <div style="text-align:center;margin-top:20px;">
-          <div style="font-weight:900;font-size:23px;">تقرير الروابط</div>
-          <div style="width:64px;height:4px;background:linear-gradient(135deg,#3d5af1,#6c8fff);border-radius:2px;margin:8px auto 0;"></div>
+        <div style="text-align:center;margin-top:18px;">
+          <div style="font-weight:900;font-size:21px;color:#000000;">تقرير روابط حساب</div>
+          <div style="display:inline-block;margin-top:10px;background:#000000;color:#ffffff;border-radius:8px;padding:7px 18px;font-family:'Space Mono',monospace;font-weight:700;font-size:12px;direction:ltr;">
+            electrwni.link/${escapeHtml(uname)}
+          </div>
         </div>
       </div>
-      <div style="padding:6px 38px 24px;">
-        <table style="width:100%;border-collapse:collapse;font-size:11.5px;">
-          <thead>
-            <tr style="background:linear-gradient(135deg,#3d5af1,#6c8fff);color:#fff;">
-              <th style="padding:9px 8px;">#</th>
-              <th style="padding:9px 8px;text-align:right;">العنوان</th>
-              <th style="padding:9px 8px;text-align:left;">🔗📝 الرابط / النص</th>
-              <th style="padding:9px 8px;text-align:right;">💬 الوصف</th>
-              <th style="padding:9px 8px;">المشاهدات</th>
-            </tr>
-          </thead>
-          <tbody>${rows}</tbody>
-        </table>
+      <div style="padding:14px 38px 24px;">
+        <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;margin-bottom:8px;border-bottom:2px solid #000000;">
+          <div style="width:38px;flex-shrink:0;text-align:center;font-weight:900;font-size:10.5px;color:#000000;">#</div>
+          <div style="width:32px;flex-shrink:0;text-align:center;font-weight:900;font-size:10.5px;color:#000000;">النوع</div>
+          <div style="width:150px;flex-shrink:0;font-weight:900;font-size:10.5px;color:#000000;">العنوان</div>
+          <div style="flex:1;font-weight:900;font-size:10.5px;color:#000000;">الوصف</div>
+          <div style="width:64px;flex-shrink:0;text-align:center;font-weight:900;font-size:10.5px;color:#000000;">المشاهدات</div>
+        </div>
+        ${rows}
       </div>
       <div style="text-align:center;padding:4px 0 22px;font-size:10px;color:#9aa2c8;">electrwni.link — تقرير مُولَّد آلياً</div>
     `;
