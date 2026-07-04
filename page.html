@@ -252,7 +252,8 @@ function getUsername(){
   if(h)return h;
   const path=window.location.pathname;
   const match=path.match(/\/([^\/]+)\/?$/);
-  if(match&&match[1]&&match[1]!=='page.html')return match[1];
+  const reservedFile=['page.html','page','index.html','index',''];
+  if(match&&match[1]&&!reservedFile.includes(match[1].toLowerCase()))return match[1];
   return null;
 }
 
