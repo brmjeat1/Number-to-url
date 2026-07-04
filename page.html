@@ -47,8 +47,9 @@
 }
 
 *{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:106.25%;} /* Apple-scale baseline (~17px) */
 html{scroll-behavior:smooth;}
-body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 
 /* ========== NAVBAR (قسمان: شعار ثابت يسار + زر ذكي يمين) ========== */
 nav{
@@ -57,9 +58,9 @@ nav{
   border-bottom:1px solid #e8ecf5;gap:8px;
 }
 /* الشعار: ألوان ثابتة وخلفية بيضاء دائماً، لا تتأثر بألوان الموقع */
-.logo{font-family:'Space Mono',monospace;font-size:0.95rem;color:#3d5af1;text-decoration:none;font-weight:700;white-space:nowrap;}
+.logo{font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-size:0.95rem;color:#3d5af1;text-decoration:none;font-weight:700;white-space:nowrap;}
 .logo em{color:#f5c518;font-style:normal;}
-.nav-cta{background:var(--accent);color:#fff;padding:8px 16px;border-radius:20px;font-size:0.82rem;font-weight:900;text-decoration:none;white-space:nowrap;text-align:center;border:none;cursor:pointer;font-family:'Tajawal',sans-serif;}
+.nav-cta{background:var(--accent);color:#fff;padding:8px 16px;border-radius:20px;font-size:0.82rem;font-weight:700;text-decoration:none;white-space:nowrap;text-align:center;border:none;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;}
 .nav-cta .nav-cta-sub{font-size:0.6rem;font-weight:400;opacity:0.85;display:block;text-align:center;}
 /* ========== HERO BANNER ========== */
 .hero-banner{
@@ -75,7 +76,7 @@ nav{
 .avatar-circle{
   width:120px;height:120px;border-radius:50%;background:var(--surface);
   border:6px solid transparent;display:flex;align-items:center;justify-content:center;
-  color:var(--accent);font-weight:900;font-size:2.6rem;overflow:hidden;
+  color:var(--accent);font-weight:700;font-size:2.6rem;overflow:hidden;
   box-shadow:0 10px 40px rgba(0,0,0,0.15);
 }
 .avatar-circle img{width:100%;height:100%;object-fit:cover;}
@@ -83,8 +84,8 @@ nav{
 /* ========== CONTENT ========== */
 .content{padding:0 24px 30px;max-width:500px;margin:0 auto;}
 .profile-info{text-align:center;margin-bottom:30px;}
-.profile-name{font-size:1.6rem;font-weight:900;margin-bottom:6px;}
-.profile-handle{font-family:'Space Mono',monospace;font-size:0.8rem;color:var(--text2);direction:ltr;margin-bottom:10px;}
+.profile-name{font-size:1.6rem;font-weight:700;margin-bottom:6px;}
+.profile-handle{font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-size:0.8rem;color:var(--text2);direction:ltr;margin-bottom:10px;}
 .profile-bio{font-size:0.9rem;color:var(--text2);line-height:1.6;}
 
 /* ========== INPUT SECTION ========== */
@@ -95,7 +96,7 @@ nav{
 .input-box{
   width:100%;background:#fff;border:2.5px solid #fff;border-radius:12px;
   padding:16px;color:var(--accent);font-size:1.2rem;font-weight:700;
-  font-family:'Space Mono',monospace;outline:none;text-align:center;
+  font-family:ui-monospace,'SF Mono','Space Mono',monospace;outline:none;text-align:center;
   margin-bottom:12px;
 }
 .input-box::placeholder{color:var(--muted);}
@@ -108,12 +109,10 @@ nav{
 .error-msg.show{display:block;}
 
 /* ========== SECTION TITLE ========== */
-.section-title{font-size:1.1rem;font-weight:900;color:var(--accent);text-align:center;margin:32px 0 18px;}
+.section-title{font-size:1.1rem;font-weight:700;color:var(--accent);text-align:center;margin:32px 0 18px;}
 
 /* ========== SOCIALS ROW ========== */
 .socials-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:32px;}
-.social-cell{display:flex;flex-direction:column;align-items:center;gap:6px;width:64px;}
-.social-name{font-size:0.72rem;font-weight:700;text-align:center;line-height:1.2;word-break:break-word;}
 
 /* أيقونات المنصات الاجتماعية - دائرية */
 .social-btn{
@@ -153,10 +152,10 @@ nav{
   background:var(--bg);border:2px solid var(--accent);border-radius:12px;
   padding:14px 12px;color:var(--accent);display:flex;align-items:center;justify-content:center;
   min-height:54px;cursor:pointer;width:100%;
-  font-family:'Tajawal',sans-serif;transition:transform .15s,filter .15s;
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;transition:transform .15s,filter .15s;
 }
 .pick-box:active{transform:scale(0.97);filter:brightness(0.95);}
-.pick-title{font-size:0.95rem;font-weight:900;text-align:center;line-height:1.4;color:var(--accent);}
+.pick-title{font-size:0.95rem;font-weight:700;text-align:center;line-height:1.4;color:var(--accent);}
 .pick-sub{font-size:0.65rem;opacity:0.75;display:block;color:var(--accent);}
 
 /* ========== OVERLAY ========== */
@@ -171,9 +170,9 @@ nav{
 }
 .section-overlay-back{
   background:transparent;border:none;font-size:1.3rem;cursor:pointer;color:var(--text);
-  padding:4px 8px;font-family:'Tajawal',sans-serif;
+  padding:4px 8px;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;
 }
-.section-overlay-title{font-size:1.05rem;font-weight:900;}
+.section-overlay-title{font-size:1.05rem;font-weight:700;}
 .section-overlay-body{padding:20px;max-width:500px;margin:0 auto;width:100%;}
 .overlay-list{display:flex;flex-direction:column;gap:8px;}
 .overlay-item{
@@ -182,7 +181,7 @@ nav{
   display:flex;align-items:center;justify-content:space-between;transition:transform .15s;
 }
 .overlay-item:active{transform:scale(0.98);}
-.overlay-item .ov-num{font-family:'Space Mono',monospace;color:var(--accent);font-weight:900;}
+.overlay-item .ov-num{font-family:ui-monospace,'SF Mono','Space Mono',monospace;color:var(--accent);font-weight:700;}
 
 /* ========== FOOTER ========== */
 .footer{
@@ -191,7 +190,7 @@ nav{
   margin-left:-24px;margin-right:-24px;margin-bottom:-30px;
 }
 .footer .psb-text{display:block;color:#3d5af1;font-weight:700;font-size:0.82rem;line-height:1.6;margin-bottom:6px;}
-.footer .psb-link{color:#3d5af1;text-decoration:none;font-weight:900;font-size:0.82rem;}
+.footer .psb-link{color:#3d5af1;text-decoration:none;font-weight:700;font-size:0.82rem;}
 
 
 /* ========== EMPTY / LOADING ========== */
@@ -207,21 +206,8 @@ nav{
   .profile-name{font-size:1.4rem;}
   .social-btn{width:56px;height:56px;border-radius:16px;}
 }
-/* نافذة عرض النص */
-.tv-overlay{display:none;position:fixed;inset:0;z-index:2200;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;padding:20px;overflow-y:auto;}
-.tv-overlay.open{display:flex;}
-.tv-card{background:#fff;border-radius:24px;max-width:420px;width:100%;position:relative;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.3);max-height:90vh;overflow-y:auto;padding-bottom:20px;}
-.tv-close{position:absolute;top:12px;left:12px;z-index:2;width:34px;height:34px;border-radius:50%;border:none;background:rgba(255,255,255,0.85);font-size:1rem;cursor:pointer;font-weight:700;}
-.tv-head{height:90px;display:flex;align-items:flex-end;justify-content:center;}
-.tv-avatar{width:80px;height:80px;border-radius:50%;border:4px solid #fff;background:#eee;overflow:hidden;transform:translateY(40px);display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:900;color:#fff;}
-.tv-name{text-align:center;font-weight:900;font-size:1.15rem;margin-top:48px;}
-.tv-user{text-align:center;font-family:'Space Mono',monospace;font-size:0.78rem;color:#888;direction:ltr;margin-top:2px;}
-.tv-contacts{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:14px 20px;}
-.tv-contacts .social-btn{width:40px;height:40px;}
-.tv-title{font-weight:900;font-size:0.95rem;margin:16px 20px 8px;color:var(--tv-accent,#3d5af1);}
-.tv-text{margin:0 20px;padding:16px;background:#f7f8fb;border-radius:14px;font-size:0.95rem;line-height:1.8;color:#222;white-space:pre-wrap;word-break:break-word;max-height:40vh;overflow-y:auto;}
-.tv-actions{display:flex;gap:10px;margin:16px 20px 0;}
-.tv-btn{flex:1;padding:13px;border:none;border-radius:12px;font-weight:700;font-family:inherit;font-size:0.95rem;cursor:pointer;color:#fff;}
+/* Apple-style tight tracking on large headings */
+.profile-name,.logo,.section-title{letter-spacing:-0.02em;}
 </style>
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
@@ -230,7 +216,7 @@ nav{
 
 <nav>
   <a href="index.html" class="logo">electrwni<em>.link</em></a>
-  <a href="index.html" class="nav-cta" id="navCta">ابدأ الآن<span class="nav-cta-sub">Start Now</span></a>
+  <a href="signup.html" class="nav-cta" id="navCta">ابدأ الآن<span class="nav-cta-sub">Start Now</span></a>
 </nav>
 
 <div class="hero-banner" id="heroBanner"></div>
@@ -319,9 +305,29 @@ function detectPlat(url){
 function platColor(id){
   return {instagram:'#E1306C',twitter:'#000000',snapchat:'#FFC400',tiktok:'#000000',whatsapp:'#25D366',telegram:'#229ED9',youtube:'#FF0000',facebook:'#1877F2',linkedin:'#0A66C2',wechat:'#07C160',imessage:'#34DA50'}[id]||'var(--accent)';
 }
-const PLAT_NAMES={instagram:'Instagram',twitter:'X',snapchat:'Snapchat',tiktok:'TikTok',whatsapp:'WhatsApp',telegram:'Telegram',youtube:'YouTube',facebook:'Facebook',linkedin:'LinkedIn',wechat:'WeChat',imessage:'iMessage'};
 
 let userLinks=[];
+let pageUid=null;
+
+// عدّاد نقرات حسابات التواصل — يزيد المشاهدة بأمان (transaction) دون تعطيل تجربة الزائر
+async function trackSocialClick(socialId){
+  if(!pageUid || !socialId) return;
+  try{
+    await db.runTransaction(async (tx) => {
+      const ref = db.collection('users').doc(pageUid);
+      const snap = await tx.get(ref);
+      if(!snap.exists) return;
+      const data = snap.data();
+      const socials = Array.isArray(data.socials) ? data.socials : [];
+      const idx = socials.findIndex(s => s.id === socialId);
+      if(idx === -1) return;
+      const updated = socials.slice();
+      updated[idx] = { ...updated[idx], views: (updated[idx].views||0) + 1 };
+      tx.update(ref, { socials: updated });
+    });
+  }catch(e){ /* لا نعطّل تجربة الزائر لأجل فشل عدّاد */ }
+}
+window.trackSocialClick = trackSocialClick;
 
 async function init(){
   const u=getUsername();
@@ -343,18 +349,19 @@ async function init(){
     const idxDoc=await db.collection('usernames').doc(username).get();
     if(!idxDoc.exists){ done=true; clearTimeout(safety); show404('الحساب "'+username+'" غير مسجّل في النظام. تأكد من اسم المستخدم.');return; }
     const uid=idxDoc.data().uid;
+    pageUid=uid;
     setupSmartNav(uid);
     const ref=db.collection('users').doc(uid);
     const docSnap=await ref.get();
     done=true; clearTimeout(safety);
     if(!docSnap.exists){show404('بيانات الحساب "'+username+'" غير موجودة.');return;}
     const user=docSnap.data();
-    userLinks=normalizeLinks(user.links);
+    userLinks=(user.links||[]).map(l=>({...l,num:l.num??l.number,label:l.label??l.title})).sort((a,b)=>(a.num||0)-(b.num||0));
     render(user);
     ref.onSnapshot(d=>{
       if(d.exists){
         const updated=d.data();
-        userLinks=normalizeLinks(updated.links);
+        userLinks=(updated.links||[]).map(l=>({...l,num:l.num??l.number,label:l.label??l.title})).sort((a,b)=>(a.num||0)-(b.num||0));
         render(updated);
       }
     }, ()=>{});
@@ -538,40 +545,32 @@ function render(user){
     const btns=socials.map(s=>{
       const pid=s.platformId||detectPlat(s.url);
       const svg=pid&&PAGE_SVG[pid]?PAGE_SVG[pid]:null;
-      // اسم المنصة المعروض تحت الأيقونة
-      const platName = s.name || (pid ? PLAT_NAMES[pid] : '') || (pid||'');
       // النمط: upload=صورة مرفوعة، site=لون موقعك، brand=لون التطبيق (الافتراضي)
       const mode = s.styleMode || 'brand';
-      let btnHtml, nameColor;
       // صورة مرفوعة تملأ الدائرة
       if(mode==='upload' && s.icon && String(s.icon).startsWith('data:')){
-        btnHtml = `<a href="${s.url}" target="_blank" class="social-btn" title="${platName}" style="border-color:var(--accent-light);"><img src="${s.icon}"></a>`;
-        nameColor = 'var(--text)';
-      } else {
-        // لون١=خلفية المربع، لون٢=الإطار، الشعار=لون النص (نمط site) أو لون التطبيق (brand)
-        let circleBg, borderCol, iconColor;
-        if(mode==='site'){
-          circleBg='var(--accent)'; borderCol='var(--accent-light)'; iconColor='var(--text)';
-          nameColor='var(--accent)'; // اسم بلون الموقع
-        } else {
-          circleBg=s.brandColor||platColor(pid); borderCol='var(--accent-light)'; iconColor='#ffffff';
-          nameColor=s.brandColor||platColor(pid); // اسم بلون التطبيق الرسمي
-        }
-        const inner = svg ? svg : `<span style="font-weight:900;font-size:1.4rem;">${(platName||'?')[0].toUpperCase()}</span>`;
-        btnHtml = `<a href="${s.url}" target="_blank" class="social-btn" title="${platName}" style="background:${circleBg};border-color:${borderCol};color:${iconColor};">${inner}</a>`;
+        return `<a href="${s.url}" target="_blank" class="social-btn" title="${s.name||''}" style="border-color:var(--accent-light);" onclick="trackSocialClick('${s.id}')"><img src="${s.icon}"></a>`;
       }
-      // لفّ الأيقونة مع اسمها تحتها
-      return `<div class="social-cell"><div class="social-btn-wrap">${btnHtml}</div><div class="social-name" style="color:${nameColor};">${platName}</div></div>`;
+      // لون١=خلفية المربع، لون٢=الإطار، الشعار=لون النص (نمط site)
+      let circleBg, borderCol, iconColor;
+      if(mode==='site'){
+        circleBg='var(--accent)'; borderCol='var(--accent-light)'; iconColor='var(--text)';
+      } else {
+        // لون التطبيق الرسمي
+        circleBg=s.brandColor||platColor(pid); borderCol='var(--accent-light)'; iconColor='#ffffff';
+      }
+      const inner = svg ? svg : `<span style="font-weight:700;font-size:1.4rem;">${(s.name||'?')[0].toUpperCase()}</span>`;
+      return `<a href="${s.url}" target="_blank" class="social-btn" title="${s.name||pid}" style="background:${circleBg};border-color:${borderCol};color:${iconColor};" onclick="trackSocialClick('${s.id}')">${inner}</a>`;
     }).join('');
     // أيقونة QR دائرية في بداية الصف (خلفية لون١، إطار لون٢، الشعار لون النص)
-    const qrBtn=`<div class="social-cell"><div class="social-btn-wrap"><button class="social-btn" title="رمز QR" onclick="openPageQr()" style="background:var(--accent);color:var(--text);border-color:var(--accent-light);cursor:pointer;">${PAGE_SVG.qr}</button></div><div class="social-name" style="color:var(--accent);">QR</div></div>`;
+    const qrBtn=`<button class="social-btn" title="رمز QR" onclick="openPageQr()" style="background:var(--accent);color:var(--text);border-color:var(--accent-light);cursor:pointer;">${PAGE_SVG.qr}</button>`;
     socialsHtml=`
       <div class="section-title">حسابات التواصل <span style="font-size:0.7rem;font-weight:400;color:var(--muted);display:block;">Social Accounts</span></div>
       <div class="socials-row">${qrBtn}${btns}</div>
     `;
   } else {
     // حتى لو لا سوشيال، نعرض أيقونة QR وحدها
-    socialsHtml=`<div class="socials-row"><div class="social-cell"><div class="social-btn-wrap"><button class="social-btn" title="رمز QR" onclick="openPageQr()" style="background:var(--accent);color:var(--text);border-color:var(--accent-light);cursor:pointer;">${PAGE_SVG.qr}</button></div><div class="social-name" style="color:var(--accent);">QR</div></div></div>`;
+    socialsHtml=`<div class="socials-row"><button class="social-btn" title="رمز QR" onclick="openPageQr()" style="background:var(--accent);color:var(--text);border-color:var(--accent-light);cursor:pointer;">${PAGE_SVG.qr}</button></div>`;
   }
 
   // بطاقات التواصل (أرقام/موقع/خريطة)
@@ -584,7 +583,6 @@ function render(user){
   const featuredLinks=userLinks.filter(l=>l.featured);
   const recentLinks=[...userLinks].slice(-5).reverse();
   window.__pageData={featuredLinks,recentLinks,allLinks:userLinks};
-  window.__pageUser=user;
 
   document.getElementById('content').innerHTML=`
     <div class="profile-info">
@@ -658,100 +656,23 @@ window.zoomAvatar = function(){
 };
 window.closeImgZoom = function(){ document.getElementById('imgZoomModal').style.display='none'; };
 
-// تصحيح الرابط: إضافة https:// إن كان ناقصاً (يمنع الطرد للرئيسية)
-function fixUrl(url){
-  if(!url) return '#';
-  let u=String(url).trim();
-  if(!/^https?:\/\//i.test(u) && !/^(mailto:|tel:|sms:)/i.test(u)){
-    u='https://'+u;
-  }
-  return u;
-}
-
 function openSection(type){
   const data=window.__pageData;
   if(!data)return;
   let title='',links=[];
   if(type==='featured'){title='روابط مختارة · Selected Links';links=data.featuredLinks;}
-  else if(type==='recent'){title='سجل الروابط · Links Registry';links=data.allLinks;}
+  else if(type==='recent'){title='سجل الروابط · Links Registry';links=data.recentLinks;}
   document.getElementById('sectionOverlayTitle').textContent=title;
   const body=document.getElementById('sectionOverlayBody');
   if(!links.length){
     body.innerHTML='<div class="empty-state">لا توجد روابط هنا بعد · No links yet</div>';
-  }else if(type==='recent'){
-    // سجل الروابط: بحث + تحديد متعدد + نسخ
-    window.__registryLinks=links;
-    body.innerHTML=`
-      <input type="text" id="registrySearch" placeholder="بحث في الروابط · Search" oninput="filterRegistry(this.value)"
-        style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;margin-bottom:12px;font-family:inherit;font-size:0.95rem;box-sizing:border-box;">
-      <div style="display:flex;gap:8px;margin-bottom:12px;">
-        <button onclick="copySelectedLinks()" style="flex:1;padding:10px;border:none;border-radius:10px;background:var(--accent);color:#fff;font-weight:700;font-family:inherit;cursor:pointer;">نسخ المحدد · Copy</button>
-        <button onclick="toggleAllRegistry()" style="flex:0 0 auto;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg,#fff);font-weight:700;font-family:inherit;cursor:pointer;">تحديد الكل</button>
-      </div>
-      <div class="overlay-list" id="registryList"></div>`;
-    renderRegistry(links.map((l,idx)=>({...l,__idx:idx})));
   }else{
     body.innerHTML=`
       <div class="overlay-list">
-        ${links.map(l=> l.type==='text'
-          ? `<div class="overlay-item" style="cursor:pointer;" onclick="openTextView(${l.num})"><span>${l.label} 📄</span><span class="ov-num">${l.num}</span></div>`
-          : `<a href="${fixUrl(l.url)}" target="_blank" rel="noopener" class="overlay-item"><span>${l.label}</span><span class="ov-num">${l.num}</span></a>`
-        ).join('')}
+        ${links.map(l=>`<a href="${l.url}" target="_blank" class="overlay-item"><span>${l.label}</span><span class="ov-num">${l.num}</span></a>`).join('')}
       </div>`;
   }
   document.getElementById('sectionOverlay').classList.add('open');
-}
-
-// عرض عناصر سجل الروابط مع مربعات تحديد
-function renderRegistry(links){
-  const list=document.getElementById('registryList');
-  if(!list)return;
-  if(!links.length){ list.innerHTML='<div class="empty-state">لا نتائج · No results</div>'; return; }
-  list.innerHTML=links.map((l,i)=>`
-    <div class="overlay-item" style="cursor:default;gap:10px;">
-      <input type="checkbox" class="reg-check" data-idx="${l.__idx}" style="width:18px;height:18px;flex:0 0 auto;accent-color:var(--accent);">
-      ${l.type==='text'
-        ? `<span style="flex:1;cursor:pointer;" onclick="openTextView(${l.num})">${l.label} 📄</span>`
-        : `<a href="${fixUrl(l.url)}" target="_blank" rel="noopener" style="flex:1;color:inherit;text-decoration:none;">${l.label}</a>`}
-      <span class="ov-num">${l.num}</span>
-    </div>`).join('');
-}
-
-function filterRegistry(term){
-  const t=(term||'').trim().toLowerCase();
-  const all=window.__registryLinks||[];
-  const filtered=all.map((l,idx)=>({...l,__idx:idx})).filter(l=>
-    !t || `${l.num} ${l.label} ${l.url||''}`.toLowerCase().includes(t)
-  );
-  renderRegistry(filtered);
-}
-
-function toggleAllRegistry(){
-  const boxes=document.querySelectorAll('.reg-check');
-  const allChecked=[...boxes].every(b=>b.checked);
-  boxes.forEach(b=>b.checked=!allChecked);
-}
-
-function copySelectedLinks(){
-  const boxes=document.querySelectorAll('.reg-check:checked');
-  const all=window.__registryLinks||[];
-  if(!boxes.length){ alert('لم تحدّد أي رابط'); return; }
-  const lines=[...boxes].map(b=>{
-    const l=all[parseInt(b.getAttribute('data-idx'))];
-    if(!l)return '';
-    return l.type==='text' ? `[${l.num}] ${l.label}` : `[${l.num}] ${l.label}: ${fixUrl(l.url)}`;
-  }).filter(Boolean);
-  const text=lines.join('\n');
-  if(navigator.clipboard){
-    navigator.clipboard.writeText(text).then(()=>alert('تم نسخ '+lines.length+' رابط')).catch(()=>fallbackCopy(text,lines.length));
-  }else{ fallbackCopy(text,lines.length); }
-}
-
-function fallbackCopy(text,count){
-  const ta=document.createElement('textarea');
-  ta.value=text; document.body.appendChild(ta); ta.select();
-  try{ document.execCommand('copy'); alert('تم نسخ '+count+' رابط'); }catch(e){ alert('تعذّر النسخ'); }
-  document.body.removeChild(ta);
 }
 
 function closeSection(){
@@ -763,27 +684,6 @@ function convertNum(){
   inp.value=arabicToEnglish(inp.value);
 }
 
-// تطبيع الروابط: يعالج البيانات القديمة (رقم كنص، حقول بأسماء مختلفة)
-function normalizeLinks(arr){
-  if(!Array.isArray(arr)) return [];
-  return arr.map(l=>{
-    // الرقم: قد يكون num أو number، وقد يكون نصاً → حوّله لعدد صحيح
-    let rawNum = l.num!==undefined ? l.num : l.number;
-    let num = parseInt(arabicToEnglish(String(rawNum!==undefined?rawNum:'')), 10);
-    if(isNaN(num)) num = null;
-    return {
-      ...l,
-      num: num,
-      number: num,
-      label: l.label ?? l.title ?? '',
-      title: l.title ?? l.label ?? '',
-      url: l.url ?? l.link ?? '',      // بعض القديم قد يستخدم link
-      text: l.text ?? '',
-      type: l.type ?? 'link'
-    };
-  }).filter(l=>l.num!==null).sort((a,b)=>(a.num||0)-(b.num||0));
-}
-
 function goNav(){
   const raw=document.getElementById('numIn').value;
   const n=parseInt(arabicToEnglish(raw));
@@ -793,16 +693,8 @@ function goNav(){
     setTimeout(()=>err.classList.remove('show'),2000);
     return;
   }
-  const l=userLinks.find(x=>Number(x.num??x.number)===Number(n));
-  if(!l){
-    const err=document.getElementById('errMsg');
-    err.classList.add('show');
-    setTimeout(()=>err.classList.remove('show'),2000);
-    return;
-  }
-  // عنصر نصّي → افتح نافذة النص
-  if(l.type==='text'){ openTextView(n); return; }
-  if(!l.url){
+  const l=userLinks.find(x=>(x.num??x.number)===n);
+  if(!l || !l.url){
     const err=document.getElementById('errMsg');
     err.classList.add('show');
     setTimeout(()=>err.classList.remove('show'),2000);
@@ -815,48 +707,10 @@ function goNav(){
   window.open(url,'_blank');
 }
 
-// نافذة عرض النص (مستوحاة من pastes.io) — بهوية صفحة صاحب الحساب
-function openTextView(num){
-  const user=window.__pageUser||{};
-  const l=(window.__registryLinks||userLinks||[]).find(x=>Number(x.num??x.number)===Number(num)) || userLinks.find(x=>Number(x.num??x.number)===Number(num));
-  if(!l) return;
-  const textContent=l.text||l.description||'';
-  const accent=user.primaryColor||user.themeColor||'#3d5af1';
-  const accent2=user.primaryColor2||'#6c8fff';
-  const textCol=user.textColor||'#1a1d24';
-  const avatarInner=user.avatar?`<img src="${user.avatar}" style="width:100%;height:100%;object-fit:cover;">`:(((user.displayName||user.username||'-')[0])||'-').toUpperCase();
-  const contactsHtml=(typeof buildContactsHtml==='function')?buildContactsHtml(user):'';
-  const overlay=document.getElementById('textViewOverlay');
-  overlay.innerHTML=`
-    <div class="tv-card" onclick="event.stopPropagation()" style="--tv-accent:${accent};--tv-accent2:${accent2};--tv-text:${textCol};">
-      <button class="tv-close" onclick="closeTextView()">✕</button>
-      <div class="tv-head" style="background:${accent};">
-        <div class="tv-avatar" style="border-color:${accent2};">${avatarInner}</div>
-      </div>
-      <div class="tv-name" style="color:${accent};">${user.displayName||user.username||''}</div>
-      <div class="tv-user">electrwni.link/${user.username||''}</div>
-      ${contactsHtml?`<div class="tv-contacts">${contactsHtml}</div>`:''}
-      <div class="tv-title">[${l.num}] ${l.label||l.title||''}</div>
-      <div class="tv-text" id="tvTextBox">${escapeHtml(textContent)}</div>
-      <div class="tv-actions">
-        <button class="tv-btn tv-copy" style="background:${accent};" onclick="copyTextView()">📋 نسخ · Copy</button>
-      </div>
-    </div>`;
-  overlay.classList.add('open');
-  window.__tvText=textContent;
-}
-function closeTextView(){ const o=document.getElementById('textViewOverlay'); if(o) o.classList.remove('open'); }
-function copyTextView(){
-  const t=window.__tvText||'';
-  if(navigator.clipboard){ navigator.clipboard.writeText(t).then(()=>alert('تم نسخ النص')).catch(()=>fallbackCopy(t,1)); }
-  else { fallbackCopy(t,1); }
-}
-function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
-
 function show404(msg){
   document.getElementById('content').innerHTML=`
     <div class="empty-state" style="padding:80px 20px;">
-      <h2 style="font-weight:900;margin-bottom:10px;font-size:1.2rem;">${msg}</h2>
+      <h2 style="font-weight:700;margin-bottom:10px;font-size:1.2rem;">${msg}</h2>
       <a href="index.html" style="display:inline-block;margin-top:20px;padding:10px 24px;background:var(--accent);color:#fff;border-radius:8px;text-decoration:none;font-weight:700;">العودة للرئيسية · Back Home</a>
     </div>`;
 }
@@ -867,18 +721,16 @@ init();
 <!-- نافذة QR المنبثقة -->
 <div id="qrModal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;padding:24px;" onclick="if(event.target===this)closePageQr()">
   <div style="background:#fff;border-radius:24px;padding:28px;text-align:center;max-width:300px;width:100%;">
-    <div id="qrModalName" style="font-weight:900;font-size:1.1rem;color:#1a1d24;margin-bottom:16px;">—</div>
+    <div id="qrModalName" style="font-weight:700;font-size:1.1rem;color:#1a1d24;margin-bottom:16px;">—</div>
     <div id="qrModalCanvas" style="display:flex;align-items:center;justify-content:center;margin-bottom:16px;"></div>
     <div style="color:#1a1d24;font-weight:700;font-size:0.95rem;">امسح للوصول لكل روابطي</div>
     <div style="color:#8a91a3;font-size:0.72rem;margin-bottom:18px;">Scan for all my links</div>
-    <button onclick="closePageQr()" style="width:100%;padding:12px;background:#3d5af1;color:#fff;border:none;border-radius:12px;font-weight:900;font-family:'Tajawal',sans-serif;cursor:pointer;">إغلاق · Close</button>
+    <button onclick="closePageQr()" style="width:100%;padding:12px;background:#3d5af1;color:#fff;border:none;border-radius:12px;font-weight:700;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;cursor:pointer;">إغلاق · Close</button>
   </div>
 </div>
 <!-- نافذة تكبير الصورة -->
 <div id="imgZoomModal" style="display:none;position:fixed;inset:0;z-index:2100;background:rgba(0,0,0,0.9);align-items:center;justify-content:center;padding:24px;" onclick="closeImgZoom()">
   <img id="imgZoomTarget" src="" style="max-width:90vw;max-height:85vh;border-radius:16px;box-shadow:0 10px 50px rgba(0,0,0,0.5);">
 </div>
-<!-- نافذة عرض النص -->
-<div class="tv-overlay" id="textViewOverlay" onclick="closeTextView()"></div>
 </body>
 </html>
