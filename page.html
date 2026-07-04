@@ -308,6 +308,7 @@ function platColor(id){
 }
 
 let userLinks=[];
+let userSocials=[];
 let pageUid=null;
 
 // عدّاد نقرات حسابات التواصل — يزيد المشاهدة بأمان (transaction) دون تعطيل تجربة الزائر
@@ -541,6 +542,7 @@ function render(user){
 
   // حسابات التواصل الاجتماعي (الأيقونات الدائرية)
   const socials=user.socials||[];
+  userSocials=socials;
   let socialsHtml='';
   if(socials.length){
     const btns=socials.map(s=>{
@@ -582,8 +584,13 @@ function render(user){
     const d=new Date(user.createdAt); if(!isNaN(d))signYear=d.getFullYear();
   }
   const featuredLinks=userLinks.filter(l=>l.featured);
+  // أضف حسابات التواصل المميّزة (⭐) بنفس نظام الأرقام المحجوزة المستخدم باللوحة (210 فصاعداً)
+  const featuredSocials=(user.socials||[]).slice(0,7)
+    .map((s,i)=>({url:s.url, label:s.platformName||s.name||'حساب تواصل', num:210+i, featured:!!s.featured}))
+    .filter(s=>s.featured);
+  const allFeatured=[...featuredLinks.map(l=>({url:l.url,label:l.title||l.label,num:l.num??l.number})), ...featuredSocials];
   const recentLinks=[...userLinks].slice(-5).reverse();
-  window.__pageData={featuredLinks,recentLinks,allLinks:userLinks};
+  window.__pageData={featuredLinks:allFeatured,recentLinks,allLinks:userLinks};
 
   document.getElementById('content').innerHTML=`
     <div class="profile-info">
@@ -694,6 +701,20 @@ function goNav(){
     setTimeout(()=>err.classList.remove('show'),2000);
     return;
   }
+
+  // أرقام محجوزة: 206 يفتح قسم "روابط مختارة"، 210-216 تفتح حساب التواصل المطابق
+  if(n===206){ openSection('featured'); return; }
+  if(n>=210 && n<=216){
+    const s=userSocials[n-210];
+    if(s && s.url){
+      if(s.id) trackSocialClick(s.id);
+      let url=s.url.trim();
+      if(!/^https?:\/\//i.test(url) && !/^(mailto:|tel:|sms:)/i.test(url)) url='https://'+url;
+      window.open(url,'_blank');
+      return;
+    }
+  }
+
   const l=userLinks.find(x=>(x.num??x.number)===n);
   if(!l || !l.url){
     const err=document.getElementById('errMsg');
