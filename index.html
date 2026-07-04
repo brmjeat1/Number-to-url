@@ -24,7 +24,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display'
 .btn-secondary:active{transform:scale(0.98);}
 @media(max-width:600px){.container{padding:32px 20px;}.brand-title{font-size:1.8rem;}.brand-subtitle{font-size:1rem;}}
 
-/* ========== FINDER / QUICK SIGNUP (يحل محل جملة التاجلاين) ========== */
+/* ========== FINDER / QUICK SIGNUP ========== */
 .finder-title{font-size:0.98rem;font-weight:700;color:#0f1535;margin-bottom:4px;}
 .finder-title-en{display:block;font-size:0.72rem;font-weight:400;color:#9aa2c8;margin-bottom:14px;}
 .finder-box{
@@ -58,8 +58,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display'
 .finder-msg.error{color:#e8436a;}
 .finder-msg.success{color:#0ab87a;}
 
-/* التسجيل السريع (يظهر فقط إذا كان الاسم متاحاً) */
-.quick-signup{display:none;flex-direction:column;gap:10px;margin-top:14px;text-align:right;}
+/* التسجيل السريع (يُبنى ديناميكياً في DOM فقط عند الحاجة — لا يوجد أي حقل إيميل/كلمة مرور عند تحميل الصفحة) */
+.quick-signup{display:flex;flex-direction:column;gap:10px;margin-top:14px;text-align:right;}
 .quick-signup input{
   width:100%;padding:12px 14px;border:1.5px solid #e0e0e0;border-radius:10px;
   font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Tajawal',sans-serif;
@@ -109,17 +109,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display'
     </div>
     <div class="finder-msg" id="finderMsg"></div>
 
-    <div class="quick-signup" id="quickSignup">
-      <input type="email" id="qsEmail" placeholder="بريدك الإلكتروني · Email" autocomplete="off" dir="ltr">
-      <input type="password" id="qsPassword" placeholder="كلمة المرور (6 أحرف+) · Password" autocomplete="new-password" dir="ltr">
-      <button type="button" class="qs-btn" id="qsSubmitBtn">⚡ إنشاء الحساب واستخدام الاسم · Claim Username</button>
-      <div class="qs-msg" id="qsMsg"></div>
-    </div>
+    <!-- منطقة التسجيل السريع: فارغة عند تحميل الصفحة، تُبنى بالكامل عبر JS فقط بعد تحقق ناجح -->
+    <div id="quickSignupSlot"></div>
   </div>
 
   <div class="buttons">
     <button class="btn btn-primary" onclick="window.location.href='signin.html'">🔓 تسجيل الدخول · Sign In</button>
-    <button class="btn btn-secondary" onclick="window.location.href='signup.html'">✨ إنشاء حساب · Create Account</button>
+    <button class="btn btn-secondary" id="createAccountBtn">✨ إنشاء حساب · Create Account</button>
   </div>
 </div>
 
@@ -127,117 +123,180 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display'
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 <script>
-const cfg={apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",authDomain:"electrwni-link.firebaseapp.com",projectId:"electrwni-link",storageBucket:"electrwni-link.firebasestorage.app",messagingSenderId:"712490301263",appId:"1:712490301263:web:2084210da3f687285ab73a"};
-if(!firebase.apps.length)firebase.initializeApp(cfg);
-const auth=firebase.auth();
-const db=firebase.firestore();
-const reserved=['admin','root','api','www','app','demo','test','page','signin','signup','dashboard','index'];
+(function(){
+  // ===== 1) عناصر DOM وربط الأحداث أولاً — يعمل دائماً بغض النظر عن حالة Firebase =====
+  const reserved=['admin','root','api','www','app','demo','test','page','signin','signup','dashboard','index'];
+  const finderBox=document.getElementById('finderBox');
+  const finderInput=document.getElementById('finderInput');
+  const finderBtn=document.getElementById('finderVerifyBtn');
+  const finderMsg=document.getElementById('finderMsg');
+  const quickSignupSlot=document.getElementById('quickSignupSlot');
+  const createAccountBtn=document.getElementById('createAccountBtn');
 
-const finderBox=document.getElementById('finderBox');
-const finderInput=document.getElementById('finderInput');
-const finderBtn=document.getElementById('finderVerifyBtn');
-const finderMsg=document.getElementById('finderMsg');
-const quickSignup=document.getElementById('quickSignup');
-const qsEmail=document.getElementById('qsEmail');
-const qsPassword=document.getElementById('qsPassword');
-const qsSubmitBtn=document.getElementById('qsSubmitBtn');
-const qsMsg=document.getElementById('qsMsg');
+  let finderBusy=false;
+  let availableUsername=null; // يُضبط فقط عندما يكون الاسم متاحاً فعلياً
 
-let finderBusy=false;
-let availableUsername=null; // يُضبط فقط عندما يكون الاسم متاحاً فعلياً
+  // أيقونات SVG احترافية بدل الإيموجي
+  const ICONS = {
+    success: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M8.3 12.3l2.4 2.4 4.7-5.2"></path></svg>',
+    error: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></svg>'
+  };
 
-// تنظيف الإدخال أثناء الكتابة: أحرف/أرقام/_ فقط، بدون تأثير على تركيز الحقل
-finderInput.addEventListener('input',()=>{
-  const clean=finderInput.value.toLowerCase().replace(/[^a-z0-9_]/g,'');
-  if(clean!==finderInput.value)finderInput.value=clean;
-  hideFinderMsg();
-  hideQuickSignup();
-});
-finderInput.addEventListener('focus',()=>finderBox.classList.add('focused'));
-finderInput.addEventListener('blur',()=>finderBox.classList.remove('focused'));
-finderInput.addEventListener('keydown',e=>{
-  if(e.key==='Enter'){e.preventDefault();verifyUsername();}
-});
-finderBtn.addEventListener('click',verifyUsername);
-qsSubmitBtn.addEventListener('click',quickSignup);
-qsPassword.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();quickSignup();}});
+  finderInput.addEventListener('input',()=>{
+    const clean=finderInput.value.toLowerCase().replace(/[^a-z0-9_]/g,'');
+    if(clean!==finderInput.value)finderInput.value=clean;
+    hideFinderMsg();
+    hideQuickSignup();
+  });
+  finderInput.addEventListener('focus',()=>finderBox.classList.add('focused'));
+  finderInput.addEventListener('blur',()=>finderBox.classList.remove('focused'));
+  finderInput.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){e.preventDefault();verifyUsername();}
+  });
+  finderBtn.addEventListener('click',verifyUsername);
 
-function hideFinderMsg(){finderMsg.className='finder-msg';}
-function showFinderMsg(text,type){finderMsg.textContent=text;finderMsg.className='finder-msg show '+type;}
-function hideQuickSignup(){quickSignup.style.display='none';availableUsername=null;qsMsg.textContent='';qsMsg.className='qs-msg';}
-function showQuickSignup(){quickSignup.style.display='flex';}
-
-async function verifyUsername(){
-  if(finderBusy)return;
-  const username=finderInput.value.trim().toLowerCase();
-  hideQuickSignup();
-  if(!username){showFinderMsg('⚠️ اكتب اسم المستخدم أولاً · Enter a username','error');return;}
-  if(!/^[a-z0-9_]{3,20}$/.test(username)){showFinderMsg('❌ اسم غير صالح (3-20، حروف/أرقام/_) · Invalid username','error');return;}
-  if(reserved.includes(username)){showFinderMsg('❌ هذا الاسم محجوز للمنصة · Reserved name','error');return;}
-
-  finderBusy=true;
-  finderBtn.disabled=true;
-  finderBtn.classList.add('loading');
-  hideFinderMsg();
-  try{
-    const doc=await db.collection('usernames').doc(username).get();
-    if(doc.exists){
-      showFinderMsg('❌ هذا الاسم محجوز، جرّب اسماً آخر · Username already taken','error');
-    }else{
-      availableUsername=username;
-      showFinderMsg('✅ الاسم متاح! أكمل التسجيل السريع بالأسفل · Available! Finish signing up below','success');
-      showQuickSignup();
-    }
-  }catch(e){
-    showFinderMsg('⚠️ تعذر التحقق، حاول مرة أخرى · Try again','error');
+  // نقل اليوزر المفحوص والمتاح إلى صفحة إنشاء الحساب الكاملة، توفيراً للوقت
+  if(createAccountBtn){
+    createAccountBtn.addEventListener('click', ()=>{
+      const target = availableUsername
+        ? ('signup.html?u=' + encodeURIComponent(availableUsername))
+        : 'signup.html';
+      window.location.href = target;
+    });
   }
-  finderBusy=false;
-  finderBtn.disabled=false;
-  finderBtn.classList.remove('loading');
-}
 
-function setQsLoading(v){qsSubmitBtn.disabled=v;qsSubmitBtn.textContent=v?'⏳ جاري الإنشاء...':'⚡ إنشاء الحساب واستخدام الاسم · Claim Username';}
-function showQsMsg(text,type){qsMsg.textContent=text;qsMsg.className='qs-msg '+type;}
+  function hideFinderMsg(){finderMsg.className='finder-msg';finderMsg.innerHTML='';}
+  function showFinderMsg(text,type){
+    const icon = ICONS[type] || ICONS.error;
+    finderMsg.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;justify-content:center;">${icon}<span>${text}</span></span>`;
+    finderMsg.className='finder-msg show '+type;
+  }
 
-async function quickSignup(){
-  if(!availableUsername){showQsMsg('⚠️ تحقق من اسم المستخدم أولاً · Check username first','error');return;}
-  const email=qsEmail.value.trim();
-  const password=qsPassword.value;
-  if(!email||!password){showQsMsg('⚠️ يرجى ملء البريد وكلمة المرور · Fill all fields','error');return;}
-  if(password.length<6){showQsMsg('❌ كلمة المرور 6 أحرف على الأقل · Min 6 chars','error');return;}
+  function hideQuickSignup(){
+    quickSignupSlot.innerHTML='';
+    availableUsername=null;
+  }
 
-  setQsLoading(true);
-  showQsMsg('','');
+  // يبني حقول البريد وكلمة المرور ديناميكياً فقط عند الحاجة الفعلية (بعد التأكد من توفر الاسم)
+  function showQuickSignup(){
+    quickSignupSlot.innerHTML = `
+      <div class="quick-signup" id="quickSignup">
+        <input type="email" id="qsEmail" placeholder="بريدك الإلكتروني · Email" autocomplete="off" dir="ltr">
+        <input type="password" id="qsPassword" placeholder="كلمة المرور (6 أحرف+) · Password" autocomplete="new-password" dir="ltr">
+        <button type="button" class="qs-btn" id="qsSubmitBtn">⚡ إنشاء الحساب واستخدام الاسم · Claim Username</button>
+        <div class="qs-msg" id="qsMsg"></div>
+      </div>`;
+    const qsEmail=document.getElementById('qsEmail');
+    const qsPassword=document.getElementById('qsPassword');
+    const qsSubmitBtn=document.getElementById('qsSubmitBtn');
+    qsSubmitBtn.addEventListener('click',quickSignup);
+    qsPassword.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();quickSignup();}});
+    qsEmail.focus({preventScroll:true}); // تركيز صريح هنا فقط، بعد فعل مباشر من المستخدم (ضغط زر التحقق)
+  }
+
+  function setQsLoading(v){
+    const btn=document.getElementById('qsSubmitBtn');
+    if(!btn)return;
+    btn.disabled=v;
+    btn.textContent=v?'⏳ جاري الإنشاء...':'⚡ إنشاء الحساب واستخدام الاسم · Claim Username';
+  }
+  function showQsMsg(text,type){
+    const el=document.getElementById('qsMsg');
+    if(!el)return;
+    if(!text){ el.innerHTML=''; el.className='qs-msg'; return; }
+    const icon = ICONS[type] || ICONS.error;
+    el.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;justify-content:center;">${icon}<span>${text}</span></span>`;
+    el.className='qs-msg '+(type||'');
+  }
+
+  // ===== 2) تهيئة Firebase بأمان تام — أي خطأ هنا لا يعطّل الأزرار أعلاه =====
+  let auth=null, db=null, firebaseReady=false;
   try{
-    // إعادة تحقق أخيرة قبل الإنشاء لتفادي تعارض بين مستخدمين متزامنين
-    const idx=await db.collection('usernames').doc(availableUsername).get();
-    if(idx.exists){
-      showQsMsg('❌ للأسف تم حجز هذا الاسم للتو، جرّب اسماً آخر · Just got taken, try another','error');
+    const cfg={apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",authDomain:"electrwni-link.firebaseapp.com",projectId:"electrwni-link",storageBucket:"electrwni-link.firebasestorage.app",messagingSenderId:"712490301263",appId:"1:712490301263:web:2084210da3f687285ab73a"};
+    if(typeof firebase==='undefined') throw new Error('Firebase SDK لم يتم تحميله');
+    if(!firebase.apps.length)firebase.initializeApp(cfg);
+    auth=firebase.auth();
+    db=firebase.firestore();
+    firebaseReady=true;
+  }catch(e){
+    console.error('Firebase init failed:', e);
+  }
+
+  // ===== 3) المنطق الفعلي =====
+  window.verifyUsername = verifyUsername; // إتاحة عامة احتياطية
+  async function verifyUsername(){
+    if(finderBusy)return;
+    const username=finderInput.value.trim().toLowerCase();
+    hideQuickSignup();
+    if(!username){showFinderMsg('اكتب اسم المستخدم أولاً · Enter a username','error');return;}
+    if(!/^[a-z0-9_]{3,20}$/.test(username)){showFinderMsg('اسم غير صالح (3-20، حروف/أرقام/_) · Invalid username','error');return;}
+    if(reserved.includes(username)){showFinderMsg('هذا الاسم محجوز للمنصة · Reserved name','error');return;}
+    if(!firebaseReady){showFinderMsg('تعذر الاتصال بالخادم، أعد تحميل الصفحة · Connection error, reload the page','error');return;}
+
+    finderBusy=true;
+    finderBtn.disabled=true;
+    finderBtn.classList.add('loading');
+    hideFinderMsg();
+    try{
+      const doc=await db.collection('usernames').doc(username).get();
+      if(doc.exists){
+        showFinderMsg('هذا الاسم محجوز، جرّب اسماً آخر · Username already taken','error');
+      }else{
+        availableUsername=username;
+        showFinderMsg('اسم المستخدم متاح! أكمل التسجيل السريع بالأسفل · Username available! Finish below','success');
+        showQuickSignup();
+      }
+    }catch(e){
+      console.error('verifyUsername error:', e);
+      const codeInfo = (e && e.code) ? ` (${e.code})` : '';
+      showFinderMsg('تعذر التحقق' + codeInfo + '، حاول مرة أخرى · Check failed, try again','error');
+    }
+    finderBusy=false;
+    finderBtn.disabled=false;
+    finderBtn.classList.remove('loading');
+  }
+
+  async function quickSignup(){
+    if(!firebaseReady){showQsMsg('تعذر الاتصال بالخادم، أعد تحميل الصفحة · Connection error','error');return;}
+    if(!availableUsername){showQsMsg('تحقق من اسم المستخدم أولاً · Check username first','error');return;}
+    const qsEmail=document.getElementById('qsEmail');
+    const qsPassword=document.getElementById('qsPassword');
+    const email=qsEmail.value.trim();
+    const password=qsPassword.value;
+    if(!email||!password){showQsMsg('يرجى ملء البريد وكلمة المرور · Fill all fields','error');return;}
+    if(password.length<6){showQsMsg('كلمة المرور 6 أحرف على الأقل · Min 6 chars','error');return;}
+
+    setQsLoading(true);
+    showQsMsg('','');
+    try{
+      const idx=await db.collection('usernames').doc(availableUsername).get();
+      if(idx.exists){
+        showQsMsg('للأسف تم حجز هذا الاسم للتو، جرّب اسماً آخر · Just got taken, try another','error');
+        setQsLoading(false);
+        hideQuickSignup();
+        return;
+      }
+      const cred=await auth.createUserWithEmailAndPassword(email,password);
+      const uid=cred.user.uid;
+      await db.collection('users').doc(uid).set({
+        uid, username:availableUsername, email, displayName:availableUsername,
+        bio:'', avatar:'', bannerImage:'', links:[], socials:[], phones:[], website:'', mapUrl:'',
+        createdAt:new Date().toISOString()
+      },{merge:true});
+      await db.collection('usernames').doc(availableUsername).set({uid});
+      try{ await cred.user.sendEmailVerification(); }catch(e){}
+      try{ localStorage.setItem('elUserUsername',availableUsername); }catch(e){}
+      showQsMsg('تم إنشاء حسابك! جاري الدخول... · Account created!','success');
+      setTimeout(()=>{window.location.href='dashboard.html';},600);
+    }catch(e){
       setQsLoading(false);
-      hideQuickSignup();
-      return;
+      if(e.code==='auth/email-already-in-use')showQsMsg('هذا البريد مستخدم بالفعل · Email already in use','error');
+      else if(e.code==='auth/weak-password')showQsMsg('كلمة المرور ضعيفة جداً · Weak password','error');
+      else if(e.code==='auth/invalid-email')showQsMsg('صيغة البريد غير صحيحة · Invalid email','error');
+      else showQsMsg('خطأ' + (e.code?` (${e.code})`:'') + ': '+e.message,'error');
     }
-    const cred=await auth.createUserWithEmailAndPassword(email,password);
-    const uid=cred.user.uid;
-    await db.collection('users').doc(uid).set({
-      uid, username:availableUsername, email, displayName:availableUsername,
-      bio:'', avatar:'', bannerImage:'', links:[], socials:[], phones:[], website:'', mapUrl:'',
-      createdAt:new Date().toISOString()
-    },{merge:true});
-    await db.collection('usernames').doc(availableUsername).set({uid});
-    try{ await cred.user.sendEmailVerification(); }catch(e){}
-    try{ localStorage.setItem('elUserUsername',availableUsername); }catch(e){}
-    showQsMsg('✅ تم إنشاء حسابك! جاري الدخول...','success');
-    // يدخل الموقع مباشرة؛ سيُطلب منه تأكيد بريده لاحقاً من لوحة التحكم
-    setTimeout(()=>{window.location.href='dashboard.html';},600);
-  }catch(e){
-    setQsLoading(false);
-    if(e.code==='auth/email-already-in-use')showQsMsg('❌ هذا البريد مستخدم بالفعل · Email already in use','error');
-    else if(e.code==='auth/weak-password')showQsMsg('❌ كلمة المرور ضعيفة جداً · Weak password','error');
-    else if(e.code==='auth/invalid-email')showQsMsg('❌ صيغة البريد غير صحيحة · Invalid email','error');
-    else showQsMsg('❌ خطأ: '+e.message,'error');
   }
-}
+})();
 </script>
 </body>
 </html>
