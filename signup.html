@@ -103,19 +103,9 @@ function onDisplayNameInput(val){
   else{prev.classList.remove('show');nav.textContent='';}
 }
 document.addEventListener('DOMContentLoaded',()=>{
-  const usernameInput=document.getElementById('username');
-  usernameInput.addEventListener('input',function(){
+  document.getElementById('username').addEventListener('input',function(){
     document.getElementById('usernameHint').textContent=this.value||'اسم_المستخدم';
   });
-  // استلام اليوزر الذي تم فحصه والتأكد من توفره بالصفحة الرئيسية (توفيراً للوقت)
-  try{
-    const params=new URLSearchParams(window.location.search);
-    const handoff=(params.get('u')||'').trim().toLowerCase();
-    if(handoff && /^[a-z0-9_]{3,20}$/.test(handoff)){
-      usernameInput.value=handoff;
-      document.getElementById('usernameHint').textContent=handoff;
-    }
-  }catch(e){}
 });
 function showError(msg){const el=document.getElementById('error');document.getElementById('success').classList.remove('show');el.textContent=msg;el.classList.add('show');}
 function showSuccess(msg){const el=document.getElementById('success');document.getElementById('error').classList.remove('show');el.textContent=msg;el.classList.add('show');}
