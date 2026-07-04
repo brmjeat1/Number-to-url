@@ -1583,57 +1583,56 @@ tr:hover{background:var(--bg2);}
       const linkVal = isText ? (l.text || '—') : (l.url || '—');
       const linkCell = escapeHtml(String(linkVal).slice(0,60));
       const descCell = escapeHtml((l.description||'—').slice(0,70));
-      return `<tr style="background:${(l.number%2===0)?'#f9f9fb':'#ffffff'};border-bottom:1px solid #e8ecf5;">
-        <td style="padding:9px 8px;text-align:center;font-weight:700;color:#3d5af1;width:34px;">${l.number}</td>
+      return `<tr style="background:${(l.number%2===0)?'#f7f7f7':'#ffffff'};border-bottom:1px solid #dddddd;">
+        <td style="padding:9px 8px;text-align:center;font-weight:700;color:#000000;width:34px;">${l.number}</td>
         <td style="padding:9px 8px;text-align:center;font-size:13px;width:34px;">${isText?'📄':'🔗'}</td>
-        <td style="padding:9px 8px;text-align:right;font-weight:700;">${escapeHtml(l.title)}</td>
-        <td style="padding:9px 8px;text-align:left;direction:ltr;word-break:break-all;">${linkCell}</td>
-        <td style="padding:9px 8px;text-align:right;color:#3a4270;">${descCell}</td>
-        <td style="padding:9px 8px;text-align:center;font-weight:700;color:#3d5af1;width:60px;">${l.views}</td>
+        <td style="padding:9px 8px;text-align:right;font-weight:700;color:#000000;">${escapeHtml(l.title)}</td>
+        <td style="padding:9px 8px;text-align:left;direction:ltr;word-break:break-all;color:#000000;">${linkCell}</td>
+        <td style="padding:9px 8px;text-align:right;color:#333333;">${descCell}</td>
+        <td style="padding:9px 8px;text-align:center;font-weight:700;color:#000000;width:60px;">${l.views}</td>
       </tr>`;
     }).join('');
 
     const root = document.createElement('div');
     root.id = 'pdfReportRoot';
-    root.style.cssText = 'position:fixed;left:-99999px;top:0;width:800px;background:#ffffff;direction:rtl;color:#0f1535;font-family:Tajawal,-apple-system,sans-serif;';
+    root.style.cssText = 'position:fixed;left:-99999px;top:0;width:800px;background:#ffffff;direction:rtl;color:#000000;font-family:Tajawal,-apple-system,sans-serif;';
     root.innerHTML = `
-      <div style="padding:34px 38px 6px;">
-        <div style="display:flex;justify-content:space-between;align-items:stretch;gap:14px;">
-          <div style="flex:1;background:linear-gradient(135deg,#3d5af1,#6c8fff);border-radius:16px;padding:16px 14px;color:#fff;text-align:center;">
-            <div style="font-family:'Space Mono',monospace;font-weight:900;font-size:15px;margin-bottom:6px;">electrwni.link</div>
-            <div style="font-weight:900;font-size:14px;margin-bottom:4px;">${escapeHtml(displayName)}</div>
-            <div style="font-family:'Space Mono',monospace;font-size:11px;opacity:.92;direction:ltr;">electrwni.link/${escapeHtml(uname)}</div>
+      <div style="padding:26px 36px 4px;">
+        <div style="display:flex;justify-content:space-between;align-items:stretch;gap:12px;">
+          <div style="flex:1;border:1px solid #000000;border-radius:6px;padding:9px 11px;text-align:center;">
+            <div style="font-family:'Space Mono',monospace;font-weight:900;font-size:11.5px;color:#000000;">electrwni.link</div>
+            <div style="font-weight:900;font-size:11px;margin-top:3px;color:#000000;">${escapeHtml(displayName)}</div>
           </div>
-          <div style="flex:1;background:#f0f4ff;border:1.5px solid #d7e0ff;border-radius:16px;padding:16px 14px;color:#0f1535;text-align:center;">
-            <div style="font-weight:900;font-size:12.5px;color:#3d5af1;margin-bottom:8px;">عبارة التاريخ:</div>
-            <div style="font-size:11px;line-height:1.85;text-align:right;">
+          <div style="flex:1;border:1px solid #000000;border-radius:6px;padding:9px 11px;text-align:center;">
+            <div style="font-weight:900;font-size:10px;color:#000000;margin-bottom:5px;">عبارة التاريخ:</div>
+            <div style="font-size:9.5px;line-height:1.7;color:#000000;">
               <div>السنة: <b>${year}</b></div>
               <div>اليوم والشهر: <b>${dayMonth}</b></div>
               <div>ساعة الطباعة: <b>${time}</b></div>
             </div>
           </div>
         </div>
-        <div style="text-align:center;margin-top:20px;">
-          <div style="font-weight:900;font-size:23px;color:#0f1535;">تقرير الروابط</div>
-          <div style="width:64px;height:4px;background:linear-gradient(135deg,#3d5af1,#6c8fff);border-radius:2px;margin:8px auto 0;"></div>
+        <div style="text-align:center;margin-top:18px;">
+          <div style="font-weight:900;font-size:20px;color:#000000;">تقرير روابط الحساب</div>
+          <div style="margin-top:8px;font-family:'Space Mono',monospace;font-weight:700;font-size:12px;color:#000000;direction:ltr;">electrwni.link/${escapeHtml(uname)}</div>
         </div>
       </div>
-      <div style="padding:6px 38px 24px;">
+      <div style="padding:14px 36px 22px;">
         <table style="width:100%;border-collapse:collapse;font-size:11.5px;">
           <thead>
-            <tr style="background:linear-gradient(135deg,#3d5af1,#6c8fff);color:#fff;">
-              <th style="padding:9px 8px;">الرقم</th>
-              <th style="padding:9px 8px;">النوع</th>
-              <th style="padding:9px 8px;text-align:right;">العنوان</th>
-              <th style="padding:9px 8px;text-align:left;">الرابط</th>
-              <th style="padding:9px 8px;text-align:right;">الوصف</th>
-              <th style="padding:9px 8px;">المشاهدات</th>
+            <tr style="border-bottom:2px solid #000000;">
+              <th style="padding:8px;color:#000000;">الرقم</th>
+              <th style="padding:8px;color:#000000;">النوع</th>
+              <th style="padding:8px;text-align:right;color:#000000;">العنوان</th>
+              <th style="padding:8px;text-align:left;color:#000000;">الرابط</th>
+              <th style="padding:8px;text-align:right;color:#000000;">الوصف</th>
+              <th style="padding:8px;color:#000000;">المشاهدات</th>
             </tr>
           </thead>
           <tbody>${rows}</tbody>
         </table>
       </div>
-      <div style="text-align:center;padding:4px 0 22px;font-size:10px;color:#9aa2c8;">electrwni.link — تقرير مُولَّد آلياً</div>
+      <div style="text-align:center;padding:4px 0 22px;font-size:10px;color:#888888;">electrwni.link — تقرير مُولَّد آلياً</div>
     `;
     document.body.appendChild(root);
 
