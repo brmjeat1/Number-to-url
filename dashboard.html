@@ -1134,6 +1134,17 @@ tr:hover{background:var(--bg2);}
     warn.style.display = RESERVED_NUMBERS.includes(n) ? 'block' : 'none';
   };
 
+  // يستخرج اسم الحساب من رابط التواصل (الجزء بعد آخر / غالباً هو اليوزر/المعرّف)
+  function extractHandleFromUrl(url){
+    if(!url) return '';
+    try{
+      let clean = String(url).trim().replace(/^https?:\/\//i,'').replace(/\/+$/,'');
+      const parts = clean.split('/');
+      const handle = parts[parts.length-1] || clean;
+      return handle.startsWith('@') ? handle : '@' + handle;
+    }catch(e){ return url; }
+  }
+
   // يبني عناصر الروابط "المحجوزة" تلقائياً من بيانات الحساب الحقيقية (لا تُخزَّن كروابط عادية)
   function buildReservedLinkEntries(userData, uname){
     const entries = [];
@@ -1157,7 +1168,8 @@ tr:hover{background:var(--bg2);}
         number: 210 + i, reserved: true, type: 'link', socialId: s.id,
         title: s.platformName || s.name || 'حساب تواصل', label: s.platformName || s.name || 'حساب تواصل',
         url: s.url || '', text: '',
-        description: 'حساب تواصل اجتماعي', views: 0
+        description: extractHandleFromUrl(s.url) || (s.platformName || 'حساب تواصل'),
+        views: s.views || 0
       });
     });
     return entries;
@@ -1839,7 +1851,8 @@ tr:hover{background:var(--bg2);}
         brandColor: selectedSocialPlatform.color || '#3d5af1',
         url: url,
         styleMode: socialColorMode || 'brand',
-        icon: (socialColorMode === 'upload' && customSocialIconBase64) ? customSocialIconBase64 : null
+        icon: (socialColorMode === 'upload' && customSocialIconBase64) ? customSocialIconBase64 : null,
+        views: 0
       };
       socials.push(entry);
       // setDoc merge: ينشئ الوثيقة إن لم توجد، ويحدّثها إن وُجدت (أأمن من updateDoc)
