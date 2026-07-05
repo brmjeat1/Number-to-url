@@ -56,12 +56,29 @@
   }
   .theme-swatch:active{transform:scale(0.9);}
   .theme-swatch.active{border-color:var(--link);}
-  .theme-swatch[data-t="0"]{background:linear-gradient(135deg,#fff 50%,#000 50%);}
+  .theme-swatch[data-t="0"]{
+    background:linear-gradient(135deg,#3d5af1,#6c8fff);
+    display:flex;align-items:center;justify-content:center;
+    color:#ffffff;font-weight:900;font-size:12px;font-family:'Space Mono',monospace;
+  }
   .theme-swatch[data-t="1"]{background:#DAD7CD;}
   .theme-swatch[data-t="2"]{background:#FEFAE0;}
   .theme-swatch[data-t="3"]{background:#F1DEDE;}
   .theme-swatch[data-t="4"]{background:#EEF0F2;}
-  .theme-swatch[data-t="5"]{background:#12141c;}
+  .theme-swatch[data-t="5"]{
+    background:radial-gradient(circle at 30% 25%, #3a1670, #150533 70%);
+    position:relative;overflow:hidden;
+  }
+  .theme-swatch[data-t="5"]::before{
+    content:'';position:absolute;inset:0;
+    background-image:
+      radial-gradient(1.4px 1.4px at 22% 28%, #ffffff, transparent),
+      radial-gradient(1.2px 1.2px at 62% 18%, #ffffff, transparent),
+      radial-gradient(1px 1px at 78% 55%, #ffffff, transparent),
+      radial-gradient(1px 1px at 38% 68%, #ffffff, transparent),
+      radial-gradient(1.4px 1.4px at 72% 78%, #ffffff, transparent),
+      radial-gradient(0.8px 0.8px at 50% 45%, #ffffff, transparent);
+  }
 
   /* ===== الرأس (Header) ===== */
   .art-header{
@@ -124,12 +141,12 @@
 
 <div class="theme-bar" id="themeBar">
   <span class="tb-label">الألوان · Theme</span>
-  <div class="theme-swatch active" data-t="0" onclick="setTheme(0)"></div>
+  <div class="theme-swatch active" data-t="0" onclick="setTheme(0)" title="electrwni.link">e</div>
   <div class="theme-swatch" data-t="1" onclick="setTheme(1)"></div>
   <div class="theme-swatch" data-t="2" onclick="setTheme(2)"></div>
   <div class="theme-swatch" data-t="3" onclick="setTheme(3)"></div>
   <div class="theme-swatch" data-t="4" onclick="setTheme(4)"></div>
-  <div class="theme-swatch" data-t="5" onclick="setTheme(5)">🌙</div>
+  <div class="theme-swatch" data-t="5" onclick="setTheme(5)" title="الوضع الليلي"></div>
   <button type="button" class="print-btn" onclick="printArticle()" title="طباعة · Print">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
     طباعة
