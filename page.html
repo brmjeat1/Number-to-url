@@ -622,15 +622,23 @@ function render(user){
       if(mode==='upload' && s.icon && String(s.icon).startsWith('data:')){
         return `<a href="${s.url}" target="_blank" class="social-btn" title="${s.name||''}" style="border-color:var(--accent-light);" onclick="trackSocialClick('${s.id}')"><img src="${s.icon}"></a>`;
       }
-      // لون١=خلفية المربع، لون٢=الإطار، الشعار=لون النص (نمط site)
-      let circleBg, borderCol, iconColor;
-      if(mode==='site'){
+      // لون١=خلفية المربع، لون٢=الإطار، الشعار=لون النص (نمط site) — أو تخصيص كامل بأربع ألوان مستقلة
+      let circleBg, borderCol, iconColor, containerBg='transparent';
+      if(mode==='custom'){
+        circleBg = s.customBg || 'var(--accent)';
+        borderCol = s.customRing || 'transparent';
+        iconColor = s.customIconColor || '#ffffff';
+        containerBg = s.customContainer || 'transparent';
+      } else if(mode==='site'){
         circleBg='var(--accent)'; borderCol='var(--accent-light)'; iconColor='var(--text)';
       } else {
         // لون التطبيق الرسمي
         circleBg=s.brandColor||platColor(pid); borderCol='var(--accent-light)'; iconColor='#ffffff';
       }
       const inner = svg ? svg : `<span style="font-weight:700;font-size:1.4rem;">${(s.name||'?')[0].toUpperCase()}</span>`;
+      if(mode==='custom' && containerBg!=='transparent'){
+        return `<a href="${s.url}" target="_blank" class="social-btn-wrap" title="${s.name||pid}" style="background:${containerBg};border-radius:20px;padding:4px;display:inline-flex;" onclick="trackSocialClick('${s.id}')"><span class="social-btn" style="background:${circleBg};border-color:${borderCol};color:${iconColor};">${inner}</span></a>`;
+      }
       return `<a href="${s.url}" target="_blank" class="social-btn" title="${s.name||pid}" style="background:${circleBg};border-color:${borderCol};color:${iconColor};" onclick="trackSocialClick('${s.id}')">${inner}</a>`;
     }).join('');
     // أيقونة QR دائرية في بداية الصف (خلفية لون١، إطار لون٢، الشعار لون النص)
