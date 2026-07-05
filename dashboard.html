@@ -228,11 +228,11 @@ tr:hover{background:var(--bg2);}
       </div>
       <div class="expandable-content open">
         <!-- مبدّل النوع: رابط (افتراضي) / نص -->
-        <div style="display:flex;gap:8px;margin-bottom:16px;background:var(--bg2);padding:5px;border-radius:12px;">
+        <div id="entryModeToggleGroup" style="display:flex;gap:8px;margin-bottom:16px;background:var(--bg2);padding:5px;border-radius:12px;">
           <button type="button" id="modeLinkBtn" onclick="setEntryMode('link')" style="flex:1;padding:10px;border:none;border-radius:9px;background:var(--primary);color:#fff;font-weight:700;font-family:inherit;cursor:pointer;transition:all .2s;">🔗 رابط · Link</button>
           <button type="button" id="modeTextBtn" onclick="setEntryMode('text')" style="flex:1;padding:10px;border:none;border-radius:9px;background:transparent;color:var(--text);font-weight:700;font-family:inherit;cursor:pointer;transition:all .2s;">📝 نص · Text</button>
         </div>
-        <div class="form-row">
+        <div class="form-row" id="advFieldsRow1">
           <div class="form-group">
             <label>الرقم <span class="lbl-sub">/ Number</span> *</label>
             <input type="number" id="linkNum" placeholder="1" min="1" oninput="checkReservedNumber(this.value)">
@@ -243,7 +243,7 @@ tr:hover{background:var(--bg2);}
             <input type="text" id="linkTitle" placeholder="اكتب العنوان" maxlength="20" oninput="updateTitleCounter(this)">
           </div>
         </div>
-        <div class="form-group">
+        <div class="form-group" id="advDescGroup">
           <label>الوصف <span class="lbl-sub">/ Description (optional)</span></label>
           <textarea id="linkDesc" placeholder="وصف مختصر / Short description"></textarea>
         </div>
@@ -254,15 +254,35 @@ tr:hover{background:var(--bg2);}
         </div>
         <!-- حقل النص (وضع النص) -->
         <div class="form-group" id="textFieldGroup" style="display:none;">
-          <label>النص <span class="lbl-sub">/ Text content</span> *</label>
-          <textarea id="linkText" placeholder="اكتب النص هنا... سيتمكّن زوّارك من نسخه أو قراءته" style="min-height:120px;"></textarea>
+          <label>النص <span class="lbl-sub">/ Text content</span> * <button type="button" onclick="copyLinkTextField()" style="float:left;background:none;border:none;color:var(--primary);font-weight:700;font-size:0.78rem;cursor:pointer;font-family:inherit;">📋 نسخ · Copy</button></label>
+          <textarea id="linkText" placeholder="اكتب النص هنا... سيتمكّن زوّارك من نسخه أو قراءته" style="min-height:120px;" oninput="updateTitleCounter(document.getElementById('linkTitle'))"></textarea>
+          <div style="font-size:0.72rem;color:var(--muted);margin-top:5px;line-height:1.6;">أول سطر سيظهر بجدول السجل والإحصائيات.. اجعله موجزاً ومهماً وشاملاً · The first line appears in the registry table, make it count</div>
+
+          <!-- طريقة عرض النص للزوّار -->
+          <div style="margin-top:14px;">
+            <label style="display:block;margin-bottom:8px;">كيف تريد عرضه لزوّارك؟ <span class="lbl-sub">/ How should it open?</span></label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <button type="button" id="presentPopupBtn" onclick="setPresentMode('popup')" style="padding:14px 10px;border:2px solid var(--primary);border-radius:12px;background:var(--bg2);cursor:pointer;font-family:inherit;text-align:center;">
+                <div style="font-size:1.4rem;margin-bottom:6px;">🗨️</div>
+                <div style="font-weight:700;font-size:0.85rem;">نافذة منبثقة</div>
+                <div style="font-size:0.7rem;color:var(--muted);margin-top:2px;">Popup window</div>
+              </button>
+              <button type="button" id="presentArticleBtn" onclick="setPresentMode('article')" style="padding:14px 10px;border:2px solid var(--border);border-radius:12px;background:transparent;cursor:pointer;font-family:inherit;text-align:center;">
+                <div style="font-size:1.4rem;margin-bottom:6px;">📰</div>
+                <div style="font-weight:700;font-size:0.85rem;">مقالة بصفحة كاملة</div>
+                <div style="font-size:0.7rem;color:var(--muted);margin-top:2px;">Full article page</div>
+              </button>
+            </div>
+          </div>
+          <button type="button" id="previewArticleBtn" onclick="previewArticleDraft()" style="display:none;width:100%;margin-top:12px;padding:11px;background:var(--bg2);color:var(--primary);border:1.5px solid var(--primary);border-radius:10px;font-weight:700;font-family:inherit;cursor:pointer;">👁 معاينة المقالة قبل النشر · Preview before publishing</button>
         </div>
-        <div class="form-group" style="display:flex;align-items:center;gap:8px;">
+        <div class="form-group" id="advFeaturedGroup" style="display:flex;align-items:center;gap:8px;">
           <input type="checkbox" id="linkFeatured" style="width:auto;">
-          <label style="margin:0;">إضافة لقسم "روابط مختارة" <span class="lbl-sub">/ Add to "Picked for You"</span></label>
+          <label style="margin:0;">إضافة لقسم "اخترنا لك" <span class="lbl-sub">/ Add to "Picked for You"</span></label>
         </div>
-        <!-- حقل مخفي للتوافق: وضع الإدخال الحالي -->
+        <!-- حقول مخفية للتوافق -->
         <input type="hidden" id="entryMode" value="link">
+        <input type="hidden" id="presentMode" value="popup">
         <button class="btn-add" onclick="addLink()" id="addLinkBtn">إضافة الرابط · Add Link</button>
       </div>
     </div>
@@ -927,7 +947,7 @@ tr:hover{background:var(--bg2);}
         document.getElementById('bgHexInput').value = data.bgColor;
       }
       // الصور (base64 من Firestore) — أسماء موحّدة مع page.html
-      if (data.avatar) document.getElementById('avatarPreview').innerHTML = `<img src="${data.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+      if (data.avatar) { document.getElementById('avatarPreview').innerHTML = `<img src="${data.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`; window.__currentAvatarUrl = data.avatar; }
       if (data.bannerImage) document.getElementById('bannerPreview').style.backgroundImage = `url(${data.bannerImage})`;
     } else {
       await setDoc(userDocRef, { username, email: currentUser.email, createdAt: new Date() }, { merge: true });
@@ -1184,6 +1204,44 @@ tr:hover{background:var(--bg2);}
     counter.style.color = remaining <= 3 ? 'var(--error)' : (remaining <= 7 ? '#f77f00' : 'var(--muted)');
   };
 
+  // اختيار طريقة عرض النص: نافذة منبثقة أو مقالة كاملة
+  window.setPresentMode = function(mode){
+    document.getElementById('presentMode').value = mode;
+    const popupBtn = document.getElementById('presentPopupBtn');
+    const articleBtn = document.getElementById('presentArticleBtn');
+    const previewBtn = document.getElementById('previewArticleBtn');
+    const titleInput = document.getElementById('linkTitle');
+    if(mode === 'article'){
+      articleBtn.style.borderColor='var(--primary)'; articleBtn.style.background='var(--bg2)';
+      popupBtn.style.borderColor='var(--border)'; popupBtn.style.background='transparent';
+      if(previewBtn) previewBtn.style.display='block';
+      if(titleInput){ titleInput.setAttribute('maxlength','80'); updateTitleCounter(titleInput); }
+    } else {
+      popupBtn.style.borderColor='var(--primary)'; popupBtn.style.background='var(--bg2)';
+      articleBtn.style.borderColor='var(--border)'; articleBtn.style.background='transparent';
+      if(previewBtn) previewBtn.style.display='none';
+      if(titleInput){ titleInput.setAttribute('maxlength','70'); updateTitleCounter(titleInput); }
+    }
+  };
+
+  window.copyLinkTextField = function(){
+    const t = document.getElementById('linkText').value;
+    if(!t){ window.showToast("لا يوجد نص لنسخه"); return; }
+    navigator.clipboard.writeText(t).then(()=>window.showToast("تم نسخ النص")).catch(()=>window.showToast("تعذر النسخ"));
+  };
+
+  // معاينة المقالة قبل النشر: تفتح article.html بمحتوى مؤقت (بدون حفظ) عبر sessionStorage
+  window.previewArticleDraft = function(){
+    const title = document.getElementById('linkTitle').value.trim() || 'بدون عنوان';
+    const text = document.getElementById('linkText').value.trim();
+    if(!text){ window.showToast("اكتب النص أولاً"); return; }
+    const displayName = (document.getElementById('pfName')?.value || '').trim();
+    const avatar = window.__currentAvatarUrl || '';
+    const draft = { title, text, displayName, avatar, createdAt: new Date().toISOString(), preview: true };
+    try{ sessionStorage.setItem('el_article_draft', JSON.stringify(draft)); }catch(e){}
+    window.open('article.html?preview=1', '_blank');
+  };
+
   // تبديل وضع الإدخال: رابط أو نص
   window.setEntryMode = function(mode){
     document.getElementById('entryMode').value = mode;
@@ -1198,8 +1256,9 @@ tr:hover{background:var(--bg2);}
       textBtn.style.background='var(--primary)'; textBtn.style.color='#fff';
       linkBtn.style.background='transparent'; linkBtn.style.color='var(--text)';
       if(addBtn && !window.__editingIdent) addBtn.textContent='إضافة النص · Add Text';
-      // عنوان النص يسمح بحد أقصى 70 حرفاً (بدل 20 للرابط)
-      if(titleInput){ titleInput.setAttribute('maxlength','70'); updateTitleCounter(titleInput); }
+      // عنوان النص يسمح بحد أقصى 70 حرفاً (أو 80 لو وضع "مقالة" مفعّل)
+      const pm = document.getElementById('presentMode')?.value || 'popup';
+      if(titleInput){ titleInput.setAttribute('maxlength', pm==='article'?'80':'70'); updateTitleCounter(titleInput); }
     } else {
       urlG.style.display=''; textG.style.display='none';
       linkBtn.style.background='var(--primary)'; linkBtn.style.color='#fff';
@@ -1210,14 +1269,15 @@ tr:hover{background:var(--bg2);}
   };
 
   window.addLink = async function() {
-    const num = document.getElementById('linkNum').value;
-    const title = document.getElementById('linkTitle').value;
+    let num = document.getElementById('linkNum').value;
+    let title = document.getElementById('linkTitle').value;
     const desc = document.getElementById('linkDesc').value;
     const url = document.getElementById('linkUrl').value;
     const featured = document.getElementById('linkFeatured').checked;
     const mode = document.getElementById('entryMode').value || 'link';
     const isText = mode === 'text';
     const textContent = (document.getElementById('linkText')?.value || '').trim();
+    const presentMode = document.getElementById('presentMode')?.value || 'popup';
 
     // للنص: يُشترط النص. للرابط: يُشترط الرابط.
     if(!num || !title || (isText ? !textContent : !url)) {
@@ -1245,6 +1305,7 @@ tr:hover{background:var(--bg2);}
         window.showToast(`الرقم ${numInt} مستخدم مسبقاً، اختر رقماً آخر`);
         return;
       }
+      const nowIso = new Date().toISOString();
       const payload = {
         number: parseInt(num),
         num: parseInt(num),
@@ -1254,14 +1315,16 @@ tr:hover{background:var(--bg2);}
         url: isText ? '' : url,
         text: isText ? textContent : '',
         type: isText ? 'text' : 'link',
-        featured: featured
+        presentMode: isText ? presentMode : null,
+        featured: featured,
+        updatedAt: nowIso
       };
 
       if(editingIdent){
-        // وضع التعديل: حدّث الرابط الموجود مع الحفاظ على id وviews
+        // وضع التعديل: حدّث الرابط الموجود مع الحفاظ على id وviews وtaريخ الإنشاء
         links = links.map(l => {
           if(matchIdent(l, editingIdent)){
-            return { ...l, ...payload, id: l.id || ('lnk_'+Date.now()), views: l.views||0 };
+            return { ...l, ...payload, id: l.id || ('lnk_'+Date.now()), views: l.views||0, createdAt: l.createdAt || nowIso };
           }
           return l;
         });
@@ -1270,6 +1333,7 @@ tr:hover{background:var(--bg2);}
         // إضافة جديدة
         payload.id = 'lnk_' + Date.now();
         payload.views = 0;
+        payload.createdAt = nowIso;
         links.push(payload);
       }
 
@@ -1283,6 +1347,7 @@ tr:hover{background:var(--bg2);}
       document.getElementById('linkFeatured').checked = false;
       // أعد الوضع للرابط وزر الإضافة لوضعه الأصلي
       setEntryMode('link');
+      setPresentMode('popup');
       const addBtn = document.getElementById('addLinkBtn');
       if(addBtn) addBtn.textContent = 'إضافة الرابط · Add Link';
       const tc=document.getElementById('titleCounter'); if(tc){tc.textContent='20';tc.style.color='var(--muted)';}
@@ -1354,6 +1419,14 @@ tr:hover{background:var(--bg2);}
         const isText = link.type === 'text';
         const isReserved = !!link.reserved;
         const linkValue = isText ? (link.text || '') : (link.url || '');
+        // بالسجل وجدول الإحصائيات: عناصر النص تُعرض بسطرها الأول فقط (المعاينة الكاملة بصفحة النص/المقالة العامة)
+        const linkValuePreview = (() => {
+          if(!isText) return linkValue;
+          const firstLine = linkValue.split('\n')[0];
+          const hasMore = linkValue.includes('\n') || linkValue.length > 80;
+          const cut = firstLine.slice(0,80);
+          return hasMore ? cut.trim() + ' …' : cut;
+        })();
 
         // معرّف احتياطي: id إن وُجد، وإلا الرقم (للروابط القديمة بلا id)
         const ident = id ? `id:${id}` : `num:${num}`;
@@ -1367,7 +1440,11 @@ tr:hover{background:var(--bg2);}
             actionsHtml = `<span style="font-size:0.75rem;color:var(--muted);">🔒 عنصر نظام ثابت · System item</span>`;
           }
         } else {
+          const previewBtn = (isText && link.presentMode === 'article')
+            ? `<button class="btn-edit" onclick="event.stopPropagation(); window.open('article.html?u=${encodeURIComponent((document.getElementById('pfUser')?.value||'').trim())}&n=${num}','_blank')" style="background:var(--bg2);color:var(--primary);border:1.5px solid var(--primary);">📰 معاينة المقالة</button>`
+            : '';
           actionsHtml = `
+            ${previewBtn}
             <button class="btn-edit" onclick="event.stopPropagation(); editLink('${ident}')">تعديل · Edit</button>
             <button class="btn-delete" onclick="event.stopPropagation(); deleteLink('${ident}')">حذف · Delete</button>`;
         }
@@ -1379,7 +1456,7 @@ tr:hover{background:var(--bg2);}
           <div class="item-header" onclick="this.parentElement.classList.toggle('open')">
             <span style="color:var(--primary);">${registryTypeIconTag(isText?'text':'link')}</span> [${num}] ${title}${isReserved?' <span style="font-size:0.7rem;color:var(--primary);">(محجوز)</span>':(isText?' <span style="font-size:0.7rem;color:var(--muted);">(نص)</span>':'')}
             <div class="item-details">
-              <div class="detail-row"><span class="detail-label">${isText?'النص:':'الرابط:'}</span> <span dir="ltr">${linkValue}</span></div>
+              <div class="detail-row"><span class="detail-label">${isText?'النص:':'الرابط:'}</span> <span dir="ltr">${linkValuePreview}</span></div>
               <div class="detail-row"><span class="detail-label">الوصف:</span> <span>${fullDesc}</span></div>
               <div class="detail-row"><span class="detail-label">المشاهدات:</span> <span>${link.views || 0}</span></div>
               <div style="margin-top:8px; text-align:left; display:flex; gap:8px; justify-content:flex-start;">
@@ -1391,7 +1468,7 @@ tr:hover{background:var(--bg2);}
         registry.appendChild(item);
 
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${num}</td><td style="text-align:center;color:var(--primary);">${registryTypeIconTag(isText?'text':'link')}</td><td><b>${title}</b></td><td dir="ltr" style="word-break:break-all;">${linkValue}</td><td><div class="desc-clamp">${clamped}</div></td><td><span style="color:var(--primary); font-weight:700;">${link.views || 0}</span></td>`;
+        tr.innerHTML = `<td>${num}</td><td style="text-align:center;color:var(--primary);">${registryTypeIconTag(isText?'text':'link')}</td><td><b>${title}</b></td><td dir="ltr" style="word-break:break-all;">${linkValuePreview}</td><td><div class="desc-clamp">${clamped}</div></td><td><span style="color:var(--primary); font-weight:700;">${link.views || 0}</span></td>`;
         statsTbody.appendChild(tr);
       });
     } catch(e){
@@ -1462,6 +1539,7 @@ tr:hover{background:var(--bg2);}
       const feat = document.getElementById('linkFeatured'); if(feat) feat.checked = !!link.featured;
       // اضبط الوضع (رابط/نص) حسب نوع العنصر
       setEntryMode(link.type === 'text' ? 'text' : 'link');
+      if(link.type === 'text') setPresentMode(link.presentMode === 'article' ? 'article' : 'popup');
       // خزّن المعرّف الجاري تعديله
       window.__editingIdent = ident;
       // غيّر زر الإضافة إلى "حفظ التعديل"
