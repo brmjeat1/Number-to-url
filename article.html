@@ -84,38 +84,51 @@
   .art-empty{text-align:center;padding:80px 20px;color:var(--muted);}
   .art-empty .icon{font-size:2.5rem;margin-bottom:14px;}
 
-  /* ===== الأزرار العائمة القابلة للسحب ===== */
+  /* ===== الزر العائم القابل للسحب (واحد فقط) ===== */
   .fab{
-    position:fixed;z-index:400;width:52px;height:52px;border-radius:16px;
-    background:#ffffff;border:1px solid #e2e2e2;box-shadow:0 6px 18px rgba(0,0,0,0.18);
+    position:fixed;z-index:400;width:56px;height:56px;border-radius:16px;
+    background:linear-gradient(135deg,#3d5af1,#6c8fff);color:#fff;
+    border:none;box-shadow:0 6px 18px rgba(0,0,0,0.22);
     display:flex;align-items:center;justify-content:center;cursor:grab;
-    color:#3d5af1;touch-action:none;user-select:none;-webkit-user-select:none;
+    touch-action:none;user-select:none;-webkit-user-select:none;
   }
   .fab:active{cursor:grabbing;}
-  .fab svg{width:24px;height:24px;pointer-events:none;}
-  #shareFab{bottom:96px;left:20px;}
-  #menuFab{bottom:24px;left:20px;background:linear-gradient(135deg,#3d5af1,#6c8fff);color:#fff;border-color:transparent;}
+  .fab svg{width:26px;height:26px;pointer-events:none;}
+  #menuFab{bottom:24px;left:20px;}
 
-  /* ===== شاشة الخيارات المنزلقة ===== */
+  /* ===== شاشة الخيارات المنزلقة: طبقة نمطية بدون تظليل، تمنع التفاعل مع الخلفية ===== */
   .sheet-overlay{
-    position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:500;
+    position:fixed;inset:0;background:transparent;z-index:500;
     display:none;align-items:flex-end;justify-content:center;
   }
   .sheet-overlay.open{display:flex;}
   .sheet-panel{
     background:var(--bg);color:var(--text);width:100%;max-width:680px;
     border-radius:20px 20px 0 0;max-height:82vh;display:flex;flex-direction:column;
-    animation:sheetUp .2s ease;
+    border:1px solid var(--border);border-bottom:none;
+    transform:translateY(100%);transition:transform .28s ease;
   }
-  @keyframes sheetUp{from{transform:translateY(30px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+  .sheet-overlay.open .sheet-panel{transform:translateY(0);}
   .sheet-handle{width:40px;height:4px;background:var(--border);border-radius:3px;margin:10px auto 4px;flex-shrink:0;}
-  .sheet-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;}
-  .sheet-tab-btn{
-    flex:1;padding:14px 6px;background:none;border:none;font-family:inherit;
-    font-size:0.82rem;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;
-  }
-  .sheet-tab-btn.active{color:var(--link);border-bottom-color:var(--link);}
   .sheet-body{padding:20px;overflow-y:auto;}
+
+  /* قائمة الخيارات الرأسية (طولية تحت بعض) */
+  .menu-list{display:flex;flex-direction:column;gap:8px;}
+  .menu-list-item{
+    display:flex;align-items:center;gap:12px;width:100%;padding:15px 14px;
+    border-radius:12px;border:1px solid var(--border);background:none;color:var(--text);
+    font-family:inherit;font-weight:700;font-size:0.92rem;cursor:pointer;text-align:right;
+  }
+  .menu-list-item svg{width:19px;height:19px;flex-shrink:0;color:var(--link);}
+  .menu-list-item .chev{margin-inline-start:auto;color:var(--muted);width:14px;height:14px;flex-shrink:0;}
+
+  .sheet-back-row{display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+  .sheet-back-btn{
+    background:none;border:1px solid var(--border);border-radius:8px;padding:6px 10px;
+    font-family:inherit;color:var(--text);cursor:pointer;font-weight:700;font-size:0.85rem;
+    display:flex;align-items:center;gap:4px;
+  }
+  .sheet-title{font-weight:800;font-size:1rem;}
 
   .theme-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;}
   .theme-swatch{
@@ -125,7 +138,7 @@
   .theme-swatch:active{transform:scale(0.9);}
   .theme-swatch.active{border-color:var(--link);}
   .theme-swatch[data-t="0"]{
-    background:linear-gradient(135deg,#3d5af1,#6c8fff);
+    background:var(--site-gradient, linear-gradient(135deg,#3d5af1,#6c8fff));
     display:flex;align-items:center;justify-content:center;
     color:#ffffff;font-weight:900;font-size:13px;font-family:'Space Mono',monospace;
   }
@@ -191,23 +204,15 @@
   </div>
 </main>
 
-<!-- الأزرار العائمة القابلة للسحب -->
-<button type="button" class="fab" id="shareFab" title="مشاركة · Share">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg>
-</button>
+<!-- الزر العائم القابل للسحب (واحد فقط) -->
 <button type="button" class="fab" id="menuFab" title="خيارات المقالة · Article options">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
 </button>
 
-<!-- شاشة الخيارات -->
+<!-- شاشة الخيارات: طبقة نمطية، قائمة رأسية -->
 <div class="sheet-overlay" id="optionsSheet" onclick="if(event.target===this)closeSheet()">
   <div class="sheet-panel">
     <div class="sheet-handle"></div>
-    <div class="sheet-tabs">
-      <button class="sheet-tab-btn active" id="tabTocBtn" onclick="showSheetTab('toc')">ملخص المحتويات</button>
-      <button class="sheet-tab-btn" id="tabSettingsBtn" onclick="showSheetTab('settings')">الإعدادات والسمات</button>
-      <button class="sheet-tab-btn" id="tabSearchBtn" onclick="showSheetTab('search')">أبحث في المقالة</button>
-    </div>
     <div class="sheet-body" id="sheetBody"></div>
   </div>
 </div>
@@ -327,6 +332,7 @@ function makeDraggable(el){
 
 // ===== المشاركة =====
 async function shareArticle(){
+  closeSheet();
   const url = window.location.href;
   const title = currentArticleData.title || 'مقالة من electrwni.link';
   try{
@@ -340,20 +346,49 @@ async function shareArticle(){
 }
 
 // ===== شاشة الخيارات =====
-function openSheet(){ document.getElementById('optionsSheet').classList.add('open'); showSheetTab('toc'); }
-function closeSheet(){ document.getElementById('optionsSheet').classList.remove('open'); }
+function openSheet(){
+  document.getElementById('optionsSheet').classList.add('open');
+  document.body.style.overflow = 'hidden'; // يمنع تمرير الخلفية أثناء فتح الطبقة النمطية
+  showRootMenu();
+}
+function closeSheet(){
+  document.getElementById('optionsSheet').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+const ICON_SHARE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line></svg>';
+const ICON_TOC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>';
+const ICON_SETTINGS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>';
+const ICON_SEARCH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>';
+const ICON_CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>';
+
+function showRootMenu(){
+  const body = document.getElementById('sheetBody');
+  body.innerHTML = `
+    <div class="menu-list">
+      <button type="button" class="menu-list-item" onclick="shareArticle()">${ICON_SHARE} مشاركة ${ICON_CHEV}</button>
+      <button type="button" class="menu-list-item" onclick="showSheetTab('toc')">${ICON_TOC} ملخص المحتويات ${ICON_CHEV}</button>
+      <button type="button" class="menu-list-item" onclick="showSheetTab('settings')">${ICON_SETTINGS} الإعدادات والسمات ${ICON_CHEV}</button>
+      <button type="button" class="menu-list-item" onclick="showSheetTab('search')">${ICON_SEARCH} أبحث في المقالة ${ICON_CHEV}</button>
+    </div>
+  `;
+}
+
+function sheetBackRow(title){
+  return `<div class="sheet-back-row">
+    <button type="button" class="sheet-back-btn" onclick="showRootMenu()">→ رجوع</button>
+    <span class="sheet-title">${title}</span>
+  </div>`;
+}
 
 function showSheetTab(tab){
-  document.getElementById('tabTocBtn').classList.toggle('active', tab==='toc');
-  document.getElementById('tabSettingsBtn').classList.toggle('active', tab==='settings');
-  document.getElementById('tabSearchBtn').classList.toggle('active', tab==='search');
   const body = document.getElementById('sheetBody');
 
   if(tab==='toc'){
     const text = currentArticleData.text || '';
     const words = text.trim().split(/\s+/).filter(Boolean).length;
     const minutes = Math.max(1, Math.round(words/180));
-    body.innerHTML = `
+    body.innerHTML = sheetBackRow('ملخص المحتويات') + `
       <div class="toc-stat-row"><span>العنوان</span><span>${escapeHtml(currentArticleData.title||'—')}</span></div>
       <div class="toc-stat-row"><span>الكاتب</span><span>${escapeHtml(currentArticleData.displayName||'—')}</span></div>
       <div class="toc-stat-row"><span>تاريخ النشر</span><span>${formatDate(currentArticleData.createdAt)}</span></div>
@@ -361,7 +396,7 @@ function showSheetTab(tab){
       <div class="toc-stat-row" style="border-bottom:none;"><span>وقت القراءة التقديري</span><span>~${minutes} دقيقة</span></div>
     `;
   } else if(tab==='settings'){
-    body.innerHTML = `
+    body.innerHTML = sheetBackRow('الإعدادات والسمات') + `
       <div style="font-weight:700;margin-bottom:10px;font-size:0.85rem;color:var(--muted);">الألوان · Theme</div>
       <div class="theme-row" id="themeRow">
         <div class="theme-swatch active" data-t="0" onclick="setTheme(0)" title="electrwni.link">e</div>
@@ -379,7 +414,7 @@ function showSheetTab(tab){
     const savedTheme = document.documentElement.getAttribute('data-theme') || '0';
     document.querySelectorAll('#themeRow .theme-swatch').forEach(s=>s.classList.toggle('active', s.getAttribute('data-t')===savedTheme));
   } else if(tab==='search'){
-    body.innerHTML = `
+    body.innerHTML = sheetBackRow('أبحث في المقالة') + `
       <div class="search-box">
         <input type="text" id="artSearchInput" placeholder="ابحث داخل نص المقالة..." oninput="doArticleSearch()">
       </div>
@@ -391,8 +426,10 @@ function showSheetTab(tab){
         </div>
       </div>
     `;
+    document.getElementById('artSearchInput').focus();
   }
 }
+window.showRootMenu = showRootMenu;
 
 // ===== البحث داخل نص المقالة =====
 let searchMatches = [];
@@ -453,6 +490,18 @@ window.setTheme = setTheme;
 window.showSheetTab = showSheetTab;
 window.closeSheet = closeSheet;
 
+// السمة الأولى (٠) تتبع ألوان الموقع الحقيقية لصاحب الحساب، بدل لون أزرق ثابت
+function applySiteColors(data){
+  const p1 = data.primaryColor || data.themeColor || '#3d5af1';
+  const p2 = data.primaryColor2 || '#6c8fff';
+  const txt = data.textColor || '#000000';
+  const bg = data.bgColor || '#ffffff';
+  document.documentElement.style.setProperty('--site-gradient', `linear-gradient(135deg, ${p1}, ${p2})`);
+  const styleTag = document.createElement('style');
+  styleTag.textContent = `html[data-theme="0"]{ --bg:${bg}; --text:${txt}; --link:${p1}; }`;
+  document.head.appendChild(styleTag);
+}
+
 async function init(){
   const params = new URLSearchParams(window.location.search);
 
@@ -463,6 +512,7 @@ async function init(){
     let draft = null;
     try{ draft = JSON.parse(sessionStorage.getItem('el_article_draft') || 'null'); }catch(e){}
     if(!draft){ renderEmpty('لا توجد بيانات معاينة · No preview data found'); return; }
+    applySiteColors(draft);
     renderArticle({
       title: draft.title, text: draft.text, displayName: draft.displayName,
       avatar: draft.avatar, createdAt: draft.createdAt, updatedAt: draft.createdAt
@@ -484,6 +534,7 @@ async function init(){
     const userDoc = await db.collection('users').doc(uid).get();
     if(!userDoc.exists){ renderEmpty('تعذّر العثور على بيانات الحساب · Account data not found'); return; }
     const data = userDoc.data();
+    applySiteColors(data);
     const links = Array.isArray(data.links) ? data.links : [];
     const link = links.find(l => (parseInt(l.number ?? l.num)) === num);
     if(!link || link.type !== 'text'){ renderEmpty('لم يتم العثور على هذه المقالة · Article not found'); return; }
@@ -519,13 +570,8 @@ async function init(){
   }
 }
 
-// ربط الأزرار العائمة
-makeDraggable(document.getElementById('shareFab'));
+// ربط الزر العائم
 makeDraggable(document.getElementById('menuFab'));
-document.getElementById('shareFab').addEventListener('click', (e)=>{
-  if(document.getElementById('shareFab').__wasMoved()) return;
-  shareArticle();
-});
 document.getElementById('menuFab').addEventListener('click', (e)=>{
   if(document.getElementById('menuFab').__wasMoved()) return;
   openSheet();
