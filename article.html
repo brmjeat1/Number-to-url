@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>مقالة — electrwni.link</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --header-bg1:#3d5af1;
+    --header-bg2:#6c8fff;
+    --header-line:#f5c518;
+    --bg:#ffffff;
+    --text:#000000;
+    --link:#1a3fd6;
+    --muted:#767676;
+    --border:#e8e8e8;
+  }
+  html[data-theme="1"]{ --bg:#DAD7CD; --text:#344E41; --link:#588157; --muted:#5c6f63; --border:#c3c0b3; }
+  html[data-theme="2"]{ --bg:#FEFAE0; --text:#BB3E03; --link:#EE9A00; --muted:#a37a4a; --border:#eee3bd; }
+  html[data-theme="3"]{ --bg:#F1DEDE; --text:#80727B; --link:#BBACC1; --muted:#9a8f96; --border:#e2cfcf; }
+  html[data-theme="4"]{ --bg:#EEF0F2; --text:#0D21A1; --link:#EEC643; --muted:#6b7280; --border:#dbdfe4; }
+  html[data-theme="5"]{ --bg:#12141c; --text:#f0f1f5; --link:#8fb0ff; --muted:#9aa0ae; --border:#2a2d3a; }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{min-height:100vh;}
+  body{
+    font-family:'Tajawal',-apple-system,BlinkMacSystemFont,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    display:flex;flex-direction:column;
+    transition:background .25s ease,color .25s ease;
+  }
+
+  /* ===== شريط الثيمات (للقارئ) ===== */
+  .theme-bar{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    padding:10px 16px;background:rgba(0,0,0,0.03);border-bottom:1px solid var(--border);
+    flex-wrap:wrap;
+  }
+  .theme-bar .tb-label{font-size:0.7rem;color:var(--muted);font-weight:700;margin-inline-end:4px;}
+  .theme-swatch{
+    width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid transparent;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s;
+  }
+  .theme-swatch:active{transform:scale(0.9);}
+  .theme-swatch.active{border-color:var(--link);}
+  .theme-swatch[data-t="0"]{background:linear-gradient(135deg,#fff 50%,#000 50%);}
+  .theme-swatch[data-t="1"]{background:#DAD7CD;}
+  .theme-swatch[data-t="2"]{background:#FEFAE0;}
+  .theme-swatch[data-t="3"]{background:#F1DEDE;}
+  .theme-swatch[data-t="4"]{background:#EEF0F2;}
+  .theme-swatch[data-t="5"]{background:#12141c;}
+
+  /* ===== الرأس (Header) ===== */
+  .art-header{
+    background:linear-gradient(135deg,var(--header-bg1),var(--header-bg2));
+    border-bottom:4px solid var(--header-line);
+    padding:16px 20px;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .art-header .wordmark{
+    font-family:'Space Mono',monospace;font-weight:900;font-size:1rem;color:#fff;
+  }
+  .art-header .wordmark em{color:var(--header-line);font-style:normal;}
+
+  /* ===== جسم المقالة ===== */
+  .art-shell{
+    flex:1;width:100%;max-width:680px;margin:0 auto;
+    padding:44px 24px 80px;
+  }
+  .art-title{
+    font-weight:900;font-size:2rem;line-height:1.35;letter-spacing:-0.3px;
+    margin-bottom:18px;word-wrap:break-word;
+  }
+  .art-meta{
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    padding-bottom:24px;margin-bottom:32px;border-bottom:1px solid var(--border);
+    color:var(--muted);font-size:0.85rem;
+  }
+  .art-meta .avatar{
+    width:34px;height:34px;border-radius:50%;background:var(--border);
+    display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;
+    font-weight:700;color:var(--text);
+  }
+  .art-meta .avatar img{width:100%;height:100%;object-fit:cover;}
+  .art-meta .author-name{font-weight:700;color:var(--text);}
+  .art-meta .edited-badge{
+    background:rgba(0,0,0,0.06);border-radius:20px;padding:2px 10px;font-size:0.75rem;
+  }
+  .art-body{
+    font-size:1.08rem;line-height:2;word-wrap:break-word;
+  }
+  .art-body p{margin-bottom:1.4em;}
+  .art-body a{color:var(--link);font-weight:700;text-decoration:underline;text-underline-offset:3px;}
+
+  .preview-banner{
+    background:#000;color:#fff;text-align:center;padding:8px;font-size:0.78rem;font-weight:700;
+  }
+  .art-empty{text-align:center;padding:80px 20px;color:var(--muted);}
+  .art-empty .icon{font-size:2.5rem;margin-bottom:14px;}
+</style>
+</head>
+<body>
+
+<div class="theme-bar" id="themeBar">
+  <span class="tb-label">الألوان · Theme</span>
+  <div class="theme-swatch active" data-t="0" onclick="setTheme(0)"></div>
+  <div class="theme-swatch" data-t="1" onclick="setTheme(1)"></div>
+  <div class="theme-swatch" data-t="2" onclick="setTheme(2)"></div>
+  <div class="theme-swatch" data-t="3" onclick="setTheme(3)"></div>
+  <div class="theme-swatch" data-t="4" onclick="setTheme(4)"></div>
+  <div class="theme-swatch" data-t="5" onclick="setTheme(5)">🌙</div>
+</div>
+
+<div class="art-header">
+  <div class="wordmark">electrwni<em>.link</em></div>
+</div>
+
+<div id="previewBanner"></div>
+
+<main class="art-shell" id="artShell">
+  <div class="art-empty" id="loadingState">
+    <div class="icon">📰</div>
+    <div>جاري تحميل المقالة... <span style="display:block;font-size:0.8rem;">Loading article...</span></div>
+  </div>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+<script>
+const cfg={apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",authDomain:"electrwni-link.firebaseapp.com",projectId:"electrwni-link",storageBucket:"electrwni-link.firebasestorage.app",messagingSenderId:"712490301263",appId:"1:712490301263:web:2084210da3f687285ab73a"};
+let db=null;
+try{
+  if(!firebase.apps.length)firebase.initializeApp(cfg);
+  db=firebase.firestore();
+}catch(e){ console.error('Firebase init failed:', e); }
+
+// ===== الثيمات =====
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme', String(t));
+  document.querySelectorAll('.theme-swatch').forEach(s=>s.classList.toggle('active', s.getAttribute('data-t')===String(t)));
+  try{ localStorage.setItem('el_article_theme', String(t)); }catch(e){}
+}
+(function initTheme(){
+  let saved = '0';
+  try{ saved = localStorage.getItem('el_article_theme') || '0'; }catch(e){}
+  setTheme(parseInt(saved) || 0);
+})();
+
+// ===== تحويل الروابط الخام داخل النص لروابط فعّالة قابلة للضغط =====
+function escapeHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function linkify(text){
+  const escaped = escapeHtml(text);
+  const urlRe = /((https?:\/\/|www\.)[^\s<]+)/gi;
+  return escaped.replace(urlRe, (m)=>{
+    const href = m.startsWith('http') ? m : 'https://'+m;
+    return `<a href="${href}" target="_blank" rel="noopener">${m}</a>`;
+  });
+}
+function renderBody(text){
+  const paragraphs = String(text||'').split(/\n+/).filter(p=>p.trim());
+  return paragraphs.map(p=>`<p>${linkify(p)}</p>`).join('');
+}
+function formatDate(iso){
+  try{
+    const d = new Date(iso);
+    const months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+    return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+  }catch(e){ return ''; }
+}
+
+function renderArticle({title, text, displayName, avatar, createdAt, updatedAt}){
+  document.title = (title || 'مقالة') + ' — electrwni.link';
+  const edited = updatedAt && createdAt && (new Date(updatedAt).getTime() - new Date(createdAt).getTime() > 60000);
+  const avatarHtml = avatar
+    ? `<img src="${avatar}">`
+    : (displayName ? displayName.trim()[0] : '📄');
+  document.getElementById('artShell').innerHTML = `
+    <h1 class="art-title">${escapeHtml(title || 'بدون عنوان')}</h1>
+    <div class="art-meta">
+      <div class="avatar">${avatarHtml}</div>
+      <span class="author-name">${escapeHtml(displayName || 'حساب electrwni.link')}</span>
+      <span>·</span>
+      <span>${formatDate(createdAt)}</span>
+      ${edited ? `<span class="edited-badge">✏️ آخر تعديل: ${formatDate(updatedAt)}</span>` : ''}
+    </div>
+    <div class="art-body">${renderBody(text)}</div>
+  `;
+}
+
+function renderEmpty(msg){
+  document.getElementById('artShell').innerHTML = `
+    <div class="art-empty">
+      <div class="icon">🔍</div>
+      <div>${msg}</div>
+    </div>`;
+}
+
+async function init(){
+  const params = new URLSearchParams(window.location.search);
+
+  // ===== وضع المعاينة قبل النشر (بدون حفظ فعلي) =====
+  if(params.get('preview') === '1'){
+    document.getElementById('previewBanner').innerHTML = '<div class="preview-banner">👁 معاينة قبل النشر — هذه ليست نسخة منشورة · Preview only, not published</div>';
+    let draft = null;
+    try{ draft = JSON.parse(sessionStorage.getItem('el_article_draft') || 'null'); }catch(e){}
+    if(!draft){ renderEmpty('لا توجد بيانات معاينة · No preview data found'); return; }
+    renderArticle({
+      title: draft.title, text: draft.text, displayName: draft.displayName,
+      avatar: draft.avatar, createdAt: draft.createdAt, updatedAt: draft.createdAt
+    });
+    return;
+  }
+
+  // ===== وضع العرض الحقيقي: جلب من قاعدة البيانات =====
+  const uname = (params.get('u') || '').trim().toLowerCase();
+  const num = parseInt(params.get('n'));
+  if(!uname || !num){ renderEmpty('رابط المقالة غير صالح · Invalid article link'); return; }
+  if(!db){ renderEmpty('تعذّر الاتصال بالخادم، أعد تحميل الصفحة · Connection error'); return; }
+
+  try{
+    const idxDoc = await db.collection('usernames').doc(uname).get();
+    if(!idxDoc.exists){ renderEmpty(`الحساب "${uname}" غير مسجّل بالنظام · Account not found`); return; }
+    const uid = idxDoc.data().uid;
+    const userDoc = await db.collection('users').doc(uid).get();
+    if(!userDoc.exists){ renderEmpty('تعذّر العثور على بيانات الحساب · Account data not found'); return; }
+    const data = userDoc.data();
+    const links = Array.isArray(data.links) ? data.links : [];
+    const link = links.find(l => (parseInt(l.number ?? l.num)) === num);
+    if(!link || link.type !== 'text'){ renderEmpty('لم يتم العثور على هذه المقالة · Article not found'); return; }
+
+    renderArticle({
+      title: link.title ?? link.label,
+      text: link.text,
+      displayName: data.displayName || data.fullName || uname,
+      avatar: data.avatar || '',
+      createdAt: link.createdAt || new Date().toISOString(),
+      updatedAt: link.updatedAt
+    });
+
+    // احتساب مشاهدة (نفس آلية عدّاد الروابط بصفحة الملف العام)
+    try{
+      await db.runTransaction(async (tx) => {
+        const ref = db.collection('users').doc(uid);
+        const snap = await tx.get(ref);
+        if(!snap.exists) return;
+        const d = snap.data();
+        const ls = Array.isArray(d.links) ? d.links : [];
+        const idx = ls.findIndex(l => (parseInt(l.number ?? l.num)) === num);
+        if(idx === -1) return;
+        const updated = ls.slice();
+        updated[idx] = { ...updated[idx], views: (updated[idx].views||0) + 1 };
+        tx.update(ref, { links: updated });
+      });
+    }catch(e){ console.error('article view count failed:', e.code || e.message); }
+
+  }catch(e){
+    console.error('article load error:', e);
+    renderEmpty('حدث خطأ أثناء تحميل المقالة · Error loading article');
+  }
+}
+
+init();
+</script>
+</body>
+</html>
