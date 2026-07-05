@@ -278,7 +278,7 @@ tr:hover{background:var(--bg2);}
         </div>
         <div class="form-group" id="advFeaturedGroup" style="display:flex;align-items:center;gap:8px;">
           <input type="checkbox" id="linkFeatured" style="width:auto;">
-          <label style="margin:0;">تمييزه بقائمة "روابط مختارة" <span class="lbl-sub">/ Feature in "Selected Links"</span></label>
+          <label style="margin:0;">تمييزه بقائمة "أرقام مختارة" <span class="lbl-sub">/ Feature in "Selected Links"</span></label>
         </div>
         <!-- حقول مخفية للتوافق -->
         <input type="hidden" id="entryMode" value="link">
@@ -717,7 +717,7 @@ tr:hover{background:var(--bg2);}
 
   // المتغيرات العامة لإدارة الحالة
   let currentUser = null;
-  // أرقام محجوزة للنظام: 205=رابط الصفحة، 206=روابط مختارة، 210-216=حسابات التواصل تلقائياً
+  // أرقام محجوزة للنظام: 205=رابط الصفحة، 206=أرقام مختارة، 210-216=حسابات التواصل تلقائياً
   const RESERVED_NUMBERS = [205, 206, 210, 211, 212, 213, 214, 215, 216];
   let cropper = null;
   let currentCropType = ''; 
@@ -1178,8 +1178,8 @@ tr:hover{background:var(--bg2);}
     }
     entries.push({
       number: 206, reserved: true, type: 'text',
-      title: 'روابط مختارة', label: 'روابط مختارة',
-      url: '', text: 'روابط مختارة',
+      title: 'أرقام مختارة', label: 'أرقام مختارة',
+      url: '', text: 'أرقام مختارة',
       description: 'قسم الروابط المختارة بصفحتك', views: 0
     });
     const socials = Array.isArray(userData?.socials) ? userData.socials : [];
@@ -1606,7 +1606,7 @@ tr:hover{background:var(--bg2);}
 
       } else if(format === 'pdf'){
         await window.showToast("جاري تجهيز PDF...");
-        // ندمج الأرقام المحجوزة (رابط الصفحة/روابط مختارة/حسابات التواصل) لتتصدّر التقرير
+        // ندمج الأرقام المحجوزة (رابط الصفحة/أرقام مختارة/حسابات التواصل) لتتصدّر التقرير
         let userData = {};
         try {
           const snap = await getDoc(doc(db, "users", currentUser.uid));
@@ -2145,7 +2145,7 @@ tr:hover{background:var(--bg2);}
     }
   };
 
-  // نافذة تعديل حساب تواصل مباشرة من سجل الروابط: الرابط، العنوان، الوصف، وإدراجه ضمن "روابط مختارة"
+  // نافذة تعديل حساب تواصل مباشرة من سجل الروابط: الرابط، العنوان، الوصف، وإدراجه ضمن "أرقام مختارة"
   window.openSocialEditModal = async function(socialId){
     const old = document.getElementById('socialEditModal');
     if(old) old.remove();
@@ -2177,7 +2177,7 @@ tr:hover{background:var(--bg2);}
         </div>
         <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;font-weight:700;margin-bottom:18px;cursor:pointer;">
           <input type="checkbox" id="seFeatured" ${social.featured?'checked':''} style="width:18px;height:18px;">
-          أضِف هذا الرابط لقسم "روابط مختارة" بصفحتي
+          أضِف هذا الرابط لقسم "أرقام مختارة" بصفحتي
         </label>
         <div style="display:flex;gap:8px;">
           <button id="seSaveBtn" style="flex:1;padding:12px;background:linear-gradient(135deg,#3d5af1,#6c8fff);color:#fff;border:none;border-radius:10px;font-weight:700;font-family:inherit;cursor:pointer;">حفظ · Save</button>
