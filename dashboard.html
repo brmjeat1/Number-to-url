@@ -445,7 +445,7 @@ tr:hover{background:var(--bg2);}
           <input type="file" id="avatarInput" accept="image/*" onchange="selectAvatar(this)">
         </div>
         <div class="form-group">
-          <label>اللون الأساسي ١ <span class="lbl-sub">/ Primary 1</span> <span style="font-size:0.68rem;color:var(--success);font-weight:700;">• خلفية الأيقونة</span></label>
+          <label>اللون الأساسي ١ <span class="lbl-sub">/ Primary 1</span></label>
           <div id="colorPalette" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;"></div>
           <div style="display:flex;align-items:center;gap:10px;">
             <input type="color" id="colorPicker" value="#3d5af1" onchange="onColorPick(this.value)" style="width:50px;height:40px;padding:2px;cursor:pointer;">
@@ -454,7 +454,7 @@ tr:hover{background:var(--bg2);}
         </div>
 
         <div class="form-group">
-          <label>اللون الأساسي ٢ <span class="lbl-sub">/ Primary 2</span> <span style="font-size:0.68rem;color:var(--success);font-weight:700;">• إطار الأيقونة</span></label>
+          <label>اللون الأساسي ٢ <span class="lbl-sub">/ Primary 2</span></label>
           <div id="colorPalette2" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;"></div>
           <div style="display:flex;align-items:center;gap:10px;">
             <input type="color" id="colorPicker2" value="#6c8fff" onchange="onColor2Pick(this.value)" style="width:50px;height:40px;padding:2px;cursor:pointer;">
@@ -463,7 +463,7 @@ tr:hover{background:var(--bg2);}
         </div>
 
         <div class="form-group" style="margin-top:20px;">
-          <label>لون النص <span class="lbl-sub">/ Text Color</span> <span style="font-size:0.68rem;color:var(--success);font-weight:700;">• الشعار يتبعه</span></label>
+          <label>لون النص <span class="lbl-sub">/ Text Color</span></label>
           <div id="textPalette" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;"></div>
           <div style="display:flex;align-items:center;gap:10px;">
             <input type="color" id="textColorPicker" value="#1a1d24" onchange="onTextColorPick(this.value)" style="width:50px;height:40px;padding:2px;cursor:pointer;">
@@ -749,18 +749,18 @@ tr:hover{background:var(--bg2);}
 
   // المنصات المتاحة للإضافة السريعة في قسم التواصل (أيقونات SVG)
   const platforms = [
-    { id: 'instagram', name: 'إنستغرام', color: '#E1306C', prefix: 'https://instagram.com/' },
-    { id: 'twitter', name: 'إكس', color: '#000000', prefix: 'https://x.com/' },
-    { id: 'snapchat', name: 'سناب شات', color: '#FFC400', prefix: 'https://snapchat.com/add/' },
-    { id: 'tiktok', name: 'تيك توك', color: '#000000', prefix: 'https://tiktok.com/@' },
-    { id: 'whatsapp', name: 'واتساب', color: '#25D366', prefix: 'https://wa.me/' },
-    { id: 'telegram', name: 'تيليجرام', color: '#229ED9', prefix: 'https://t.me/' },
-    { id: 'youtube', name: 'يوتيوب', color: '#FF0000', prefix: 'https://youtube.com/@' },
-    { id: 'facebook', name: 'فيسبوك', color: '#1877F2', prefix: 'https://facebook.com/' },
-    { id: 'linkedin', name: 'لينكدإن', color: '#0A66C2', prefix: 'https://linkedin.com/in/' },
-    { id: 'threads', name: 'ثريدز', color: '#000000', prefix: 'https://threads.net/@' },
-    { id: 'pinterest', name: 'بينترست', color: '#E60023', prefix: 'https://pinterest.com/' },
-    { id: 'wechat', name: 'وي تشات', color: '#07C160', prefix: '' },
+    { id: 'instagram', name: 'Instagram', color: '#E1306C', prefix: 'https://instagram.com/' },
+    { id: 'twitter', name: 'X', color: '#000000', prefix: 'https://x.com/' },
+    { id: 'snapchat', name: 'Snapchat', color: '#FFC400', prefix: 'https://snapchat.com/add/' },
+    { id: 'tiktok', name: 'TikTok', color: '#000000', prefix: 'https://tiktok.com/@' },
+    { id: 'whatsapp', name: 'WhatsApp', color: '#25D366', prefix: 'https://wa.me/' },
+    { id: 'telegram', name: 'Telegram', color: '#229ED9', prefix: 'https://t.me/' },
+    { id: 'youtube', name: 'YouTube', color: '#FF0000', prefix: 'https://youtube.com/@' },
+    { id: 'facebook', name: 'Facebook', color: '#1877F2', prefix: 'https://facebook.com/' },
+    { id: 'linkedin', name: 'LinkedIn', color: '#0A66C2', prefix: 'https://linkedin.com/in/' },
+    { id: 'threads', name: 'Threads', color: '#000000', prefix: 'https://threads.net/@' },
+    { id: 'pinterest', name: 'Pinterest', color: '#E60023', prefix: 'https://pinterest.com/' },
+    { id: 'wechat', name: 'WeChat', color: '#07C160', prefix: '' },
     { id: 'imessage', name: 'iMessage', color: '#34DA50', prefix: 'sms:' }
   ];
   let showAllPlatforms = false;
@@ -1237,7 +1237,11 @@ tr:hover{background:var(--bg2);}
     if(!text){ window.showToast("اكتب النص أولاً"); return; }
     const displayName = (document.getElementById('pfName')?.value || '').trim();
     const avatar = window.__currentAvatarUrl || '';
-    const draft = { title, text, displayName, avatar, createdAt: new Date().toISOString(), preview: true };
+    const primaryColor = document.getElementById('colorPicker')?.value || '#3d5af1';
+    const primaryColor2 = document.getElementById('colorPicker2')?.value || '#6c8fff';
+    const textColor = document.getElementById('textColorPicker')?.value || '#000000';
+    const bgColor = document.getElementById('bgColorPicker')?.value || '#ffffff';
+    const draft = { title, text, displayName, avatar, createdAt: new Date().toISOString(), preview: true, primaryColor, primaryColor2, textColor, bgColor };
     try{ sessionStorage.setItem('el_article_draft', JSON.stringify(draft)); }catch(e){}
     window.open('article.html?preview=1', '_blank');
   };
@@ -1993,27 +1997,85 @@ tr:hover{background:var(--bg2);}
       const div = document.createElement('div');
       div.className = 'item';
       const mode = soc.styleMode || 'brand';
-      const iconBg = mode==='brand' ? (soc.brandColor||'var(--primary)') : 'var(--primary)';
+      const iconBg = mode==='brand' ? (soc.brandColor||'var(--primary)') : (mode==='custom' ? (soc.customBg||'var(--primary)') : 'var(--primary)');
+      const ringColor = mode==='custom' ? (soc.customRing||'transparent') : 'transparent';
+      const iconGlyphColor = mode==='custom' ? (soc.customIconColor||'#ffffff') : '#ffffff';
+      const containerColor = mode==='custom' ? (soc.customContainer||'transparent') : 'transparent';
       const iconInner = (mode==='upload' && soc.icon)
         ? `<img src="${soc.icon}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`
-        : `<span style="display:flex;width:18px;height:18px;color:#fff;">${platSvg(soc.platformId)}</span>`;
+        : `<span style="display:flex;width:18px;height:18px;color:${iconGlyphColor};">${platSvg(soc.platformId)}</span>`;
       div.innerHTML = `
         <div class="item-header" style="display:flex; align-items:center; gap:10px;">
-          <div id="socIconPrev_${id}" style="width:32px; height:32px; background:${iconBg}; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#fff;">
-            ${iconInner}
+          <div id="socIconContainer_${id}" style="padding:4px;border-radius:9px;background:${containerColor};">
+            <div id="socIconPrev_${id}" style="width:32px; height:32px; background:${iconBg}; border-radius:6px; display:flex; align-items:center; justify-content:center; border:2px solid ${ringColor};">
+              ${iconInner}
+            </div>
           </div>
           <div style="flex:1;"><b>${soc.platformName||soc.name||''}</b><div style="font-size:0.75rem; color:var(--muted); word-break:break-all;">${soc.url}</div></div>
         </div>
         <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
           <button onclick="setEditMode('${id}','brand')" class="editmode-btn" data-id="${id}" data-mode="brand" style="flex:1;min-width:70px;padding:6px;border:2px solid ${mode==='brand'?'var(--primary)':'var(--border)'};border-radius:6px;background:var(--bg);cursor:pointer;font-family:'Tajawal';font-size:0.72rem;font-weight:700;">لون التطبيق</button>
-          <button onclick="setEditMode('${id}','site')" class="editmode-btn" data-id="${id}" data-mode="site" style="flex:1;min-width:70px;padding:6px;border:2px solid ${mode==='site'?'var(--primary)':'var(--border)'};border-radius:6px;background:var(--bg);cursor:pointer;font-family:'Tajawal';font-size:0.72rem;font-weight:700;">لون موقعك</button>
+          <button onclick="setEditMode('${id}','custom')" class="editmode-btn" data-id="${id}" data-mode="custom" style="flex:1;min-width:70px;padding:6px;border:2px solid ${mode==='custom'?'var(--primary)':'var(--border)'};border-radius:6px;background:var(--bg);cursor:pointer;font-family:'Tajawal';font-size:0.72rem;font-weight:700;">🎨 تخصيص</button>
           <button onclick="document.getElementById('editIconFile_${id}').click()" style="flex:1;min-width:70px;padding:6px;border:2px solid ${mode==='upload'?'var(--primary)':'var(--border)'};border-radius:6px;background:var(--bg);cursor:pointer;font-family:'Tajawal';font-size:0.72rem;font-weight:700;">رفع صورة</button>
           <input type="file" id="editIconFile_${id}" accept="image/*" style="display:none;" onchange="uploadEditIcon('${id}',this)">
           <button class="btn-delete" onclick="deleteSocial('${id}')" style="flex-shrink:0;">حذف</button>
-        </div>`;
+        </div>
+        ${mode==='custom' ? `
+        <div style="margin-top:10px;padding:12px;background:var(--bg2);border-radius:10px;">
+          <div style="font-size:0.75rem;font-weight:700;color:var(--muted);margin-bottom:10px;">🖼 معاينة مباشرة · Live Preview أعلاه</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div>
+              <label style="font-size:0.72rem;display:block;margin-bottom:4px;">لون الخلفية · Background</label>
+              <input type="color" value="${soc.customBg||'#3d5af1'}" oninput="updateCustomSocialColor('${id}','customBg',this.value)" style="width:100%;height:36px;cursor:pointer;">
+            </div>
+            <div>
+              <label style="font-size:0.72rem;display:block;margin-bottom:4px;">لون الأيقونة · Icon</label>
+              <input type="color" value="${soc.customIconColor||'#ffffff'}" oninput="updateCustomSocialColor('${id}','customIconColor',this.value)" style="width:100%;height:36px;cursor:pointer;">
+            </div>
+            <div>
+              <label style="font-size:0.72rem;display:block;margin-bottom:4px;">اللون الدائري · Ring</label>
+              <input type="color" value="${soc.customRing||'#ffffff'}" oninput="updateCustomSocialColor('${id}','customRing',this.value)" style="width:100%;height:36px;cursor:pointer;">
+            </div>
+            <div>
+              <label style="font-size:0.72rem;display:block;margin-bottom:4px;">لون الحاوية · Container</label>
+              <input type="color" value="${soc.customContainer||'#ffffff'}" oninput="updateCustomSocialColor('${id}','customContainer',this.value)" style="width:100%;height:36px;cursor:pointer;">
+            </div>
+          </div>
+        </div>` : ''}`;
       registry.appendChild(div);
     });
   }
+
+  // تحديث لحظي لألوان التخصيص الأربعة + معاينة مباشرة قبل الحفظ بقاعدة البيانات
+  let customColorSaveTimer = null;
+  window.updateCustomSocialColor = function(id, field, value){
+    // تحديث المعاينة فوراً بدون انتظار الحفظ
+    const iconEl = document.getElementById('socIconPrev_'+id);
+    const containerEl = document.getElementById('socIconContainer_'+id);
+    if(iconEl){
+      if(field==='customBg') iconEl.style.background = value;
+      if(field==='customRing') iconEl.style.borderColor = value;
+      if(field==='customIconColor'){
+        const span = iconEl.querySelector('span');
+        if(span) span.style.color = value;
+      }
+    }
+    if(containerEl && field==='customContainer') containerEl.style.background = value;
+
+    // احفظ بقاعدة البيانات بعد توقف قصير عن التغيير (تفادي كتابة متكررة أثناء السحب على منتقي اللون)
+    clearTimeout(customColorSaveTimer);
+    customColorSaveTimer = setTimeout(async () => {
+      try {
+        const userRef = doc(db, "users", currentUser.uid);
+        const snap = await getDoc(userRef);
+        const socials = (snap.exists() && Array.isArray(snap.data().socials)) ? snap.data().socials : [];
+        const idx = socials.findIndex(s => s.id === id);
+        if(idx<0) return;
+        socials[idx][field] = value;
+        await setDoc(userRef, { socials: socials }, { merge: true });
+      } catch(e){ console.error('updateCustomSocialColor failed:', e); }
+    }, 400);
+  };
 
   // تعديل نمط أيقونة حساب محفوظ (لون التطبيق / لون موقعك)
   window.setEditMode = async function(id, mode) {
@@ -2025,6 +2087,13 @@ tr:hover{background:var(--bg2);}
       if(idx<0) return;
       socials[idx].styleMode = mode;
       if(mode!=='upload') socials[idx].icon = null; // إزالة الصورة عند اختيار لون
+      if(mode==='custom'){
+        // قيم افتراضية عند أول استخدام لوضع التخصيص
+        if(!socials[idx].customBg) socials[idx].customBg = socials[idx].brandColor || '#3d5af1';
+        if(!socials[idx].customIconColor) socials[idx].customIconColor = '#ffffff';
+        if(!socials[idx].customRing) socials[idx].customRing = '#ffffff';
+        if(!socials[idx].customContainer) socials[idx].customContainer = '#ffffff';
+      }
       await setDoc(userRef, { socials: socials }, { merge: true });
       window.showToast("تم تحديث شكل الأيقونة");
       loadSocials();
