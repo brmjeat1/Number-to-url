@@ -179,9 +179,10 @@ nav{
   background:var(--surface);border:1px solid var(--border);border-radius:10px;
   padding:14px;text-decoration:none;color:var(--text);font-weight:700;
   display:flex;align-items:center;justify-content:space-between;transition:transform .15s;
+  font-size:0.95rem;font-family:inherit;line-height:1.5;
 }
 .overlay-item:active{transform:scale(0.98);}
-.overlay-item .ov-num{font-family:ui-monospace,'SF Mono','Space Mono',monospace;color:var(--accent);font-weight:700;}
+.overlay-item .ov-num{font-family:ui-monospace,'SF Mono','Space Mono',monospace;color:var(--accent);font-weight:700;font-size:0.95rem;}
 
 /* ========== نافذة عرض النص (للأرقام من نوع نص — رابط خاص بالموقع بدل href خارجي) ========== */
 .text-view-overlay{
@@ -686,10 +687,10 @@ function render(user){
 
     <div class="pick-row">
       <button class="pick-box" onclick="openSection('featured')">
-        <div class="pick-title">روابط مختارة<span class="pick-sub">Selected Links</span></div>
+        <div class="pick-title">أرقام مختارة<span class="pick-sub">Selected Numbers</span></div>
       </button>
       <button class="pick-box" onclick="openSection('recent')">
-        <div class="pick-title">سجل الروابط<span class="pick-sub">Links Registry</span></div>
+        <div class="pick-title">سجل الأرقام<span class="pick-sub">Numbers Registry</span></div>
       </button>
     </div>
 
@@ -744,8 +745,8 @@ function openSection(type){
   const data=window.__pageData;
   if(!data)return;
   let title='',links=[];
-  if(type==='featured'){title='روابط مختارة · Selected Links';links=data.featuredLinks;}
-  else if(type==='recent'){title='سجل الروابط · Links Registry';links=data.recentLinks;}
+  if(type==='featured'){title='أرقام مختارة · Selected Numbers';links=data.featuredLinks;}
+  else if(type==='recent'){title='سجل الأرقام · Numbers Registry';links=data.recentLinks;}
   document.getElementById('sectionOverlayTitle').textContent=title;
   const body=document.getElementById('sectionOverlayBody');
   window.__textViewData=links;
@@ -827,7 +828,7 @@ function goNav(){
     return;
   }
 
-  // أرقام محجوزة: 206 يفتح قسم "روابط مختارة"، 210-216 تفتح حساب التواصل المطابق
+  // أرقام محجوزة: 206 يفتح قسم "أرقام مختارة"، 210-216 تفتح حساب التواصل المطابق
   if(n===206){ openSection('featured'); return; }
   if(n>=210 && n<=216){
     const s=userSocials[n-210];
