@@ -288,6 +288,21 @@ function getUsername(){
   return null;
 }
 
+// يدعم رابط نظيف للمقالة: electrwni.link/اليوزر/الرقم — يحوّل تلقائياً لصفحة المقالة
+function checkArticlePathRedirect(){
+  const parts = window.location.pathname.split('/').filter(Boolean);
+  const reservedFile=['page.html','page','index.html','index'];
+  if(parts.length===2 && !reservedFile.includes(parts[0].toLowerCase())){
+    const uname = parts[0];
+    const num = parseInt(arabicToEnglish(parts[1]));
+    if(uname && !isNaN(num)){
+      window.location.replace(`article.html?u=${encodeURIComponent(uname)}&n=${num}`);
+      return true;
+    }
+  }
+  return false;
+}
+
 function arabicToEnglish(s){
   let r='';
   for(const ch of s){
@@ -848,7 +863,7 @@ function show404(msg){
     </div>`;
 }
 
-init();
+if(!checkArticlePathRedirect()){ init(); }
 </script>
 
 <!-- نافذة QR المنبثقة -->
