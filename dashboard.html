@@ -1173,7 +1173,7 @@ tr:hover{background:var(--bg2);}
         number: 205, reserved: true, type: 'link',
         title: 'رابط الصفحة', label: 'رابط الصفحة',
         url: `electrwni.link/${uname}`, text: '',
-        description: 'الرابط العام لصفحتك', views: 0
+        description: 'الرابط العام لصفحتك', views: userData?.pageViews || 0
       });
     }
     entries.push({
