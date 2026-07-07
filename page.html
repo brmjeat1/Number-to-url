@@ -389,6 +389,16 @@ let userSocials=[];
 let pageUid=null;
 let pageUsername=null;
 
+// عدّاد زيارات الصفحة نفسها (رقم 205 المحجوز) — يزيد مرة واحدة كل تحميل ناجح للصفحة
+async function trackPageView(uid){
+  if(!uid) return;
+  try{
+    await db.collection('users').doc(uid).update({
+      pageViews: firebase.firestore.FieldValue.increment(1)
+    });
+  }catch(e){ console.error('trackPageView failed:', e.code || e.message || e); }
+}
+
 // عدّاد نقرات حسابات التواصل — يزيد المشاهدة بأمان (transaction) دون تعطيل تجربة الزائر
 async function trackSocialClick(socialId){
   if(!pageUid || !socialId) return;
@@ -452,6 +462,7 @@ async function init(){
     const uid=idxDoc.data().uid;
     pageUid=uid;
     setupSmartNav(uid);
+    trackPageView(uid);
     const ref=db.collection('users').doc(uid);
     const docSnap=await ref.get();
     done=true; clearTimeout(safety);
