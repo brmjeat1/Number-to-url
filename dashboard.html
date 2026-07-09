@@ -162,7 +162,28 @@ tr:hover{background:var(--bg2);}
   th,td{padding:8px;}
 }
 /* Apple-style tight tracking on large headings */
-.topbar-brand,.expandable-title{letter-spacing:-0.02em;}
+.topbar-brand,.expandable-title{letter-spacing:-0.02em;}/* منتقي ألوان بشكل مربع نظيف (بدل الدائرة الافتراضية بالمتصفح) */
+input[type="color"].color-box-picker{
+  width:100%;height:44px;border:1.5px solid var(--border);border-radius:10px;
+  cursor:pointer;padding:3px;background:var(--bg2);
+}
+input[type="color"].color-box-picker::-webkit-color-swatch-wrapper{padding:0;}
+input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-radius:7px;}
+
+.shape-opt{
+  border:2px solid var(--border);border-radius:12px;background:var(--bg2);
+  padding:14px 10px;cursor:pointer;font-family:inherit;color:var(--text);text-align:center;
+}
+.shape-opt.active{border-color:var(--primary);background:var(--bg);}
+
+.template-card{
+  flex-shrink:0;width:90px;cursor:pointer;border:2px solid var(--border);border-radius:12px;
+  overflow:hidden;background:var(--bg2);font-family:inherit;
+}
+.template-card.active{border-color:var(--primary);}
+.template-card .tpl-preview{height:56px;display:flex;align-items:center;justify-content:center;}
+.template-card .tpl-dot{width:16px;height:16px;border-radius:50%;}
+.template-card .tpl-name{font-size:0.68rem;font-weight:700;text-align:center;padding:6px 4px;color:var(--text);}
 </style>
 </head>
 <body>
@@ -192,7 +213,7 @@ tr:hover{background:var(--bg2);}
       <div id="qrCardLogo" style="width:64px;height:64px;border-radius:50%;background:#fff;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:700;color:var(--primary);overflow:hidden;"></div>
       <div id="qrCardName" style="color:#fff;font-size:1.15rem;font-weight:700;margin-bottom:2px;">—</div>
       <div id="qrCardUser" style="color:rgba(255,255,255,0.85);font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-size:0.8rem;margin-bottom:16px;direction:ltr;">@—</div>
-      <div style="background:#fff;border-radius:16px;padding:16px;display:inline-block;margin-bottom:14px;">
+      <div id="qrContainerBox" style="background:#fff;border-radius:16px;padding:16px;display:inline-block;margin-bottom:14px;">
         <div id="qrCanvas"></div>
       </div>
       <div style="color:#fff;font-size:0.9rem;font-weight:700;margin-bottom:2px;">امسح لتصل لكل روابطي</div>
@@ -279,6 +300,10 @@ tr:hover{background:var(--bg2);}
         <div class="form-group" id="advFeaturedGroup" style="display:flex;align-items:center;gap:8px;">
           <input type="checkbox" id="linkFeatured" style="width:auto;">
           <label style="margin:0;">تمييزه بقائمة "أرقام مختارة" <span class="lbl-sub">/ Feature in "Selected Links"</span></label>
+        </div>
+        <div class="form-group" style="display:flex;align-items:center;gap:8px;">
+          <input type="checkbox" id="linkHidden" style="width:auto;">
+          <label style="margin:0;">🔒 إخفاء الرابط عن الجمهور <span class="lbl-sub">/ Hide from public</span></label>
         </div>
         <!-- حقول مخفية للتوافق -->
         <input type="hidden" id="entryMode" value="link">
@@ -376,6 +401,76 @@ tr:hover{background:var(--bg2);}
 
     <div class="expandable">
       <div class="expandable-header open" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon">▭</div><span>شكل الأيقونات<span class="title-sub">Icon Shape</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content open">
+        <div style="font-size:0.76rem;font-weight:700;color:var(--muted);margin-bottom:12px;">يُطبَّق على كل حسابات التواصل دفعة واحدة · Applies to all accounts at once</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;" id="iconShapeGrid">
+          <button type="button" class="shape-opt" id="shapeOptCircle" onclick="setIconShape('circle')">
+            <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-light));margin:0 auto 8px;"></div>
+            <div style="font-size:0.8rem;font-weight:700;">دائري <span class="lbl-sub" style="display:block;">Circle</span></div>
+          </button>
+          <button type="button" class="shape-opt" id="shapeOptRect" onclick="setIconShape('rect')">
+            <div style="width:76px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--primary-light));margin:0 auto 8px;"></div>
+            <div style="font-size:0.8rem;font-weight:700;">مستطيل <span class="lbl-sub" style="display:block;">Rectangle</span></div>
+          </button>
+        </div>
+        <div id="rectSubOptions" style="display:none;grid-template-columns:1fr 1fr;gap:10px;">
+          <button type="button" class="shape-opt" id="rectStyleRounded" onclick="setRectStyle('rounded')">
+            <div style="width:76px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--primary-light));margin:0 auto 8px;position:relative;overflow:hidden;">
+              <div style="position:absolute;right:36%;top:0;bottom:0;width:1.5px;background:rgba(255,255,255,0.6);"></div>
+            </div>
+            <div style="font-size:0.76rem;font-weight:700;">حواف دائرية<span class="lbl-sub" style="display:block;">خط مستقيم · Straight</span></div>
+          </button>
+          <button type="button" class="shape-opt" id="rectStyleSharp" onclick="setRectStyle('sharp')">
+            <div style="width:76px;height:36px;border-radius:2px;background:linear-gradient(135deg,var(--primary),var(--primary-light));margin:0 auto 8px;position:relative;overflow:hidden;">
+              <div style="position:absolute;right:32%;top:-14px;bottom:-14px;width:1.5px;background:rgba(255,255,255,0.6);transform:rotate(18deg);"></div>
+            </div>
+            <div style="font-size:0.76rem;font-weight:700;">حواف حادة<span class="lbl-sub" style="display:block;">خط مائل · Slanted</span></div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="expandable">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon">▦</div><span>تخصيص بطاقة QR<span class="title-sub">QR Card Style</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content open">
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <button type="button" id="qrModeBrand" onclick="setQrMode('brand')" style="flex:1;padding:10px;border:2px solid var(--primary);border-radius:9px;background:var(--bg2);color:var(--text);font-weight:700;font-family:inherit;cursor:pointer;font-size:0.82rem;">لون الموقع · Site</button>
+          <button type="button" id="qrModeCustom" onclick="setQrMode('custom')" style="flex:1;padding:10px;border:2px solid var(--border);border-radius:9px;background:transparent;color:var(--text);font-weight:700;font-family:inherit;cursor:pointer;font-size:0.82rem;">🎨 تخصيص · Custom</button>
+        </div>
+        <div id="qrCustomColors" style="display:none;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+          <div>
+            <label style="font-size:0.72rem;display:block;margin-bottom:4px;">خلفية البطاقة · Card BG</label>
+            <input type="color" class="color-box-picker" id="qrBgColor" value="#3d5af1" oninput="updateQrPreview()">
+          </div>
+          <div>
+            <label style="font-size:0.72rem;display:block;margin-bottom:4px;">لون الرمز · QR Color</label>
+            <input type="color" class="color-box-picker" id="qrIconColor" value="#1a1d24" oninput="updateQrPreview()">
+          </div>
+          <div>
+            <label style="font-size:0.72rem;display:block;margin-bottom:4px;">لون الإطار · Ring</label>
+            <input type="color" class="color-box-picker" id="qrRingColor" value="#ffffff" oninput="updateQrPreview()">
+          </div>
+          <div>
+            <label style="font-size:0.72rem;display:block;margin-bottom:4px;">لون الحاوية · Container</label>
+            <input type="color" class="color-box-picker" id="qrContainerColor" value="#ffffff" oninput="updateQrPreview()">
+          </div>
+        </div>
+        <div style="font-size:0.75rem;font-weight:700;color:var(--muted);margin-bottom:8px;">معاينة مباشرة · Live Preview</div>
+        <div id="qrMiniPreview" style="border-radius:14px;padding:18px;text-align:center;background:linear-gradient(135deg,#3d5af1,#6c8fff);">
+          <div id="qrMiniLogo" style="width:36px;height:36px;border-radius:50%;background:#fff;margin:0 auto 8px;border:2px solid #fff;"></div>
+          <div id="qrMiniBox" style="width:60px;height:60px;background:#fff;border-radius:8px;margin:0 auto;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="expandable">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
         <div class="expandable-title"><div class="expandable-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M6.62 10.79a15.15 15.15 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24 11.36 11.36 0 003.56.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z"/></svg></div><span>أرقام التواصل<span class="title-sub">Phone Numbers</span></span></div>
         <div class="expandable-toggle">▼</div>
       </div>
@@ -444,6 +539,13 @@ tr:hover{background:var(--bg2);}
           <label>صورة الشعار <span class="lbl-sub">/ Logo Image</span></label>
           <input type="file" id="avatarInput" accept="image/*" onchange="selectAvatar(this)">
         </div>
+
+        <div class="form-group">
+          <label>قوالب جاهزة <span class="lbl-sub">/ Ready Templates</span></label>
+          <div style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;">اختر قالباً لتطبيق مجموعة ألوان متناسقة فوراً، وتقدر تعدّل عليها بعدها بحرية · Pick a template, tweak it however you like after</div>
+          <div id="templateCarousel" style="display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;"></div>
+        </div>
+
         <div class="form-group">
           <label>اللون الأساسي ١ <span class="lbl-sub">/ Primary 1</span></label>
           <div id="colorPalette" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;"></div>
@@ -965,6 +1067,9 @@ tr:hover{background:var(--bg2);}
     if(lpName) lpName.textContent = (document.getElementById('pfName')&&document.getElementById('pfName').value) || username;
     loadLinks();
     loadSocials();
+    loadIconShapeSettings();
+    loadQrStyleSettings();
+    renderTemplateCarousel();
   }
 
   // 3. ربط الوظائف البرمجية الأساسية بـ واجهة المستخدم (Window Object Mapping)
@@ -1032,7 +1137,138 @@ tr:hover{background:var(--bg2);}
     }
   };
 
-  window.openQrCard = function() {
+  // ===== شكل أيقونات التواصل (عام على الكل): دائري أو مستطيل (دائري الحواف/حاد الحواف) =====
+  window.setIconShape = async function(shape){
+    document.getElementById('shapeOptCircle').classList.toggle('active', shape==='circle');
+    document.getElementById('shapeOptRect').classList.toggle('active', shape==='rect');
+    document.getElementById('rectSubOptions').style.display = shape==='rect' ? 'grid' : 'none';
+    try{
+      await setDoc(doc(db, "users", currentUser.uid), { socialIconShape: shape }, { merge: true });
+      window.showToast("تم تحديث شكل الأيقونات");
+    }catch(e){ window.showToast("تعذر الحفظ: " + (e.message||'')); }
+  };
+  window.setRectStyle = async function(style){
+    document.getElementById('rectStyleRounded').classList.toggle('active', style==='rounded');
+    document.getElementById('rectStyleSharp').classList.toggle('active', style==='sharp');
+    try{
+      await setDoc(doc(db, "users", currentUser.uid), { socialRectStyle: style }, { merge: true });
+      window.showToast("تم تحديث نمط المستطيل");
+    }catch(e){ window.showToast("تعذر الحفظ: " + (e.message||'')); }
+  };
+  async function loadIconShapeSettings(){
+    try{
+      const snap = await getDoc(doc(db, "users", currentUser.uid));
+      const data = snap.exists() ? snap.data() : {};
+      const shape = data.socialIconShape || 'circle';
+      const rectStyle = data.socialRectStyle || 'rounded';
+      document.getElementById('shapeOptCircle').classList.toggle('active', shape==='circle');
+      document.getElementById('shapeOptRect').classList.toggle('active', shape==='rect');
+      document.getElementById('rectSubOptions').style.display = shape==='rect' ? 'grid' : 'none';
+      document.getElementById('rectStyleRounded').classList.toggle('active', rectStyle==='rounded');
+      document.getElementById('rectStyleSharp').classList.toggle('active', rectStyle==='sharp');
+    }catch(e){}
+  }
+
+  // ===== تخصيص بطاقة QR: نفس مبدأ تخصيص أيقونات التواصل (٤ ألوان) =====
+  window.setQrMode = async function(mode){
+    const brandBtn = document.getElementById('qrModeBrand');
+    const customBtn = document.getElementById('qrModeCustom');
+    const colorsBox = document.getElementById('qrCustomColors');
+    if(mode==='custom'){
+      customBtn.style.borderColor='var(--primary)'; customBtn.style.background='var(--bg2)';
+      brandBtn.style.borderColor='var(--border)'; brandBtn.style.background='transparent';
+      colorsBox.style.display='grid';
+    } else {
+      brandBtn.style.borderColor='var(--primary)'; brandBtn.style.background='var(--bg2)';
+      customBtn.style.borderColor='var(--border)'; customBtn.style.background='transparent';
+      colorsBox.style.display='none';
+    }
+    try{
+      await setDoc(doc(db, "users", currentUser.uid), { qrStyleMode: mode }, { merge: true });
+    }catch(e){}
+    updateQrPreview();
+  };
+  window.updateQrPreview = function(){
+    const mode = document.getElementById('qrModeCustom').style.borderColor === 'var(--primary)' || document.getElementById('qrCustomColors').style.display === 'grid' ? 'custom' : 'brand';
+    const preview = document.getElementById('qrMiniPreview');
+    const logo = document.getElementById('qrMiniLogo');
+    const box = document.getElementById('qrMiniBox');
+    if(mode === 'custom'){
+      const bg = document.getElementById('qrBgColor').value;
+      const iconColor = document.getElementById('qrIconColor').value;
+      const ring = document.getElementById('qrRingColor').value;
+      const container = document.getElementById('qrContainerColor').value;
+      preview.style.background = bg;
+      logo.style.borderColor = ring;
+      box.style.background = container;
+      box.style.boxShadow = `inset 0 0 0 3px ${iconColor}`;
+      // احفظ بهدوء بعد توقف قصير
+      clearTimeout(window.__qrSaveTimer);
+      window.__qrSaveTimer = setTimeout(async () => {
+        try{
+          await setDoc(doc(db, "users", currentUser.uid), {
+            qrCustomBg: bg, qrCustomIconColor: iconColor, qrCustomRing: ring, qrCustomContainer: container
+          }, { merge: true });
+        }catch(e){}
+      }, 400);
+    } else {
+      preview.style.background = 'linear-gradient(135deg,#3d5af1,#6c8fff)';
+      logo.style.borderColor = '#fff';
+      box.style.background = '#fff';
+      box.style.boxShadow = 'none';
+    }
+  };
+  async function loadQrStyleSettings(){
+    try{
+      const snap = await getDoc(doc(db, "users", currentUser.uid));
+      const data = snap.exists() ? snap.data() : {};
+      if(data.qrCustomBg) document.getElementById('qrBgColor').value = data.qrCustomBg;
+      if(data.qrCustomIconColor) document.getElementById('qrIconColor').value = data.qrCustomIconColor;
+      if(data.qrCustomRing) document.getElementById('qrRingColor').value = data.qrCustomRing;
+      if(data.qrCustomContainer) document.getElementById('qrContainerColor').value = data.qrCustomContainer;
+      window.setQrMode(data.qrStyleMode === 'custom' ? 'custom' : 'brand');
+    }catch(e){}
+  }
+
+  // ===== قوالب جاهزة (نفس منظومة ألوان سمات المقالة، لتناسق الهوية بكل الموقع) =====
+  const DESIGN_TEMPLATES = [
+    { id:'default', name:'الافتراضي', p1:'#3d5af1', p2:'#6c8fff', text:'#0f1535', bg:'#ffffff' },
+    { id:'natural', name:'طبيعي',     p1:'#588157', p2:'#7fa876', text:'#344E41', bg:'#DAD7CD' },
+    { id:'warm',    name:'دافئ',      p1:'#EE9A00', p2:'#f4b840', text:'#BB3E03', bg:'#FEFAE0' },
+    { id:'calm',    name:'هادئ',      p1:'#0D21A1', p2:'#4d5cc9', text:'#0D21A1', bg:'#EEF0F2' },
+    { id:'night',   name:'ليلي',      p1:'#8fb0ff', p2:'#6c8fff', text:'#f0f1f5', bg:'#12141c' },
+    { id:'earthy',  name:'ترابي',     p1:'#C97D34', p2:'#dba05f', text:'#7C4A03', bg:'#FDF6EC' },
+    { id:'fresh',   name:'منعش',      p1:'#2A9D8F', p2:'#5cbcaf', text:'#0B4F4A', bg:'#E6F4F1' }
+  ];
+  function renderTemplateCarousel(activeId){
+    const el = document.getElementById('templateCarousel');
+    if(!el) return;
+    el.innerHTML = DESIGN_TEMPLATES.map(t => `
+      <button type="button" class="template-card ${activeId===t.id?'active':''}" data-tpl="${t.id}" onclick="applyTemplate('${t.id}')">
+        <div class="tpl-preview" style="background:${t.bg};">
+          <div class="tpl-dot" style="background:linear-gradient(135deg,${t.p1},${t.p2});"></div>
+        </div>
+        <div class="tpl-name">${t.name}</div>
+      </button>
+    `).join('');
+  }
+  window.applyTemplate = async function(id){
+    const t = DESIGN_TEMPLATES.find(x=>x.id===id);
+    if(!t) return;
+    document.getElementById('colorPicker').value = t.p1;
+    document.getElementById('colorPicker2').value = t.p2;
+    document.getElementById('textColorPicker').value = t.text;
+    document.getElementById('bgColorPicker').value = t.bg;
+    window.onColorPick(t.p1);
+    window.onColor2Pick(t.p2);
+    window.onTextColorPick(t.text);
+    window.onBgColorPick(t.bg);
+    document.querySelectorAll('.template-card').forEach(c=>c.classList.toggle('active', c.getAttribute('data-tpl')===id));
+    try{ await window.saveDesign(); window.showToast(`تم تطبيق قالب "${t.name}" ✓`); }
+    catch(e){ window.showToast("تعذر حفظ القالب: " + (e.message||'')); }
+  };
+
+  window.openQrCard = async function() {
     const u = (document.getElementById('pfUser').value || '').trim();
     if(!u){ window.showToast("لا يوجد اسم مستخدم بعد"); return; }
     const url = `https://electrwni.link/${u}`;
@@ -1046,11 +1282,30 @@ tr:hover{background:var(--bg2);}
     const img = av ? av.querySelector('img') : null;
     if(img && img.src){ logo.innerHTML = `<img src="${img.src}" style="width:100%;height:100%;object-fit:cover;">`; }
     else { logo.textContent = (name[0]||'E').toUpperCase(); }
+
+    // طبّق تخصيص البطاقة (لون الموقع الافتراضي أو الألوان المخصصة الأربعة)
+    let qrDark = '#1a1d24', qrLight = '#ffffff', ringColor = '#ffffff', containerColor = '#ffffff', cardBg = null;
+    try{
+      const snap = await getDoc(doc(db, "users", currentUser.uid));
+      const data = snap.exists() ? snap.data() : {};
+      if(data.qrStyleMode === 'custom'){
+        cardBg = data.qrCustomBg || null;
+        qrDark = data.qrCustomIconColor || qrDark;
+        ringColor = data.qrCustomRing || ringColor;
+        containerColor = data.qrCustomContainer || containerColor;
+      }
+    }catch(e){}
+    const cardEl = document.getElementById('qrCard');
+    cardEl.style.background = cardBg || 'linear-gradient(160deg,var(--primary),var(--primary-light))';
+    logo.style.border = `2px solid ${ringColor}`;
+    const containerBox = document.getElementById('qrContainerBox');
+    if(containerBox) containerBox.style.background = containerColor;
+
     // توليد الـ QR ثم تثبيته كصورة dataURL (يضمن ظهوره في التصدير)
     const holder = document.getElementById('qrCanvas');
     const drawQr = ()=>{
       holder.innerHTML = '';
-      new QRCode(holder, { text: url, width: 180, height: 180, colorDark: '#1a1d24', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
+      new QRCode(holder, { text: url, width: 180, height: 180, colorDark: qrDark, colorLight: qrLight, correctLevel: QRCode.CorrectLevel.H });
       setTimeout(()=>{
         const cv = holder.querySelector('canvas');
         if(cv){
@@ -1278,6 +1533,7 @@ tr:hover{background:var(--bg2);}
     const desc = document.getElementById('linkDesc').value;
     const url = document.getElementById('linkUrl').value;
     const featured = document.getElementById('linkFeatured').checked;
+    const hidden = document.getElementById('linkHidden').checked;
     const mode = document.getElementById('entryMode').value || 'link';
     const isText = mode === 'text';
     const textContent = (document.getElementById('linkText')?.value || '').trim();
@@ -1321,6 +1577,7 @@ tr:hover{background:var(--bg2);}
         type: isText ? 'text' : 'link',
         presentMode: isText ? presentMode : null,
         featured: featured,
+        hidden: hidden,
         updatedAt: nowIso
       };
 
@@ -1349,6 +1606,7 @@ tr:hover{background:var(--bg2);}
       document.getElementById('linkUrl').value = '';
       const ltEl=document.getElementById('linkText'); if(ltEl) ltEl.value='';
       document.getElementById('linkFeatured').checked = false;
+      document.getElementById('linkHidden').checked = false;
       // أعد الوضع للرابط وزر الإضافة لوضعه الأصلي
       setEntryMode('link');
       setPresentMode('popup');
@@ -1458,7 +1716,7 @@ tr:hover{background:var(--bg2);}
         item.setAttribute('data-search', `${num} ${title} ${fullDesc} ${linkValue}`.toLowerCase());
         item.innerHTML = `
           <div class="item-header" onclick="this.parentElement.classList.toggle('open')">
-            <span style="color:var(--primary);">${registryTypeIconTag(isText?'text':'link')}</span> [${num}] ${title}${isReserved?' <span style="font-size:0.7rem;color:var(--primary);">(محجوز)</span>':(isText?' <span style="font-size:0.7rem;color:var(--muted);">(نص)</span>':'')}
+            <span style="color:var(--primary);">${registryTypeIconTag(isText?'text':'link')}</span> [${num}] ${title}${isReserved?' <span style="font-size:0.7rem;color:var(--primary);">(محجوز)</span>':(isText?' <span style="font-size:0.7rem;color:var(--muted);">(نص)</span>':'')}${link.hidden?' <span style="font-size:0.7rem;color:var(--error);" title="مخفي عن الجمهور">🔒 مخفي</span>':''}
             <div class="item-details">
               <div class="detail-row"><span class="detail-label">${isText?'النص:':'الرابط:'}</span> <span dir="ltr">${linkValuePreview}</span></div>
               <div class="detail-row"><span class="detail-label">الوصف:</span> <span>${fullDesc}</span></div>
@@ -1541,6 +1799,7 @@ tr:hover{background:var(--bg2);}
       document.getElementById('linkUrl').value = link.url || '';
       const ltEl=document.getElementById('linkText'); if(ltEl) ltEl.value = link.text || '';
       const feat = document.getElementById('linkFeatured'); if(feat) feat.checked = !!link.featured;
+      const hid = document.getElementById('linkHidden'); if(hid) hid.checked = !!link.hidden;
       // اضبط الوضع (رابط/نص) حسب نوع العنصر
       setEntryMode(link.type === 'text' ? 'text' : 'link');
       if(link.type === 'text') setPresentMode(link.presentMode === 'article' ? 'article' : 'popup');
@@ -2026,19 +2285,19 @@ tr:hover{background:var(--bg2);}
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
             <div>
               <label style="font-size:0.72rem;display:block;margin-bottom:4px;">لون الخلفية · Background</label>
-              <input type="color" value="${soc.customBg||'#3d5af1'}" oninput="updateCustomSocialColor('${id}','customBg',this.value)" style="width:100%;height:36px;cursor:pointer;">
+              <input type="color" class="color-box-picker" value="${soc.customBg||'#3d5af1'}" oninput="updateCustomSocialColor('${id}','customBg',this.value)">
             </div>
             <div>
               <label style="font-size:0.72rem;display:block;margin-bottom:4px;">لون الأيقونة · Icon</label>
-              <input type="color" value="${soc.customIconColor||'#ffffff'}" oninput="updateCustomSocialColor('${id}','customIconColor',this.value)" style="width:100%;height:36px;cursor:pointer;">
+              <input type="color" class="color-box-picker" value="${soc.customIconColor||'#ffffff'}" oninput="updateCustomSocialColor('${id}','customIconColor',this.value)">
             </div>
             <div>
               <label style="font-size:0.72rem;display:block;margin-bottom:4px;">اللون الدائري · Ring</label>
-              <input type="color" value="${soc.customRing||'#ffffff'}" oninput="updateCustomSocialColor('${id}','customRing',this.value)" style="width:100%;height:36px;cursor:pointer;">
+              <input type="color" class="color-box-picker" value="${soc.customRing||'#ffffff'}" oninput="updateCustomSocialColor('${id}','customRing',this.value)">
             </div>
             <div>
               <label style="font-size:0.72rem;display:block;margin-bottom:4px;">لون الحاوية · Container</label>
-              <input type="color" value="${soc.customContainer||'#ffffff'}" oninput="updateCustomSocialColor('${id}','customContainer',this.value)" style="width:100%;height:36px;cursor:pointer;">
+              <input type="color" class="color-box-picker" value="${soc.customContainer||'#ffffff'}" oninput="updateCustomSocialColor('${id}','customContainer',this.value)">
             </div>
           </div>
         </div>` : ''}`;
