@@ -47,9 +47,10 @@
   }
   html[data-theme="1"]{ --bg:#DAD7CD; --text:#344E41; --link:#588157; --muted:#5c6f63; --border:#c3c0b3; }
   html[data-theme="2"]{ --bg:#FEFAE0; --text:#BB3E03; --link:#EE9A00; --muted:#a37a4a; --border:#eee3bd; }
-  html[data-theme="3"]{ --bg:#F1DEDE; --text:#80727B; --link:#BBACC1; --muted:#9a8f96; --border:#e2cfcf; }
-  html[data-theme="4"]{ --bg:#EEF0F2; --text:#0D21A1; --link:#EEC643; --muted:#6b7280; --border:#dbdfe4; }
-  html[data-theme="5"]{ --bg:#12141c; --text:#f0f1f5; --link:#8fb0ff; --muted:#9aa0ae; --border:#2a2d3a; }
+  html[data-theme="3"]{ --bg:#EEF0F2; --text:#0D21A1; --link:#EEC643; --muted:#6b7280; --border:#dbdfe4; }
+  html[data-theme="4"]{ --bg:#12141c; --text:#f0f1f5; --link:#8fb0ff; --muted:#9aa0ae; --border:#2a2d3a; }
+  html[data-theme="5"]{ --bg:#FDF6EC; --text:#7C4A03; --link:#C97D34; --muted:#a67c4d; --border:#efe0c8; }
+  html[data-theme="6"]{ --bg:#E6F4F1; --text:#0B4F4A; --link:#2A9D8F; --muted:#5f8f89; --border:#c9e6e1; }
 
   *{margin:0;padding:0;box-sizing:border-box;}
   html,body{min-height:100vh;}
@@ -109,23 +110,6 @@
   .art-body mark{background:#ffe58a;color:#000;border-radius:3px;padding:0 2px;}
   .art-body mark.current{background:#ffb84d;}
 
-  /* ===== زر Aa للتحكم بحجم الخط ===== */
-  .font-size-btn{
-    display:flex;align-items:center;justify-content:center;
-    width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:none;
-    color:var(--text);font-weight:800;font-size:0.8rem;cursor:pointer;flex-shrink:0;
-  }
-  .font-size-popover{
-    display:none;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--border);
-    border-radius:12px;padding:8px 12px;margin-top:10px;width:100%;
-  }
-  .font-size-popover.open{display:flex;}
-  .font-size-popover button{
-    width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:none;
-    color:var(--text);font-weight:800;cursor:pointer;font-family:inherit;
-  }
-  .font-size-popover .fs-label{flex:1;text-align:center;font-size:0.8rem;color:var(--muted);}
-
   .preview-banner{
     background:#000;color:#fff;text-align:center;padding:8px;font-size:0.78rem;font-weight:700;
   }
@@ -153,6 +137,7 @@
     transition:transform .25s cubic-bezier(.34,1.56,.64,1),opacity .2s ease;
     pointer-events:none;
   }
+  .arc-item.arc-inner{width:38px;height:38px;z-index:406;}
   .arc-item svg{width:20px;height:20px;pointer-events:none;}
   .arc-item.open{opacity:1;pointer-events:auto;}
   .arc-item .arc-label{
@@ -160,6 +145,7 @@
     font-size:0.68rem;font-weight:700;color:var(--text);white-space:nowrap;
     background:var(--bg);padding:2px 8px;border-radius:10px;border:1px solid var(--border);
   }
+  .arc-item.arc-inner .arc-label{top:44px;font-size:0.62rem;padding:1px 6px;}
 
   /* ===== شاشة الخيارات المنزلقة: طبقة نمطية بدون تظليل، تمنع التفاعل مع الخلفية ===== */
   .sheet-overlay{
@@ -185,27 +171,32 @@
   }
   .sheet-title{font-weight:800;font-size:1rem;}
 
-  .theme-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;}
-  .theme-swatch{
-    width:32px;height:32px;border-radius:50%;cursor:pointer;border:2px solid transparent;
-    display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s;
+  .theme-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;}
+  .theme-box{
+    cursor:pointer;border:2px solid var(--border);border-radius:12px;overflow:hidden;
+    display:flex;flex-direction:column;transition:transform .15s,border-color .15s;
+    background:var(--bg);
   }
-  .theme-swatch:active{transform:scale(0.9);}
-  .theme-swatch.active{border-color:var(--link);}
-  .theme-swatch[data-t="0"]{
+  .theme-box:active{transform:scale(0.96);}
+  .theme-box.active{border-color:var(--link);}
+  .theme-box .swatch-preview{height:34px;width:100%;position:relative;}
+  .theme-box .swatch-label{
+    font-size:0.68rem;font-weight:700;text-align:center;padding:6px 4px;color:var(--text);
+    background:var(--bg);
+  }
+  .theme-box[data-t="0"] .swatch-preview{
     background:var(--site-gradient, linear-gradient(135deg,#3d5af1,#6c8fff));
     display:flex;align-items:center;justify-content:center;
     color:#ffffff;font-weight:900;font-size:13px;font-family:'Space Mono',monospace;
   }
-  .theme-swatch[data-t="1"]{background:#DAD7CD;}
-  .theme-swatch[data-t="2"]{background:#FEFAE0;}
-  .theme-swatch[data-t="3"]{background:#F1DEDE;}
-  .theme-swatch[data-t="4"]{background:#EEF0F2;}
-  .theme-swatch[data-t="5"]{
+  .theme-box[data-t="1"] .swatch-preview{background:#DAD7CD;}
+  .theme-box[data-t="2"] .swatch-preview{background:#FEFAE0;}
+  .theme-box[data-t="3"] .swatch-preview{background:#EEF0F2;}
+  .theme-box[data-t="4"] .swatch-preview{
     background:radial-gradient(circle at 30% 25%, #3a1670, #150533 70%);
     position:relative;overflow:hidden;
   }
-  .theme-swatch[data-t="5"]::before{
+  .theme-box[data-t="4"] .swatch-preview::before{
     content:'';position:absolute;inset:0;
     background-image:
       radial-gradient(1.4px 1.4px at 22% 28%, #ffffff, transparent),
@@ -214,6 +205,8 @@
       radial-gradient(1px 1px at 38% 68%, #ffffff, transparent),
       radial-gradient(1.4px 1.4px at 72% 78%, #ffffff, transparent);
   }
+  .theme-box[data-t="5"] .swatch-preview{background:#FDF6EC;}
+  .theme-box[data-t="6"] .swatch-preview{background:#E6F4F1;}
   .sheet-action-btn{
     width:100%;display:flex;align-items:center;gap:10px;padding:13px 14px;margin-bottom:10px;
     border-radius:12px;border:1px solid var(--border);background:none;color:var(--text);
@@ -285,6 +278,18 @@
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
   <span class="arc-label">بحث</span>
 </button>
+<button type="button" class="arc-item arc-inner" id="arcFontMinus" onclick="adjustFontSize(-1)" style="font-weight:900;font-size:1rem;">
+  −
+  <span class="arc-label">تصغير</span>
+</button>
+<button type="button" class="arc-item arc-inner" id="arcFontReset" onclick="adjustFontSize(0)" style="font-weight:800;font-size:0.72rem;">
+  Aa
+  <span class="arc-label">افتراضي</span>
+</button>
+<button type="button" class="arc-item arc-inner" id="arcFontPlus" onclick="adjustFontSize(1)" style="font-weight:900;font-size:1rem;">
+  +
+  <span class="arc-label">تكبير</span>
+</button>
 
 <!-- شاشة الخيارات: طبقة نمطية -->
 <div class="sheet-overlay" id="optionsSheet" onclick="if(event.target===this)closeSheet()">
@@ -309,7 +314,7 @@ let currentArticleData = { title:'', text:'', displayName:'', createdAt:'' };
 // ===== الثيمات =====
 function setTheme(t){
   document.documentElement.setAttribute('data-theme', String(t));
-  document.querySelectorAll('.theme-swatch').forEach(s=>s.classList.toggle('active', s.getAttribute('data-t')===String(t)));
+  document.querySelectorAll('.theme-box').forEach(s=>s.classList.toggle('active', s.getAttribute('data-t')===String(t)));
   try{ localStorage.setItem('el_article_theme', String(t)); }catch(e){}
 }
 (function initTheme(){
@@ -342,27 +347,22 @@ function formatDate(iso){
   }catch(e){ return ''; }
 }
 
-// ===== التحكم بحجم الخط (Aa) =====
-let fontScale = 1;
+// ===== التحكم بحجم الخط =====
+const DEFAULT_FONT_SCALE = 1.4;
+let fontScale = DEFAULT_FONT_SCALE;
 (function initFontScale(){
-  try{ fontScale = parseFloat(localStorage.getItem('el_article_font_scale')) || 1; }catch(e){}
+  try{
+    const saved = localStorage.getItem('el_article_font_scale');
+    fontScale = saved!=null ? parseFloat(saved) : DEFAULT_FONT_SCALE;
+  }catch(e){}
   document.documentElement.style.setProperty('--font-scale', fontScale);
 })();
-function toggleFontSizePopover(){
-  document.getElementById('fontSizePopover').classList.toggle('open');
-  updateFontSizeLabel();
-}
 function adjustFontSize(dir){
-  fontScale = Math.max(0.8, Math.min(1.6, fontScale + dir*0.1));
+  if(dir === 0){ fontScale = DEFAULT_FONT_SCALE; }
+  else{ fontScale = Math.max(0.8, Math.min(1.8, fontScale + dir*0.1)); }
   document.documentElement.style.setProperty('--font-scale', fontScale);
   try{ localStorage.setItem('el_article_font_scale', String(fontScale)); }catch(e){}
-  updateFontSizeLabel();
 }
-function updateFontSizeLabel(){
-  const el = document.getElementById('fsLabel');
-  if(el) el.textContent = Math.round(fontScale*100) + '٪';
-}
-window.toggleFontSizePopover = toggleFontSizePopover;
 window.adjustFontSize = adjustFontSize;
 
 function renderArticle(data){
@@ -378,15 +378,9 @@ function renderArticle(data){
     <div class="art-meta">
       <div class="avatar">${avatarHtml}</div>
       <span class="author-name">${escapeHtml(displayName || 'حساب electrwni.link')}</span>
-      <button type="button" class="font-size-btn" onclick="toggleFontSizePopover()" title="حجم الخط · Text size">Aa</button>
       <span>·</span>
       <span>${formatDate(createdAt)}</span>
       ${edited ? `<span class="edited-badge">✏️ آخر تعديل: ${formatDate(updatedAt)}</span>` : ''}
-    </div>
-    <div class="font-size-popover" id="fontSizePopover">
-      <button type="button" onclick="adjustFontSize(-1)">A-</button>
-      <span class="fs-label" id="fsLabel">١٠٠٪</span>
-      <button type="button" onclick="adjustFontSize(1)">A+</button>
     </div>
     <div class="art-body" id="artBody">${renderBody(text)}</div>
   `;
@@ -401,23 +395,27 @@ function renderEmpty(msg){
 }
 
 // ===== الزر العائم: يفتح/يقفل قوس الأيقونات حوله =====
-const ARC_IDS = ['arcShare','arcPrint','arcToc','arcSettings','arcSearch'];
+const ARC_OUTER = ['arcShare','arcPrint','arcToc','arcSettings','arcSearch'];
+const ARC_INNER = ['arcFontMinus','arcFontReset','arcFontPlus'];
+const ARC_IDS = [...ARC_OUTER, ...ARC_INNER];
 let arcOpen = false;
 
-function layoutArc(){
-  const radius = 100;
-  const n = ARC_IDS.length;
-  const startDeg = 165, endDeg = 15; // من اليسار (أعلى) إلى اليمين (أعلى) مروراً بالأعلى
-  ARC_IDS.forEach((id, i) => {
+function layoutArcGroup(ids, radius, startDeg, endDeg){
+  const n = ids.length;
+  ids.forEach((id, i) => {
     const el = document.getElementById(id);
     if(!el) return;
-    const deg = startDeg - (i * (startDeg-endDeg) / (n-1));
+    const deg = n===1 ? (startDeg+endDeg)/2 : startDeg - (i * (startDeg-endDeg) / (n-1));
     const rad = deg * Math.PI/180;
     const x = radius * Math.cos(rad);
     const y = -radius * Math.sin(rad);
     el.style.setProperty('--arc-x', x+'px');
     el.style.setProperty('--arc-y', y+'px');
   });
+}
+function layoutArc(){
+  layoutArcGroup(ARC_OUTER, 115, 168, 12);   // القوس الخارجي: الإجراءات الخمسة الرئيسية
+  layoutArcGroup(ARC_INNER, 62, 130, 50);    // القوس الداخلي: التحكم بحجم الخط
 }
 
 function toggleArc(){
@@ -496,16 +494,17 @@ function showSheetTab(tab){
     body.innerHTML = sheetBackRow('الإعدادات والسمات') + `
       <div style="font-weight:700;margin-bottom:10px;font-size:0.85rem;color:var(--muted);">الألوان · Theme</div>
       <div class="theme-row" id="themeRow">
-        <div class="theme-swatch active" data-t="0" onclick="setTheme(0)" title="electrwni.link">e</div>
-        <div class="theme-swatch" data-t="1" onclick="setTheme(1)"></div>
-        <div class="theme-swatch" data-t="2" onclick="setTheme(2)"></div>
-        <div class="theme-swatch" data-t="3" onclick="setTheme(3)"></div>
-        <div class="theme-swatch" data-t="4" onclick="setTheme(4)"></div>
-        <div class="theme-swatch" data-t="5" onclick="setTheme(5)" title="الوضع الليلي"></div>
+        <div class="theme-box active" data-t="0" onclick="setTheme(0)"><div class="swatch-preview">e</div><div class="swatch-label">الافتراضي</div></div>
+        <div class="theme-box" data-t="1" onclick="setTheme(1)"><div class="swatch-preview"></div><div class="swatch-label">طبيعي</div></div>
+        <div class="theme-box" data-t="2" onclick="setTheme(2)"><div class="swatch-preview"></div><div class="swatch-label">دافئ</div></div>
+        <div class="theme-box" data-t="3" onclick="setTheme(3)"><div class="swatch-preview"></div><div class="swatch-label">هادئ</div></div>
+        <div class="theme-box" data-t="4" onclick="setTheme(4)"><div class="swatch-preview"></div><div class="swatch-label">ليلي</div></div>
+        <div class="theme-box" data-t="5" onclick="setTheme(5)"><div class="swatch-preview"></div><div class="swatch-label">ترابي</div></div>
+        <div class="theme-box" data-t="6" onclick="setTheme(6)"><div class="swatch-preview"></div><div class="swatch-label">منعش</div></div>
       </div>
     `;
     const savedTheme = document.documentElement.getAttribute('data-theme') || '0';
-    document.querySelectorAll('#themeRow .theme-swatch').forEach(s=>s.classList.toggle('active', s.getAttribute('data-t')===savedTheme));
+    document.querySelectorAll('#themeRow .theme-box').forEach(s=>s.classList.toggle('active', s.getAttribute('data-t')===savedTheme));
   } else if(tab==='search'){
     body.innerHTML = sheetBackRow('أبحث في المقالة') + `
       <div class="search-box">
@@ -629,7 +628,7 @@ async function init(){
     applySiteColors(data);
     const links = Array.isArray(data.links) ? data.links : [];
     const link = links.find(l => (parseInt(l.number ?? l.num)) === num);
-    if(!link || link.type !== 'text'){ renderEmpty('لم يتم العثور على هذه المقالة · Article not found'); return; }
+    if(!link || link.type !== 'text' || link.hidden){ renderEmpty('لم يتم العثور على هذه المقالة · Article not found'); return; }
 
     renderArticle({
       title: link.title ?? link.label,
