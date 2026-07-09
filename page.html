@@ -113,26 +113,26 @@ nav{
 
 /* ========== CONTENT ========== */
 .content{padding:0 24px 30px;max-width:500px;margin:0 auto;}
-.profile-info{text-align:center;margin-bottom:30px;}
+.profile-info{text-align:center;margin-bottom:16px;}
 .profile-name{font-size:1.6rem;font-weight:700;margin-bottom:6px;}
 .profile-handle{font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-size:0.8rem;color:var(--text2);direction:ltr;margin-bottom:10px;}
-.profile-bio{font-size:0.9rem;color:var(--text2);line-height:1.6;}
+.profile-bio{font-size:0.9rem;color:var(--text2);line-height:1.6;text-align:center;margin-bottom:24px;}
 
 /* ========== INPUT SECTION ========== */
 .input-section{
-  background:var(--user-gradient);border-radius:16px;
-  padding:24px;margin-bottom:30px;
+  background:var(--user-gradient);border-radius:14px;
+  padding:14px;margin-bottom:24px;
 }
 .input-box{
-  width:100%;background:#fff;border:2.5px solid #fff;border-radius:12px;
-  padding:16px;color:var(--accent);font-size:1.2rem;font-weight:700;
+  width:100%;background:#fff;border:2px solid #fff;border-radius:10px;
+  padding:11px;color:var(--accent);font-size:1.05rem;font-weight:700;
   font-family:ui-monospace,'SF Mono','Space Mono',monospace;outline:none;text-align:center;
-  margin-bottom:12px;
+  margin-bottom:9px;
 }
 .input-box::placeholder{color:var(--muted);}
 .btn-go{
-  width:100%;background:#fff;color:var(--accent);border:3px solid var(--bg);border-radius:12px;
-  padding:16px;font-size:1rem;font-weight:700;cursor:pointer;
+  width:100%;background:#fff;color:var(--accent);border:2px solid var(--bg);border-radius:10px;
+  padding:11px;font-size:0.88rem;font-weight:700;cursor:pointer;
 }
 .btn-go:active{transform:scale(0.98);}
 .error-msg{color:#ffeb3b;font-size:0.85rem;margin-top:8px;text-align:center;display:none;font-weight:700;}
@@ -153,6 +153,30 @@ nav{
 .social-btn:active{transform:scale(0.92);}
 .social-btn img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
 .social-btn svg{width:28px;height:28px;}
+
+/* أيقونات المنصات الاجتماعية - مستطيلة (أيقونة + يوزر) */
+.social-rect{
+  position:relative;display:inline-flex;align-items:stretch;
+  height:54px;border-radius:16px;border:2.5px solid;overflow:hidden;
+  text-decoration:none;min-width:118px;transition:transform .15s;
+}
+.social-rect:active{transform:scale(0.96);}
+.social-rect-icon{
+  display:flex;align-items:center;justify-content:center;
+  width:54px;flex-shrink:0;position:relative;z-index:1;
+}
+.social-rect-icon svg{width:22px;height:22px;}
+.social-rect-icon img{width:100%;height:100%;object-fit:cover;}
+.social-rect-label{
+  display:flex;align-items:center;
+  padding:0 14px;font-size:0.8rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px;
+  position:relative;z-index:1;direction:ltr;
+}
+.social-rect-divider{
+  position:absolute;top:0;bottom:0;right:54px;width:2px;background:currentColor;opacity:0.35;z-index:2;
+}
+.social-rect-sharp{border-radius:6px;}
+.social-rect-sharp .social-rect-divider{transform:skewX(-18deg);}
 
 /* بطاقات التواصل (أرقام/موقع/خريطة) */
 .contact-card{
@@ -680,17 +704,28 @@ function render(user){
     document.getElementById('heroBanner').style.backgroundImage=`url(${user.bannerImage})`;
   }
 
-  // حسابات التواصل الاجتماعي (الأيقونات الدائرية)
+  // حسابات التواصل الاجتماعي (دائرية أو مستطيلة حسب اختيار صاحب الصفحة)
   const socials=user.socials||[];
   userSocials=socials;
+  const iconShape = user.socialIconShape || 'circle';
+  const rectStyle = user.socialRectStyle || 'rounded';
+  function extractHandle(url){
+    if(!url) return '';
+    try{
+      let clean=String(url).trim().replace(/^https?:\/\//i,'').replace(/\/+$/,'');
+      const parts=clean.split('/');
+      const h=parts[parts.length-1]||clean;
+      return h.startsWith('@')?h:'@'+h;
+    }catch(e){ return url; }
+  }
   let socialsHtml='';
   if(socials.length){
     const btns=socials.map(s=>{
       const pid=s.platformId||detectPlat(s.url);
       const svg=pid&&PAGE_SVG[pid]?PAGE_SVG[pid]:null;
-      // النمط: upload=صورة مرفوعة، site=لون موقعك، brand=لون التطبيق (الافتراضي)
+      // النمط: upload=صورة مرفوعة، site=لون موقعك، brand=لون التطبيق (الافتراضي)، custom=تخصيص كامل
       const mode = s.styleMode || 'brand';
-      // صورة مرفوعة تملأ الدائرة
+      // صورة مرفوعة تملأ الدائرة (شكل دائري فقط، الرفع ما يدعم المستطيل حالياً)
       if(mode==='upload' && s.icon && String(s.icon).startsWith('data:')){
         return `<a href="${s.url}" target="_blank" class="social-btn" title="${s.name||''}" style="border-color:var(--accent-light);" onclick="trackSocialClick('${s.id}')"><img src="${s.icon}"></a>`;
       }
@@ -708,6 +743,19 @@ function render(user){
         circleBg=s.brandColor||platColor(pid); borderCol='var(--accent-light)'; iconColor='#ffffff';
       }
       const inner = svg ? svg : `<span style="font-weight:700;font-size:1.4rem;">${(s.name||'?')[0].toUpperCase()}</span>`;
+
+      // ===== الشكل المستطيل: أيقونة + يوزر، بخط فاصل مستقيم أو مائل =====
+      if(iconShape === 'rect'){
+        const rectClass = rectStyle === 'sharp' ? 'social-rect social-rect-sharp' : 'social-rect';
+        const smallInner = svg ? svg.replace('width="28"','width="20"').replace('height="28"','height="20"') : inner;
+        return `<a href="${s.url}" target="_blank" class="${rectClass}" title="${s.name||pid}" style="background:${circleBg};border-color:${borderCol};color:${iconColor};" onclick="trackSocialClick('${s.id}')">
+          <span class="social-rect-icon">${smallInner}</span>
+          <span class="social-rect-divider"></span>
+          <span class="social-rect-label">${extractHandle(s.url)||s.name||pid}</span>
+        </a>`;
+      }
+
+      // ===== الشكل الدائري (الافتراضي) =====
       if(mode==='custom' && containerBg!=='transparent'){
         return `<a href="${s.url}" target="_blank" class="social-btn-wrap" title="${s.name||pid}" style="background:${containerBg};border-radius:20px;padding:4px;display:inline-flex;" onclick="trackSocialClick('${s.id}')"><span class="social-btn" style="background:${circleBg};border-color:${borderCol};color:${iconColor};">${inner}</span></a>`;
       }
@@ -744,17 +792,18 @@ function render(user){
     <div class="profile-info">
       <div class="profile-name">${user.displayName||user.username}</div>
       <div class="profile-handle">electrwni.link/${user.username}</div>
-      ${user.bio?`<div class="profile-bio">${user.bio}</div>`:''}
     </div>
 
     <div class="input-section">
       <input class="input-box" type="text" id="numIn"
-        placeholder="أكتب الرقم · Enter Number"
+        placeholder="أكتب الرقم · Write the number"
         maxlength="6" inputmode="numeric" oninput="convertNum()"
         onkeydown="if(event.key==='Enter'){event.preventDefault();goNav();}">
-      <button type="button" class="btn-go" onclick="goNav()">أذهب الآن · Go Now</button>
+      <button type="button" class="btn-go" onclick="goNav()">Go Now</button>
       <div class="error-msg" id="errMsg">الرقم غير موجود · Number not found</div>
     </div>
+
+    ${user.bio?`<div class="profile-bio">${user.bio}</div>`:''}
 
     <div class="pick-row">
       <button class="pick-box" onclick="openSection('featured')">
