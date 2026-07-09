@@ -541,6 +541,17 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         </div>
 
         <div class="form-group">
+          <label>أي وصف يناسبك أكثر؟ <span class="lbl-sub">/ What describes you best?</span></label>
+          <div style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;">نقترح لك قالب تصميم مناسب تلقائياً بناءً على اختيارك · We'll suggest a matching template</div>
+          <div id="categoryQuickGrid" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+        </div>
+
+        <div class="form-group">
+          <label>ما الهدف الذي تسعى إليه؟ <span class="lbl-sub">/ What's your goal?</span></label>
+          <div id="goalQuickGrid" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+        </div>
+
+        <div class="form-group">
           <label>قوالب جاهزة <span class="lbl-sub">/ Ready Templates</span></label>
           <div style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;">اختر قالباً لتطبيق مجموعة ألوان متناسقة فوراً، وتقدر تعدّل عليها بعدها بحرية · Pick a template, tweak it however you like after</div>
           <div id="templateCarousel" style="display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;"></div>
@@ -1070,6 +1081,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     loadIconShapeSettings();
     loadQrStyleSettings();
     renderTemplateCarousel();
+    loadCategoryGoalSettings();
   }
 
   // 3. ربط الوظائف البرمجية الأساسية بـ واجهة المستخدم (Window Object Mapping)
@@ -1267,6 +1279,90 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     try{ await window.saveDesign(); window.showToast(`تم تطبيق قالب "${t.name}" ✓`); }
     catch(e){ window.showToast("تعذر حفظ القالب: " + (e.message||'')); }
   };
+
+  // ===== "أي وصف يناسبك؟" و"ما هدفك؟" — اختياريان، يقترحان قالباً مناسباً تلقائياً =====
+  const CATEGORY_OPTIONS = [
+    {id:'creator', name:'منشئ محتوى', emoji:'🎥', tpl:'default'},
+    {id:'services', name:'خدمات', emoji:'💼', tpl:'calm'},
+    {id:'shop', name:'محل', emoji:'🛍️', tpl:'warm'},
+    {id:'beauty', name:'جمال', emoji:'💄', tpl:'earthy'},
+    {id:'food', name:'المأكولات', emoji:'🍽️', tpl:'warm'},
+    {id:'music', name:'موسيقى', emoji:'🎵', tpl:'night'},
+    {id:'games', name:'الألعاب', emoji:'🎮', tpl:'night'},
+    {id:'photo', name:'التصوير', emoji:'📸', tpl:'default'},
+    {id:'art', name:'فن', emoji:'🎨', tpl:'fresh'},
+    {id:'fitness', name:'اللياقة البدنية', emoji:'💪', tpl:'natural'},
+    {id:'training', name:'التدريب', emoji:'🧭', tpl:'natural'},
+    {id:'education', name:'تعليم', emoji:'🎓', tpl:'calm'},
+    {id:'events', name:'Events', emoji:'🎫', tpl:'warm'},
+    {id:'entertainment', name:'وسائل الترفيه', emoji:'🎬', tpl:'night'},
+    {id:'tech', name:'تقنية', emoji:'💻', tpl:'calm'},
+    {id:'realestate', name:'العقارات', emoji:'🏠', tpl:'earthy'},
+    {id:'travel', name:'السفر', emoji:'✈️', tpl:'fresh'},
+    {id:'pets', name:'حيوانات أليفة', emoji:'🐾', tpl:'natural'},
+    {id:'podcast', name:'بودكاست', emoji:'🎙️', tpl:'night'},
+    {id:'model', name:'نموذج', emoji:'💃', tpl:'default'},
+    {id:'nonprofit', name:'غير ربحية', emoji:'❤️', tpl:'fresh'},
+    {id:'other', name:'آخر', emoji:'✨', tpl:'default'}
+  ];
+  const GOAL_OPTIONS = [
+    {id:'collect', name:'جمع الروابط في مكان واحد', emoji:'🔗', tpl:'default'},
+    {id:'audience', name:'تنمية جمهورك', emoji:'✅', tpl:'fresh'},
+    {id:'income', name:'تحقيق دخل عبر الإنترنت', emoji:'💸', tpl:'warm'},
+    {id:'bookings', name:'استقبال الحجوزات', emoji:'📅', tpl:'calm'},
+    {id:'identity', name:'بناء هويتك الرقمية', emoji:'👤', tpl:'default'},
+    {id:'promote', name:'الترويج لنشاطك', emoji:'💼', tpl:'earthy'}
+  ];
+  let selectedCategory = null, selectedGoal = null;
+
+  function pillBtn(active){
+    return `padding:8px 13px;border-radius:20px;cursor:pointer;font-weight:700;font-size:0.78rem;font-family:'Tajawal';display:flex;align-items:center;gap:6px;border:2px solid ${active?'var(--primary)':'var(--border)'};background:${active?'var(--bg2)':'var(--bg)'};color:var(--text);`;
+  }
+  function renderCategoryGrid(){
+    const el = document.getElementById('categoryQuickGrid');
+    if(!el) return;
+    el.innerHTML = CATEGORY_OPTIONS.map(c => `<button type="button" style="${pillBtn(selectedCategory===c.id)}" onclick="onCategorySelect('${c.id}')">${c.emoji} ${c.name}</button>`).join('');
+  }
+  function renderGoalGrid(){
+    const el = document.getElementById('goalQuickGrid');
+    if(!el) return;
+    el.innerHTML = GOAL_OPTIONS.map(g => `<button type="button" style="${pillBtn(selectedGoal===g.id)}" onclick="onGoalSelect('${g.id}')">${g.emoji} ${g.name}</button>`).join('');
+  }
+  window.onCategorySelect = async function(id){
+    selectedCategory = id;
+    renderCategoryGrid();
+    try{ await setDoc(doc(db, "users", currentUser.uid), { category: id }, { merge: true }); }catch(e){}
+    suggestTemplateFromSelection();
+  };
+  window.onGoalSelect = async function(id){
+    selectedGoal = id;
+    renderGoalGrid();
+    try{ await setDoc(doc(db, "users", currentUser.uid), { goal: id }, { merge: true }); }catch(e){}
+    suggestTemplateFromSelection();
+  };
+  function suggestTemplateFromSelection(){
+    // الأولوية للوصف (الفئة)، وإن لم يُختر نستخدم الهدف
+    const cat = CATEGORY_OPTIONS.find(c=>c.id===selectedCategory);
+    const goal = GOAL_OPTIONS.find(g=>g.id===selectedGoal);
+    const suggested = (cat && cat.tpl) || (goal && goal.tpl);
+    if(suggested){
+      renderTemplateCarousel(suggested);
+      const t = DESIGN_TEMPLATES.find(x=>x.id===suggested);
+      window.showToast(`نقترح لك قالب "${t?.name||''}" — اضغطه أدناه لتطبيقه`);
+      // مرّر بصرياً لقسم القوالب
+      document.getElementById('templateCarousel')?.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+  }
+  async function loadCategoryGoalSettings(){
+    try{
+      const snap = await getDoc(doc(db, "users", currentUser.uid));
+      const data = snap.exists() ? snap.data() : {};
+      selectedCategory = data.category || null;
+      selectedGoal = data.goal || null;
+      renderCategoryGrid();
+      renderGoalGrid();
+    }catch(e){}
+  }
 
   window.openQrCard = async function() {
     const u = (document.getElementById('pfUser').value || '').trim();
