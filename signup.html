@@ -160,7 +160,6 @@ const CATEGORIES = [
   {id:'creator', label:'منشئ محتوى', emoji:'🎥', tpl:'warm'},
   {id:'services', label:'خدمات', emoji:'💼', tpl:'calm'},
   {id:'shop', label:'محل', emoji:'🛍️', tpl:'default'},
-  {id:'beauty', label:'جمال', emoji:'💄', tpl:'earthy'},
   {id:'food', label:'المأكولات', emoji:'🍽️', tpl:'warm'},
   {id:'music', label:'موسيقى', emoji:'🎵', tpl:'night'},
   {id:'games', label:'الألعاب', emoji:'🎮', tpl:'night'},
@@ -176,7 +175,6 @@ const CATEGORIES = [
   {id:'travel', label:'السفر', emoji:'✈️', tpl:'fresh'},
   {id:'pets', label:'حيوانات أليفة', emoji:'🐾', tpl:'natural'},
   {id:'podcast', label:'بودكاست', emoji:'🎙️', tpl:'night'},
-  {id:'model', label:'نموذج', emoji:'💃', tpl:'default'},
   {id:'nonprofit', label:'غير ربحية', emoji:'❤️', tpl:'natural'},
   {id:'other', label:'آخر', emoji:'✨', tpl:'default'}
 ];
@@ -244,9 +242,10 @@ async function finishOnboarding(skipped){
   document.getElementById('onboardOverlay').classList.remove('open');
   try{ await auth.signOut(); }catch(e){}
   showSignupSuccess(window.__signupUsername);
-  document.querySelector('form').reset();
+  // نخفي النموذج بالكامل بدل تصفيره فقط — يمنع مظهر "تسجيل مكرر" مربك بعد نجاح الإنشاء
+  document.querySelector('form').style.display = 'none';
+  document.querySelector('.header').style.display = 'none';
   document.getElementById('navDisplayName').textContent='';
-  document.getElementById('displayPreview').classList.remove('show');
   setLoading(false);
 }
 renderOnboardGrids();
