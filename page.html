@@ -797,7 +797,12 @@ function render(user){
     .map((s,i)=>({url:s.url, label:s.platformName||s.name||'حساب تواصل', num:210+i, featured:!!s.featured}))
     .filter(s=>s.featured);
   const allFeatured=[...featuredLinks.map(l=>({url:l.url,label:l.title||l.label,num:l.num??l.number})), ...featuredSocials];
-  const recentLinks=[...userLinks].slice(-5).reverse();
+  // الأرقام المحجوزة (٢٠٥ رابط الصفحة، ٢٠٦ أرقام مختارة) — تظهر بسجل الأرقام العام مثل لوحة التحكم بالضبط
+  const reservedPublicEntries=[
+    { url:`https://electrwni.link/${username}`, label:'رابط الصفحة', num:205, type:'link' },
+    { url:'', label:'أرقام مختارة', num:206, type:'text', text:'' }
+  ];
+  const recentLinks=[...reservedPublicEntries, ...[...userLinks].slice(-5).reverse()];
   window.__pageData={featuredLinks:allFeatured,recentLinks,allLinks:userLinks};
 
   document.getElementById('content').innerHTML=`
@@ -888,14 +893,22 @@ function openSection(type){
     body.innerHTML=`
       <div class="overlay-list">
         ${links.map((l,idx)=>{
-          const isText = l.type==='text' || !l.url;
+          const num = l.num??l.number??'';
+          // الرقم المحجوز 206 يفتح قسم "أرقام مختارة" مباشرة، مو نص
+          if(num===206){
+            return `<button type="button" class="overlay-item" style="width:100%;text-align:right;font-family:inherit;border:1px solid var(--border);cursor:pointer;" onclick="closeSection();openSection('featured');"><span>⭐ ${l.label||'أرقام مختارة'}</span><span class="ov-num">${num}</span></button>`;
+          }
+          const hasValidUrl = typeof l.url==='string' && /^https?:\/\//i.test(l.url.trim());
+          const isText = l.type==='text' || !hasValidUrl;
           if(isText){
             if(l.presentMode==='article'){
-              return `<a href="article.html?u=${encodeURIComponent(pageUsername)}&n=${l.num}" class="overlay-item"><span>📰 ${l.label}</span><span class="ov-num">${l.num??''}</span></a>`;
+              return `<button type="button" class="overlay-item" style="width:100%;text-align:right;font-family:inherit;border:1px solid var(--border);cursor:pointer;" onclick="window.location.href='article.html?u=${encodeURIComponent(pageUsername)}&n=${num}';"><span>📰 ${l.label}</span><span class="ov-num">${num}</span></button>`;
             }
-            return `<button type="button" class="overlay-item" style="width:100%;text-align:right;font-family:inherit;border:1px solid var(--border);cursor:pointer;" onclick="showTextViewByIndex(${idx})"><span>📄 ${l.label}</span><span class="ov-num">${l.num??''}</span></button>`;
+            return `<button type="button" class="overlay-item" style="width:100%;text-align:right;font-family:inherit;border:1px solid var(--border);cursor:pointer;" onclick="showTextViewByIndex(${idx})"><span>📄 ${l.label}</span><span class="ov-num">${num}</span></button>`;
           }
-          return `<a href="${l.url}" target="_blank" class="overlay-item" onclick="trackLinkClick(${l.num})"><span>${l.label}</span><span class="ov-num">${l.num}</span></a>`;
+          // رابط حقيقي: نفتحه عبر JS بأمان تام (بدل الاعتماد على href مباشرة)
+          const safeUrl = l.url.trim().replace(/'/g,"%27");
+          return `<button type="button" class="overlay-item" style="width:100%;text-align:right;font-family:inherit;border:1px solid var(--border);cursor:pointer;" onclick="trackLinkClick(${num});window.open('${safeUrl}','_blank');"><span>${l.label}</span><span class="ov-num">${num}</span></button>`;
         }).join('')}
       </div>`;
   }
