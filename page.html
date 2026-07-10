@@ -88,7 +88,7 @@ nav{
   border-bottom:1px solid #e8ecf5;gap:8px;
 }
 /* الشعار: ألوان ثابتة وخلفية بيضاء دائماً، لا تتأثر بألوان الموقع */
-.logo{font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-size:0.95rem;color:#3d5af1;text-decoration:none;font-weight:700;white-space:nowrap;}
+.logo{font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-size:0.95rem;color:#3d5af1;text-decoration:none;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:62vw;}
 .logo em{color:#f5c518;font-style:normal;}
 .nav-cta{background:var(--accent);color:#fff;padding:8px 16px;border-radius:20px;font-size:0.82rem;font-weight:700;text-decoration:none;white-space:nowrap;text-align:center;border:none;cursor:pointer;font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;}
 .nav-cta .nav-cta-sub{font-size:0.6rem;font-weight:400;opacity:0.85;display:block;text-align:center;}
@@ -310,7 +310,7 @@ nav{
 <body>
 
 <nav>
-  <a href="index.html" class="logo">electrwni<em>.link</em></a>
+  <a href="index.html" class="logo" id="navLogo">electrwni<em>.link</em></a>
   <a href="signup.html" class="nav-cta" id="navCta">ابدأ الآن<span class="nav-cta-sub">Start Now</span></a>
 </nav>
 
@@ -497,6 +497,8 @@ async function init(){
   if(!u){show404('لم يتم تحديد المستخدم في الرابط');return;}
   const username=u.toLowerCase();
   pageUsername=username;
+  const navLogoEl = document.getElementById('navLogo');
+  if(navLogoEl) navLogoEl.innerHTML = `electrwni<em>.link</em>/${username}`;
 
   // مهلة أمان: لو علق التحميل، أظهر رسالة بدل الدوران الأبدي
   let done=false;
