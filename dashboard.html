@@ -186,50 +186,64 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 .template-card .tpl-name{font-size:0.68rem;font-weight:700;text-align:center;padding:6px 4px;color:var(--text);}
 
 /* ===== ويدجت الإجراءات السريعة (نمط iOS Widget) ===== */
-.qa-widget{max-width:520px;margin:16px auto;padding:0 20px;}
-.qa-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.qa-title{font-weight:800;font-size:0.95rem;color:var(--text);}
+.qa-widget{max-width:420px;margin:14px auto;padding:0 20px;}
+.qa-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.qa-title{font-weight:800;font-size:0.88rem;color:var(--text);}
 .qa-add-btn{
-  width:30px;height:30px;border-radius:50%;border:none;background:var(--primary);color:#fff;
-  font-size:1.1rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  width:26px;height:26px;border-radius:50%;border:none;background:var(--primary);color:#fff;
+  font-size:1rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;
 }
-.qa-grid{
-  display:grid;grid-template-columns:1fr 1fr;gap:10px;
-  background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:14px;
+.qa-carousel{display:flex;align-items:stretch;gap:6px;}
+.qa-nav-btn{
+  flex-shrink:0;width:26px;border:none;background:var(--bg2);color:var(--muted);border-radius:10px;
+  font-size:1.1rem;font-weight:900;cursor:pointer;
 }
-.qa-tile{background:var(--bg);border-radius:14px;padding:12px;display:flex;flex-direction:column;min-height:120px;}
-.qa-tile-title{font-size:0.78rem;font-weight:800;margin-bottom:8px;color:var(--text);}
-.qa-tile-action{align-items:center;justify-content:center;text-align:center;cursor:pointer;gap:6px;transition:transform .15s;}
+.qa-nav-btn:active{background:var(--border);}
+.qa-card-viewport{
+  flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:10px;
+  min-width:0;
+}
+.qa-dots{display:flex;justify-content:center;gap:5px;margin-top:8px;}
+.qa-dot{width:5px;height:5px;border-radius:50%;background:var(--border);}
+.qa-dot.active{background:var(--primary);width:14px;border-radius:4px;}
+
+.qa-source-tab{
+  font-size:0.6rem;font-weight:800;color:var(--muted);text-transform:uppercase;
+  margin-bottom:4px;letter-spacing:0.3px;
+}
+.qa-tile{background:var(--bg);border-radius:11px;padding:9px;display:flex;flex-direction:column;min-height:90px;}
+.qa-tile-title{font-size:0.7rem;font-weight:800;margin-bottom:6px;color:var(--text);}
+.qa-tile-action{align-items:center;justify-content:center;text-align:center;cursor:pointer;gap:4px;transition:transform .15s;}
 .qa-tile-action:active{transform:scale(0.96);}
-.qa-tile-icon{font-size:1.6rem;}
+.qa-tile-icon{font-size:1.25rem;}
 .qa-input-sm{
-  width:100%;padding:7px 9px;border:1px solid var(--border);border-radius:8px;
-  font-family:inherit;font-size:0.74rem;margin-bottom:6px;background:var(--bg);color:var(--text);outline:none;
+  width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:7px;
+  font-family:inherit;font-size:0.7rem;margin-bottom:5px;background:var(--bg);color:var(--text);outline:none;
 }
 .qa-submit-btn{
-  margin-top:auto;padding:8px;border:none;border-radius:8px;background:var(--primary);color:#fff;
-  font-weight:700;font-size:0.76rem;cursor:pointer;font-family:inherit;
+  margin-top:auto;padding:7px;border:none;border-radius:7px;background:var(--primary);color:#fff;
+  font-weight:700;font-size:0.7rem;cursor:pointer;font-family:inherit;
 }
-.qa-color-mini{width:100%;height:32px;border-radius:7px;border:1px solid var(--border);cursor:pointer;padding:2px;}
-.qa-empty{grid-column:1/-1;text-align:center;padding:20px;color:var(--muted);font-size:0.82rem;}
+.qa-color-mini{width:100%;height:26px;border-radius:6px;border:1px solid var(--border);cursor:pointer;padding:1px;}
+.qa-empty{text-align:center;padding:16px;color:var(--muted);font-size:0.78rem;}
 .qa-option-row{display:flex;align-items:center;gap:10px;padding:12px;border:1.5px solid var(--border);border-radius:12px;background:var(--bg2);}
 .qa-option-row input{width:auto;}
 
 /* أزرار ••• داخل كل تايل + القوائم المنسدلة الداخلية */
-.qa-tile-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.qa-tile-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
 .qa-dots-btn{
-  background:none;border:none;color:var(--muted);font-weight:900;font-size:0.9rem;cursor:pointer;
-  padding:2px 6px;border-radius:6px;line-height:1;
+  background:none;border:none;color:var(--muted);font-weight:900;font-size:0.8rem;cursor:pointer;
+  padding:2px 5px;border-radius:5px;line-height:1;
 }
 .qa-dots-btn:active{background:var(--bg2);}
-.qa-mode-label{font-size:0.7rem;color:var(--primary);font-weight:700;margin-bottom:8px;}
-.qa-inline-menu{display:flex;flex-direction:column;gap:5px;flex:1;}
+.qa-mode-label{font-size:0.64rem;color:var(--primary);font-weight:700;margin-bottom:6px;}
+.qa-inline-menu{display:flex;flex-direction:column;gap:4px;flex:1;}
 .qa-inline-menu button{
-  padding:7px 8px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);
-  font-family:inherit;font-size:0.72rem;font-weight:700;cursor:pointer;text-align:right;color:var(--text);
+  padding:6px 7px;border:1.5px solid var(--border);border-radius:7px;background:var(--bg);
+  font-family:inherit;font-size:0.66rem;font-weight:700;cursor:pointer;text-align:right;color:var(--text);
 }
 .qa-inline-menu button.active{border-color:var(--primary);background:var(--bg2);color:var(--primary);}
-.qa-menu-note{font-size:0.62rem;color:var(--muted);line-height:1.5;margin-top:2px;}
+.qa-menu-note{font-size:0.58rem;color:var(--muted);line-height:1.5;margin-top:2px;}
 </style>
 </head>
 <body>
@@ -251,7 +265,12 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     <span class="qa-title">إجراءات سريعة <span class="lbl-sub" style="font-weight:400;">Quick Actions</span></span>
     <button type="button" class="qa-add-btn" onclick="openQaCustomize()">+</button>
   </div>
-  <div class="qa-grid" id="qaGrid"></div>
+  <div class="qa-carousel">
+    <button type="button" class="qa-nav-btn" onclick="qaNav(1)" aria-label="التالي">‹</button>
+    <div class="qa-card-viewport" id="qaGrid"></div>
+    <button type="button" class="qa-nav-btn" onclick="qaNav(-1)" aria-label="السابق">›</button>
+  </div>
+  <div class="qa-dots" id="qaDots"></div>
 </div>
 
 <!-- نافذة تخصيص الإجراءات السريعة -->
@@ -1505,23 +1524,24 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   // ===== مكتبة الإجراءات السريعة =====
   // الثلاثة الأساسية (لكل منها زر ••• لتخصيصه)، + مكتبة موسّعة اختيارية عبر "+"
   const QA_LIBRARY = {
-    addNum:     { name: 'أضف رقم',        icon: '📎' },
-    printStats: { name: 'طباعة إحصائيات',  icon: '🖨️' },
-    colors:     { name: 'ألوان التصميم',   icon: '🎨' },
-    copyLink:   { name: 'نسخ الرابط',      icon: '🔗' },
-    qrCode:     { name: 'رمز QR',          icon: '▦' },
-    featuredToggle: { name: 'تمييز رقم بأرقام مختارة', icon: '⭐' },
-    hideToggle: { name: 'إخفاء رقم عن الجمهور',        icon: '🔒' },
-    socialQuickAdd: { name: 'أضف حساب تواصل',           icon: '📡' },
-    iconShapeSwitch: { name: 'تبديل شكل الأيقونات',      icon: '▭' },
-    bioQuickEdit: { name: 'تعديل النبذة',                icon: '📝' },
-    avatarQuickUpload: { name: 'رفع صورة الشعار',        icon: '🖼️' },
-    bannerQuickUpload: { name: 'رفع صورة الغلاف',        icon: '🌄' },
-    exportJson: { name: 'تصدير JSON',                    icon: '⬇️' },
-    templateQuickApply: { name: 'تطبيق قالب سريع',        icon: '◧' },
-    viewsSummary: { name: 'ملخص المشاهدات',               icon: '📊' }
+    addNum:     { name: 'أضف رقم',        icon: '📎', tab: 'الأرقام' },
+    printStats: { name: 'طباعة إحصائيات',  icon: '🖨️', tab: 'إحصائيات' },
+    colors:     { name: 'ألوان التصميم',   icon: '🎨', tab: 'التصميم' },
+    copyLink:   { name: 'نسخ الرابط',      icon: '🔗', tab: 'ملفي' },
+    qrCode:     { name: 'رمز QR',          icon: '▦', tab: 'ملفي' },
+    featuredToggle: { name: 'تمييز رقم بأرقام مختارة', icon: '⭐', tab: 'الأرقام' },
+    hideToggle: { name: 'إخفاء رقم عن الجمهور',        icon: '🔒', tab: 'الأرقام' },
+    socialQuickAdd: { name: 'أضف حساب تواصل',           icon: '📡', tab: 'تواصل' },
+    iconShapeSwitch: { name: 'تبديل شكل الأيقونات',      icon: '▭', tab: 'تواصل' },
+    bioQuickEdit: { name: 'تعديل النبذة',                icon: '📝', tab: 'ملفي' },
+    avatarQuickUpload: { name: 'رفع صورة الشعار',        icon: '🖼️', tab: 'التصميم' },
+    bannerQuickUpload: { name: 'رفع صورة الغلاف',        icon: '🌄', tab: 'التصميم' },
+    exportJson: { name: 'تصدير JSON',                    icon: '⬇️', tab: 'إحصائيات' },
+    templateQuickApply: { name: 'تطبيق قالب سريع',        icon: '◧', tab: 'قوالب' },
+    viewsSummary: { name: 'ملخص المشاهدات',               icon: '📊', tab: 'إحصائيات' }
   };
-  const QA_DEFAULT = ['addNum','printStats','colors'];
+  const QA_DEFAULT = ['addNum','printStats','colors','copyLink','qrCode'];
+  let qaCurrentIndex = 0;
   let qaConfig = QA_DEFAULT.slice();
   let qaAddNumMode = 'link';   // link | text | article
   let qaStatsMode = 'top';     // top | all
@@ -1638,13 +1658,25 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   }
 
   function renderQaWidget(){
-    const grid = document.getElementById('qaGrid');
-    if(!grid) return;
+    const viewport = document.getElementById('qaGrid');
+    const dotsEl = document.getElementById('qaDots');
+    if(!viewport) return;
     if(!qaConfig.length){
-      grid.innerHTML = '<div class="qa-empty">ما فيه إجراءات مفعّلة — اضغط + لإضافة · No active actions, tap + to add</div>';
+      viewport.innerHTML = '<div class="qa-empty">ما فيه إجراءات مفعّلة — اضغط + لإضافة · No active actions, tap + to add</div>';
+      if(dotsEl) dotsEl.innerHTML = '';
       return;
     }
-    grid.innerHTML = qaConfig.map(k => qaTileHtml(k)).join('');
+    if(qaCurrentIndex >= qaConfig.length) qaCurrentIndex = 0;
+    if(qaCurrentIndex < 0) qaCurrentIndex = qaConfig.length - 1;
+    const key = qaConfig[qaCurrentIndex];
+    const libItem = QA_LIBRARY[key];
+    const tabLabel = libItem?.tab ? `<div class="qa-source-tab">${libItem.tab}</div>` : '';
+    viewport.innerHTML = tabLabel + qaTileHtml(key);
+
+    if(dotsEl){
+      dotsEl.innerHTML = qaConfig.map((k,i) => `<span class="qa-dot ${i===qaCurrentIndex?'active':''}"></span>`).join('');
+    }
+
     const p1 = document.getElementById('colorPicker')?.value;
     const p2 = document.getElementById('colorPicker2')?.value;
     const txt = document.getElementById('textColorPicker')?.value;
@@ -1655,8 +1687,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(qc2 && p2) qc2.value = p2;
     if(qct && txt) qct.value = txt;
     if(qcb && bg) qcb.value = bg;
-    if(qaConfig.includes('viewsSummary')) qaComputeViewsSummary();
+    if(key === 'viewsSummary') qaComputeViewsSummary();
   }
+  window.qaNav = function(dir){
+    qaCurrentIndex += dir;
+    qaMenuOpenFor = null;
+    renderQaWidget();
+  };
 
   window.qaToggleMenu = function(key){
     qaMenuOpenFor = (qaMenuOpenFor === key) ? null : key;
