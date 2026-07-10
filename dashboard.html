@@ -185,6 +185,22 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 .template-card .tpl-dot{width:16px;height:16px;border-radius:50%;}
 .template-card .tpl-name{font-size:0.68rem;font-weight:700;text-align:center;padding:6px 4px;color:var(--text);}
 
+/* بطاقات "صفحات جاهزة" — معاينة شبه كاملة للصفحة */
+.mockup-card{
+  flex-shrink:0;width:132px;cursor:pointer;border:2.5px solid var(--border);border-radius:18px;
+  padding:16px 10px 12px;font-family:inherit;display:flex;flex-direction:column;align-items:center;
+  box-shadow:0 2px 10px rgba(0,0,0,0.06);
+}
+.mockup-card.active{border-color:var(--primary);}
+.mockup-avatar{width:38px;height:38px;border-radius:50%;margin-bottom:8px;flex-shrink:0;}
+.mockup-name{font-size:0.7rem;font-weight:800;margin-bottom:6px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.mockup-bio{height:3px;width:70%;border-radius:2px;opacity:0.35;margin-bottom:3px;}
+.mockup-bio.short{width:45%;margin-bottom:10px;}
+.mockup-socials{display:flex;gap:5px;margin-bottom:10px;}
+.mockup-social-dot{width:10px;height:10px;border-radius:50%;}
+.mockup-link{width:100%;height:14px;border-radius:5px;border:1.5px solid;margin-bottom:6px;}
+.mockup-tpl-name{font-size:0.62rem;font-weight:700;margin-top:4px;opacity:0.8;}
+
 /* ===== ويدجت الإجراءات السريعة (نمط iOS Widget) ===== */
 .qa-widget{max-width:420px;margin:14px auto;padding:0 20px;}
 .qa-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
@@ -193,29 +209,24 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   width:26px;height:26px;border-radius:50%;border:none;background:var(--primary);color:#fff;
   font-size:1rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;
 }
-.qa-carousel{display:flex;align-items:stretch;gap:6px;}
-.qa-nav-btn{
-  flex-shrink:0;width:26px;border:none;background:var(--bg2);color:var(--muted);border-radius:10px;
-  font-size:1.1rem;font-weight:900;cursor:pointer;
-}
-.qa-nav-btn:active{background:var(--border);}
+.qa-carousel{display:flex;align-items:stretch;}
 .qa-card-viewport{
-  flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:10px;
-  min-width:0;
+  flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:12px;
+  min-width:0;height:168px;overflow:hidden;position:relative;touch-action:pan-y;user-select:none;
 }
 .qa-dots{display:flex;justify-content:center;gap:5px;margin-top:8px;}
-.qa-dot{width:5px;height:5px;border-radius:50%;background:var(--border);}
+.qa-dot{width:5px;height:5px;border-radius:50%;background:var(--border);transition:all .2s;}
 .qa-dot.active{background:var(--primary);width:14px;border-radius:4px;}
 
 .qa-source-tab{
   font-size:0.6rem;font-weight:800;color:var(--muted);text-transform:uppercase;
   margin-bottom:4px;letter-spacing:0.3px;
 }
-.qa-tile{background:var(--bg);border-radius:11px;padding:9px;display:flex;flex-direction:column;min-height:90px;}
+.qa-tile{background:var(--bg);border-radius:12px;padding:10px;display:flex;flex-direction:column;height:100%;overflow-y:auto;}
 .qa-tile-title{font-size:0.7rem;font-weight:800;margin-bottom:6px;color:var(--text);}
 .qa-tile-action{align-items:center;justify-content:center;text-align:center;cursor:pointer;gap:4px;transition:transform .15s;}
 .qa-tile-action:active{transform:scale(0.96);}
-.qa-tile-icon{font-size:1.25rem;}
+.qa-tile-icon{font-size:1.4rem;}
 .qa-input-sm{
   width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:7px;
   font-family:inherit;font-size:0.7rem;margin-bottom:5px;background:var(--bg);color:var(--text);outline:none;
@@ -230,12 +241,12 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 .qa-option-row input{width:auto;}
 
 /* أزرار ••• داخل كل تايل + القوائم المنسدلة الداخلية */
-.qa-tile-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.qa-tile-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-shrink:0;}
 .qa-dots-btn{
-  background:none;border:none;color:var(--muted);font-weight:900;font-size:0.8rem;cursor:pointer;
-  padding:2px 5px;border-radius:5px;line-height:1;
+  background:var(--bg2);border:1px solid var(--border);color:var(--text);font-weight:900;font-size:0.85rem;cursor:pointer;
+  padding:3px 9px;border-radius:8px;line-height:1.4;flex-shrink:0;
 }
-.qa-dots-btn:active{background:var(--bg2);}
+.qa-dots-btn:active{background:var(--border);}
 .qa-mode-label{font-size:0.64rem;color:var(--primary);font-weight:700;margin-bottom:6px;}
 .qa-inline-menu{display:flex;flex-direction:column;gap:4px;flex:1;}
 .qa-inline-menu button{
@@ -250,7 +261,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
 <!-- TOPBAR -->
 <div class="topbar">
-  <div class="topbar-brand">electrwni.link</div>
+  <div class="topbar-brand" id="topbarBrand" dir="ltr">electrwni.link</div>
   <div class="topbar-btns">
     <button class="btn btn-white" id="viewPageBtn" onclick="openMyPage()">صفحتك <span style="font-size:0.65rem;display:block;opacity:0.7;">My Page</span></button>
     <button class="btn btn-logout" onclick="logout()">خروج <span style="font-size:0.65rem;display:block;opacity:0.8;">Logout</span></button>
@@ -266,9 +277,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     <button type="button" class="qa-add-btn" onclick="openQaCustomize()">+</button>
   </div>
   <div class="qa-carousel">
-    <button type="button" class="qa-nav-btn" onclick="qaNav(1)" aria-label="التالي">‹</button>
     <div class="qa-card-viewport" id="qaGrid"></div>
-    <button type="button" class="qa-nav-btn" onclick="qaNav(-1)" aria-label="السابق">›</button>
   </div>
   <div class="qa-dots" id="qaDots"></div>
 </div>
@@ -327,20 +336,20 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       </div>
       <div class="expandable-content open">
         <div class="form-group">
-          <label>أي وصف يناسبك أكثر؟ <span class="lbl-sub">/ What describes you best?</span></label>
+          <label>اهتماماتك <span class="lbl-sub">/ Your Interests</span></label>
           <div style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;">نقترح لك قالب تصميم مناسب تلقائياً بناءً على اختيارك · We'll suggest a matching template</div>
           <div id="categoryQuickGrid" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
         </div>
 
         <div class="form-group">
-          <label>ما الهدف الذي تسعى إليه؟ <span class="lbl-sub">/ What's your goal?</span></label>
+          <label>أهدافك <span class="lbl-sub">/ Your Goals</span></label>
           <div id="goalQuickGrid" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
         </div>
 
         <div class="form-group" style="margin-bottom:0;">
-          <label>القوالب <span class="lbl-sub">/ Templates</span></label>
-          <div style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;">اختر قالباً لتطبيق مجموعة ألوان متناسقة فوراً، وتقدر تعدّل عليها بعدها من تبويب التصميم · Pick a template, then fine-tune it in the Design tab</div>
-          <div id="templateCarousel" style="display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;"></div>
+          <label>صفحات جاهزة <span class="lbl-sub">/ Ready-made Pages</span></label>
+          <div style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;">هذا شكل صفحتك تقريباً بكل قالب — اضغط على أي واحدة لتطبيقها · This is roughly how your page will look with each template</div>
+          <div id="pageMockupCarousel" style="display:flex;gap:12px;overflow-x:auto;padding:4px 4px 10px;-webkit-overflow-scrolling:touch;"></div>
         </div>
       </div>
     </div>
@@ -643,6 +652,12 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         <div class="form-group">
           <label>صورة الشعار <span class="lbl-sub">/ Logo Image</span></label>
           <input type="file" id="avatarInput" accept="image/*" onchange="selectAvatar(this)">
+        </div>
+
+        <div class="form-group">
+          <label>الألوان <span class="lbl-sub">/ Colors</span></label>
+          <div style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;">اختر مجموعة ألوان جاهزة لتطبيقها فوراً، وتقدر تعدّل عليها بعدها بالحقول تحت · Pick a ready color set, then fine-tune below</div>
+          <div id="templateCarousel" style="display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;"></div>
         </div>
 
         <div class="form-group">
@@ -1388,6 +1403,29 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         <div class="tpl-name">${t.name}</div>
       </button>
     `).join('');
+    renderPageMockups(activeId);
+  }
+  // بطاقات "صفحات جاهزة" — معاينة مصغّرة لشكل صفحتك الفعلي بكل قالب (شعار، اسم، نبذة، أيقونات تواصل، روابط)
+  function renderPageMockups(activeId){
+    const el = document.getElementById('pageMockupCarousel');
+    if(!el) return;
+    const name = (document.getElementById('pfName')?.value || document.getElementById('pfUser')?.value || 'اسمك').trim();
+    el.innerHTML = DESIGN_TEMPLATES.map(t => `
+      <button type="button" class="mockup-card ${activeId===t.id?'active':''}" onclick="applyTemplate('${t.id}')" style="background:${t.bg};">
+        <div class="mockup-avatar" style="background:linear-gradient(135deg,${t.p1},${t.p2});"></div>
+        <div class="mockup-name" style="color:${t.text};">${name}</div>
+        <div class="mockup-bio" style="background:${t.text};"></div>
+        <div class="mockup-bio short" style="background:${t.text};"></div>
+        <div class="mockup-socials">
+          <div class="mockup-social-dot" style="background:${t.p1};"></div>
+          <div class="mockup-social-dot" style="background:${t.p2};"></div>
+          <div class="mockup-social-dot" style="background:${t.p1};"></div>
+        </div>
+        <div class="mockup-link" style="border-color:${t.p1};"></div>
+        <div class="mockup-link" style="border-color:${t.p1};"></div>
+        <div class="mockup-tpl-name" style="color:${t.text};">${t.name}</div>
+      </button>
+    `).join('');
   }
   window.applyTemplate = async function(id){
     const t = DESIGN_TEMPLATES.find(x=>x.id===id);
@@ -1401,6 +1439,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     window.onTextColorPick(t.text);
     window.onBgColorPick(t.bg);
     document.querySelectorAll('.template-card').forEach(c=>c.classList.toggle('active', c.getAttribute('data-tpl')===id));
+    renderPageMockups(id);
     try{ await window.saveDesign(); window.showToast(`تم تطبيق قالب "${t.name}" ✓`); }
     catch(e){ window.showToast("تعذر حفظ القالب: " + (e.message||'')); }
   };
@@ -1694,6 +1733,38 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     qaMenuOpenFor = null;
     renderQaWidget();
   };
+
+  // التصفح بالسحب (Swipe) بدل أزرار < >
+  (function setupQaSwipe(){
+    const viewport = document.getElementById('qaGrid');
+    if(!viewport) return;
+    let startX = 0, startY = 0, dragging = false, moved = false;
+    function onDown(e){
+      const p = e.touches ? e.touches[0] : e;
+      startX = p.clientX; startY = p.clientY;
+      dragging = true; moved = false;
+    }
+    function onMove(e){
+      if(!dragging) return;
+      const p = e.touches ? e.touches[0] : e;
+      if(Math.abs(p.clientX - startX) > 8) moved = true;
+    }
+    function onUp(e){
+      if(!dragging) return;
+      dragging = false;
+      const p = e.changedTouches ? e.changedTouches[0] : e;
+      const dx = p.clientX - startX;
+      const dy = p.clientY - startY;
+      if(Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)){
+        // RTL: سحب لليسار = التالي، سحب لليمين = السابق
+        window.qaNav(dx < 0 ? 1 : -1);
+      }
+    }
+    viewport.addEventListener('pointerdown', onDown);
+    viewport.addEventListener('pointermove', onMove);
+    viewport.addEventListener('pointerup', onUp);
+    viewport.addEventListener('pointercancel', ()=>{dragging=false;});
+  })();
 
   window.qaToggleMenu = function(key){
     qaMenuOpenFor = (qaMenuOpenFor === key) ? null : key;
