@@ -209,10 +209,17 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   width:26px;height:26px;border-radius:50%;border:none;background:var(--primary);color:#fff;
   font-size:1rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;
 }
-.qa-carousel{display:flex;align-items:stretch;}
+.qa-carousel{display:block;}
 .qa-card-viewport{
-  flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:12px;
-  min-width:0;height:168px;overflow:hidden;position:relative;touch-action:pan-y;user-select:none;
+  display:flex;overflow-x:auto;scroll-snap-type:x mandatory;
+  border-radius:18px;gap:0;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;
+}
+.qa-card-viewport::-webkit-scrollbar{display:none;}
+.qa-card-slide{
+  flex:0 0 100%;scroll-snap-align:center;scroll-snap-stop:always;
+  background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:12px;
+  height:168px;box-sizing:border-box;
 }
 .qa-dots{display:flex;justify-content:center;gap:5px;margin-top:8px;}
 .qa-dot{width:5px;height:5px;border-radius:50%;background:var(--border);transition:all .2s;}
@@ -1706,11 +1713,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       return;
     }
     if(qaCurrentIndex >= qaConfig.length) qaCurrentIndex = 0;
-    if(qaCurrentIndex < 0) qaCurrentIndex = qaConfig.length - 1;
-    const key = qaConfig[qaCurrentIndex];
-    const libItem = QA_LIBRARY[key];
-    const tabLabel = libItem?.tab ? `<div class="qa-source-tab">${libItem.tab}</div>` : '';
-    viewport.innerHTML = tabLabel + qaTileHtml(key);
+    if(qaCurrentIndex < 0) qaCurrentIndex = 0;
+
+    viewport.innerHTML = qaConfig.map(key => {
+      const libItem = QA_LIBRARY[key];
+      const tabLabel = libItem?.tab ? `<div class="qa-source-tab">${libItem.tab}</div>` : '';
+      return `<div class="qa-card-slide" data-key="${key}">${tabLabel}${qaTileHtml(key)}</div>`;
+    }).join('');
 
     if(dotsEl){
       dotsEl.innerHTML = qaConfig.map((k,i) => `<span class="qa-dot ${i===qaCurrentIndex?'active':''}"></span>`).join('');
@@ -1726,44 +1735,32 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(qc2 && p2) qc2.value = p2;
     if(qct && txt) qct.value = txt;
     if(qcb && bg) qcb.value = bg;
-    if(key === 'viewsSummary') qaComputeViewsSummary();
+    if(qaConfig.includes('viewsSummary')) qaComputeViewsSummary();
   }
-  window.qaNav = function(dir){
-    qaCurrentIndex += dir;
-    qaMenuOpenFor = null;
-    renderQaWidget();
-  };
 
-  // التصفح بالسحب (Swipe) بدل أزرار < >
-  (function setupQaSwipe(){
+  // مزامنة النقطة النشطة مع موضع السحب الطبيعي (Native Scroll Snap) — نفس أسلوب آبل بالودجت والـ App Store
+  function qaScrollToIndex(idx, smooth){
     const viewport = document.getElementById('qaGrid');
     if(!viewport) return;
-    let startX = 0, startY = 0, dragging = false, moved = false;
-    function onDown(e){
-      const p = e.touches ? e.touches[0] : e;
-      startX = p.clientX; startY = p.clientY;
-      dragging = true; moved = false;
-    }
-    function onMove(e){
-      if(!dragging) return;
-      const p = e.touches ? e.touches[0] : e;
-      if(Math.abs(p.clientX - startX) > 8) moved = true;
-    }
-    function onUp(e){
-      if(!dragging) return;
-      dragging = false;
-      const p = e.changedTouches ? e.changedTouches[0] : e;
-      const dx = p.clientX - startX;
-      const dy = p.clientY - startY;
-      if(Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)){
-        // RTL: سحب لليسار = التالي، سحب لليمين = السابق
-        window.qaNav(dx < 0 ? 1 : -1);
-      }
-    }
-    viewport.addEventListener('pointerdown', onDown);
-    viewport.addEventListener('pointermove', onMove);
-    viewport.addEventListener('pointerup', onUp);
-    viewport.addEventListener('pointercancel', ()=>{dragging=false;});
+    viewport.scrollTo({ left: idx * viewport.clientWidth, behavior: smooth===false ? 'auto' : 'smooth' });
+  }
+  (function setupQaScrollSync(){
+    const viewport = document.getElementById('qaGrid');
+    if(!viewport) return;
+    let scrollTimer;
+    viewport.addEventListener('scroll', () => {
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => {
+        const w = viewport.clientWidth;
+        if(!w) return;
+        const idx = Math.round(viewport.scrollLeft / w);
+        if(idx !== qaCurrentIndex){
+          qaCurrentIndex = idx;
+          qaMenuOpenFor = null;
+        }
+        document.querySelectorAll('#qaDots .qa-dot').forEach((d,i)=>d.classList.toggle('active', i===idx));
+      }, 90);
+    });
   })();
 
   window.qaToggleMenu = function(key){
