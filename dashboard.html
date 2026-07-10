@@ -214,6 +214,22 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 .qa-empty{grid-column:1/-1;text-align:center;padding:20px;color:var(--muted);font-size:0.82rem;}
 .qa-option-row{display:flex;align-items:center;gap:10px;padding:12px;border:1.5px solid var(--border);border-radius:12px;background:var(--bg2);}
 .qa-option-row input{width:auto;}
+
+/* أزرار ••• داخل كل تايل + القوائم المنسدلة الداخلية */
+.qa-tile-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.qa-dots-btn{
+  background:none;border:none;color:var(--muted);font-weight:900;font-size:0.9rem;cursor:pointer;
+  padding:2px 6px;border-radius:6px;line-height:1;
+}
+.qa-dots-btn:active{background:var(--bg2);}
+.qa-mode-label{font-size:0.7rem;color:var(--primary);font-weight:700;margin-bottom:8px;}
+.qa-inline-menu{display:flex;flex-direction:column;gap:5px;flex:1;}
+.qa-inline-menu button{
+  padding:7px 8px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);
+  font-family:inherit;font-size:0.72rem;font-weight:700;cursor:pointer;text-align:right;color:var(--text);
+}
+.qa-inline-menu button.active{border-color:var(--primary);background:var(--bg2);color:var(--primary);}
+.qa-menu-note{font-size:0.62rem;color:var(--muted);line-height:1.5;margin-top:2px;}
 </style>
 </head>
 <body>
@@ -1154,12 +1170,12 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(lpName) lpName.textContent = (document.getElementById('pfName')&&document.getElementById('pfName').value) || username;
     loadLinks();
     loadSocials();
-    loadIconShapeSettings();
-    loadQrStyleSettings();
+    loadIconShapeSettings(userDoc.exists() ? userDoc.data() : {});
+    loadQrStyleSettings(userDoc.exists() ? userDoc.data() : {});
     renderTemplateCarousel();
     loadTemplatesFromConfig().then(()=>renderTemplateCarousel());
-    loadCategoryGoalSettings();
-    loadQaConfig();
+    loadCategoryGoalSettings(userDoc.exists() ? userDoc.data() : {});
+    loadQaConfig(userDoc.exists() ? userDoc.data() : {});
     loadFeedbackHistory();
   }
 
@@ -1252,22 +1268,19 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     }catch(e){ window.showToast("تعذر الحفظ: " + (e.message||'')); }
     loadSocials();
   };
-  async function loadIconShapeSettings(){
-    try{
-      const snap = await getDoc(doc(db, "users", currentUser.uid));
-      const data = snap.exists() ? snap.data() : {};
-      currentIconShape = data.socialIconShape || 'circle';
-      currentRectStyle = data.socialRectStyle || 'rounded';
-      document.getElementById('shapeOptCircle').classList.toggle('active', currentIconShape==='circle');
-      document.getElementById('shapeOptRect').classList.toggle('active', currentIconShape==='rect');
-      document.getElementById('rectSubOptions').style.display = currentIconShape==='rect' ? 'grid' : 'none';
-      document.getElementById('rectStyleRounded').classList.toggle('active', currentRectStyle==='rounded');
-      document.getElementById('rectStyleSharp').classList.toggle('active', currentRectStyle==='sharp');
-    }catch(e){}
+  function loadIconShapeSettings(data){
+    data = data || {};
+    currentIconShape = data.socialIconShape || 'circle';
+    currentRectStyle = data.socialRectStyle || 'rounded';
+    document.getElementById('shapeOptCircle').classList.toggle('active', currentIconShape==='circle');
+    document.getElementById('shapeOptRect').classList.toggle('active', currentIconShape==='rect');
+    document.getElementById('rectSubOptions').style.display = currentIconShape==='rect' ? 'grid' : 'none';
+    document.getElementById('rectStyleRounded').classList.toggle('active', currentRectStyle==='rounded');
+    document.getElementById('rectStyleSharp').classList.toggle('active', currentRectStyle==='sharp');
   }
 
   // ===== تخصيص بطاقة QR: نفس مبدأ تخصيص أيقونات التواصل (٤ ألوان) =====
-  window.setQrMode = async function(mode){
+  window.setQrMode = async function(mode, skipSave){
     const brandBtn = document.getElementById('qrModeBrand');
     const customBtn = document.getElementById('qrModeCustom');
     const colorsBox = document.getElementById('qrCustomColors');
@@ -1280,9 +1293,9 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       customBtn.style.borderColor='var(--border)'; customBtn.style.background='transparent';
       colorsBox.style.display='none';
     }
-    try{
-      await setDoc(doc(db, "users", currentUser.uid), { qrStyleMode: mode }, { merge: true });
-    }catch(e){}
+    if(!skipSave){
+      try{ await setDoc(doc(db, "users", currentUser.uid), { qrStyleMode: mode }, { merge: true }); }catch(e){}
+    }
     updateQrPreview();
   };
   window.updateQrPreview = function(){
@@ -1315,16 +1328,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       box.style.boxShadow = 'none';
     }
   };
-  async function loadQrStyleSettings(){
-    try{
-      const snap = await getDoc(doc(db, "users", currentUser.uid));
-      const data = snap.exists() ? snap.data() : {};
-      if(data.qrCustomBg) document.getElementById('qrBgColor').value = data.qrCustomBg;
-      if(data.qrCustomIconColor) document.getElementById('qrIconColor').value = data.qrCustomIconColor;
-      if(data.qrCustomRing) document.getElementById('qrRingColor').value = data.qrCustomRing;
-      if(data.qrCustomContainer) document.getElementById('qrContainerColor').value = data.qrCustomContainer;
-      window.setQrMode(data.qrStyleMode === 'custom' ? 'custom' : 'brand');
-    }catch(e){}
+  function loadQrStyleSettings(data){
+    data = data || {};
+    if(data.qrCustomBg) document.getElementById('qrBgColor').value = data.qrCustomBg;
+    if(data.qrCustomIconColor) document.getElementById('qrIconColor').value = data.qrCustomIconColor;
+    if(data.qrCustomRing) document.getElementById('qrRingColor').value = data.qrCustomRing;
+    if(data.qrCustomContainer) document.getElementById('qrContainerColor').value = data.qrCustomContainer;
+    window.setQrMode(data.qrStyleMode === 'custom' ? 'custom' : 'brand', true);
   }
 
   // ===== قوالب جاهزة (نفس منظومة ألوان سمات المقالة، لتناسق الهوية بكل الموقع) =====
@@ -1447,15 +1457,12 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       document.getElementById('templateCarousel')?.scrollIntoView({behavior:'smooth', block:'center'});
     }
   }
-  async function loadCategoryGoalSettings(){
-    try{
-      const snap = await getDoc(doc(db, "users", currentUser.uid));
-      const data = snap.exists() ? snap.data() : {};
-      selectedCategory = data.category || null;
-      selectedGoal = data.goal || null;
-      renderCategoryGrid();
-      renderGoalGrid();
-    }catch(e){}
+  function loadCategoryGoalSettings(data){
+    data = data || {};
+    selectedCategory = data.category || null;
+    selectedGoal = data.goal || null;
+    renderCategoryGrid();
+    renderGoalGrid();
   }
 
   // ===== الدعم والملاحظات =====
@@ -1495,60 +1502,137 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   }
 
 
+  // ===== مكتبة الإجراءات السريعة =====
+  // الثلاثة الأساسية (لكل منها زر ••• لتخصيصه)، + مكتبة موسّعة اختيارية عبر "+"
   const QA_LIBRARY = {
-    addNum:   { name: 'أضف رقم',              icon: '📎' },
-    printStats: { name: 'طباعة إحصائيات الشهر', icon: '🖨️' },
-    colors:   { name: 'ألوان صفحتك',           icon: '🎨' },
-    copyLink: { name: 'نسخ الرابط',            icon: '🔗' },
-    qrCode:   { name: 'رمز QR',                icon: '▦' }
+    addNum:     { name: 'أضف رقم',        icon: '📎' },
+    printStats: { name: 'طباعة إحصائيات',  icon: '🖨️' },
+    colors:     { name: 'ألوان التصميم',   icon: '🎨' },
+    copyLink:   { name: 'نسخ الرابط',      icon: '🔗' },
+    qrCode:     { name: 'رمز QR',          icon: '▦' },
+    featuredToggle: { name: 'تمييز رقم بأرقام مختارة', icon: '⭐' },
+    hideToggle: { name: 'إخفاء رقم عن الجمهور',        icon: '🔒' },
+    socialQuickAdd: { name: 'أضف حساب تواصل',           icon: '📡' },
+    iconShapeSwitch: { name: 'تبديل شكل الأيقونات',      icon: '▭' },
+    bioQuickEdit: { name: 'تعديل النبذة',                icon: '📝' },
+    avatarQuickUpload: { name: 'رفع صورة الشعار',        icon: '🖼️' },
+    bannerQuickUpload: { name: 'رفع صورة الغلاف',        icon: '🌄' },
+    exportJson: { name: 'تصدير JSON',                    icon: '⬇️' },
+    templateQuickApply: { name: 'تطبيق قالب سريع',        icon: '◧' },
+    viewsSummary: { name: 'ملخص المشاهدات',               icon: '📊' }
   };
   const QA_DEFAULT = ['addNum','printStats','colors'];
   let qaConfig = QA_DEFAULT.slice();
+  let qaAddNumMode = 'link';   // link | text | article
+  let qaStatsMode = 'top';     // top | all
+  let qaMenuOpenFor = null;
 
   function qaTileHtml(key){
     const item = QA_LIBRARY[key];
     if(!item) return '';
+
     if(key === 'addNum'){
+      const modeLabel = { link:'رقم لرابط', text:'رقم لنص', article:'رقم لمقالة' }[qaAddNumMode];
+      const contentField = qaAddNumMode === 'link'
+        ? `<input type="url" id="qaLinkUrl" class="qa-input-sm" placeholder="الرابط" dir="ltr">`
+        : `<textarea id="qaTextContent" class="qa-input-sm" placeholder="${qaAddNumMode==='article'?'نص المقالة':'النص'}" style="min-height:44px;resize:vertical;"></textarea>`;
       return `
         <div class="qa-tile">
-          <div class="qa-tile-title">${item.icon} ${item.name}</div>
-          <input type="number" id="qaNum" class="qa-input-sm" placeholder="الرقم #">
-          <input type="text" id="qaTitle" class="qa-input-sm" placeholder="العنوان">
-          <input type="url" id="qaLinkUrl" class="qa-input-sm" placeholder="الرابط" dir="ltr">
-          <button type="button" class="qa-submit-btn" onclick="qaQuickAddNumber()">إضافة</button>
+          <div class="qa-tile-header-row">
+            <div class="qa-tile-title" style="margin:0;">${item.icon} ${item.name}</div>
+            <button type="button" class="qa-dots-btn" onclick="qaToggleMenu('addNum')">•••</button>
+          </div>
+          <div class="qa-mode-label">${modeLabel}</div>
+          ${qaMenuOpenFor==='addNum' ? `
+            <div class="qa-inline-menu">
+              <button type="button" onclick="qaSetAddNumMode('link')" class="${qaAddNumMode==='link'?'active':''}">🔗 رقم لرابط</button>
+              <button type="button" onclick="qaSetAddNumMode('text')" class="${qaAddNumMode==='text'?'active':''}">📝 رقم لنص</button>
+              <button type="button" onclick="qaSetAddNumMode('article')" class="${qaAddNumMode==='article'?'active':''}">📰 رقم لمقالة</button>
+            </div>` : `
+            <input type="number" id="qaNum" class="qa-input-sm" placeholder="الرقم #">
+            <input type="text" id="qaTitle" class="qa-input-sm" placeholder="العنوان">
+            ${contentField}
+            <button type="button" class="qa-submit-btn" onclick="qaQuickAddNumber()">إضافة</button>
+          `}
         </div>`;
     }
+
     if(key === 'printStats'){
       return `
-        <div class="qa-tile qa-tile-action" onclick="window.exportLinks('pdf')">
-          <div class="qa-tile-icon">${item.icon}</div>
-          <div class="qa-tile-title" style="margin:0;">${item.name}</div>
+        <div class="qa-tile">
+          <div class="qa-tile-header-row">
+            <div class="qa-tile-title" style="margin:0;">${item.icon} ${item.name}</div>
+            <button type="button" class="qa-dots-btn" onclick="qaToggleMenu('printStats')">•••</button>
+          </div>
+          ${qaMenuOpenFor==='printStats' ? `
+            <div class="qa-inline-menu">
+              <button type="button" onclick="qaSetStatsMode('top')" class="${qaStatsMode==='top'?'active':''}">🔥 الأكثر ضغطاً</button>
+              <button type="button" onclick="qaSetStatsMode('all')" class="${qaStatsMode==='all'?'active':''}">📋 كل الأرقام</button>
+              <div class="qa-menu-note">تفصيل أسبوعي/شهري يحتاج تتبّع تاريخ كل مشاهدة (غير متوفر حالياً)</div>
+            </div>` : `
+            <div class="qa-tile-action" style="flex:1;" onclick="qaPrintStats()">
+              <div class="qa-tile-icon">${item.icon}</div>
+              <div style="font-size:0.72rem;color:var(--muted);margin-top:4px;">${qaStatsMode==='top'?'الأكثر ضغطاً':'كل الأرقام'}</div>
+            </div>
+          `}
         </div>`;
     }
+
     if(key === 'colors'){
       return `
         <div class="qa-tile">
-          <div class="qa-tile-title">${item.icon} ${item.name}</div>
-          <div class="qa-color-mini-row" style="display:flex;gap:6px;margin-bottom:6px;">
-            <input type="color" class="qa-color-mini" id="qaColorP1" oninput="qaQuickColorPreview()">
-            <input type="color" class="qa-color-mini" id="qaColorP2" oninput="qaQuickColorPreview()">
+          <div class="qa-tile-header-row">
+            <div class="qa-tile-title" style="margin:0;">${item.icon} ${item.name}</div>
+            <button type="button" class="qa-dots-btn" onclick="qaToggleMenu('colors')">•••</button>
           </div>
-          <button type="button" class="qa-submit-btn" onclick="qaSaveQuickColors()">حفظ</button>
+          ${qaMenuOpenFor==='colors' ? `
+            <div class="qa-inline-menu">
+              <button type="button" onclick="setIconShape('circle'); qaToggleMenu('colors');" class="${currentIconShape==='circle'?'active':''}">⚪ أيقونات دائرية</button>
+              <button type="button" onclick="setIconShape('rect'); qaToggleMenu('colors');" class="${currentIconShape==='rect'?'active':''}">▭ أيقونات مستطيلة</button>
+            </div>` : `
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px;">
+              <input type="color" class="qa-color-mini" id="qaColorP1" oninput="qaQuickColorPreview()" title="أساسي ١">
+              <input type="color" class="qa-color-mini" id="qaColorP2" oninput="qaQuickColorPreview()" title="أساسي ٢">
+              <input type="color" class="qa-color-mini" id="qaColorText" oninput="qaQuickColorPreview()" title="النص">
+              <input type="color" class="qa-color-mini" id="qaColorBg" oninput="qaQuickColorPreview()" title="الخلفية">
+            </div>
+            <button type="button" class="qa-submit-btn" onclick="qaSaveQuickColors()">حفظ</button>
+          `}
         </div>`;
     }
+
     if(key === 'copyLink'){
-      return `
-        <div class="qa-tile qa-tile-action" onclick="window.copyMyLink()">
-          <div class="qa-tile-icon">${item.icon}</div>
-          <div class="qa-tile-title" style="margin:0;">${item.name}</div>
-        </div>`;
+      return `<div class="qa-tile qa-tile-action" onclick="window.copyMyLink()"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div></div>`;
     }
     if(key === 'qrCode'){
-      return `
-        <div class="qa-tile qa-tile-action" onclick="window.openQrCard()">
-          <div class="qa-tile-icon">${item.icon}</div>
-          <div class="qa-tile-title" style="margin:0;">${item.name}</div>
-        </div>`;
+      return `<div class="qa-tile qa-tile-action" onclick="window.openQrCard()"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div></div>`;
+    }
+    if(key === 'socialQuickAdd'){
+      return `<div class="qa-tile qa-tile-action" onclick="showPage('socials', document.querySelectorAll('.nav-tab')[2])"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div></div>`;
+    }
+    if(key === 'iconShapeSwitch'){
+      return `<div class="qa-tile qa-tile-action" onclick="setIconShape(currentIconShape==='circle'?'rect':'circle')"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div><div style="font-size:0.68rem;color:var(--muted);margin-top:2px;">${currentIconShape==='circle'?'دائري الآن':'مستطيل الآن'}</div></div>`;
+    }
+    if(key === 'exportJson'){
+      return `<div class="qa-tile qa-tile-action" onclick="window.exportLinks('json')"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div></div>`;
+    }
+    if(key === 'templateQuickApply'){
+      return `<div class="qa-tile qa-tile-action" onclick="showPage('templates', document.querySelectorAll('.nav-tab')[0])"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div></div>`;
+    }
+    if(key === 'viewsSummary'){
+      return `<div class="qa-tile" id="qaViewsSummaryTile"><div class="qa-tile-title">${item.icon} ${item.name}</div><div id="qaViewsSummaryBody" style="font-size:0.72rem;color:var(--muted);">جاري الحساب...</div></div>`;
+    }
+    if(key === 'bioQuickEdit'){
+      return `<div class="qa-tile qa-tile-action" onclick="showPage('profile', document.querySelectorAll('.nav-tab')[4])"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div></div>`;
+    }
+    if(key === 'avatarQuickUpload'){
+      return `<div class="qa-tile qa-tile-action" onclick="document.getElementById('avatarInput')?.click(); showPage('design', document.querySelectorAll('.nav-tab')[3]);"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div></div>`;
+    }
+    if(key === 'bannerQuickUpload'){
+      return `<div class="qa-tile qa-tile-action" onclick="document.getElementById('bannerInput')?.click(); showPage('design', document.querySelectorAll('.nav-tab')[3]);"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div></div>`;
+    }
+    if(key === 'featuredToggle' || key === 'hideToggle'){
+      return `<div class="qa-tile qa-tile-action" onclick="showPage('links', document.querySelectorAll('.nav-tab')[1])"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div></div>`;
     }
     return '';
   }
@@ -1561,20 +1645,43 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       return;
     }
     grid.innerHTML = qaConfig.map(k => qaTileHtml(k)).join('');
-    // عبّئ ألوان الصفحة الحالية بتايل الألوان إن وُجد
     const p1 = document.getElementById('colorPicker')?.value;
     const p2 = document.getElementById('colorPicker2')?.value;
-    const qc1 = document.getElementById('qaColorP1');
-    const qc2 = document.getElementById('qaColorP2');
+    const txt = document.getElementById('textColorPicker')?.value;
+    const bg = document.getElementById('bgColorPicker')?.value;
+    const qc1 = document.getElementById('qaColorP1'), qc2 = document.getElementById('qaColorP2');
+    const qct = document.getElementById('qaColorText'), qcb = document.getElementById('qaColorBg');
     if(qc1 && p1) qc1.value = p1;
     if(qc2 && p2) qc2.value = p2;
+    if(qct && txt) qct.value = txt;
+    if(qcb && bg) qcb.value = bg;
+    if(qaConfig.includes('viewsSummary')) qaComputeViewsSummary();
   }
+
+  window.qaToggleMenu = function(key){
+    qaMenuOpenFor = (qaMenuOpenFor === key) ? null : key;
+    renderQaWidget();
+  };
+  window.qaSetAddNumMode = async function(mode){
+    qaAddNumMode = mode;
+    qaMenuOpenFor = null;
+    renderQaWidget();
+    try{ await setDoc(doc(db, "users", currentUser.uid), { qaAddNumMode: mode }, { merge: true }); }catch(e){}
+  };
+  window.qaSetStatsMode = async function(mode){
+    qaStatsMode = mode;
+    qaMenuOpenFor = null;
+    renderQaWidget();
+    try{ await setDoc(doc(db, "users", currentUser.uid), { qaStatsMode: mode }, { merge: true }); }catch(e){}
+  };
 
   window.qaQuickAddNumber = async function(){
     const num = document.getElementById('qaNum').value;
     const title = document.getElementById('qaTitle').value.trim();
-    const url = document.getElementById('qaLinkUrl').value.trim();
-    if(!num || !title || !url){ window.showToast("عبّئ الرقم والعنوان والرابط"); return; }
+    const isLink = qaAddNumMode === 'link';
+    const url = isLink ? document.getElementById('qaLinkUrl').value.trim() : '';
+    const text = !isLink ? document.getElementById('qaTextContent').value.trim() : '';
+    if(!num || !title || (isLink ? !url : !text)){ window.showToast("عبّئ كل الحقول المطلوبة"); return; }
     if(RESERVED_NUMBERS.includes(parseInt(num))){ window.showToast(`⚠️ الرقم ${num} محجوز للنظام`); return; }
     try{
       const userRef = doc(db, "users", currentUser.uid);
@@ -1586,25 +1693,59 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       const nowIso = new Date().toISOString();
       links.push({
         id: 'lnk_'+Date.now(), number: numInt, num: numInt, title, label: title,
-        description: '', url, text: '', type: 'link', presentMode: null,
+        description: '', url, text,
+        type: isLink ? 'link' : 'text',
+        presentMode: qaAddNumMode === 'article' ? 'article' : (isLink ? null : 'popup'),
         featured: false, hidden: false, views: 0, createdAt: nowIso, updatedAt: nowIso
       });
       await setDoc(userRef, { links }, { merge: true });
       window.showToast("تمت الإضافة ✓");
       document.getElementById('qaNum').value='';
       document.getElementById('qaTitle').value='';
-      document.getElementById('qaLinkUrl').value='';
+      if(document.getElementById('qaLinkUrl')) document.getElementById('qaLinkUrl').value='';
+      if(document.getElementById('qaTextContent')) document.getElementById('qaTextContent').value='';
       if(typeof loadLinks==='function') loadLinks();
     }catch(e){ window.showToast("تعذر الحفظ: " + (e.message||'')); }
   };
 
+  window.qaPrintStats = async function(){
+    try{
+      const links = await fetchAllLinks();
+      const uname = (document.getElementById('pfUser').value || 'links').trim();
+      let toPrint = links;
+      if(qaStatsMode === 'top'){
+        toPrint = [...links].sort((a,b)=>(b.views||0)-(a.views||0)).slice(0,10);
+      }
+      if(!toPrint.length){ window.showToast("لا توجد بيانات للطباعة"); return; }
+      const ok = await exportLinksAsPdf(toPrint, uname);
+      if(ok) window.showToast("تم فتح التقرير للمعاينة");
+    }catch(e){ window.showToast("تعذر التصدير: " + (e.message||'')); }
+  };
+
+  async function qaComputeViewsSummary(){
+    const el = document.getElementById('qaViewsSummaryBody');
+    if(!el) return;
+    try{
+      const links = await fetchAllLinks();
+      const total = links.reduce((s,l)=>s+(l.views||0),0);
+      const top = [...links].sort((a,b)=>(b.views||0)-(a.views||0))[0];
+      el.innerHTML = `إجمالي: <b>${total}</b> مشاهدة${top?`<br>الأعلى: <b>[${top.number??top.num}] ${top.title}</b> (${top.views||0})`:''}`;
+    }catch(e){ el.textContent = 'تعذر الحساب'; }
+  }
+
   window.qaQuickColorPreview = function(){
     const p1 = document.getElementById('qaColorP1').value;
     const p2 = document.getElementById('qaColorP2').value;
+    const txt = document.getElementById('qaColorText').value;
+    const bg = document.getElementById('qaColorBg').value;
     document.getElementById('colorPicker').value = p1;
     document.getElementById('colorPicker2').value = p2;
+    document.getElementById('textColorPicker').value = txt;
+    document.getElementById('bgColorPicker').value = bg;
     window.onColorPick(p1);
     window.onColor2Pick(p2);
+    window.onTextColorPick(txt);
+    window.onBgColorPick(bg);
   };
   window.qaSaveQuickColors = async function(){
     try{ await window.saveDesign(); window.showToast("تم حفظ الألوان ✓"); }
@@ -1633,12 +1774,11 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     renderQaWidget();
     try{ await setDoc(doc(db, "users", currentUser.uid), { quickActionsConfig: qaConfig }, { merge: true }); }catch(e){}
   };
-  async function loadQaConfig(){
-    try{
-      const snap = await getDoc(doc(db, "users", currentUser.uid));
-      const data = snap.exists() ? snap.data() : {};
-      qaConfig = Array.isArray(data.quickActionsConfig) ? data.quickActionsConfig : QA_DEFAULT.slice();
-    }catch(e){ qaConfig = QA_DEFAULT.slice(); }
+  function loadQaConfig(data){
+    data = data || {};
+    qaConfig = Array.isArray(data.quickActionsConfig) ? data.quickActionsConfig : QA_DEFAULT.slice();
+    qaAddNumMode = data.qaAddNumMode || 'link';
+    qaStatsMode = data.qaStatsMode || 'top';
     renderQaWidget();
   }
 
