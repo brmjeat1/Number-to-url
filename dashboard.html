@@ -229,6 +229,14 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   font-size:0.6rem;font-weight:800;color:var(--muted);text-transform:uppercase;
   margin-bottom:4px;letter-spacing:0.3px;
 }
+.qr-icon-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:26px;height:26px;padding:0;border:1.5px solid var(--border);border-radius:7px;
+  background:var(--bg2);color:var(--primary);cursor:pointer;flex-shrink:0;vertical-align:middle;
+}
+.qr-icon-btn svg{width:14px;height:14px;}
+.qr-icon-btn-table{width:20px;height:20px;margin-inline-start:4px;border-radius:5px;}
+.qr-icon-btn-table svg{width:11px;height:11px;}
 .qa-tile{background:var(--bg);border-radius:12px;padding:10px;display:flex;flex-direction:column;height:100%;overflow-y:auto;}
 .qa-tile-title{font-size:0.7rem;font-weight:800;margin-bottom:6px;color:var(--text);}
 .qa-tile-action{align-items:center;justify-content:center;text-align:center;cursor:pointer;gap:4px;transition:transform .15s;}
@@ -300,28 +308,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 </div>
 
 <!-- نافذة البطاقة التسويقية QR -->
-<div id="qrModal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;padding:20px;" onclick="if(event.target===this)closeQrCard()">
-  <div style="background:#fff;border-radius:20px;padding:0;max-width:360px;width:100%;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
-    <!-- البطاقة القابلة للتصدير -->
-    <div id="qrCard" style="background:linear-gradient(160deg,var(--primary),var(--primary-light));padding:28px 24px;text-align:center;">
-      <div id="qrCardLogo" style="width:64px;height:64px;border-radius:50%;background:#fff;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:700;color:var(--primary);overflow:hidden;"></div>
-      <div id="qrCardName" style="color:#fff;font-size:1.15rem;font-weight:700;margin-bottom:2px;">—</div>
-      <div id="qrCardUser" style="color:rgba(255,255,255,0.85);font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-size:0.8rem;margin-bottom:16px;direction:ltr;">@—</div>
-      <div id="qrContainerBox" style="background:#fff;border-radius:16px;padding:16px;display:inline-block;margin-bottom:14px;">
-        <div id="qrCanvas"></div>
-      </div>
-      <div style="color:#fff;font-size:0.9rem;font-weight:700;margin-bottom:2px;">امسح لتصل لكل روابطي</div>
-      <div style="color:rgba(255,255,255,0.8);font-size:0.7rem;">Scan for all my links</div>
-      <div style="color:rgba(255,255,255,0.9);font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-size:0.72rem;margin-top:10px;direction:ltr;">electrwni.link</div>
-    </div>
-    <!-- الأزرار -->
-    <div style="padding:16px;display:flex;gap:10px;">
-      <button class="btn-add" style="flex:1;background:var(--primary);margin:0;" onclick="downloadQrCard()">⬇ تنزيل كصورة · Download</button>
-      <button class="btn-add" style="background:var(--bg2);color:var(--text2);margin:0;padding:0 18px;" onclick="closeQrCard()">إغلاق</button>
-    </div>
-  </div>
-</div>
-
 <div class="container">
 
   <!-- TABS -->
@@ -357,6 +343,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
           <label>صفحات جاهزة <span class="lbl-sub">/ Ready-made Pages</span></label>
           <div style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;">هذا شكل صفحتك تقريباً بكل قالب — اضغط على أي واحدة لتطبيقها · This is roughly how your page will look with each template</div>
           <div id="pageMockupCarousel" style="display:flex;gap:12px;overflow-x:auto;padding:4px 4px 10px;-webkit-overflow-scrolling:touch;"></div>
+          <button type="button" id="adminAddTplBtn" onclick="adminAddTemplateInline()" style="display:none;width:100%;margin-top:10px;padding:11px;border:2px dashed var(--primary);border-radius:12px;background:var(--bg2);color:var(--primary);font-weight:700;font-family:inherit;cursor:pointer;">+ إضافة قالب جديد (أدمن) · Add Template (Admin)</button>
         </div>
       </div>
     </div>
@@ -1155,6 +1142,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     const userDoc = await getDoc(userDocRef);
     let username = currentUser.email.split('@')[0];
 
+    // ⚠️ نفس بريد الإدارة المستخدم بملف admin.html — عدّله ليطابق بريدك الحقيقي
+    const ADMIN_EMAIL = "brmjeat1@gmail.com";
+    if(currentUser.email === ADMIN_EMAIL){
+      const btn = document.getElementById('adminAddTplBtn');
+      if(btn) btn.style.display = 'block';
+    }
+
     if (userDoc.exists()) {
       const data = userDoc.data();
       username = data.username || username;
@@ -1399,6 +1393,19 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       }
     }catch(e){ console.error('loadTemplatesFromConfig failed:', e); }
   }
+  window.adminAddTemplateInline = async function(){
+    const newId = 'custom_' + Date.now();
+    const newTpl = { id:newId, name:'قالب جديد', p1:'#3d5af1', p2:'#6c8fff', text:'#0f1535', bg:'#ffffff' };
+    DESIGN_TEMPLATES.push(newTpl);
+    renderTemplateCarousel();
+    try{
+      const snap = await getDoc(doc(db, "siteConfig", "templates"));
+      const existing = snap.exists() ? snap.data() : {};
+      existing[newId] = { name:newTpl.name, p1:newTpl.p1, p2:newTpl.p2, text:newTpl.text, bg:newTpl.bg };
+      await setDoc(doc(db, "siteConfig", "templates"), existing);
+      window.showToast("تمت إضافة القالب — عدّل ألوانه من لوحة الإدارة");
+    }catch(e){ window.showToast("تعذر الحفظ: " + (e.message||'')); }
+  };
   function renderTemplateCarousel(activeId){
     const el = document.getElementById('templateCarousel');
     if(!el) return;
@@ -1887,134 +1894,190 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     renderQaWidget();
   }
 
-  window.openQrCard = async function() {
-    const u = (document.getElementById('pfUser').value || '').trim();
-    if(!u){ window.showToast("لا يوجد اسم مستخدم بعد"); return; }
-    const url = `https://electrwni.link/${u}`;
-    const name = (document.getElementById('pfName') && document.getElementById('pfName').value.trim()) || u;
-    // تعبئة بيانات البطاقة
-    document.getElementById('qrCardName').textContent = name;
-    document.getElementById('qrCardUser').textContent = '@' + u;
-    // الشعار (إن وُجدت صورة أفاتار)
-    const av = document.getElementById('avatarPreview');
-    const logo = document.getElementById('qrCardLogo');
-    const img = av ? av.querySelector('img') : null;
-    if(img && img.src){ logo.innerHTML = `<img src="${img.src}" style="width:100%;height:100%;object-fit:cover;">`; }
-    else { logo.textContent = (name[0]||'E').toUpperCase(); }
-
-    // طبّق تخصيص البطاقة (لون الموقع الافتراضي أو الألوان المخصصة الأربعة)
-    let qrDark = '#1a1d24', qrLight = '#ffffff', ringColor = '#ffffff', containerColor = '#ffffff', cardBg = null;
-    try{
-      const snap = await getDoc(doc(db, "users", currentUser.uid));
-      const data = snap.exists() ? snap.data() : {};
-      if(data.qrStyleMode === 'custom'){
-        cardBg = data.qrCustomBg || null;
-        qrDark = data.qrCustomIconColor || qrDark;
-        ringColor = data.qrCustomRing || ringColor;
-        containerColor = data.qrCustomContainer || containerColor;
-      }
-    }catch(e){}
-    const cardEl = document.getElementById('qrCard');
-    cardEl.style.background = cardBg || 'linear-gradient(160deg,var(--primary),var(--primary-light))';
-    logo.style.border = `2px solid ${ringColor}`;
-    const containerBox = document.getElementById('qrContainerBox');
-    if(containerBox) containerBox.style.background = containerColor;
-
-    // توليد الـ QR ثم تثبيته كصورة dataURL (يضمن ظهوره في التصدير)
-    const holder = document.getElementById('qrCanvas');
-    const drawQr = ()=>{
-      holder.innerHTML = '';
-      new QRCode(holder, { text: url, width: 180, height: 180, colorDark: qrDark, colorLight: qrLight, correctLevel: QRCode.CorrectLevel.H });
-      setTimeout(()=>{
-        const cv = holder.querySelector('canvas');
-        if(cv){
-          try{
-            const dataUrl = cv.toDataURL('image/png');
-            holder.innerHTML = `<img src="${dataUrl}" width="180" height="180" style="display:block;">`;
-          }catch(e){}
-        }
-      }, 120);
-    };
-    document.getElementById('qrModal').style.display = 'flex';
-    if(window.QRCode){ drawQr(); }
-    else { window.__ensureQr().then(drawQr).catch(()=>window.showToast("تعذر تحميل مكتبة QR")); }
-  };
-
-  window.closeQrCard = function() {
-    document.getElementById('qrModal').style.display = 'none';
-  };
-
-  window.downloadQrCard = function() {
-    const card = document.getElementById('qrCard');
-    const u = (document.getElementById('pfUser').value || 'card').trim();
-    window.showToast("جاري تجهيز الصورة...");
-    // تأكيد أن الـ QR مثبّت كصورة dataURL (لا canvas) قبل الالتقاط
-    const ensureQrFixed = () => {
-      const holder = document.getElementById('qrCanvas');
-      if(!holder) return;
-      const existingImg = holder.querySelector('img');
-      if(existingImg && existingImg.src && existingImg.src.startsWith('data:')) return; // مثبّت مسبقاً
-      const cv = holder.querySelector('canvas');
-      if(cv){
-        try{
-          const dataUrl = cv.toDataURL('image/png');
-          holder.innerHTML = `<img src="${dataUrl}" width="180" height="180" style="display:block;">`;
-        }catch(e){}
-      }
-    };
-    ensureQrFixed();
-    // ضمان أن صورة الـ QR (img داخل qrcodejs) حُمّلت قبل الالتقاط
-    const ensureImgsLoaded = () => new Promise(resolve=>{
-      const imgs = card.querySelectorAll('img');
-      let pending = 0;
-      imgs.forEach(im=>{
-        if(!im.complete || im.naturalWidth===0){
-          pending++;
-          im.addEventListener('load', ()=>{ if(--pending<=0) resolve(); }, {once:true});
-          im.addEventListener('error', ()=>{ if(--pending<=0) resolve(); }, {once:true});
-        }
-      });
-      if(pending===0) resolve();
-      setTimeout(resolve, 800); // حد أقصى احتياطي
+  // ===== رسم مربع بحواف دائرية على Canvas =====
+  function roundRectPath(ctx, x, y, w, h, r){
+    ctx.beginPath();
+    ctx.moveTo(x+r, y);
+    ctx.arcTo(x+w, y, x+w, y+h, r);
+    ctx.arcTo(x+w, y+h, x, y+h, r);
+    ctx.arcTo(x, y+h, x, y, r);
+    ctx.arcTo(x, y, x+w, y, r);
+    ctx.closePath();
+  }
+  function loadImageEl(src){
+    return new Promise((resolve)=>{
+      if(!src){ resolve(null); return; }
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = ()=>resolve(img);
+      img.onerror = ()=>resolve(null);
+      img.src = src;
     });
-    ensureImgsLoaded()
-      .then(()=> window.html2canvas ? Promise.resolve() : window.__ensureHtml2canvas())
-      .then(()=> html2canvas(card, { scale: 3, useCORS: true, allowTaint: true, backgroundColor: '#ffffff' })).then(canvas => {
-      canvas.toBlob(function(blob){
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-        if(navigator.canShare && blob){
-          const file = new File([blob], `electrwni-${u}-qr.png`, { type: 'image/png' });
-          if(navigator.canShare({ files: [file] })){
-            navigator.share({ files: [file], title: 'بطاقة QR' })
-              .then(()=>window.showToast("تم"))
-              .catch(()=>fallbackDownload(canvas,u,isIOS));
-            return;
-          }
-        }
-        fallbackDownload(canvas,u,isIOS);
-      }, 'image/png');
-    }).catch(e => { window.showToast("تعذر التصدير: " + (e.message||'')); });
-  };
+  }
 
-  function fallbackDownload(canvas,u,isIOS){
-    const dataUrl = canvas.toDataURL('image/png');
-    if(isIOS){
-      // على آيفون: افتح الصورة في نافذة جديدة ليحفظها المستخدم بضغطة مطوّلة في الصور
-      const w = window.open('');
-      if(w){
-        w.document.write(`<html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>احفظ الصورة في الصور</title></head><body style="margin:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;"><p style="color:#fff;padding:14px;text-align:center;">اضغط مطولاً على الصورة ثم اختر «حفظ في الصور»</p><img src="${dataUrl}" style="max-width:92%;border-radius:16px;"></body></html>`);
-        window.showToast("افتح الصورة واضغط مطولاً للحفظ في الصور");
-      } else {
-        window.showToast("اسمح بالنوافذ المنبثقة لحفظ الصورة");
-      }
+  // ===== توليد بطاقة QR كاملة كـ Canvas واحد — يحل مشكلة اختفاء الرمز نهائياً (رسم مباشر، بدون التقاط صورة للصفحة) =====
+  async function buildQrCardCanvas({ url, number, name, username, avatarSrc, primaryColor, primaryColor2 }){
+    if(!window.QRCode) await window.__ensureQr().catch(()=>{});
+    const W = 640, H = 900;
+    const canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+    const p1 = primaryColor || '#3d5af1', p2 = primaryColor2 || '#6c8fff';
+
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0,0,W,H);
+
+    // خلفية ضبابية خفيفة من الشعار (شفافية ٩٠٪ تقريباً — يعني ظهور خفيف جداً كنسيج زخرفي)
+    const avatarImg = await loadImageEl(avatarSrc);
+    if(avatarImg){
+      const bgCanvas = document.createElement('canvas');
+      bgCanvas.width = W; bgCanvas.height = H;
+      const bgCtx = bgCanvas.getContext('2d');
+      const scale = Math.max(W/avatarImg.width, H/avatarImg.height) * 1.3;
+      const iw = avatarImg.width*scale, ih = avatarImg.height*scale;
+      bgCtx.filter = 'blur(26px)';
+      bgCtx.drawImage(avatarImg, (W-iw)/2, (H-ih)/2, iw, ih);
+      ctx.globalAlpha = 0.10;
+      ctx.drawImage(bgCanvas, 0, 0);
+      ctx.globalAlpha = 1;
     } else {
-      const a = document.createElement('a');
-      a.href = dataUrl;
-      a.download = `electrwni-${u}-qr.png`;
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      window.showToast("تم تنزيل البطاقة");
+      const grad = ctx.createLinearGradient(0,0,W,H);
+      grad.addColorStop(0, p1); grad.addColorStop(1, p2);
+      ctx.globalAlpha = 0.08;
+      ctx.fillStyle = grad;
+      ctx.fillRect(0,0,W,H);
+      ctx.globalAlpha = 1;
+    }
+
+    // الشعار الدائري بالأعلى (واضح تماماً)
+    const logoR = 70, logoCx = W/2, logoCy = 130;
+    ctx.save();
+    ctx.beginPath(); ctx.arc(logoCx, logoCy, logoR, 0, Math.PI*2); ctx.closePath(); ctx.clip();
+    ctx.fillStyle = p1; ctx.fillRect(logoCx-logoR, logoCy-logoR, logoR*2, logoR*2);
+    if(avatarImg){
+      const s = Math.max((logoR*2)/avatarImg.width, (logoR*2)/avatarImg.height);
+      const iw = avatarImg.width*s, ih = avatarImg.height*s;
+      ctx.drawImage(avatarImg, logoCx-iw/2, logoCy-ih/2, iw, ih);
+    } else {
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 60px Tajawal, sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText((name||'E')[0].toUpperCase(), logoCx, logoCy+4);
+    }
+    ctx.restore();
+    ctx.beginPath(); ctx.arc(logoCx, logoCy, logoR, 0, Math.PI*2);
+    ctx.lineWidth = 4; ctx.strokeStyle = '#ffffff'; ctx.stroke();
+
+    // الاسم + الرابط
+    ctx.fillStyle = '#0f1535'; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+    ctx.font = 'bold 32px Tajawal, sans-serif';
+    ctx.fillText(name || username || 'حسابي', W/2, 250);
+    ctx.fillStyle = p1;
+    ctx.font = '22px "Space Mono", monospace';
+    ctx.fillText(`electrwni.link/${username}`, W/2, 285);
+
+    // رمز QR — يُولَّد وننتظره فعلياً قبل الرسم (هذا هو الإصلاح الجوهري لمشكلة الاختفاء)
+    const qrHolder = document.createElement('div');
+    qrHolder.style.position='fixed'; qrHolder.style.left='-9999px'; qrHolder.style.top='0';
+    document.body.appendChild(qrHolder);
+    await new Promise(resolve=>{
+      new QRCode(qrHolder, { text: url, width: 320, height: 320, colorDark:'#0f1535', colorLight:'#ffffff', correctLevel: QRCode.CorrectLevel.H });
+      setTimeout(resolve, 180);
+    });
+    const qrCanvasEl = qrHolder.querySelector('canvas');
+    const qrSize = 320, qrX = (W-qrSize)/2, qrY = 330;
+    if(qrCanvasEl){
+      ctx.save();
+      ctx.shadowColor = 'rgba(0,0,0,0.14)'; ctx.shadowBlur = 22;
+      ctx.fillStyle = '#ffffff';
+      roundRectPath(ctx, qrX-16, qrY-16, qrSize+32, qrSize+32, 18);
+      ctx.fill();
+      ctx.restore();
+      ctx.drawImage(qrCanvasEl, qrX, qrY, qrSize, qrSize);
+    }
+    document.body.removeChild(qrHolder);
+
+    // مربع الرقم (يسار) + مربع "امسح الرمز لتصل للرابط" بلون مختلف (يمين)
+    const boxY = qrY + qrSize + 40, boxH = 74, boxW = 250;
+    ctx.fillStyle = '#0f1535';
+    roundRectPath(ctx, 40, boxY, boxW, boxH, 16); ctx.fill();
+    ctx.fillStyle = '#ffffff'; ctx.font = 'bold 30px "Space Mono", monospace'; ctx.textAlign = 'center';
+    ctx.fillText(`#${number}`, 40+boxW/2, boxY+boxH/2+10);
+
+    ctx.fillStyle = p1;
+    roundRectPath(ctx, W-40-boxW, boxY, boxW, boxH, 16); ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 19px Tajawal, sans-serif';
+    ctx.fillText('امسح الرمز', W-40-boxW/2, boxY+30);
+    ctx.font = '15px Tajawal, sans-serif';
+    ctx.fillText('لتصل للرابط', W-40-boxW/2, boxY+54);
+
+    return canvas;
+  }
+
+  // ===== تصدير البطاقة كـ PDF مباشرة (بدون فتح أي نافذة منبثقة) =====
+  async function exportQrCardAsPdf({ url, number, name, username, avatarSrc, primaryColor, primaryColor2 }){
+    window.showToast("جاري تجهيز البطاقة...");
+    try{
+      if(!window.jspdf) await window.__ensureJsPdf().catch(()=>{});
+      const canvas = await buildQrCardCanvas({ url, number, name, username, avatarSrc, primaryColor, primaryColor2 });
+      const imgData = canvas.toDataURL('image/png');
+      const { jsPDF } = window.jspdf;
+      const pw = canvas.width * 0.75, ph = canvas.height * 0.75; // بكسل → نقطة تقريباً
+      const pdf = new jsPDF({ unit:'pt', format:[pw, ph] });
+      pdf.addImage(imgData, 'PNG', 0, 0, pw, ph);
+      pdf.save(`electrwni-${username}-${number}.pdf`);
+      window.showToast("تم تنزيل البطاقة ✓");
+    }catch(e){
+      window.showToast("تعذر إنشاء البطاقة: " + (e.message||''));
     }
   }
+
+  // يجمع بيانات الحساب (الاسم، الشعار، الألوان) لاستخدامها بأي بطاقة QR
+  async function getQrCardOwnerData(){
+    const u = (document.getElementById('pfUser').value || '').trim();
+    const name = (document.getElementById('pfName') && document.getElementById('pfName').value.trim()) || u;
+    let avatarSrc = null, primaryColor = null, primaryColor2 = null;
+    const avEl = document.getElementById('avatarPreview')?.querySelector('img');
+    if(avEl) avatarSrc = avEl.src;
+    try{
+      const snap = await getDoc(doc(db, "users", currentUser.uid));
+      if(snap.exists()){
+        const data = snap.data();
+        if(!avatarSrc) avatarSrc = data.avatar || null;
+        primaryColor = data.primaryColor || null;
+        primaryColor2 = data.primaryColor2 || null;
+      }
+    }catch(e){}
+    return { username: u, name, avatarSrc, primaryColor, primaryColor2 };
+  }
+
+  // تنزيل مباشر لبطاقة QR الخاصة برابط الصفحة (رقم ٢٠٥) — بدون فتح أي نافذة منبثقة
+  window.downloadPageQrDirect = async function(){
+    const owner = await getQrCardOwnerData();
+    if(!owner.username){ window.showToast("لا يوجد اسم مستخدم بعد"); return; }
+    await exportQrCardAsPdf({
+      url: `https://electrwni.link/${owner.username}`,
+      number: 205, name: owner.name, username: owner.username,
+      avatarSrc: owner.avatarSrc, primaryColor: owner.primaryColor, primaryColor2: owner.primaryColor2
+    });
+  };
+
+  // تنزيل مباشر لبطاقة QR خاصة برابط رقم معيّن (من السجل أو الإحصائيات)
+  window.downloadLinkQr = async function(number, url){
+    const owner = await getQrCardOwnerData();
+    if(!owner.username){ window.showToast("لا يوجد اسم مستخدم بعد"); return; }
+    await exportQrCardAsPdf({
+      url, number, name: owner.name, username: owner.username,
+      avatarSrc: owner.avatarSrc, primaryColor: owner.primaryColor, primaryColor2: owner.primaryColor2
+    });
+  };
+
+  // يبقى متاحاً لمن يفضّل معاينة البطاقة قبل التنزيل (اختياري، غير مطلوب للتنزيل نفسه)
+  window.openQrCard = async function() {
+    await window.downloadPageQrDirect();
+  };
+  window.closeQrCard = function(){};
+  window.downloadQrCard = function(){ window.downloadPageQrDirect(); };
 
   window.logout = function() {
     signOut(auth).then(() => window.location.href = "signin.html");
@@ -2239,6 +2302,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   };
 
   // أيقونات SVG لتمييز رابط/نص بسجل الروابط والإحصائيات (بدل الإيموجي)
+  const QR_ICON_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><line x1="14" y1="14" x2="14" y2="14.01"></line><line x1="17.5" y1="14" x2="17.5" y2="17.5"></line><line x1="14" y1="17.5" x2="17.5" y2="17.5"></line><line x1="14" y1="21" x2="17.5" y2="21"></line><line x1="21" y1="14" x2="21" y2="21"></line></svg>';
   function registryTypeIconTag(kind){
     const inner = kind === 'text'
       ? '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/>'
@@ -2314,17 +2378,26 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
         // أزرار التعديل/الحذف: الروابط المحجوزة لا تُعدَّل، وحذفها يحذف مصدرها الفعلي (حساب التواصل) أو يُمنع (رابط الصفحة/القسم)
         let actionsHtml;
+        const qrTargetUrl = isReserved
+          ? `https://electrwni.link/${(document.getElementById('pfUser')?.value||'').trim()}`
+          : (isText
+              ? (link.presentMode === 'article' ? `https://electrwni.link/article.html?u=${encodeURIComponent((document.getElementById('pfUser')?.value||'').trim())}&n=${num}` : null)
+              : (link.url || null));
+        const qrIconBtn = qrTargetUrl
+          ? `<button class="qr-icon-btn" title="تنزيل QR لهذا الرابط" onclick="event.stopPropagation(); window.downloadLinkQr(${num}, '${qrTargetUrl.replace(/'/g,"\\'")}')">${QR_ICON_SVG}</button>`
+          : '';
         if(isReserved){
           if(link.socialId){
-            actionsHtml = `<button class="btn-edit" onclick="event.stopPropagation(); openSocialEditModal('${link.socialId}')">تعديل · Edit</button>`;
+            actionsHtml = `${qrIconBtn}<button class="btn-edit" onclick="event.stopPropagation(); openSocialEditModal('${link.socialId}')">تعديل · Edit</button>`;
           } else {
-            actionsHtml = `<span style="font-size:0.75rem;color:var(--muted);">🔒 عنصر نظام ثابت · System item</span>`;
+            actionsHtml = `${qrIconBtn}<span style="font-size:0.75rem;color:var(--muted);">🔒 عنصر نظام ثابت · System item</span>`;
           }
         } else {
           const previewBtn = (isText && link.presentMode === 'article')
             ? `<button class="btn-edit" onclick="event.stopPropagation(); window.open('article.html?u=${encodeURIComponent((document.getElementById('pfUser')?.value||'').trim())}&n=${num}','_blank')" style="background:var(--bg2);color:var(--primary);border:1.5px solid var(--primary);">📰 معاينة المقالة</button>`
             : '';
           actionsHtml = `
+            ${qrIconBtn}
             ${previewBtn}
             <button class="btn-edit" onclick="event.stopPropagation(); editLink('${ident}')">تعديل · Edit</button>
             <button class="btn-delete" onclick="event.stopPropagation(); deleteLink('${ident}')">حذف · Delete</button>`;
@@ -2340,7 +2413,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
               <div class="detail-row"><span class="detail-label">${isText?'النص:':'الرابط:'}</span> <span dir="ltr">${linkValuePreview}</span></div>
               <div class="detail-row"><span class="detail-label">الوصف:</span> <span>${fullDesc}</span></div>
               <div class="detail-row"><span class="detail-label">المشاهدات:</span> <span>${link.views || 0}</span></div>
-              <div style="margin-top:8px; text-align:left; display:flex; gap:8px; justify-content:flex-start;">
+              <div style="margin-top:8px; text-align:left; display:flex; gap:8px; justify-content:flex-start; flex-wrap:wrap;">
                 ${actionsHtml}
               </div>
             </div>
@@ -2349,7 +2422,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         registry.appendChild(item);
 
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${num}</td><td style="text-align:center;color:var(--primary);">${registryTypeIconTag(isText?'text':'link')}</td><td><b>${title}</b></td><td dir="ltr" style="word-break:break-all;">${linkValuePreview}</td><td><div class="desc-clamp">${clamped}</div></td><td><span style="color:var(--primary); font-weight:700;">${link.views || 0}</span></td>`;
+        tr.innerHTML = `<td>${num}</td><td style="text-align:center;color:var(--primary);white-space:nowrap;">${registryTypeIconTag(isText?'text':'link')}${qrTargetUrl?`<button class="qr-icon-btn qr-icon-btn-table" title="تنزيل QR" onclick="event.stopPropagation(); window.downloadLinkQr(${num}, '${qrTargetUrl.replace(/'/g,"\\'")}')">${QR_ICON_SVG}</button>`:''}</td><td><b>${title}</b></td><td dir="ltr" style="word-break:break-all;">${linkValuePreview}</td><td><div class="desc-clamp">${clamped}</div></td><td><span style="color:var(--primary); font-weight:700;">${link.views || 0}</span></td>`;
         statsTbody.appendChild(tr);
       });
     } catch(e){
