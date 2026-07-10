@@ -1207,8 +1207,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     updateLivePreview();
     const lpName=document.getElementById('lpName');
     if(lpName) lpName.textContent = (document.getElementById('pfName')&&document.getElementById('pfName').value) || username;
-    loadLinks();
-    loadSocials();
+    loadLinks(userDoc.exists() ? userDoc.data() : {});
+    loadSocials(userDoc.exists() ? userDoc.data() : {});
     loadIconShapeSettings(userDoc.exists() ? userDoc.data() : {});
     loadQrStyleSettings(userDoc.exists() ? userDoc.data() : {});
     renderTemplateCarousel();
@@ -2314,7 +2314,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     return `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;display:inline-block;">${inner}</svg>`;
   }
 
-  async function loadLinks() {
+  async function loadLinks(preloadedData) {
     if (!currentUser) return;
     const registry = document.getElementById('linksRegistry');
     const statsTbody = document.getElementById('statsTbody');
@@ -2325,11 +2325,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       let links = [];
       let userData = {};
       try {
-        const snap = await getDoc(doc(db, "users", currentUser.uid));
-        if(snap.exists()){
-          userData = snap.data();
-          if(Array.isArray(userData.links)) links = userData.links;
+        if(preloadedData){
+          userData = preloadedData;
+        } else {
+          const snap = await getDoc(doc(db, "users", currentUser.uid));
+          if(snap.exists()) userData = snap.data();
         }
+        if(Array.isArray(userData.links)) links = userData.links;
       } catch(e){}
 
       const uname = userData.username || (document.getElementById('pfUser')?.value || '').trim();
@@ -2933,14 +2935,18 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     }
   };
 
-  async function loadSocials() {
+  async function loadSocials(preloadedData) {
     if (!currentUser) return;
     const registry = document.getElementById('socialsRegistry');
     registry.innerHTML = '';
     let socials = [];
     try {
-      const snap = await getDoc(doc(db, "users", currentUser.uid));
-      if(snap.exists() && Array.isArray(snap.data().socials)) socials = snap.data().socials;
+      if(preloadedData){
+        if(Array.isArray(preloadedData.socials)) socials = preloadedData.socials;
+      } else {
+        const snap = await getDoc(doc(db, "users", currentUser.uid));
+        if(snap.exists() && Array.isArray(snap.data().socials)) socials = snap.data().socials;
+      }
     } catch(e){}
 
     if(!socials.length) {
