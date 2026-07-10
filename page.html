@@ -156,7 +156,7 @@ nav{
 
 /* أيقونات المنصات الاجتماعية - مستطيلة (أيقونة + يوزر) */
 .social-rect{
-  position:relative;display:flex;align-items:stretch;
+  position:relative;display:flex;flex-direction:row-reverse;align-items:stretch;
   height:56px;border-radius:16px;border:2.5px solid;overflow:hidden;
   text-decoration:none;width:100%;transition:transform .15s;
 }
@@ -173,7 +173,7 @@ nav{
   position:relative;z-index:1;direction:ltr;
 }
 .social-rect-divider{
-  position:absolute;top:0;bottom:0;right:56px;width:2px;background:currentColor;opacity:0.35;z-index:2;
+  position:absolute;top:0;bottom:0;left:56px;width:2px;background:currentColor;opacity:0.35;z-index:2;
 }
 .social-rect-sharp{border-radius:6px;}
 .social-rect-sharp .social-rect-divider{transform:skewX(-18deg);}
@@ -748,13 +748,14 @@ function render(user){
       const inner = svg ? svg : `<span style="font-weight:700;font-size:1.4rem;">${(s.name||'?')[0].toUpperCase()}</span>`;
 
       // ===== الشكل المستطيل: أيقونة + يوزر، بخط فاصل مستقيم أو مائل =====
+      // نعكس الألوان بين منطقة الأيقونة ومنطقة الاسم ليتميّزا بصرياً عن بعض
       if(iconShape === 'rect'){
         const rectClass = rectStyle === 'sharp' ? 'social-rect social-rect-sharp' : 'social-rect';
         const smallInner = svg ? svg.replace('width="28"','width="20"').replace('height="28"','height="20"') : inner;
-        return `<a href="${s.url}" target="_blank" class="${rectClass}" title="${s.name||pid}" style="background:${circleBg};border-color:${borderCol};color:${iconColor};" onclick="trackSocialClick('${s.id}')">
-          <span class="social-rect-icon">${smallInner}</span>
+        return `<a href="${s.url}" target="_blank" class="${rectClass}" title="${s.name||pid}" style="border-color:${borderCol};background:${iconColor};color:${circleBg};" onclick="trackSocialClick('${s.id}')">
+          <span class="social-rect-icon" style="background:${circleBg};color:${iconColor};">${smallInner}</span>
           <span class="social-rect-divider"></span>
-          <span class="social-rect-label">${extractHandle(s.url)||s.name||pid}</span>
+          <span class="social-rect-label" style="background:${iconColor};color:${circleBg};">${extractHandle(s.url)||s.name||pid}</span>
         </a>`;
       }
 
