@@ -537,22 +537,26 @@ async function init(){
 
 // الزر الذكي: يُحمّل auth بشكل مؤجّل (لا يحجب عرض الصفحة)
 function setupSmartNav(pageUid){
-  // الافتراضي "ابدأ الآن" ظاهر فوراً، ثم نفحص الجلسة في الخلفية
-  const s=document.createElement('script');
-  s.src='https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js';
-  s.onload=function(){
-    try{
-      firebase.auth().onAuthStateChanged(authUser=>{
-        const cta=document.getElementById('navCta');
-        if(!cta)return;
-        if(authUser && authUser.uid===pageUid){
-          cta.innerHTML='لوحة التحكم<span class="nav-cta-sub">Dashboard</span>';
-          cta.setAttribute('href','dashboard.html');
-        }
-      });
-    }catch(e){}
+  // الافتراضي "ابدأ الآن" ظاهر فوراً — نؤجّل تحميل مكتبة المصادقة (غير حرجة لأغلب الزوّار) لحين خمول المتصفح
+  const loadAuthCheck = function(){
+    const s=document.createElement('script');
+    s.src='https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js';
+    s.onload=function(){
+      try{
+        firebase.auth().onAuthStateChanged(authUser=>{
+          const cta=document.getElementById('navCta');
+          if(!cta)return;
+          if(authUser && authUser.uid===pageUid){
+            cta.innerHTML='لوحة التحكم<span class="nav-cta-sub">Dashboard</span>';
+            cta.setAttribute('href','dashboard.html');
+          }
+        });
+      }catch(e){}
+    };
+    document.body.appendChild(s);
   };
-  document.body.appendChild(s);
+  if('requestIdleCallback' in window){ requestIdleCallback(loadAuthCheck, {timeout:2000}); }
+  else { setTimeout(loadAuthCheck, 800); }
 }
 
 function applyThemeColor(hex){
