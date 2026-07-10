@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>لوحة الإدارة — electrwni.link</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Tajawal',sans-serif;background:#f4f5f9;color:#0f1535;min-height:100vh;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:#0f1535;color:#fff;}
+.nav-logo{font-family:'Space Mono',monospace;font-weight:700;font-size:1rem;color:#fff;}
+.nav-logo em{color:#f5c518;font-style:normal;}
+.nav-badge{background:#e2231a;padding:3px 10px;border-radius:20px;font-size:0.68rem;font-weight:700;}
+
+/* ===== شاشة الدخول ===== */
+.gate{max-width:380px;margin:80px auto;padding:0 20px;text-align:center;}
+.gate h1{font-size:1.4rem;margin-bottom:8px;}
+.gate p{font-size:0.85rem;color:#6b7280;margin-bottom:24px;}
+.gate input{width:100%;padding:13px;border:1.5px solid #e0e0e0;border-radius:10px;margin-bottom:10px;font-family:inherit;font-size:0.9rem;}
+.gate button{width:100%;padding:13px;background:#0f1535;color:#fff;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-family:inherit;}
+.gate .err{color:#c33;font-size:0.82rem;margin-top:10px;display:none;}
+.gate .err.show{display:block;}
+.denied{max-width:380px;margin:100px auto;text-align:center;padding:0 20px;}
+.denied .icon{font-size:3rem;margin-bottom:14px;}
+
+/* ===== لوحة الإدارة ===== */
+.container{max-width:760px;margin:0 auto;padding:20px;display:none;}
+.container.show{display:block;}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:20px;padding-bottom:4px;}
+.tab-btn{
+  flex-shrink:0;padding:10px 16px;border-radius:10px;border:1.5px solid #e0e0e0;background:#fff;
+  font-family:inherit;font-weight:700;font-size:0.84rem;cursor:pointer;color:#0f1535;
+}
+.tab-btn.active{background:#0f1535;color:#fff;border-color:#0f1535;}
+.section{display:none;}
+.section.active{display:block;}
+.card{background:#fff;border:1px solid #e8ecf5;border-radius:14px;padding:16px;margin-bottom:12px;}
+.stat-row{display:flex;gap:10px;margin-bottom:16px;}
+.stat-box{flex:1;background:#fff;border:1px solid #e8ecf5;border-radius:14px;padding:16px;text-align:center;}
+.stat-num{font-size:1.6rem;font-weight:900;color:#3d5af1;}
+.stat-label{font-size:0.75rem;color:#6b7280;margin-top:4px;}
+.user-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f0f0f0;}
+.user-row:last-child{border-bottom:none;}
+.user-avatar{width:38px;height:38px;border-radius:50%;background:#e8ecf5;display:flex;align-items:center;justify-content:center;font-weight:700;color:#3d5af1;flex-shrink:0;}
+.user-info{flex:1;min-width:0;}
+.user-name{font-weight:700;font-size:0.88rem;}
+.user-meta{font-size:0.72rem;color:#9aa2c8;}
+.badge-open{background:#fff4e5;color:#c77700;padding:2px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;}
+.badge-closed{background:#e8f9ee;color:#1a8f4c;padding:2px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;}
+.reply-box{width:100%;padding:10px;border:1.5px solid #e0e0e0;border-radius:8px;font-family:inherit;font-size:0.82rem;margin-top:10px;min-height:60px;}
+.btn-sm{padding:8px 14px;border:none;border-radius:8px;background:#3d5af1;color:#fff;font-weight:700;font-size:0.78rem;cursor:pointer;font-family:inherit;margin-top:8px;}
+.empty-note{text-align:center;padding:30px;color:#9aa2c8;font-size:0.85rem;}
+.tpl-edit-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;align-items:center;}
+.tpl-edit-row input[type=color]{width:100%;height:34px;border-radius:6px;border:1px solid #e0e0e0;padding:2px;}
+.tpl-edit-row input[type=text]{padding:8px;border:1px solid #e0e0e0;border-radius:6px;font-family:inherit;font-size:0.78rem;}
+.note-box{background:#fff9e6;border:1px solid #f5d97a;border-radius:10px;padding:12px;font-size:0.78rem;color:#7a5c00;margin-bottom:14px;line-height:1.7;}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" style="text-decoration:none;" class="nav-logo">electrwni<em>.link</em></a>
+  <span class="nav-badge">ADMIN</span>
+</nav>
+
+<!-- شاشة تسجيل دخول الأدمن -->
+<div class="gate" id="gateScreen">
+  <h1>لوحة الإدارة</h1>
+  <p>Admin Panel — دخول مخصص لمالك المنصة فقط</p>
+  <input type="email" id="adminEmail" placeholder="البريد الإلكتروني" dir="ltr">
+  <input type="password" id="adminPassword" placeholder="كلمة المرور" dir="ltr">
+  <button onclick="adminLogin()" id="loginBtn">دخول · Login</button>
+  <div class="err" id="loginErr"></div>
+</div>
+
+<!-- شاشة رفض الدخول -->
+<div class="denied" id="deniedScreen" style="display:none;">
+  <div class="icon">🔒</div>
+  <h1>هذا الحساب غير مخوَّل</h1>
+  <p style="font-size:0.85rem;color:#6b7280;margin-top:8px;">This account does not have admin access.</p>
+  <button onclick="adminLogout()" style="margin-top:20px;padding:10px 20px;border:1.5px solid #e0e0e0;background:#fff;border-radius:10px;font-family:inherit;font-weight:700;cursor:pointer;">تسجيل خروج</button>
+</div>
+
+<div class="container" id="mainContainer">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showAdminTab('overview',this)">نظرة عامة</button>
+    <button class="tab-btn" onclick="showAdminTab('users',this)">المستخدمون</button>
+    <button class="tab-btn" onclick="showAdminTab('feedback',this)">الملاحظات <span id="feedbackBadge"></span></button>
+    <button class="tab-btn" onclick="showAdminTab('templates',this)">القوالب</button>
+    <button class="tab-btn" onclick="showAdminTab('subs',this)">الاشتراكات</button>
+  </div>
+
+  <!-- نظرة عامة -->
+  <div class="section active" id="sec-overview">
+    <div class="stat-row">
+      <div class="stat-box"><div class="stat-num" id="statUsers">—</div><div class="stat-label">إجمالي المستخدمين</div></div>
+      <div class="stat-box"><div class="stat-num" id="statOpenFeedback">—</div><div class="stat-label">ملاحظات بانتظار الرد</div></div>
+    </div>
+    <div class="card">
+      <b>حسابك الحالي</b>
+      <p style="font-size:0.8rem;color:#6b7280;margin-top:6px;" id="currentAdminEmail" dir="ltr"></p>
+      <button onclick="adminLogout()" class="btn-sm" style="background:#e2231a;">تسجيل خروج · Logout</button>
+    </div>
+  </div>
+
+  <!-- المستخدمون -->
+  <div class="section" id="sec-users">
+    <div class="note-box">🔒 تُعرض هنا فقط بيانات أساسية (الاسم، اليوزر، البريد، تاريخ الانضمام) — لا وصول لروابطهم أو محتواهم الخاص.</div>
+    <div class="card" id="usersList"><div class="empty-note">جاري التحميل...</div></div>
+  </div>
+
+  <!-- الملاحظات والشكاوى -->
+  <div class="section" id="sec-feedback">
+    <div id="feedbackList"><div class="empty-note">جاري التحميل...</div></div>
+  </div>
+
+  <!-- القوالب -->
+  <div class="section" id="sec-templates">
+    <div class="note-box">⚠️ تعديل القوالب هنا يحفظ القيم بقاعدة البيانات، لكن ربطها الفعلي بصفحات التسجيل ولوحة التحكم (بدل النسخة الثابتة بالكود حالياً) يحتاج خطوة برمجية إضافية لاحقاً — راجعني إذا حبيت تفعيلها بالكامل.</div>
+    <div id="templatesList"></div>
+    <button class="btn-sm" onclick="saveTemplatesConfig()" style="width:100%;padding:12px;">حفظ كل التعديلات · Save All</button>
+  </div>
+
+  <!-- الاشتراكات -->
+  <div class="section" id="sec-subs">
+    <div class="card">
+      <b>قريباً</b>
+      <p style="font-size:0.82rem;color:#6b7280;margin-top:6px;">تبويب إدارة الاشتراكات والخطط المدفوعة — يُفعَّل لاحقاً عند إطلاق نظام الاشتراكات.</p>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+<script>
+const cfg={apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",authDomain:"electrwni-link.firebaseapp.com",projectId:"electrwni-link",storageBucket:"electrwni-link.firebasestorage.app",messagingSenderId:"712490301263",appId:"1:712490301263:web:2084210da3f687285ab73a"};
+if(!firebase.apps.length)firebase.initializeApp(cfg);
+const auth=firebase.auth();
+const db=firebase.firestore();
+
+// ⚠️ عدّل هذا البريد ليكون بريدك الحقيقي المسجّل بالموقع — هذا هو مفتاح الوصول للوحة الإدارة
+const ADMIN_EMAIL = "your-admin-email@example.com";
+
+const DEFAULT_TEMPLATES = {
+  default: { name:'الافتراضي', p1:'#3d5af1', p2:'#6c8fff', text:'#0f1535', bg:'#ffffff' },
+  natural: { name:'طبيعي',     p1:'#588157', p2:'#7fa876', text:'#344E41', bg:'#DAD7CD' },
+  warm:    { name:'دافئ',      p1:'#EE9A00', p2:'#f4b840', text:'#BB3E03', bg:'#FEFAE0' },
+  calm:    { name:'هادئ',      p1:'#0D21A1', p2:'#4d5cc9', text:'#0D21A1', bg:'#EEF0F2' },
+  night:   { name:'ليلي',      p1:'#8fb0ff', p2:'#6c8fff', text:'#f0f1f5', bg:'#12141c' },
+  earthy:  { name:'ترابي',     p1:'#C97D34', p2:'#dba05f', text:'#7C4A03', bg:'#FDF6EC' },
+  fresh:   { name:'منعش',      p1:'#2A9D8F', p2:'#5cbcaf', text:'#0B4F4A', bg:'#E6F4F1' }
+};
+
+function showAdminTab(id, btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+window.showAdminTab = showAdminTab;
+
+async function adminLogin(){
+  const email = document.getElementById('adminEmail').value.trim();
+  const password = document.getElementById('adminPassword').value;
+  const errEl = document.getElementById('loginErr');
+  errEl.classList.remove('show');
+  if(!email || !password){ errEl.textContent='عبّئ البريد وكلمة المرور'; errEl.classList.add('show'); return; }
+  document.getElementById('loginBtn').textContent = 'جاري الدخول...';
+  try{
+    await auth.signInWithEmailAndPassword(email, password);
+    // onAuthStateChanged يتولى الباقي
+  }catch(e){
+    errEl.textContent = 'بيانات الدخول غير صحيحة';
+    errEl.classList.add('show');
+    document.getElementById('loginBtn').textContent = 'دخول · Login';
+  }
+}
+window.adminLogin = adminLogin;
+
+function adminLogout(){
+  auth.signOut().then(()=>window.location.reload());
+}
+window.adminLogout = adminLogout;
+
+auth.onAuthStateChanged(async (user) => {
+  if(!user){
+    document.getElementById('gateScreen').style.display='block';
+    document.getElementById('deniedScreen').style.display='none';
+    document.getElementById('mainContainer').classList.remove('show');
+    return;
+  }
+  if(user.email !== ADMIN_EMAIL){
+    document.getElementById('gateScreen').style.display='none';
+    document.getElementById('deniedScreen').style.display='block';
+    document.getElementById('mainContainer').classList.remove('show');
+    return;
+  }
+  document.getElementById('gateScreen').style.display='none';
+  document.getElementById('deniedScreen').style.display='none';
+  document.getElementById('mainContainer').classList.add('show');
+  document.getElementById('currentAdminEmail').textContent = user.email;
+  loadOverview();
+  loadUsers();
+  loadFeedback();
+  loadTemplates();
+});
+
+async function loadOverview(){
+  try{
+    const usersSnap = await db.collection('users').get();
+    document.getElementById('statUsers').textContent = usersSnap.size;
+  }catch(e){ console.error(e); }
+  try{
+    const openSnap = await db.collection('feedback').where('status','==','open').get();
+    document.getElementById('statOpenFeedback').textContent = openSnap.size;
+    document.getElementById('feedbackBadge').textContent = openSnap.size ? `(${openSnap.size})` : '';
+  }catch(e){ console.error(e); }
+}
+
+async function loadUsers(){
+  const el = document.getElementById('usersList');
+  try{
+    const snap = await db.collection('users').get();
+    if(snap.empty){ el.innerHTML = '<div class="empty-note">لا يوجد مستخدمون بعد</div>'; return; }
+    const rows = [];
+    snap.forEach(d => {
+      const u = d.data();
+      const joined = u.createdAt ? new Date(u.createdAt).toLocaleDateString('ar-SA') : '—';
+      rows.push(`
+        <div class="user-row">
+          <div class="user-avatar">${(u.displayName||u.username||'?')[0].toUpperCase()}</div>
+          <div class="user-info">
+            <div class="user-name">${(u.displayName||u.username||'—')}</div>
+            <div class="user-meta" dir="ltr">@${u.username||'—'} · ${u.email||'—'}</div>
+          </div>
+          <div class="user-meta">${joined}</div>
+        </div>
+      `);
+    });
+    el.innerHTML = rows.join('');
+  }catch(e){ el.innerHTML = `<div class="empty-note">تعذر التحميل: ${e.message}</div>`; }
+}
+
+async function loadFeedback(){
+  const el = document.getElementById('feedbackList');
+  try{
+    const snap = await db.collection('feedback').get();
+    if(snap.empty){ el.innerHTML = '<div class="empty-note">لا توجد ملاحظات بعد</div>'; return; }
+    const items = [];
+    snap.forEach(d => items.push({id:d.id, ...d.data()}));
+    items.sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
+    el.innerHTML = items.map(it => `
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <b style="font-size:0.85rem;">@${it.username||'—'}</b>
+          <span class="${it.status==='open'?'badge-open':'badge-closed'}">${it.status==='open'?'بانتظار الرد':'تم الرد'}</span>
+        </div>
+        <div style="font-size:0.72rem;color:#9aa2c8;margin-bottom:8px;" dir="ltr">${it.email||''}</div>
+        <div style="font-size:0.86rem;line-height:1.6;margin-bottom:10px;">${(it.message||'').replace(/</g,'&lt;')}</div>
+        ${it.adminReply ? `<div style="background:#f4f5f9;border-radius:8px;padding:10px;font-size:0.8rem;margin-bottom:10px;"><b>ردّك السابق:</b> ${it.adminReply.replace(/</g,'&lt;')}</div>` : ''}
+        <textarea class="reply-box" id="reply_${it.id}" placeholder="اكتب ردك هنا...">${it.adminReply||''}</textarea>
+        <button class="btn-sm" onclick="sendReply('${it.id}')">إرسال الرد وتحديد كمُجاب · Send & Close</button>
+      </div>
+    `).join('');
+  }catch(e){ el.innerHTML = `<div class="empty-note">تعذر التحميل: ${e.message}</div>`; }
+}
+async function sendReply(id){
+  const reply = document.getElementById('reply_'+id).value.trim();
+  if(!reply){ alert('اكتب رداً أولاً'); return; }
+  try{
+    await db.collection('feedback').doc(id).update({ adminReply: reply, status: 'closed' });
+    loadFeedback();
+    loadOverview();
+  }catch(e){ alert('تعذر الحفظ: '+e.message); }
+}
+window.sendReply = sendReply;
+
+let templatesData = {};
+async function loadTemplates(){
+  try{
+    const snap = await db.collection('siteConfig').doc('templates').get();
+    templatesData = snap.exists() ? snap.data() : {};
+  }catch(e){ templatesData = {}; }
+  // ادمج مع الافتراضي لأي قالب غير محفوظ بعد
+  Object.keys(DEFAULT_TEMPLATES).forEach(k => {
+    if(!templatesData[k]) templatesData[k] = {...DEFAULT_TEMPLATES[k]};
+  });
+  renderTemplatesEditor();
+}
+function renderTemplatesEditor(){
+  const el = document.getElementById('templatesList');
+  el.innerHTML = Object.keys(templatesData).map(key => {
+    const t = templatesData[key];
+    return `
+      <div class="card">
+        <input type="text" value="${t.name}" style="font-weight:700;font-size:0.9rem;border:none;background:none;margin-bottom:10px;font-family:inherit;width:100%;" onchange="templatesData['${key}'].name=this.value">
+        <div class="tpl-edit-row">
+          <div><label style="font-size:0.68rem;display:block;">أساسي ١</label><input type="color" value="${t.p1}" onchange="templatesData['${key}'].p1=this.value"></div>
+          <div><label style="font-size:0.68rem;display:block;">أساسي ٢</label><input type="color" value="${t.p2}" onchange="templatesData['${key}'].p2=this.value"></div>
+          <div><label style="font-size:0.68rem;display:block;">النص</label><input type="color" value="${t.text}" onchange="templatesData['${key}'].text=this.value"></div>
+          <div><label style="font-size:0.68rem;display:block;">الخلفية</label><input type="color" value="${t.bg}" onchange="templatesData['${key}'].bg=this.value"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+async function saveTemplatesConfig(){
+  try{
+    await db.collection('siteConfig').doc('templates').set(templatesData);
+    alert('تم الحفظ ✓');
+  }catch(e){ alert('تعذر الحفظ: '+e.message); }
+}
+window.saveTemplatesConfig = saveTemplatesConfig;
+</script>
+</body>
+</html>
