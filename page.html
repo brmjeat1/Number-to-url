@@ -799,7 +799,7 @@ function render(user){
   const allFeatured=[...featuredLinks.map(l=>({url:l.url,label:l.title||l.label,num:l.num??l.number})), ...featuredSocials];
   // الأرقام المحجوزة (٢٠٥ رابط الصفحة، ٢٠٦ أرقام مختارة) — تظهر بسجل الأرقام العام مثل لوحة التحكم بالضبط
   const reservedPublicEntries=[
-    { url:`https://electrwni.link/${username}`, label:'رابط الصفحة', num:205, type:'link' },
+    { url:`https://electrwni.link/${pageUsername||user.username||''}`, label:'رابط الصفحة', num:205, type:'link' },
     { url:'', label:'أرقام مختارة', num:206, type:'text', text:'' }
   ];
   const recentLinks=[...reservedPublicEntries, ...[...userLinks].slice(-5).reverse()];
