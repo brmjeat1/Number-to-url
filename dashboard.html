@@ -184,6 +184,36 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 .template-card .tpl-preview{height:56px;display:flex;align-items:center;justify-content:center;}
 .template-card .tpl-dot{width:16px;height:16px;border-radius:50%;}
 .template-card .tpl-name{font-size:0.68rem;font-weight:700;text-align:center;padding:6px 4px;color:var(--text);}
+
+/* ===== ويدجت الإجراءات السريعة (نمط iOS Widget) ===== */
+.qa-widget{max-width:520px;margin:16px auto;padding:0 20px;}
+.qa-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.qa-title{font-weight:800;font-size:0.95rem;color:var(--text);}
+.qa-add-btn{
+  width:30px;height:30px;border-radius:50%;border:none;background:var(--primary);color:#fff;
+  font-size:1.1rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+.qa-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:14px;
+}
+.qa-tile{background:var(--bg);border-radius:14px;padding:12px;display:flex;flex-direction:column;min-height:120px;}
+.qa-tile-title{font-size:0.78rem;font-weight:800;margin-bottom:8px;color:var(--text);}
+.qa-tile-action{align-items:center;justify-content:center;text-align:center;cursor:pointer;gap:6px;transition:transform .15s;}
+.qa-tile-action:active{transform:scale(0.96);}
+.qa-tile-icon{font-size:1.6rem;}
+.qa-input-sm{
+  width:100%;padding:7px 9px;border:1px solid var(--border);border-radius:8px;
+  font-family:inherit;font-size:0.74rem;margin-bottom:6px;background:var(--bg);color:var(--text);outline:none;
+}
+.qa-submit-btn{
+  margin-top:auto;padding:8px;border:none;border-radius:8px;background:var(--primary);color:#fff;
+  font-weight:700;font-size:0.76rem;cursor:pointer;font-family:inherit;
+}
+.qa-color-mini{width:100%;height:32px;border-radius:7px;border:1px solid var(--border);cursor:pointer;padding:2px;}
+.qa-empty{grid-column:1/-1;text-align:center;padding:20px;color:var(--muted);font-size:0.82rem;}
+.qa-option-row{display:flex;align-items:center;gap:10px;padding:12px;border:1.5px solid var(--border);border-radius:12px;background:var(--bg2);}
+.qa-option-row input{width:auto;}
 </style>
 </head>
 <body>
@@ -197,12 +227,25 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   </div>
 </div>
 
-<!-- شريط الرابط -->
-<div id="linkBar" style="background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;">
-  <span style="font-size:0.85rem;color:var(--text2);">رابطك / Your Link:</span>
-  <span id="myFullLink" dir="ltr" style="font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-size:0.85rem;color:var(--primary);font-weight:700;direction:ltr;">—</span>
-  <button class="btn btn-white" style="color:var(--primary);border:1px solid var(--border);" onclick="copyMyLink()">نسخ الرابط <span style="font-size:0.65rem;display:block;opacity:0.7;">Copy Link</span></button>
-  <button class="btn btn-white" style="color:#fff;background:var(--primary);border:none;" onclick="openQrCard()">رمز QR <span style="font-size:0.65rem;display:block;opacity:0.85;">QR Code</span></button>
+<span id="myFullLink" style="display:none;"></span>
+
+<!-- إجراءات سريعة: ويدجت قابل للتخصيص، يضم اختصارات من مختلف التبويبات -->
+<div class="qa-widget" id="qaWidget">
+  <div class="qa-header">
+    <span class="qa-title">إجراءات سريعة <span class="lbl-sub" style="font-weight:400;">Quick Actions</span></span>
+    <button type="button" class="qa-add-btn" onclick="openQaCustomize()">+</button>
+  </div>
+  <div class="qa-grid" id="qaGrid"></div>
+</div>
+
+<!-- نافذة تخصيص الإجراءات السريعة -->
+<div id="qaCustomizeModal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.5);align-items:flex-end;justify-content:center;" onclick="if(event.target===this)closeQaCustomize()">
+  <div style="background:var(--bg);border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:480px;max-height:75vh;overflow-y:auto;">
+    <div style="font-weight:800;font-size:1.05rem;margin-bottom:4px;">تخصيص الإجراءات السريعة</div>
+    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:16px;">اختر الإجراءات اللي تناسب شغلك · Choose what fits your workflow</div>
+    <div id="qaOptionsList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div>
+    <button class="btn-add" onclick="closeQaCustomize()" style="margin:0;">تم · Done</button>
+  </div>
 </div>
 
 <!-- نافذة البطاقة التسويقية QR -->
@@ -236,7 +279,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     <button class="nav-tab" onclick="showPage('socials',this)">تواصل<span class="tab-sub">Contact</span></button>
     <button class="nav-tab" onclick="showPage('design',this)">التصميم<span class="tab-sub">Design</span></button>
     <button class="nav-tab" onclick="showPage('profile',this)">ملفي<span class="tab-sub">Profile</span></button>
-    <button class="nav-tab" onclick="showPage('backup',this)">تنزيل<span class="tab-sub">Download</span></button>
     <button class="nav-tab" onclick="showPage('stats',this)">إحصائيات<span class="tab-sub">Stats</span></button>
   </div>
 
@@ -443,7 +485,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
           <button type="button" id="qrModeBrand" onclick="setQrMode('brand')" style="flex:1;padding:10px;border:2px solid var(--primary);border-radius:9px;background:var(--bg2);color:var(--text);font-weight:700;font-family:inherit;cursor:pointer;font-size:0.82rem;">لون الموقع · Site</button>
           <button type="button" id="qrModeCustom" onclick="setQrMode('custom')" style="flex:1;padding:10px;border:2px solid var(--border);border-radius:9px;background:transparent;color:var(--text);font-weight:700;font-family:inherit;cursor:pointer;font-size:0.82rem;">🎨 تخصيص · Custom</button>
         </div>
-        <div id="qrCustomColors" style="display:none;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+        <div id="qrCustomColors" style="display:none;grid-template-columns:1fr;gap:10px;margin-bottom:14px;">
           <div>
             <label style="font-size:0.72rem;display:block;margin-bottom:4px;">خلفية البطاقة · Card BG</label>
             <input type="color" class="color-box-picker" id="qrBgColor" value="#3d5af1" oninput="updateQrPreview()">
@@ -650,6 +692,21 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
     <div class="expandable">
       <div class="expandable-header" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon">💬</div><span>الدعم والملاحظات<span class="title-sub">Support & Feedback</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content">
+        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;line-height:1.6;">واجهت مشكلة أو عندك اقتراح؟ راسلنا مباشرة وبنرد عليك هنا · Report a bug or share feedback, we'll reply here</p>
+        <div class="form-group">
+          <textarea id="feedbackMsg" placeholder="اكتب رسالتك هنا..." style="min-height:90px;"></textarea>
+        </div>
+        <button class="btn-add" onclick="submitFeedback()" style="background:var(--primary);margin:0 0 16px;">إرسال · Send</button>
+        <div id="feedbackHistory"></div>
+      </div>
+    </div>
+
+    <div class="expandable">
+      <div class="expandable-header" onclick="toggleExpand(this)">
         <div class="expandable-title"><div class="expandable-icon">P</div><span>تغيير كلمة المرور<span class="title-sub">Change Password</span></span></div>
         <div class="expandable-toggle">▼</div>
       </div>
@@ -695,7 +752,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
   <!-- PAGE: STATS -->
   <!-- PAGE: BACKUP (نسخة احتياطية) -->
-  <div class="page" id="page-backup">
+  <div class="page" id="page-stats">
     <div class="expandable">
       <div class="expandable-header open" onclick="toggleExpand(this)">
         <div class="expandable-title"><div class="expandable-icon">⬇</div><span>تنزيل<span class="title-sub">Download</span></span></div>
@@ -723,9 +780,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         <input type="file" id="importFile" accept=".json,application/json" style="display:none;" onchange="importLinks(this)">
       </div>
     </div>
-  </div>
-
-  <div class="page" id="page-stats">
     <div class="expandable">
       <div class="expandable-header open" onclick="toggleExpand(this)">
         <div class="expandable-title"><div class="expandable-icon">إ</div><span>إحصائيات<span class="title-sub">Statistics</span></span></div>
@@ -805,7 +859,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut, deleteUser, updatePassword, reauthenticateWithCredential, EmailAuthProvider, setPersistence, browserLocalPersistence, indexedDBLocalPersistence, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, collection, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, getDocs, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   // إعدادات Firebase الخاصة بمشروعك الحقيقي لحل مشكلة الآيفون
   const firebaseConfig = {
@@ -874,7 +928,18 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     { id: 'threads', name: 'Threads', color: '#000000', prefix: 'https://threads.net/@' },
     { id: 'pinterest', name: 'Pinterest', color: '#E60023', prefix: 'https://pinterest.com/' },
     { id: 'wechat', name: 'WeChat', color: '#07C160', prefix: '' },
-    { id: 'imessage', name: 'iMessage', color: '#34DA50', prefix: 'sms:' }
+    { id: 'imessage', name: 'iMessage', color: '#34DA50', prefix: 'sms:' },
+    { id: 'twitch', name: 'Twitch', color: '#9146FF', prefix: 'https://twitch.tv/' },
+    { id: 'discord', name: 'Discord', color: '#5865F2', prefix: 'https://discord.gg/' },
+    { id: 'spotify', name: 'Spotify', color: '#1DB954', prefix: 'https://open.spotify.com/user/' },
+    { id: 'soundcloud', name: 'SoundCloud', color: '#FF5500', prefix: 'https://soundcloud.com/' },
+    { id: 'behance', name: 'Behance', color: '#1769FF', prefix: 'https://behance.net/' },
+    { id: 'dribbble', name: 'Dribbble', color: '#EA4C89', prefix: 'https://dribbble.com/' },
+    { id: 'github', name: 'GitHub', color: '#181717', prefix: 'https://github.com/' },
+    { id: 'reddit', name: 'Reddit', color: '#FF4500', prefix: 'https://reddit.com/user/' },
+    { id: 'vimeo', name: 'Vimeo', color: '#1AB7EA', prefix: 'https://vimeo.com/' },
+    { id: 'medium', name: 'Medium', color: '#000000', prefix: 'https://medium.com/@' },
+    { id: 'email', name: 'Email', color: '#6b7280', prefix: 'mailto:' }
   ];
   let showAllPlatforms = false;
   function detectPlatformFromUrl(url){
@@ -1082,6 +1147,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     loadQrStyleSettings();
     renderTemplateCarousel();
     loadCategoryGoalSettings();
+    loadQaConfig();
+    loadFeedbackHistory();
   }
 
   // 3. ربط الوظائف البرمجية الأساسية بـ واجهة المستخدم (Window Object Mapping)
@@ -1150,7 +1217,10 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   };
 
   // ===== شكل أيقونات التواصل (عام على الكل): دائري أو مستطيل (دائري الحواف/حاد الحواف) =====
+  let currentIconShape = 'circle';
+  let currentRectStyle = 'rounded';
   window.setIconShape = async function(shape){
+    currentIconShape = shape;
     document.getElementById('shapeOptCircle').classList.toggle('active', shape==='circle');
     document.getElementById('shapeOptRect').classList.toggle('active', shape==='rect');
     document.getElementById('rectSubOptions').style.display = shape==='rect' ? 'grid' : 'none';
@@ -1158,26 +1228,29 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       await setDoc(doc(db, "users", currentUser.uid), { socialIconShape: shape }, { merge: true });
       window.showToast("تم تحديث شكل الأيقونات");
     }catch(e){ window.showToast("تعذر الحفظ: " + (e.message||'')); }
+    loadSocials(); // أعد رسم المعاينات لتعكس الشكل الجديد فوراً
   };
   window.setRectStyle = async function(style){
+    currentRectStyle = style;
     document.getElementById('rectStyleRounded').classList.toggle('active', style==='rounded');
     document.getElementById('rectStyleSharp').classList.toggle('active', style==='sharp');
     try{
       await setDoc(doc(db, "users", currentUser.uid), { socialRectStyle: style }, { merge: true });
       window.showToast("تم تحديث نمط المستطيل");
     }catch(e){ window.showToast("تعذر الحفظ: " + (e.message||'')); }
+    loadSocials();
   };
   async function loadIconShapeSettings(){
     try{
       const snap = await getDoc(doc(db, "users", currentUser.uid));
       const data = snap.exists() ? snap.data() : {};
-      const shape = data.socialIconShape || 'circle';
-      const rectStyle = data.socialRectStyle || 'rounded';
-      document.getElementById('shapeOptCircle').classList.toggle('active', shape==='circle');
-      document.getElementById('shapeOptRect').classList.toggle('active', shape==='rect');
-      document.getElementById('rectSubOptions').style.display = shape==='rect' ? 'grid' : 'none';
-      document.getElementById('rectStyleRounded').classList.toggle('active', rectStyle==='rounded');
-      document.getElementById('rectStyleSharp').classList.toggle('active', rectStyle==='sharp');
+      currentIconShape = data.socialIconShape || 'circle';
+      currentRectStyle = data.socialRectStyle || 'rounded';
+      document.getElementById('shapeOptCircle').classList.toggle('active', currentIconShape==='circle');
+      document.getElementById('shapeOptRect').classList.toggle('active', currentIconShape==='rect');
+      document.getElementById('rectSubOptions').style.display = currentIconShape==='rect' ? 'grid' : 'none';
+      document.getElementById('rectStyleRounded').classList.toggle('active', currentRectStyle==='rounded');
+      document.getElementById('rectStyleSharp').classList.toggle('active', currentRectStyle==='sharp');
     }catch(e){}
   }
 
@@ -1285,7 +1358,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     {id:'creator', name:'منشئ محتوى', emoji:'🎥', tpl:'default'},
     {id:'services', name:'خدمات', emoji:'💼', tpl:'calm'},
     {id:'shop', name:'محل', emoji:'🛍️', tpl:'warm'},
-    {id:'beauty', name:'جمال', emoji:'💄', tpl:'earthy'},
     {id:'food', name:'المأكولات', emoji:'🍽️', tpl:'warm'},
     {id:'music', name:'موسيقى', emoji:'🎵', tpl:'night'},
     {id:'games', name:'الألعاب', emoji:'🎮', tpl:'night'},
@@ -1301,7 +1373,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     {id:'travel', name:'السفر', emoji:'✈️', tpl:'fresh'},
     {id:'pets', name:'حيوانات أليفة', emoji:'🐾', tpl:'natural'},
     {id:'podcast', name:'بودكاست', emoji:'🎙️', tpl:'night'},
-    {id:'model', name:'نموذج', emoji:'💃', tpl:'default'},
     {id:'nonprofit', name:'غير ربحية', emoji:'❤️', tpl:'fresh'},
     {id:'other', name:'آخر', emoji:'✨', tpl:'default'}
   ];
@@ -1362,6 +1433,190 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       renderCategoryGrid();
       renderGoalGrid();
     }catch(e){}
+  }
+
+  // ===== الدعم والملاحظات =====
+  window.submitFeedback = async function(){
+    const msg = document.getElementById('feedbackMsg').value.trim();
+    if(!msg){ window.showToast("اكتب رسالتك أولاً"); return; }
+    try{
+      const username = document.getElementById('pfUser')?.value || '';
+      await setDoc(doc(collection(db, "feedback")), {
+        uid: currentUser.uid, username, email: currentUser.email||'',
+        message: msg, status: 'open', adminReply: '', createdAt: new Date().toISOString()
+      });
+      document.getElementById('feedbackMsg').value = '';
+      window.showToast("تم الإرسال، شكراً لك ✓");
+      loadFeedbackHistory();
+    }catch(e){ window.showToast("تعذر الإرسال: " + (e.message||'')); }
+  };
+  async function loadFeedbackHistory(){
+    const el = document.getElementById('feedbackHistory');
+    if(!el || !currentUser) return;
+    try{
+      const q = query(collection(db, "feedback"), where("uid","==",currentUser.uid));
+      const snap = await getDocs(q);
+      const items = [];
+      snap.forEach(d => items.push({id:d.id, ...d.data()}));
+      items.sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
+      if(!items.length){ el.innerHTML=''; return; }
+      el.innerHTML = '<div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;">رسائلك السابقة · Your messages</div>' +
+        items.map(it => `
+          <div style="padding:10px 12px;border:1px solid var(--border);border-radius:10px;margin-bottom:8px;">
+            <div style="font-size:0.82rem;margin-bottom:6px;">${(it.message||'').replace(/</g,'&lt;')}</div>
+            <div style="font-size:0.7rem;color:${it.status==='open'?'var(--muted)':'var(--primary)'};font-weight:700;">${it.status==='open'?'⏳ بانتظار الرد':'✅ تم الرد'}</div>
+            ${it.adminReply ? `<div style="margin-top:6px;padding:8px;background:var(--bg2);border-radius:8px;font-size:0.8rem;"><b>الرد:</b> ${it.adminReply.replace(/</g,'&lt;')}</div>` : ''}
+          </div>
+        `).join('');
+    }catch(e){ console.error('loadFeedbackHistory failed:', e); }
+  }
+
+
+  const QA_LIBRARY = {
+    addNum:   { name: 'أضف رقم',              icon: '📎' },
+    printStats: { name: 'طباعة إحصائيات الشهر', icon: '🖨️' },
+    colors:   { name: 'ألوان صفحتك',           icon: '🎨' },
+    copyLink: { name: 'نسخ الرابط',            icon: '🔗' },
+    qrCode:   { name: 'رمز QR',                icon: '▦' }
+  };
+  const QA_DEFAULT = ['addNum','printStats','colors'];
+  let qaConfig = QA_DEFAULT.slice();
+
+  function qaTileHtml(key){
+    const item = QA_LIBRARY[key];
+    if(!item) return '';
+    if(key === 'addNum'){
+      return `
+        <div class="qa-tile">
+          <div class="qa-tile-title">${item.icon} ${item.name}</div>
+          <input type="number" id="qaNum" class="qa-input-sm" placeholder="الرقم #">
+          <input type="text" id="qaTitle" class="qa-input-sm" placeholder="العنوان">
+          <input type="url" id="qaLinkUrl" class="qa-input-sm" placeholder="الرابط" dir="ltr">
+          <button type="button" class="qa-submit-btn" onclick="qaQuickAddNumber()">إضافة</button>
+        </div>`;
+    }
+    if(key === 'printStats'){
+      return `
+        <div class="qa-tile qa-tile-action" onclick="window.exportLinks('pdf')">
+          <div class="qa-tile-icon">${item.icon}</div>
+          <div class="qa-tile-title" style="margin:0;">${item.name}</div>
+        </div>`;
+    }
+    if(key === 'colors'){
+      return `
+        <div class="qa-tile">
+          <div class="qa-tile-title">${item.icon} ${item.name}</div>
+          <div class="qa-color-mini-row" style="display:flex;gap:6px;margin-bottom:6px;">
+            <input type="color" class="qa-color-mini" id="qaColorP1" oninput="qaQuickColorPreview()">
+            <input type="color" class="qa-color-mini" id="qaColorP2" oninput="qaQuickColorPreview()">
+          </div>
+          <button type="button" class="qa-submit-btn" onclick="qaSaveQuickColors()">حفظ</button>
+        </div>`;
+    }
+    if(key === 'copyLink'){
+      return `
+        <div class="qa-tile qa-tile-action" onclick="window.copyMyLink()">
+          <div class="qa-tile-icon">${item.icon}</div>
+          <div class="qa-tile-title" style="margin:0;">${item.name}</div>
+        </div>`;
+    }
+    if(key === 'qrCode'){
+      return `
+        <div class="qa-tile qa-tile-action" onclick="window.openQrCard()">
+          <div class="qa-tile-icon">${item.icon}</div>
+          <div class="qa-tile-title" style="margin:0;">${item.name}</div>
+        </div>`;
+    }
+    return '';
+  }
+
+  function renderQaWidget(){
+    const grid = document.getElementById('qaGrid');
+    if(!grid) return;
+    if(!qaConfig.length){
+      grid.innerHTML = '<div class="qa-empty">ما فيه إجراءات مفعّلة — اضغط + لإضافة · No active actions, tap + to add</div>';
+      return;
+    }
+    grid.innerHTML = qaConfig.map(k => qaTileHtml(k)).join('');
+    // عبّئ ألوان الصفحة الحالية بتايل الألوان إن وُجد
+    const p1 = document.getElementById('colorPicker')?.value;
+    const p2 = document.getElementById('colorPicker2')?.value;
+    const qc1 = document.getElementById('qaColorP1');
+    const qc2 = document.getElementById('qaColorP2');
+    if(qc1 && p1) qc1.value = p1;
+    if(qc2 && p2) qc2.value = p2;
+  }
+
+  window.qaQuickAddNumber = async function(){
+    const num = document.getElementById('qaNum').value;
+    const title = document.getElementById('qaTitle').value.trim();
+    const url = document.getElementById('qaLinkUrl').value.trim();
+    if(!num || !title || !url){ window.showToast("عبّئ الرقم والعنوان والرابط"); return; }
+    if(RESERVED_NUMBERS.includes(parseInt(num))){ window.showToast(`⚠️ الرقم ${num} محجوز للنظام`); return; }
+    try{
+      const userRef = doc(db, "users", currentUser.uid);
+      const snap = await getDoc(userRef);
+      const data = snap.exists() ? snap.data() : {};
+      let links = Array.isArray(data.links) ? data.links : [];
+      const numInt = parseInt(num);
+      if(links.find(l => parseInt(l.number??l.num)===numInt)){ window.showToast(`الرقم ${numInt} مستخدم مسبقاً`); return; }
+      const nowIso = new Date().toISOString();
+      links.push({
+        id: 'lnk_'+Date.now(), number: numInt, num: numInt, title, label: title,
+        description: '', url, text: '', type: 'link', presentMode: null,
+        featured: false, hidden: false, views: 0, createdAt: nowIso, updatedAt: nowIso
+      });
+      await setDoc(userRef, { links }, { merge: true });
+      window.showToast("تمت الإضافة ✓");
+      document.getElementById('qaNum').value='';
+      document.getElementById('qaTitle').value='';
+      document.getElementById('qaLinkUrl').value='';
+      if(typeof loadLinks==='function') loadLinks();
+    }catch(e){ window.showToast("تعذر الحفظ: " + (e.message||'')); }
+  };
+
+  window.qaQuickColorPreview = function(){
+    const p1 = document.getElementById('qaColorP1').value;
+    const p2 = document.getElementById('qaColorP2').value;
+    document.getElementById('colorPicker').value = p1;
+    document.getElementById('colorPicker2').value = p2;
+    window.onColorPick(p1);
+    window.onColor2Pick(p2);
+  };
+  window.qaSaveQuickColors = async function(){
+    try{ await window.saveDesign(); window.showToast("تم حفظ الألوان ✓"); }
+    catch(e){ window.showToast("تعذر الحفظ: " + (e.message||'')); }
+  };
+
+  window.openQaCustomize = function(){
+    const list = document.getElementById('qaOptionsList');
+    list.innerHTML = Object.keys(QA_LIBRARY).map(key => {
+      const item = QA_LIBRARY[key];
+      const checked = qaConfig.includes(key) ? 'checked' : '';
+      return `<label class="qa-option-row">
+        <input type="checkbox" data-qa-key="${key}" ${checked} onchange="qaToggleOption('${key}', this.checked)">
+        <span style="font-size:1.2rem;">${item.icon}</span>
+        <span style="font-weight:700;font-size:0.85rem;">${item.name}</span>
+      </label>`;
+    }).join('');
+    document.getElementById('qaCustomizeModal').style.display = 'flex';
+  };
+  window.closeQaCustomize = function(){
+    document.getElementById('qaCustomizeModal').style.display = 'none';
+  };
+  window.qaToggleOption = async function(key, checked){
+    if(checked && !qaConfig.includes(key)) qaConfig.push(key);
+    else if(!checked) qaConfig = qaConfig.filter(k => k!==key);
+    renderQaWidget();
+    try{ await setDoc(doc(db, "users", currentUser.uid), { quickActionsConfig: qaConfig }, { merge: true }); }catch(e){}
+  };
+  async function loadQaConfig(){
+    try{
+      const snap = await getDoc(doc(db, "users", currentUser.uid));
+      const data = snap.exists() ? snap.data() : {};
+      qaConfig = Array.isArray(data.quickActionsConfig) ? data.quickActionsConfig : QA_DEFAULT.slice();
+    }catch(e){ qaConfig = QA_DEFAULT.slice(); }
+    renderQaWidget();
   }
 
   window.openQrCard = async function() {
@@ -2359,12 +2614,21 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       const iconInner = (mode==='upload' && soc.icon)
         ? `<img src="${soc.icon}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`
         : `<span style="display:flex;width:18px;height:18px;color:${iconGlyphColor};">${platSvg(soc.platformId)}</span>`;
+
+      // معاينة تحاكي شكل الأيقونة الفعلي بصفحتك العامة (دائري أو مستطيل)
+      const isRect = currentIconShape === 'rect';
+      const previewHtml = isRect
+        ? `<div id="socIconPrev_${id}" style="position:relative;width:88px;height:36px;background:${iconBg};border:2px solid ${ringColor};border-radius:${currentRectStyle==='sharp'?'4px':'10px'};display:flex;align-items:stretch;overflow:hidden;">
+             <div style="width:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;">${iconInner}</div>
+             <div style="position:absolute;top:0;bottom:0;right:36px;width:2px;background:currentColor;opacity:0.35;z-index:2;${currentRectStyle==='sharp'?'transform:skewX(-18deg);':''}"></div>
+             <div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:${iconGlyphColor};position:relative;z-index:1;">يوزر</div>
+           </div>`
+        : `<div id="socIconPrev_${id}" style="width:32px; height:32px; background:${iconBg}; border-radius:6px; display:flex; align-items:center; justify-content:center; border:2px solid ${ringColor};">${iconInner}</div>`;
+
       div.innerHTML = `
         <div class="item-header" style="display:flex; align-items:center; gap:10px;">
           <div id="socIconContainer_${id}" style="padding:4px;border-radius:9px;background:${containerColor};">
-            <div id="socIconPrev_${id}" style="width:32px; height:32px; background:${iconBg}; border-radius:6px; display:flex; align-items:center; justify-content:center; border:2px solid ${ringColor};">
-              ${iconInner}
-            </div>
+            ${previewHtml}
           </div>
           <div style="flex:1;"><b>${soc.platformName||soc.name||''}</b><div style="font-size:0.75rem; color:var(--muted); word-break:break-all;">${soc.url}</div></div>
         </div>
@@ -2378,7 +2642,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         ${mode==='custom' ? `
         <div style="margin-top:10px;padding:12px;background:var(--bg2);border-radius:10px;">
           <div style="font-size:0.75rem;font-weight:700;color:var(--muted);margin-bottom:10px;">🖼 معاينة مباشرة · Live Preview أعلاه</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div style="display:grid;grid-template-columns:1fr;gap:10px;">
             <div>
               <label style="font-size:0.72rem;display:block;margin-bottom:4px;">لون الخلفية · Background</label>
               <input type="color" class="color-box-picker" value="${soc.customBg||'#3d5af1'}" oninput="updateCustomSocialColor('${id}','customBg',this.value)">
