@@ -273,6 +273,28 @@ nav{
 /* ========== EMPTY / LOADING ========== */
 .empty-state{text-align:center;padding:30px 20px;color:var(--muted);}
 
+/* ===== شاشة التحميل المعتمدة: شريط تقدم + شعار متلألئ ===== */
+.loading{
+  position:fixed;inset:0;z-index:400;background:#ffffff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;
+}
+.load-top-bar{position:absolute;top:0;left:0;right:0;height:3px;background:#eef0f7;overflow:hidden;}
+.load-top-bar::after{
+  content:'';position:absolute;top:0;bottom:0;width:40%;
+  background:linear-gradient(90deg,#3d5af1,#6c8fff);
+  animation:loadSweep 1.2s ease-in-out infinite;
+}
+@keyframes loadSweep{0%{left:-40%;}100%{left:100%;}}
+.load-wordmark-shimmer{
+  font-family:ui-monospace,'Space Mono',monospace;font-weight:900;font-size:1.6rem;
+  background:linear-gradient(90deg,#0f1535 30%,#3d5af1 45%,#6c8fff 50%,#0f1535 65%);
+  background-size:250% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:loadShimmerText 2s linear infinite;
+}
+@keyframes loadShimmerText{0%{background-position:150% 0;}100%{background-position:-50% 0;}}
+.load-sub{margin-top:10px;font-size:0.78rem;color:#9aa2c8;font-weight:600;}
+
 /* ===== شاشة تحميل هيكلية (Skeleton) ===== */
 .skeleton-shimmer{
   background:linear-gradient(90deg, var(--border) 25%, rgba(255,255,255,0.5) 50%, var(--border) 75%);
@@ -318,7 +340,13 @@ nav{
   <div class="avatar-circle skeleton-shimmer" id="avatar" onclick="zoomAvatar()" style="cursor:pointer;"></div>
 </div>
 
-<div class="content" id="content"></div>
+<div class="content" id="content">
+  <div class="loading" id="loadingState">
+    <div class="load-top-bar"></div>
+    <div class="load-wordmark-shimmer">electrwni.link</div>
+    <div class="load-sub">جاري التحميل...</div>
+  </div>
+</div>
 
 <!-- OVERLAY -->
 <div class="section-overlay" id="sectionOverlay">
@@ -754,13 +782,22 @@ function render(user){
       }
       return `<a href="${s.url}" target="_blank" class="social-btn" title="${s.name||pid}" style="background:${circleBg};border-color:${borderCol};color:${iconColor};" onclick="trackSocialClick('${s.id}')">${inner}</a>`;
     }).join('');
-    // أيقونة QR دائرية دائماً (أداة صغيرة، لا تتأثر بشكل باقي الأيقونات)
-    const qrBtn=`<button class="social-btn" title="رمز QR" onclick="openPageQr()" style="background:var(--accent);color:var(--text);border-color:var(--accent-light);cursor:pointer;">${PAGE_SVG.qr}</button>`;
+    // أيقونة QR تتبع نفس شكل وألوان أيقونات التواصل (مو استثناء دائري ثابت)
+    let qrBtn;
+    if(iconShape === 'rect'){
+      const qrRectClass = rectStyle === 'sharp' ? 'social-rect social-rect-sharp' : 'social-rect';
+      qrBtn = `<button type="button" class="${qrRectClass}" title="رمز QR" onclick="openPageQr()" style="border-color:var(--accent-light);background:var(--accent);color:#fff;cursor:pointer;">
+        <span class="social-rect-icon" style="background:var(--accent);color:#fff;">${PAGE_SVG.qr}</span>
+        <span class="social-rect-divider"></span>
+        <span class="social-rect-label" style="background:#fff;color:var(--accent);">رمز QR</span>
+      </button>`;
+    } else {
+      qrBtn = `<button class="social-btn" title="رمز QR" onclick="openPageQr()" style="background:var(--accent);color:var(--text);border-color:var(--accent-light);cursor:pointer;">${PAGE_SVG.qr}</button>`;
+    }
     if(iconShape === 'rect'){
       socialsHtml=`
         <div class="section-title">حسابات التواصل <span style="font-size:0.7rem;font-weight:400;color:var(--muted);display:block;">Social Accounts</span></div>
-        <div class="socials-row" style="margin-bottom:12px;">${qrBtn}</div>
-        <div class="socials-row-rect">${btns}</div>
+        <div class="socials-row-rect">${qrBtn}${btns}</div>
       `;
     } else {
       socialsHtml=`
@@ -769,8 +806,17 @@ function render(user){
       `;
     }
   } else {
-    // حتى لو لا سوشيال، نعرض أيقونة QR وحدها
-    socialsHtml=`<div class="socials-row"><button class="social-btn" title="رمز QR" onclick="openPageQr()" style="background:var(--accent);color:var(--text);border-color:var(--accent-light);cursor:pointer;">${PAGE_SVG.qr}</button></div>`;
+    // حتى لو لا سوشيال، نعرض أيقونة QR وحدها (بنفس الشكل المختار)
+    if(iconShape === 'rect'){
+      const qrRectClass = rectStyle === 'sharp' ? 'social-rect social-rect-sharp' : 'social-rect';
+      socialsHtml=`<div class="socials-row-rect"><button type="button" class="${qrRectClass}" title="رمز QR" onclick="openPageQr()" style="border-color:var(--accent-light);background:var(--accent);color:#fff;cursor:pointer;">
+        <span class="social-rect-icon" style="background:var(--accent);color:#fff;">${PAGE_SVG.qr}</span>
+        <span class="social-rect-divider"></span>
+        <span class="social-rect-label" style="background:#fff;color:var(--accent);">رمز QR</span>
+      </button></div>`;
+    } else {
+      socialsHtml=`<div class="socials-row"><button class="social-btn" title="رمز QR" onclick="openPageQr()" style="background:var(--accent);color:var(--text);border-color:var(--accent-light);cursor:pointer;">${PAGE_SVG.qr}</button></div>`;
+    }
   }
 
   // بطاقات التواصل (أرقام/موقع/خريطة)
