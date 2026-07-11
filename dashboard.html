@@ -1040,6 +1040,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   function showEmailVerifyGate() {
     if (document.getElementById('emailGateOverlay')) return; // معروضة مسبقاً
     if (emailGateTimer) { clearTimeout(emailGateTimer); emailGateTimer = null; }
+    const loadOverlay0 = document.getElementById('dashLoadOverlay');
+    if(loadOverlay0) loadOverlay0.style.display = 'none';
     const overlay = document.createElement('div');
     overlay.id = 'emailGateOverlay';
     overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,21,53,0.75);z-index:5000;display:flex;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(4px);font-family:Tajawal,sans-serif;';
@@ -1216,6 +1218,9 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     loadCategoryGoalSettings(userDoc.exists() ? userDoc.data() : {});
     loadQaConfig(userDoc.exists() ? userDoc.data() : {});
     loadFeedbackHistory();
+
+    const loadOverlay = document.getElementById('dashLoadOverlay');
+    if(loadOverlay) loadOverlay.style.display = 'none';
   }
 
   // 3. ربط الوظائف البرمجية الأساسية بـ واجهة المستخدم (Window Object Mapping)
