@@ -100,6 +100,12 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:14px 2
 }
 .tpl-toggle-row:last-child{border-bottom:none;}
 .tpl-toggle-row input{width:auto;}
+
+.tpl-plus-badge{
+  position:absolute;z-index:3;width:26px;height:26px;border-radius:50%;
+  background:#3d5af1;color:#fff;border:2px solid #fff;font-size:1rem;font-weight:900;
+  cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.25);display:flex;align-items:center;justify-content:center;line-height:1;
+}
 </style>
 </head>
 <body>
@@ -178,6 +184,17 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:14px 2
     <div id="tplExpandedBody" style="flex:1;overflow-y:auto;padding:20px;"></div>
   </div>
 
+  <!-- نافذة منبثقة سياقية (شعار/خلفية/تواصل) -->
+  <div id="tplPopoverOverlay" style="display:none;position:fixed;inset:0;z-index:6500;background:rgba(0,0,0,0.5);align-items:flex-end;justify-content:center;" onclick="if(event.target===this)closeTplPopover()">
+    <div style="background:#fff;border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:420px;max-height:75vh;overflow-y:auto;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <div id="tplPopoverTitle" style="font-weight:800;font-size:1rem;"></div>
+        <button onclick="closeTplPopover()" style="background:#f4f5f9;border:none;width:28px;height:28px;border-radius:50%;font-size:0.9rem;cursor:pointer;">✕</button>
+      </div>
+      <div id="tplPopoverBody"></div>
+    </div>
+  </div>
+
   <!-- الاشتراكات -->
   <div class="section" id="sec-subs">
     <div class="card">
@@ -197,7 +214,7 @@ const auth=firebase.auth();
 const db=firebase.firestore();
 
 // ⚠️ عدّل هذا البريد ليكون بريدك الحقيقي المسجّل بالموقع — هذا هو مفتاح الوصول للوحة الإدارة
-const ADMIN_EMAIL = "brmjeat1@gmail.com";
+const ADMIN_EMAIL = "your-admin-email@example.com";
 
 const DEFAULT_TEMPLATES = {
   default: { name:'الافتراضي', p1:'#3d5af1', p2:'#6c8fff', text:'#0f1535', bg:'#ffffff' },
@@ -381,19 +398,31 @@ function renderTplExpanded(){
   const t = templatesData[key];
   if(!t) return;
   const isRect = t.iconShape === 'rect';
+  const rectStyle = t.rectStyle || 'rounded';
   const showAvatar = t.showAvatar !== false;
   const showSocials = t.showSocials !== false;
   const showLinks = t.showLinks !== false;
+  const bgStyle = t.bgImage ? `background-image:url(${t.bgImage});background-size:cover;background-position:center;` : `background:${t.bg};`;
+
   document.getElementById('tplExpandedBody').innerHTML = `
-    <div class="tpl-mockup-lg" id="tplMockupLg" style="background:${t.bg};">
-      ${showAvatar ? `<div class="tpl-mockup-lg-avatar" style="background:linear-gradient(135deg,${t.p1},${t.p2});"></div>` : ''}
+    <div class="tpl-mockup-lg" id="tplMockupLg" style="${bgStyle}position:relative;">
+      <button class="tpl-plus-badge" style="top:8px;left:8px;" onclick="event.stopPropagation();openBgPopover('${key}')" title="الخلفية">+</button>
+
+      ${showAvatar ? `
+        <div style="position:relative;">
+          <div class="tpl-mockup-lg-avatar" style="${t.avatarImg ? `background-image:url(${t.avatarImg});background-size:cover;` : `background:linear-gradient(135deg,${t.p1},${t.p2});`}"></div>
+          <button class="tpl-plus-badge" style="bottom:10px;left:calc(50% - 40px);" onclick="event.stopPropagation();openAvatarPopover('${key}')" title="الأفتار/الشعار">+</button>
+        </div>
+      ` : ''}
       <div class="tpl-mockup-lg-name" style="color:${t.text};">اسمك هنا</div>
       <div class="tpl-mockup-lg-bio" style="background:${t.text};"></div>
       <div class="tpl-mockup-lg-bio short" style="background:${t.text};"></div>
-      ${showSocials ? (isRect
-        ? `<div style="display:flex;flex-direction:column;gap:6px;width:100%;margin:14px 0;"><div style="width:100%;height:14px;border-radius:5px;background:${t.p1};"></div><div style="width:100%;height:14px;border-radius:5px;background:${t.p2};"></div></div>`
-        : `<div style="display:flex;gap:10px;margin:14px 0;"><div style="width:20px;height:20px;border-radius:50%;background:${t.p1};"></div><div style="width:20px;height:20px;border-radius:50%;background:${t.p2};"></div></div>`
-      ) : ''}
+
+      <div style="position:relative;width:100%;">
+        <button class="tpl-plus-badge" style="top:-6px;left:8px;" onclick="event.stopPropagation();openSocialsPopover('${key}')" title="التواصل">+</button>
+        ${showSocials ? renderSocialsPreview(t, isRect, rectStyle) : `<div style="height:14px;"></div>`}
+      </div>
+
       ${showLinks ? `<div class="tpl-mockup-lg-link" style="border-color:${t.p1};"></div><div class="tpl-mockup-lg-link" style="border-color:${t.p1};"></div>` : ''}
     </div>
 
@@ -403,18 +432,7 @@ function renderTplExpanded(){
     </div>
 
     <div class="tpl-dash-section">
-      <div class="tpl-dash-label">الألوان</div>
-      <div class="tpl-edit-row">
-        <div><label style="font-size:0.68rem;display:block;">أساسي ١</label><input type="color" value="${t.p1}" onchange="updateTplLiveLg('${key}','p1',this.value)"></div>
-        <div><label style="font-size:0.68rem;display:block;">أساسي ٢</label><input type="color" value="${t.p2}" onchange="updateTplLiveLg('${key}','p2',this.value)"></div>
-        <div><label style="font-size:0.68rem;display:block;">النص</label><input type="color" value="${t.text}" onchange="updateTplLiveLg('${key}','text',this.value)"></div>
-        <div><label style="font-size:0.68rem;display:block;">الخلفية</label><input type="color" value="${t.bg}" onchange="updateTplLiveLg('${key}','bg',this.value)"></div>
-      </div>
-    </div>
-
-    <div class="tpl-dash-section">
       <div class="tpl-dash-label">عناصر الصفحة</div>
-      <label class="tpl-toggle-row"><input type="checkbox" ${isRect?'checked':''} onchange="updateTplShapeLg('${key}',this.checked)"><span>أيقونات مستطيلة (بدل دائرية)</span></label>
       <label class="tpl-toggle-row"><input type="checkbox" ${showAvatar?'checked':''} onchange="updateTplFlagLg('${key}','showAvatar',this.checked)"><span>إظهار الأفتار</span></label>
       <label class="tpl-toggle-row"><input type="checkbox" ${showSocials?'checked':''} onchange="updateTplFlagLg('${key}','showSocials',this.checked)"><span>إظهار حسابات التواصل</span></label>
       <label class="tpl-toggle-row"><input type="checkbox" ${showLinks?'checked':''} onchange="updateTplFlagLg('${key}','showLinks',this.checked)"><span>إظهار الروابط</span></label>
@@ -423,6 +441,121 @@ function renderTplExpanded(){
     <button class="tpl-delete-btn" style="width:100%;" onclick="deleteTemplate('${key}');closeTplExpanded();">🗑 حذف هذا القالب</button>
   `;
 }
+function renderSocialsPreview(t, isRect, rectStyle){
+  if(isRect){
+    const radius = rectStyle === 'sharp' ? '4px' : '10px';
+    return `<div style="display:flex;flex-direction:column;gap:6px;width:100%;margin:14px 0;">
+      <div style="width:100%;height:16px;border-radius:${radius};background:${t.p1};"></div>
+      <div style="width:100%;height:16px;border-radius:${radius};background:${t.p2};"></div>
+    </div>`;
+  }
+  return `<div style="display:flex;gap:10px;margin:14px 0;">
+    <div style="width:22px;height:22px;border-radius:50%;background:${t.p1};"></div>
+    <div style="width:22px;height:22px;border-radius:50%;background:${t.p2};"></div>
+  </div>`;
+}
+// ===== نافذة صغيرة منبثقة عامة =====
+function showTplPopover(title, bodyHtml){
+  document.getElementById('tplPopoverTitle').textContent = title;
+  document.getElementById('tplPopoverBody').innerHTML = bodyHtml;
+  document.getElementById('tplPopoverOverlay').style.display = 'flex';
+}
+function closeTplPopover(){
+  document.getElementById('tplPopoverOverlay').style.display = 'none';
+}
+function fileToBase64(file, cb){
+  const reader = new FileReader();
+  reader.onload = () => cb(reader.result);
+  reader.readAsDataURL(file);
+}
+
+// ===== + الأفتار/الشعار: رفع صورة من الألبوم =====
+function openAvatarPopover(key){
+  showTplPopover('الأفتار / الشعار', `
+    <p style="font-size:0.8rem;color:#6b7280;margin-bottom:12px;">هذي صورة توضيحية للمعاينة فقط (كل مستخدم يرفع صورته الحقيقية بحسابه).</p>
+    <input type="file" accept="image/*" onchange="avatarPopoverFileChosen('${key}', this)" style="width:100%;padding:10px;border:1.5px solid #e0e0e0;border-radius:10px;">
+  `);
+}
+function avatarPopoverFileChosen(key, input){
+  if(!input.files || !input.files[0]) return;
+  fileToBase64(input.files[0], (dataUrl) => {
+    templatesData[key].avatarImg = dataUrl;
+    renderTplExpanded();
+    closeTplPopover();
+  });
+}
+
+// ===== + الخلفية: لون أو صورة من الألبوم =====
+function openBgPopover(key){
+  const t = templatesData[key];
+  showTplPopover('خلفية الصفحة', `
+    <div style="display:flex;gap:8px;margin-bottom:14px;">
+      <button type="button" id="bgModeColorBtn" onclick="setBgPopoverMode('${key}','color')" style="flex:1;padding:10px;border:2px solid #3d5af1;border-radius:9px;background:#f4f5f9;font-weight:700;cursor:pointer;">لون</button>
+      <button type="button" id="bgModeImageBtn" onclick="setBgPopoverMode('${key}','image')" style="flex:1;padding:10px;border:2px solid #e0e0e0;border-radius:9px;background:#fff;font-weight:700;cursor:pointer;">صورة من الألبوم</button>
+    </div>
+    <div id="bgModeColorBox">
+      <input type="color" value="${t.bg}" style="width:100%;height:44px;border-radius:10px;border:1px solid #e0e0e0;" onchange="updateTplLiveLg('${key}','bg',this.value);templatesData['${key}'].bgImage=null;">
+    </div>
+    <div id="bgModeImageBox" style="display:none;">
+      <input type="file" accept="image/*" onchange="bgPopoverFileChosen('${key}', this)" style="width:100%;padding:10px;border:1.5px solid #e0e0e0;border-radius:10px;">
+    </div>
+  `);
+}
+function setBgPopoverMode(key, mode){
+  document.getElementById('bgModeColorBox').style.display = mode==='color' ? 'block' : 'none';
+  document.getElementById('bgModeImageBox').style.display = mode==='image' ? 'block' : 'none';
+  document.getElementById('bgModeColorBtn').style.borderColor = mode==='color' ? '#3d5af1' : '#e0e0e0';
+  document.getElementById('bgModeImageBtn').style.borderColor = mode==='image' ? '#3d5af1' : '#e0e0e0';
+}
+function bgPopoverFileChosen(key, input){
+  if(!input.files || !input.files[0]) return;
+  fileToBase64(input.files[0], (dataUrl) => {
+    templatesData[key].bgImage = dataUrl;
+    renderTplExpanded();
+    closeTplPopover();
+  });
+}
+
+// ===== + التواصل: ألوان لون-لون + شكل (أيقونات/مستطيل حاد/مستطيل دائري) + إعادة ترتيب =====
+function openSocialsPopover(key){
+  const t = templatesData[key];
+  const shape = t.iconShape === 'rect' ? (t.rectStyle==='sharp' ? 'sharp' : 'rounded') : 'icons';
+  showTplPopover('حسابات التواصل', `
+    <div class="tpl-dash-label">الشكل</div>
+    <div style="display:flex;gap:6px;margin-bottom:16px;">
+      <button type="button" class="tpl-shape-btn" data-shape="icons" onclick="setSocialsShape('${key}','icons')" style="flex:1;padding:10px 4px;border:2px solid ${shape==='icons'?'#3d5af1':'#e0e0e0'};border-radius:9px;background:#fff;font-size:0.72rem;font-weight:700;cursor:pointer;">⚪ أيقونات</button>
+      <button type="button" class="tpl-shape-btn" data-shape="rounded" onclick="setSocialsShape('${key}','rounded')" style="flex:1;padding:10px 4px;border:2px solid ${shape==='rounded'?'#3d5af1':'#e0e0e0'};border-radius:9px;background:#fff;font-size:0.72rem;font-weight:700;cursor:pointer;">▢ مستطيل دائري</button>
+      <button type="button" class="tpl-shape-btn" data-shape="sharp" onclick="setSocialsShape('${key}','sharp')" style="flex:1;padding:10px 4px;border:2px solid ${shape==='sharp'?'#3d5af1':'#e0e0e0'};border-radius:9px;background:#fff;font-size:0.72rem;font-weight:700;cursor:pointer;">▭ مستطيل حاد</button>
+    </div>
+    <div class="tpl-dash-label">الألوان (لون لون)</div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:0.8rem;flex:1;">الحساب الأول</span>
+        <input type="color" value="${t.p1}" onchange="updateTplLiveLg('${key}','p1',this.value)" style="width:50px;height:36px;border-radius:8px;border:1px solid #e0e0e0;">
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:0.8rem;flex:1;">الحساب الثاني</span>
+        <input type="color" value="${t.p2}" onchange="updateTplLiveLg('${key}','p2',this.value)" style="width:50px;height:36px;border-radius:8px;border:1px solid #e0e0e0;">
+      </div>
+    </div>
+    <div style="font-size:0.72rem;color:#9aa2c8;">⋮⋮ اسحب لإعادة ترتيب الحسابات — يظهر لكل مستخدم بحسابه الفعلي</div>
+  `);
+}
+function setSocialsShape(key, shape){
+  if(shape === 'icons'){ templatesData[key].iconShape = 'circle'; }
+  else { templatesData[key].iconShape = 'rect'; templatesData[key].rectStyle = shape; }
+  openSocialsPopover(key); // أعد رسم النافذة المنبثقة لتحديث تحديد الزر النشط
+  renderTplExpanded();
+}
+window.openAvatarPopover = openAvatarPopover;
+window.avatarPopoverFileChosen = avatarPopoverFileChosen;
+window.openBgPopover = openBgPopover;
+window.setBgPopoverMode = setBgPopoverMode;
+window.bgPopoverFileChosen = bgPopoverFileChosen;
+window.openSocialsPopover = openSocialsPopover;
+window.setSocialsShape = setSocialsShape;
+window.closeTplPopover = closeTplPopover;
+
 function updateTplLiveLg(key, field, value){
   templatesData[key][field] = value;
   renderTplExpanded();
