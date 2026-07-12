@@ -335,11 +335,12 @@ nav{
 }
 .load-top-bar{position:absolute;top:0;left:0;right:0;height:3px;background:#eef0f7;overflow:hidden;}
 .load-top-bar::after{
-  content:'';position:absolute;top:0;bottom:0;width:40%;
+  content:'';position:absolute;top:0;left:0;bottom:0;width:40%;
   background:linear-gradient(90deg,#3d5af1,#6c8fff);
   animation:loadSweep 1.2s ease-in-out infinite;
+  will-change:transform;
 }
-@keyframes loadSweep{0%{left:-40%;}100%{left:100%;}}
+@keyframes loadSweep{0%{transform:translateX(-140%);}100%{transform:translateX(250%);}}
 .load-wordmark-shimmer{
   font-family:ui-monospace,'Space Mono',monospace;font-weight:900;font-size:1.6rem;
   background:linear-gradient(90deg,#0f1535 30%,#3d5af1 45%,#6c8fff 50%,#0f1535 65%);
