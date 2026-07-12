@@ -363,9 +363,38 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         <div class="form-group" style="margin-bottom:0;">
           <div style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;">هذا شكل صفحتك تقريباً بكل قالب — اضغط على أي واحدة لتطبيقها · This is roughly how your page will look with each template</div>
           <div id="pageMockupCarousel" style="display:flex;gap:12px;overflow-x:auto;padding:4px 4px 10px;-webkit-overflow-scrolling:touch;"></div>
+          <button type="button" onclick="openTplPersonalize()" style="width:100%;margin-top:10px;padding:12px;border:2px dashed var(--primary);border-radius:12px;background:var(--bg2);color:var(--primary);font-weight:700;font-family:inherit;cursor:pointer;">+ تخصيص صفحتك (الشعار، الأفتار، الألوان) · Personalize</button>
           <button type="button" id="adminAddTplBtn" onclick="adminAddTemplateInline()" style="display:none;width:100%;margin-top:10px;padding:11px;border:2px dashed var(--primary);border-radius:12px;background:var(--bg2);color:var(--primary);font-weight:700;font-family:inherit;cursor:pointer;">+ إضافة قالب جديد (أدمن) · Add Template (Admin)</button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- نافذة تخصيص سريع: شعار + أفتار + ألوان (اليوزر يبقى ثابتاً دائماً) -->
+  <div id="tplPersonalizeModal" style="display:none;position:fixed;inset:0;z-index:1200;background:rgba(0,0,0,0.5);align-items:flex-end;justify-content:center;" onclick="if(event.target===this)closeTplPersonalize()">
+    <div style="background:var(--bg);border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;">
+      <div style="font-weight:800;font-size:1.05rem;margin-bottom:4px;">تخصيص صفحتك</div>
+      <div style="font-size:0.76rem;color:var(--muted);margin-bottom:16px;">اليوزر ورابطك ثابتان دائماً <span dir="ltr" style="font-family:ui-monospace,monospace;">(electrwni.link/يوزرك)</span> — هذا يخصص الشكل فقط</div>
+
+      <div class="form-group">
+        <label>صورة الشعار/الأفتار <span class="lbl-sub">/ Avatar</span></label>
+        <button type="button" onclick="document.getElementById('avatarInput').click()" style="width:100%;padding:11px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font-family:inherit;font-weight:700;cursor:pointer;">📷 اختر صورة · Choose Image</button>
+      </div>
+      <div class="form-group">
+        <label>لون الخلفية <span class="lbl-sub">/ Background</span></label>
+        <input type="color" id="tplPersonalizeBg" class="color-box-picker" oninput="tplPersonalizeLive()">
+      </div>
+      <div class="form-group">
+        <label>لون النص (الاسم والوصف) <span class="lbl-sub">/ Text Color</span></label>
+        <input type="color" id="tplPersonalizeText" class="color-box-picker" oninput="tplPersonalizeLive()">
+      </div>
+      <div class="form-group">
+        <label>اليوزر <span class="lbl-sub">/ Username (ثابت · fixed)</span></label>
+        <input type="text" id="tplPersonalizeUser" disabled dir="ltr" style="opacity:0.6;font-family:ui-monospace,monospace;">
+      </div>
+
+      <button class="btn-add" onclick="tplPersonalizeSave()" style="background:var(--primary);margin:8px 0 0;">حفظ · Save</button>
+      <button class="btn-add" onclick="closeTplPersonalize()" style="background:var(--bg2);color:var(--text2);margin:8px 0 0;">إلغاء · Cancel</button>
     </div>
   </div>
 
@@ -1424,6 +1453,36 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       }
     }catch(e){ console.error('loadTemplatesFromConfig failed:', e); }
   }
+  // ===== تخصيص سريع من تبويب القوالب: شعار/أفتار + ألوان (اليوزر ثابت دائماً) =====
+  window.openTplPersonalize = function(){
+    const bgEl = document.getElementById('tplPersonalizeBg');
+    const txtEl = document.getElementById('tplPersonalizeText');
+    const userEl = document.getElementById('tplPersonalizeUser');
+    if(bgEl) bgEl.value = document.getElementById('bgColorPicker')?.value || '#ffffff';
+    if(txtEl) txtEl.value = document.getElementById('textColorPicker')?.value || '#0f1535';
+    if(userEl) userEl.value = 'electrwni.link/' + (document.getElementById('pfUser')?.value || '').trim();
+    document.getElementById('tplPersonalizeModal').style.display = 'flex';
+  };
+  window.closeTplPersonalize = function(){
+    document.getElementById('tplPersonalizeModal').style.display = 'none';
+  };
+  window.tplPersonalizeLive = function(){
+    const bg = document.getElementById('tplPersonalizeBg').value;
+    const txt = document.getElementById('tplPersonalizeText').value;
+    document.getElementById('bgColorPicker').value = bg;
+    document.getElementById('textColorPicker').value = txt;
+    window.onBgColorPick(bg);
+    window.onTextColorPick(txt);
+  };
+  window.tplPersonalizeSave = async function(){
+    try{
+      await window.saveDesign();
+      window.showToast("تم حفظ التخصيص ✓");
+      renderPageMockups();
+      closeTplPersonalize();
+    }catch(e){ window.showToast("تعذر الحفظ: " + (e.message||'')); }
+  };
+
   window.adminAddTemplateInline = async function(){
     const newId = 'custom_' + Date.now();
     const newTpl = { id:newId, name:'قالب جديد', p1:'#3d5af1', p2:'#6c8fff', text:'#0f1535', bg:'#ffffff', iconShape:'circle', showAvatar:true, showSocials:true, showLinks:true };
