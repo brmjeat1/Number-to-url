@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
 <style>
 :root{
-  --primary:#3d5af1;--primary-light:#6c8fff;--bg:#ffffff;--bg2:#f9f9f9;
-  --border:#e8ecf5;--text:#0f1535;--text2:#3a4270;--muted:#9aa2c8;
+  --primary:#3d5af1;--primary-light:#6c8fff;--bg:#EDF2FB;--bg2:#D7E3FC;
+  --border:#C1D3FE;--text:#0f1535;--text2:#3a4270;--muted:#9aa2c8;
   --success:#0ab87a;--error:#e8436a;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -273,7 +273,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
 /* ===== شاشة التحميل المعتمدة: شريط تقدم + شعار متلألئ ===== */
 .loading{
-  position:fixed;inset:0;z-index:5000;background:#ffffff;
+  position:fixed;inset:0;z-index:5000;background:var(--bg);
   display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;
 }
 .load-top-bar{position:absolute;top:0;left:0;right:0;height:3px;background:#eef0f7;overflow:hidden;}
