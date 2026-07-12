@@ -69,6 +69,37 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:14px 2
 .tpl-mockup-link{width:100%;height:11px;border-radius:4px;border:1.2px solid;margin-bottom:5px;}
 .tpl-delete-btn{background:#fdecea;color:#c33;border:none;padding:6px 10px;border-radius:7px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px;}
 .tpl-add-btn{width:100%;padding:12px;border:2px dashed #c7cee0;background:#fff;border-radius:14px;color:#3d5af1;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:12px;}
+
+/* صف القالب المضغوط بالقائمة */
+.tpl-list-row{margin-bottom:10px;}
+.tpl-mini-preview{width:52px;height:52px;border-radius:12px;border:1.5px solid #e8ecf5;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tpl-mini-dot{width:20px;height:20px;border-radius:50%;}
+
+/* المعاينة الكبيرة بالمحرر الموسّع */
+.tpl-mockup-lg{
+  border:2px solid #e8ecf5;border-radius:22px;padding:32px 20px 24px;
+  display:flex;flex-direction:column;align-items:center;margin-bottom:20px;
+}
+.tpl-mockup-lg-avatar{width:64px;height:64px;border-radius:50%;margin-bottom:14px;}
+.tpl-mockup-lg-name{font-size:1.05rem;font-weight:800;margin-bottom:10px;}
+.tpl-mockup-lg-bio{height:4px;width:70%;border-radius:3px;opacity:0.35;margin-bottom:6px;}
+.tpl-mockup-lg-bio.short{width:45%;margin-bottom:6px;}
+.tpl-mockup-lg-link{width:100%;height:22px;border-radius:8px;border:2px solid;margin-bottom:8px;}
+
+/* أقسام المحرر الموسّع بأسلوب الحدود المتقطعة (مطابق للمرجع) */
+.tpl-dash-section{
+  border:2px dashed #c7cee0;border-radius:16px;padding:16px;margin-bottom:14px;background:#fff;
+}
+.tpl-dash-label{font-size:0.78rem;font-weight:800;color:#6b7280;margin-bottom:10px;}
+.tpl-expanded-input{
+  width:100%;padding:11px;border:1.5px solid #e0e0e0;border-radius:10px;font-family:inherit;font-size:0.9rem;font-weight:700;
+}
+.tpl-toggle-row{
+  display:flex;align-items:center;gap:10px;padding:10px 4px;font-size:0.85rem;cursor:pointer;
+  border-bottom:1px solid #f0f0f0;
+}
+.tpl-toggle-row:last-child{border-bottom:none;}
+.tpl-toggle-row input{width:auto;}
 </style>
 </head>
 <body>
@@ -131,10 +162,20 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:14px 2
 
   <!-- القوالب -->
   <div class="section" id="sec-templates">
-    <div class="note-box">⚠️ تعديل القوالب هنا يحفظ القيم بقاعدة البيانات، لكن ربطها الفعلي بصفحات التسجيل ولوحة التحكم (بدل النسخة الثابتة بالكود حالياً) يحتاج خطوة برمجية إضافية لاحقاً — راجعني إذا حبيت تفعيلها بالكامل.</div>
+    <div class="note-box">✅ التعديلات هنا متصلة فعلياً بتبويب "قوالب" بلوحة تحكم المستخدمين — أي تغيير تحفظه يظهر لهم مباشرة.</div>
     <button class="tpl-add-btn" onclick="addNewTemplate()">+ إضافة قالب صفحة جديد · Add New Page Template</button>
     <div id="templatesList"></div>
     <button class="btn-sm" onclick="saveTemplatesConfig()" style="width:100%;padding:12px;">حفظ كل التعديلات · Save All</button>
+  </div>
+
+  <!-- المحرر الموسّع لقالب واحد -->
+  <div id="tplExpandedOverlay" style="display:none;position:fixed;inset:0;z-index:6000;background:#f4f5f9;flex-direction:column;">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:#fff;border-bottom:1px solid #e8ecf5;flex-shrink:0;">
+      <button onclick="closeTplExpanded()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:#0f1535;">‹</button>
+      <div style="font-weight:800;font-size:0.95rem;">تحكم كامل بالقالب</div>
+      <button onclick="saveTemplatesConfig();closeTplExpanded();" style="background:#0ab87a;border:none;width:34px;height:34px;border-radius:50%;color:#fff;font-size:1.1rem;cursor:pointer;">✓</button>
+    </div>
+    <div id="tplExpandedBody" style="flex:1;overflow-y:auto;padding:20px;"></div>
   </div>
 
   <!-- الاشتراكات -->
@@ -308,53 +349,97 @@ function renderTemplatesEditor(){
   const el = document.getElementById('templatesList');
   el.innerHTML = Object.keys(templatesData).map(key => {
     const t = templatesData[key];
-    const isRect = t.iconShape === 'rect';
-    const showAvatar = t.showAvatar !== false;
-    const showSocials = t.showSocials !== false;
-    const showLinks = t.showLinks !== false;
     return `
-      <div class="card" id="tplCard_${key}">
-        <div class="tpl-card-row">
-          <div class="tpl-mockup" id="tplMockup_${key}" style="background:${t.bg};">
-            ${showAvatar ? `<div class="tpl-mockup-avatar" style="background:linear-gradient(135deg,${t.p1},${t.p2});"></div>` : ''}
-            <div class="tpl-mockup-name" style="color:${t.text};">اسمك هنا</div>
-            <div class="tpl-mockup-bio" style="background:${t.text};"></div>
-            <div class="tpl-mockup-bio short" style="background:${t.text};"></div>
-            ${showSocials ? (isRect
-              ? `<div style="display:flex;flex-direction:column;gap:4px;width:100%;margin-bottom:6px;"><div style="width:100%;height:8px;border-radius:3px;background:${t.p1};"></div><div style="width:100%;height:8px;border-radius:3px;background:${t.p2};"></div></div>`
-              : `<div style="display:flex;gap:5px;margin-bottom:6px;"><div style="width:9px;height:9px;border-radius:50%;background:${t.p1};"></div><div style="width:9px;height:9px;border-radius:50%;background:${t.p2};"></div></div>`
-            ) : ''}
-            ${showLinks ? `<div class="tpl-mockup-link" style="border-color:${t.p1};"></div><div class="tpl-mockup-link" style="border-color:${t.p1};"></div>` : ''}
-          </div>
-          <div style="flex:1;min-width:0;">
-            <input type="text" value="${t.name}" style="font-weight:700;font-size:0.9rem;border:none;background:none;margin-bottom:10px;font-family:inherit;width:100%;" onchange="templatesData['${key}'].name=this.value">
-            <div class="tpl-edit-row">
-              <div><label style="font-size:0.68rem;display:block;">أساسي ١</label><input type="color" value="${t.p1}" onchange="updateTplLive('${key}','p1',this.value)"></div>
-              <div><label style="font-size:0.68rem;display:block;">أساسي ٢</label><input type="color" value="${t.p2}" onchange="updateTplLive('${key}','p2',this.value)"></div>
-              <div><label style="font-size:0.68rem;display:block;">النص</label><input type="color" value="${t.text}" onchange="updateTplLive('${key}','text',this.value)"></div>
-              <div><label style="font-size:0.68rem;display:block;">الخلفية</label><input type="color" value="${t.bg}" onchange="updateTplLive('${key}','bg',this.value)"></div>
-            </div>
-            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
-              <label style="display:flex;align-items:center;gap:5px;font-size:0.74rem;border:1px solid #e0e0e0;border-radius:8px;padding:6px 9px;cursor:pointer;">
-                <input type="checkbox" ${isRect?'checked':''} onchange="updateTplShape('${key}',this.checked)"> أيقونات مستطيلة
-              </label>
-              <label style="display:flex;align-items:center;gap:5px;font-size:0.74rem;border:1px solid #e0e0e0;border-radius:8px;padding:6px 9px;cursor:pointer;">
-                <input type="checkbox" ${showAvatar?'checked':''} onchange="updateTplFlag('${key}','showAvatar',this.checked)"> إظهار الأفتار
-              </label>
-              <label style="display:flex;align-items:center;gap:5px;font-size:0.74rem;border:1px solid #e0e0e0;border-radius:8px;padding:6px 9px;cursor:pointer;">
-                <input type="checkbox" ${showSocials?'checked':''} onchange="updateTplFlag('${key}','showSocials',this.checked)"> إظهار التواصل
-              </label>
-              <label style="display:flex;align-items:center;gap:5px;font-size:0.74rem;border:1px solid #e0e0e0;border-radius:8px;padding:6px 9px;cursor:pointer;">
-                <input type="checkbox" ${showLinks?'checked':''} onchange="updateTplFlag('${key}','showLinks',this.checked)"> إظهار الروابط
-              </label>
-            </div>
-            <button class="tpl-delete-btn" onclick="deleteTemplate('${key}')">🗑 حذف القالب</button>
-          </div>
+      <div class="card tpl-list-row" onclick="openTplExpanded('${key}')" style="cursor:pointer;display:flex;align-items:center;gap:14px;">
+        <div class="tpl-mini-preview" style="background:${t.bg};">
+          <div class="tpl-mini-dot" style="background:linear-gradient(135deg,${t.p1},${t.p2});"></div>
         </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:700;font-size:0.92rem;">${t.name}</div>
+          <div style="font-size:0.72rem;color:#9aa2c8;">اضغط للتحكم الكامل · Tap for full control</div>
+        </div>
+        <div style="font-size:1.3rem;color:#c7cee0;">‹</div>
       </div>
     `;
   }).join('');
 }
+
+/* ===== المحرر الموسّع: يفتح بملء الشاشة عند الضغط على أي قالب ===== */
+let currentExpandedTpl = null;
+function openTplExpanded(key){
+  currentExpandedTpl = key;
+  renderTplExpanded();
+  document.getElementById('tplExpandedOverlay').style.display = 'flex';
+}
+function closeTplExpanded(){
+  document.getElementById('tplExpandedOverlay').style.display = 'none';
+  currentExpandedTpl = null;
+  renderTemplatesEditor();
+}
+function renderTplExpanded(){
+  const key = currentExpandedTpl;
+  const t = templatesData[key];
+  if(!t) return;
+  const isRect = t.iconShape === 'rect';
+  const showAvatar = t.showAvatar !== false;
+  const showSocials = t.showSocials !== false;
+  const showLinks = t.showLinks !== false;
+  document.getElementById('tplExpandedBody').innerHTML = `
+    <div class="tpl-mockup-lg" id="tplMockupLg" style="background:${t.bg};">
+      ${showAvatar ? `<div class="tpl-mockup-lg-avatar" style="background:linear-gradient(135deg,${t.p1},${t.p2});"></div>` : ''}
+      <div class="tpl-mockup-lg-name" style="color:${t.text};">اسمك هنا</div>
+      <div class="tpl-mockup-lg-bio" style="background:${t.text};"></div>
+      <div class="tpl-mockup-lg-bio short" style="background:${t.text};"></div>
+      ${showSocials ? (isRect
+        ? `<div style="display:flex;flex-direction:column;gap:6px;width:100%;margin:14px 0;"><div style="width:100%;height:14px;border-radius:5px;background:${t.p1};"></div><div style="width:100%;height:14px;border-radius:5px;background:${t.p2};"></div></div>`
+        : `<div style="display:flex;gap:10px;margin:14px 0;"><div style="width:20px;height:20px;border-radius:50%;background:${t.p1};"></div><div style="width:20px;height:20px;border-radius:50%;background:${t.p2};"></div></div>`
+      ) : ''}
+      ${showLinks ? `<div class="tpl-mockup-lg-link" style="border-color:${t.p1};"></div><div class="tpl-mockup-lg-link" style="border-color:${t.p1};"></div>` : ''}
+    </div>
+
+    <div class="tpl-dash-section">
+      <div class="tpl-dash-label">اسم القالب</div>
+      <input type="text" value="${t.name}" class="tpl-expanded-input" onchange="templatesData['${key}'].name=this.value">
+    </div>
+
+    <div class="tpl-dash-section">
+      <div class="tpl-dash-label">الألوان</div>
+      <div class="tpl-edit-row">
+        <div><label style="font-size:0.68rem;display:block;">أساسي ١</label><input type="color" value="${t.p1}" onchange="updateTplLiveLg('${key}','p1',this.value)"></div>
+        <div><label style="font-size:0.68rem;display:block;">أساسي ٢</label><input type="color" value="${t.p2}" onchange="updateTplLiveLg('${key}','p2',this.value)"></div>
+        <div><label style="font-size:0.68rem;display:block;">النص</label><input type="color" value="${t.text}" onchange="updateTplLiveLg('${key}','text',this.value)"></div>
+        <div><label style="font-size:0.68rem;display:block;">الخلفية</label><input type="color" value="${t.bg}" onchange="updateTplLiveLg('${key}','bg',this.value)"></div>
+      </div>
+    </div>
+
+    <div class="tpl-dash-section">
+      <div class="tpl-dash-label">عناصر الصفحة</div>
+      <label class="tpl-toggle-row"><input type="checkbox" ${isRect?'checked':''} onchange="updateTplShapeLg('${key}',this.checked)"><span>أيقونات مستطيلة (بدل دائرية)</span></label>
+      <label class="tpl-toggle-row"><input type="checkbox" ${showAvatar?'checked':''} onchange="updateTplFlagLg('${key}','showAvatar',this.checked)"><span>إظهار الأفتار</span></label>
+      <label class="tpl-toggle-row"><input type="checkbox" ${showSocials?'checked':''} onchange="updateTplFlagLg('${key}','showSocials',this.checked)"><span>إظهار حسابات التواصل</span></label>
+      <label class="tpl-toggle-row"><input type="checkbox" ${showLinks?'checked':''} onchange="updateTplFlagLg('${key}','showLinks',this.checked)"><span>إظهار الروابط</span></label>
+    </div>
+
+    <button class="tpl-delete-btn" style="width:100%;" onclick="deleteTemplate('${key}');closeTplExpanded();">🗑 حذف هذا القالب</button>
+  `;
+}
+function updateTplLiveLg(key, field, value){
+  templatesData[key][field] = value;
+  renderTplExpanded();
+}
+function updateTplShapeLg(key, checked){
+  templatesData[key].iconShape = checked ? 'rect' : 'circle';
+  renderTplExpanded();
+}
+function updateTplFlagLg(key, field, checked){
+  templatesData[key][field] = checked;
+  renderTplExpanded();
+}
+window.openTplExpanded = openTplExpanded;
+window.closeTplExpanded = closeTplExpanded;
+window.updateTplLiveLg = updateTplLiveLg;
+window.updateTplShapeLg = updateTplShapeLg;
+window.updateTplFlagLg = updateTplFlagLg;
 function updateTplShape(key, checked){
   templatesData[key].iconShape = checked ? 'rect' : 'circle';
   renderTemplatesEditor();
