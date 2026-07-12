@@ -79,7 +79,7 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html{font-size:106.25%;} /* Apple-scale baseline (~17px) */
 html{scroll-behavior:smooth;}
-body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;background:#ffffff;color:var(--text);min-height:100vh;}
 
 /* ========== NAVBAR (قسمان: شعار ثابت يسار + زر ذكي يمين) ========== */
 nav{
@@ -99,6 +99,36 @@ nav{
   overflow:hidden;display:flex;align-items:flex-end;justify-content:center;
   background-size:cover;background-position:center;
 }
+.numbers-menu-btn{
+  position:absolute;top:16px;left:16px;z-index:5;
+  width:40px;height:40px;border-radius:12px;border:none;cursor:pointer;
+  background:rgba(255,255,255,0.85);backdrop-filter:blur(6px);color:var(--accent,#3d5af1);
+  display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,0.12);
+}
+.numbers-menu-btn:active{transform:scale(0.94);}
+
+/* قائمة الأرقام المنسدلة */
+.numbers-panel{
+  position:fixed;inset:0;z-index:300;background:rgba(15,21,53,0.4);
+  display:none;align-items:flex-start;justify-content:center;padding-top:80px;
+}
+.numbers-panel.open{display:flex;}
+.numbers-panel-box{
+  position:relative;background:var(--surface,#fff);border-radius:18px;padding:18px 16px 10px;
+  width:min(320px,86vw);box-shadow:0 14px 40px rgba(0,0,0,0.2);
+}
+.numbers-panel-close{
+  position:absolute;top:10px;left:50%;transform:translateX(-50%);
+  width:30px;height:30px;border-radius:50%;border:none;background:var(--bg2,#f3f3f3);
+  color:var(--text2);font-size:0.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+.numbers-panel-item{
+  width:100%;display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:16px 10px;border:1.5px solid var(--border);border-radius:12px;background:var(--bg);
+  font-family:inherit;font-weight:700;font-size:0.92rem;color:var(--text);cursor:pointer;margin-top:36px;
+}
+.numbers-panel-item + .numbers-panel-item{margin-top:10px;}
+.numbers-panel-sub{font-size:0.68rem;font-weight:400;color:var(--muted);}
 .avatar-container{
   position:relative;z-index:10;margin-top:-60px;margin-bottom:10px;
   display:flex;justify-content:center;
@@ -113,6 +143,7 @@ nav{
 
 /* ========== CONTENT ========== */
 .content{padding:0 24px 30px;max-width:500px;margin:0 auto;}
+.page-themed-wrap{background:var(--bg);}
 .profile-info{text-align:center;margin-bottom:16px;}
 .profile-name{font-size:1.6rem;font-weight:700;margin-bottom:6px;}
 .profile-handle{font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-size:0.8rem;color:var(--text2);direction:ltr;margin-bottom:10px;}
@@ -335,7 +366,12 @@ nav{
   <a href="signup.html" class="nav-cta" id="navCta">ابدأ الآن<span class="nav-cta-sub">Start Now</span></a>
 </nav>
 
-<div class="hero-banner" id="heroBanner"></div>
+<div class="page-themed-wrap" id="pageThemedWrap">
+<div class="hero-banner" id="heroBanner">
+  <button type="button" class="numbers-menu-btn" onclick="openNumbersPanel()" title="الأرقام · Numbers" aria-label="الأرقام">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="17" x2="20" y2="17"></line></svg>
+  </button>
+</div>
 <div class="avatar-container">
   <div class="avatar-circle skeleton-shimmer" id="avatar" onclick="zoomAvatar()" style="cursor:pointer;"></div>
 </div>
@@ -345,6 +381,20 @@ nav{
     <div class="load-top-bar"></div>
     <div class="load-wordmark-shimmer">electrwni.link</div>
     <div class="load-sub">جاري التحميل...</div>
+  </div>
+</div>
+</div><!-- /.page-themed-wrap -->
+
+<!-- قائمة الأرقام: تُفتح من أيقونة الثلاث خطوط بالبانر -->
+<div class="numbers-panel" id="numbersPanel" onclick="if(event.target===this)closeNumbersPanel();">
+  <div class="numbers-panel-box">
+    <button type="button" class="numbers-panel-close" onclick="closeNumbersPanel()" aria-label="إغلاق">✕</button>
+    <button type="button" class="numbers-panel-item" onclick="closeNumbersPanel();openSection('featured');">
+      <span>⭐ أرقام مختارة</span><span class="numbers-panel-sub">Selected Numbers</span>
+    </button>
+    <button type="button" class="numbers-panel-item" onclick="closeNumbersPanel();openSection('recent');">
+      <span>📋 سجل الأرقام</span><span class="numbers-panel-sub">Numbers Registry</span>
+    </button>
   </div>
 </div>
 
@@ -857,22 +907,8 @@ function render(user){
 
     ${user.bio?`<div class="profile-bio">${user.bio}</div>`:''}
 
-    <div class="pick-row">
-      <button class="pick-box" onclick="openSection('featured')">
-        <div class="pick-title">أرقام مختارة<span class="pick-sub">Selected Numbers</span></div>
-      </button>
-      <button class="pick-box" onclick="openSection('recent')">
-        <div class="pick-title">سجل الأرقام<span class="pick-sub">Numbers Registry</span></div>
-      </button>
-    </div>
-
     ${socialsHtml}
     ${contactsHtml}
-
-    <div class="footer">
-      <span class="psb-text">بُني بمعمارية عالية Electrwni، الكويت، 2026.</span>
-      <a href="https://electrwni.link/electrwni" class="psb-link">Electrwni.link/electrwni · Platform Account</a>
-    </div>
   `;
 
   // تخزين رابط الصفحة للـ QR المنبثق
@@ -912,6 +948,13 @@ window.zoomAvatar = function(){
   modal.style.display='flex';
 };
 window.closeImgZoom = function(){ document.getElementById('imgZoomModal').style.display='none'; };
+
+window.openNumbersPanel = function(){
+  document.getElementById('numbersPanel').classList.add('open');
+};
+window.closeNumbersPanel = function(){
+  document.getElementById('numbersPanel').classList.remove('open');
+};
 
 function openSection(type){
   const data=window.__pageData;
