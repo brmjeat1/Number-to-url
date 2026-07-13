@@ -24,7 +24,6 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebSite","name":"electrwni.link","url":"https://electrwni.link/","description":"منصة لجمع كل روابطك ومنتجاتك في صفحة واحدة يصل إليها زوّارك برقم بسيط أو رمز QR","inLanguage":"ar"}
 </script>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   @font-face{
     font-family:'ThmanyahSerif';
@@ -169,6 +168,22 @@ nav{
 .content{padding:0 24px 30px;max-width:500px;margin:0 auto;}
 .page-themed-wrap{background:var(--bg);}
 .profile-info{text-align:center;margin-bottom:16px;}
+.main-search-row{display:flex;gap:8px;margin-bottom:6px;}
+.main-search-box{
+  flex:1;display:flex;align-items:center;gap:8px;padding:12px 14px;
+  border:1.5px solid var(--border);border-radius:12px;background:var(--bg2,#f7f7f9);
+  color:var(--muted);
+}
+.main-search-input{
+  flex:1;border:none;background:none;outline:none;color:var(--text);
+  font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-size:0.92rem;font-weight:700;
+  direction:ltr;text-align:right;
+}
+.main-search-input::placeholder{color:var(--muted);font-family:'Tajawal',inherit;}
+.main-search-go{
+  flex-shrink:0;padding:0 18px;border:none;border-radius:12px;background:var(--accent,#3d5af1);
+  color:#fff;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:inherit;
+}
 .profile-name{font-size:1.6rem;font-weight:700;margin-bottom:6px;}
 .profile-handle{font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-size:0.8rem;color:var(--text2);direction:ltr;margin-bottom:10px;}
 .profile-bio{font-size:0.9rem;color:var(--text2);line-height:1.6;text-align:center;margin-bottom:24px;}
@@ -420,18 +435,6 @@ nav{
       <button type="button" class="numbers-panel-item" onclick="closeNumbersPanel();openSection('recent');">
         <span>📋 سجل الأرقام</span><span class="numbers-panel-sub">Numbers Registry</span>
       </button>
-    </div>
-
-    <div class="error-msg" id="errMsg">الرقم غير موجود · Number not found</div>
-    <div class="numbers-panel-search-row">
-      <div class="numbers-panel-search">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input class="numbers-panel-search-input" type="text" id="numIn"
-          placeholder="أكتب الرقم"
-          maxlength="6" inputmode="numeric" oninput="convertNum()"
-          onkeydown="if(event.key==='Enter'){event.preventDefault();goNav();}">
-      </div>
-      <button type="button" class="numbers-panel-go" onclick="goNav()">إتمام</button>
     </div>
   </div>
 </div>
@@ -933,6 +936,18 @@ function render(user){
       <div class="profile-name">${user.displayName||user.username}</div>
       <div class="profile-handle">electrwni.link/${user.username}</div>
     </div>
+
+    <div class="main-search-row">
+      <div class="main-search-box">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input class="main-search-input" type="text" id="numIn"
+          placeholder="أكتب الرقم · Write the number"
+          maxlength="6" inputmode="numeric" oninput="convertNum()"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();goNav();}">
+      </div>
+      <button type="button" class="main-search-go" onclick="goNav()">إتمام</button>
+    </div>
+    <div class="error-msg" id="errMsg">الرقم غير موجود · Number not found</div>
 
     ${user.bio?`<div class="profile-bio">${user.bio}</div>`:''}
 
