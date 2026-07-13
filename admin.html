@@ -214,7 +214,7 @@ const auth=firebase.auth();
 const db=firebase.firestore();
 
 // ⚠️ عدّل هذا البريد ليكون بريدك الحقيقي المسجّل بالموقع — هذا هو مفتاح الوصول للوحة الإدارة
-const ADMIN_EMAIL = "brmjeat1@gmail.com";
+const ADMIN_EMAIL = "your-admin-email@example.com";
 
 const DEFAULT_TEMPLATES = {
   default: { name:'الافتراضي', p1:'#3d5af1', p2:'#6c8fff', text:'#0f1535', bg:'#ffffff' },
@@ -414,7 +414,7 @@ function renderTplExpanded(){
           <button class="tpl-plus-badge" style="bottom:10px;left:calc(50% - 40px);" onclick="event.stopPropagation();openAvatarPopover('${key}')" title="الأفتار/الشعار">+</button>
         </div>
       ` : ''}
-      <div class="tpl-mockup-lg-name" style="color:${t.text};">اسمك هنا</div>
+      <div class="tpl-mockup-lg-name" style="color:${t.text};">${t.sampleName || 'اسمك هنا'}</div>
       <div class="tpl-mockup-lg-bio" style="background:${t.text};"></div>
       <div class="tpl-mockup-lg-bio short" style="background:${t.text};"></div>
 
@@ -427,8 +427,13 @@ function renderTplExpanded(){
     </div>
 
     <div class="tpl-dash-section">
-      <div class="tpl-dash-label">اسم القالب</div>
+      <div class="tpl-dash-label">اسم القالب (للإدارة فقط)</div>
       <input type="text" value="${t.name}" class="tpl-expanded-input" onchange="templatesData['${key}'].name=this.value">
+    </div>
+
+    <div class="tpl-dash-section">
+      <div class="tpl-dash-label">نص الاسم بالمعاينة</div>
+      <input type="text" value="${t.sampleName || 'اسمك هنا'}" class="tpl-expanded-input" onchange="updateTplLiveLg('${key}','sampleName',this.value)">
     </div>
 
     <div class="tpl-dash-section">
