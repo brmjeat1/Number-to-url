@@ -904,7 +904,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
           <thead>
             <tr>
               <th style="max-width:50px;">الرقم<br><span style="font-size:0.65rem;font-weight:400;">#</span></th>
-              <th style="max-width:44px;">النوع<br><span style="font-size:0.65rem;font-weight:400;">🔗 / 📄</span></th>
               <th>العنوان<br><span style="font-size:0.65rem;font-weight:400;">Title</span></th>
               <th>الرابط<br><span style="font-size:0.65rem;font-weight:400;">Link</span></th>
               <th>الوصف<br><span style="font-size:0.65rem;font-weight:400;">Desc</span></th>
@@ -912,7 +911,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
             </tr>
           </thead>
           <tbody id="statsTbody">
-            <tr><td colspan="6" class="empty">لا توجد روابط / No links</td></tr>
+            <tr><td colspan="5" class="empty">لا توجد روابط / No links</td></tr>
           </tbody>
         </table>
         <div class="pagination" id="pagination"></div>
@@ -2461,7 +2460,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
       if (!allEntries.length) {
         registry.innerHTML = '<div class="empty">لا توجد روابط مضافة بعد</div>';
-        statsTbody.innerHTML = '<tr><td colspan="6" class="empty">لا توجد روابط / No links</td></tr>';
+        statsTbody.innerHTML = '<tr><td colspan="5" class="empty">لا توجد روابط / No links</td></tr>';
         return;
       }
 
@@ -2532,13 +2531,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         registry.appendChild(item);
 
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${num}</td><td style="text-align:center;color:var(--primary);white-space:nowrap;">${registryTypeIconTag(isText?'text':'link')}${qrTargetUrl?`<button class="qr-icon-btn qr-icon-btn-table" title="تنزيل QR" onclick="event.stopPropagation(); window.downloadLinkQr(${num}, '${qrTargetUrl.replace(/'/g,"\\'")}')">${QR_ICON_SVG}</button>`:''}</td><td><b>${title}</b></td><td dir="ltr" style="word-break:break-all;">${linkValuePreview}</td><td><div class="desc-clamp">${clamped}</div></td><td><span style="color:var(--primary); font-weight:700;">${link.views || 0}</span></td>`;
+        tr.innerHTML = `<td><div>${num}</div><div style="font-size:0.65rem;font-weight:400;color:var(--muted);">${isText?'نص':'رابط'}</div>${qrTargetUrl?`<button class="qr-icon-btn qr-icon-btn-table" title="تنزيل QR" onclick="event.stopPropagation(); window.downloadLinkQr(${num}, '${qrTargetUrl.replace(/'/g,"\\'")}')">${QR_ICON_SVG}</button>`:''}</td><td><b>${title}</b></td><td dir="ltr" style="word-break:break-all;">${linkValuePreview}</td><td><div class="desc-clamp">${clamped}</div></td><td><span style="color:var(--primary); font-weight:700;">${link.views || 0}</span></td>`;
         statsTbody.appendChild(tr);
       });
     } catch(e){
       console.error('loadLinks error:', e);
       registry.innerHTML = `<div class="empty" style="color:var(--error);">⚠️ تعذر تحميل الروابط: ${(e.message||e.code||'خطأ غير معروف')}</div>`;
-      statsTbody.innerHTML = `<tr><td colspan="6" class="empty" style="color:var(--error);">⚠️ تعذر التحميل: ${(e.message||e.code||'')}</td></tr>`;
+      statsTbody.innerHTML = `<tr><td colspan="5" class="empty" style="color:var(--error);">⚠️ تعذر التحميل: ${(e.message||e.code||'')}</td></tr>`;
     }
   }
 
