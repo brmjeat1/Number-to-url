@@ -114,18 +114,35 @@ nav{
 .numbers-panel.open{display:flex;}
 .numbers-panel-box{
   position:relative;background:var(--surface,#fff);height:100%;
-  width:min(340px,84vw);padding:60px 20px 30px;box-shadow:-8px 0 30px rgba(0,0,0,0.2);
+  width:min(340px,84vw);padding:56px 20px 30px;box-shadow:-8px 0 30px rgba(0,0,0,0.2);
   display:flex;flex-direction:column;overflow-y:auto;
-  animation:panelSlideInRight .25s ease-out;
+  animation:panelSlideInRight .25s cubic-bezier(.2,.8,.3,1);
 }
 @keyframes panelSlideInRight{
   from{transform:translateX(100%);}
   to{transform:translateX(0);}
 }
-.numbers-panel-close{
-  position:absolute;top:16px;left:16px;
+.numbers-panel-close-centered{
+  position:absolute;top:14px;left:50%;transform:translateX(-50%);
   width:32px;height:32px;border-radius:50%;border:none;background:var(--bg2,#f3f3f3);
   color:var(--text2);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+.numbers-panel-search-row{display:flex;justify-content:center;margin-bottom:18px;}
+.numbers-panel-search{
+  display:flex;align-items:center;gap:8px;padding:5px 5px 5px 16px;
+  width:min(100%,280px);
+  border:1.5px solid var(--border);border-radius:999px;background:var(--bg2,#f7f7f9);
+  color:var(--muted);box-shadow:0 2px 8px rgba(0,0,0,0.04);
+}
+.numbers-panel-search-input{
+  flex:1;border:none;background:none;outline:none;color:var(--text);min-width:0;
+  font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-size:0.85rem;font-weight:700;
+  direction:ltr;text-align:right;
+}
+.numbers-panel-search-input::placeholder{color:#b8bfd6;font-family:'Tajawal',inherit;}
+.numbers-panel-go{
+  flex-shrink:0;padding:0 16px;height:34px;border:none;border-radius:999px;background:var(--accent,#3d5af1);
+  color:#fff;font-weight:700;font-size:0.76rem;cursor:pointer;font-family:inherit;
 }
 .numbers-panel-list{display:flex;flex-direction:column;gap:10px;margin-bottom:22px;}
 .numbers-panel-item{
@@ -135,23 +152,6 @@ nav{
 }
 .numbers-panel-sub{font-size:0.68rem;font-weight:400;color:var(--muted);}
 
-/* صف البحث بالأسفل: مربع واحد + زر إتمام جنبه */
-.numbers-panel-search-row{display:flex;gap:8px;margin-top:auto;padding-top:14px;border-top:1px solid var(--border);}
-.numbers-panel-search{
-  flex:1;display:flex;align-items:center;gap:8px;padding:12px 14px;
-  border:1.5px solid var(--border);border-radius:12px;background:var(--bg2,#f7f7f9);
-  color:var(--muted);
-}
-.numbers-panel-search-input{
-  flex:1;border:none;background:none;outline:none;color:var(--text);
-  font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-size:0.92rem;font-weight:700;
-  direction:ltr;text-align:right;
-}
-.numbers-panel-search-input::placeholder{color:var(--muted);font-family:'Tajawal',inherit;}
-.numbers-panel-go{
-  flex-shrink:0;padding:0 18px;border:none;border-radius:12px;background:var(--accent,#3d5af1);
-  color:#fff;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:inherit;
-}
 .avatar-container{
   position:relative;z-index:10;margin-top:-60px;margin-bottom:10px;
   display:flex;justify-content:center;
@@ -168,21 +168,22 @@ nav{
 .content{padding:0 24px 30px;max-width:500px;margin:0 auto;}
 .page-themed-wrap{background:var(--bg);}
 .profile-info{text-align:center;margin-bottom:16px;}
-.main-search-row{display:flex;gap:8px;margin-bottom:6px;}
+.main-search-row{display:flex;justify-content:center;margin-bottom:6px;}
 .main-search-box{
-  flex:1;display:flex;align-items:center;gap:8px;padding:12px 14px;
-  border:1.5px solid var(--border);border-radius:12px;background:var(--bg2,#f7f7f9);
-  color:var(--muted);
+  display:flex;align-items:center;gap:8px;padding:6px 6px 6px 18px;
+  width:min(100%,320px);
+  border:1.5px solid var(--border);border-radius:999px;background:var(--bg2,#f7f7f9);
+  color:var(--muted);box-shadow:0 2px 10px rgba(0,0,0,0.04);
 }
 .main-search-input{
-  flex:1;border:none;background:none;outline:none;color:var(--text);
-  font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-size:0.92rem;font-weight:700;
+  flex:1;border:none;background:none;outline:none;color:var(--text);min-width:0;
+  font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-size:0.88rem;font-weight:700;
   direction:ltr;text-align:right;
 }
-.main-search-input::placeholder{color:var(--muted);font-family:'Tajawal',inherit;}
+.main-search-input::placeholder{color:#b8bfd6;font-family:'Tajawal',inherit;}
 .main-search-go{
-  flex-shrink:0;padding:0 18px;border:none;border-radius:12px;background:var(--accent,#3d5af1);
-  color:#fff;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:inherit;
+  flex-shrink:0;padding:0 20px;height:38px;border:none;border-radius:999px;background:var(--accent,#3d5af1);
+  color:#fff;font-weight:700;font-size:0.8rem;cursor:pointer;font-family:inherit;
 }
 .profile-name{font-size:1.6rem;font-weight:700;margin-bottom:6px;}
 .profile-handle{font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-size:0.8rem;color:var(--text2);direction:ltr;margin-bottom:10px;}
@@ -209,45 +210,47 @@ nav{
 .error-msg.show{display:block;}
 
 /* ========== SECTION TITLE ========== */
-.section-title{font-size:1.1rem;font-weight:700;color:var(--accent);text-align:center;margin:32px 0 18px;}
+.section-title{font-size:1.1rem;font-weight:700;color:var(--accent);text-align:center;margin:28px 0 16px;}
 
 /* ========== SOCIALS ROW ========== */
-.socials-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:32px;}
+/* الوضع الدائري: تقارب أكبر بين الأيقونات */
+.socials-row{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-bottom:28px;}
 
 /* أيقونات المنصات الاجتماعية - دائرية */
 .social-btn{
-  display:flex;align-items:center;justify-content:center;width:64px;height:64px;
-  border-radius:50%;background:var(--accent);border:3px solid var(--accent-light);
+  display:flex;align-items:center;justify-content:center;width:58px;height:58px;
+  border-radius:50%;background:var(--accent);border:2.5px solid var(--accent-light);
   text-decoration:none;transition:transform .15s;overflow:hidden;
 }
 .social-btn:active{transform:scale(0.92);}
 .social-btn img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
-.social-btn svg{width:28px;height:28px;}
+.social-btn svg{width:25px;height:25px;}
 
 /* أيقونات المنصات الاجتماعية - مستطيلة (أيقونة + يوزر) */
 .social-rect{
   position:relative;display:flex;flex-direction:row-reverse;align-items:stretch;
-  height:56px;border-radius:16px;border:2.5px solid;overflow:hidden;
+  height:50px;border-radius:14px;border:2px solid;overflow:hidden;
   text-decoration:none;width:100%;transition:transform .15s;
 }
 .social-rect:active{transform:scale(0.98);}
 .social-rect-icon{
   display:flex;align-items:center;justify-content:center;
-  width:56px;flex-shrink:0;position:relative;z-index:1;
+  width:50px;flex-shrink:0;position:relative;z-index:1;
 }
-.social-rect-icon svg{width:23px;height:23px;}
+.social-rect-icon svg{width:20px;height:20px;}
 .social-rect-icon img{width:100%;height:100%;object-fit:cover;}
 .social-rect-label{
   display:flex;align-items:center;flex:1;
-  padding:0 16px;font-size:0.85rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  padding:0 14px;font-size:0.8rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   position:relative;z-index:1;direction:ltr;
 }
 .social-rect-divider{
-  position:absolute;top:0;bottom:0;left:56px;width:2px;background:currentColor;opacity:0.35;z-index:2;
+  position:absolute;top:0;bottom:0;left:50px;width:1.5px;background:currentColor;opacity:0.35;z-index:2;
 }
-.social-rect-sharp{border-radius:6px;}
+.social-rect-sharp{border-radius:5px;}
 .social-rect-sharp .social-rect-divider{transform:skewX(-18deg);}
-.socials-row-rect{display:flex;flex-direction:column;gap:12px;}
+/* الوضع المستطيل: تسلسل متقارب رأسياً */
+.socials-row-rect{display:flex;flex-direction:column;gap:7px;margin-bottom:28px;}
 
 /* بطاقات التواصل (أرقام/موقع/خريطة) */
 .contact-card{
@@ -389,7 +392,7 @@ nav{
   .hero-banner{height:200px;}
   .avatar-circle{width:100px;height:100px;font-size:2.2rem;}
   .profile-name{font-size:1.4rem;}
-  .social-btn{width:56px;height:56px;border-radius:16px;}
+  .social-btn{width:52px;height:52px;}
 }
 /* Apple-style tight tracking on large headings */
 .profile-name,.logo,.section-title{letter-spacing:-0.02em;}
@@ -406,8 +409,8 @@ nav{
 
 <div class="page-themed-wrap" id="pageThemedWrap">
 <div class="hero-banner" id="heroBanner">
-  <button type="button" class="numbers-menu-btn" onclick="openNumbersPanel()" title="الأرقام · Numbers" aria-label="الأرقام">
-    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="17" x2="20" y2="17"></line></svg>
+  <button type="button" class="numbers-menu-btn" onclick="openNumbersPanel()" title="بحث · Search" aria-label="بحث">
+    <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
   </button>
 </div>
 <div class="avatar-container">
@@ -426,15 +429,37 @@ nav{
 <!-- قائمة الأرقام: تُفتح من أيقونة الثلاث خطوط بالبانر، لوحة جانبية كاملة الارتفاع من اليسار -->
 <div class="numbers-panel" id="numbersPanel" onclick="if(event.target===this)closeNumbersPanel();">
   <div class="numbers-panel-box">
-    <button type="button" class="numbers-panel-close" onclick="closeNumbersPanel()" aria-label="إغلاق">✕</button>
+    <button type="button" class="numbers-panel-close-centered" onclick="closeNumbersPanel()" aria-label="إغلاق">✕</button>
+
+    <div class="numbers-panel-search-row">
+      <div class="numbers-panel-search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input class="numbers-panel-search-input" type="text" id="numInPanelTop"
+          placeholder="أكتب الرقم"
+          maxlength="6" inputmode="numeric" oninput="convertNum('numInPanelTop')"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();goNav('numInPanelTop');}">
+        <button type="button" class="numbers-panel-go" onclick="goNav('numInPanelTop')">إتمام</button>
+      </div>
+    </div>
 
     <div class="numbers-panel-list">
-      <button type="button" class="numbers-panel-item" onclick="closeNumbersPanel();openSection('featured');">
-        <span>⭐ أرقام مختارة</span><span class="numbers-panel-sub">Selected Numbers</span>
-      </button>
       <button type="button" class="numbers-panel-item" onclick="closeNumbersPanel();openSection('recent');">
-        <span>📋 سجل الأرقام</span><span class="numbers-panel-sub">Numbers Registry</span>
+        <span>سجل الأرقام</span><span class="numbers-panel-sub">Numbers Registry</span>
       </button>
+      <button type="button" class="numbers-panel-item" onclick="closeNumbersPanel();openSection('featured');">
+        <span>أرقام مختارة</span><span class="numbers-panel-sub">Selected Numbers</span>
+      </button>
+    </div>
+
+    <div class="numbers-panel-search-row">
+      <div class="numbers-panel-search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input class="numbers-panel-search-input" type="text" id="numInPanelBottom"
+          placeholder="أكتب الرقم"
+          maxlength="6" inputmode="numeric" oninput="convertNum('numInPanelBottom')"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();goNav('numInPanelBottom');}">
+        <button type="button" class="numbers-panel-go" onclick="goNav('numInPanelBottom')">إتمام</button>
+      </div>
     </div>
   </div>
 </div>
@@ -823,11 +848,34 @@ function render(user){
   function extractHandle(url){
     if(!url) return '';
     try{
-      let clean=String(url).trim().replace(/^https?:\/\//i,'').replace(/\/+$/,'');
-      const parts=clean.split('/');
-      const h=parts[parts.length-1]||clean;
-      return h.startsWith('@')?h:'@'+h;
-    }catch(e){ return url; }
+      let raw = String(url).trim();
+
+      // مخططات خاصة (بريد/رسائل) لا تحتوي مسار عادي
+      if(/^mailto:/i.test(raw)) return raw.replace(/^mailto:/i,'');
+      if(/^(tel|sms|whatsapp):/i.test(raw)) return raw.replace(/^(tel|sms|whatsapp):/i,'');
+
+      // احذف البروتوكول و www. واحذف أي معامِلات بحث (?...) أو جزء تجزئة (#...)
+      let clean = raw
+        .replace(/^https?:\/\//i,'')
+        .replace(/^www\./i,'')
+        .split('?')[0]
+        .split('#')[0]
+        .replace(/\/+$/,'');
+
+      const parts = clean.split('/').filter(Boolean);
+      if(!parts.length) return '';
+
+      // أول جزء غالباً اسم النطاق (instagram.com، wa.me...)؛ الباقي هو المسار الفعلي لليوزر
+      const pathParts = parts.slice(1);
+      let handle = pathParts.length ? pathParts[pathParts.length-1] : parts[0];
+
+      // بعض الأرقام (واتساب مثلاً) تكون كلها أرقام — نعرضها كما هي بدون @
+      if(/^\d+$/.test(handle)) return handle;
+
+      handle = handle.trim();
+      if(!handle) return '';
+      return handle.startsWith('@') ? handle : '@'+handle;
+    }catch(e){ return ''; }
   }
   let socialsHtml='';
   if(socials.length){
@@ -887,12 +935,12 @@ function render(user){
     }
     if(iconShape === 'rect'){
       socialsHtml=`
-        <div class="section-title">حسابات التواصل <span style="font-size:0.7rem;font-weight:400;color:var(--muted);display:block;">Social Accounts</span></div>
+        <div class="section-title">تابعنا <span style="font-size:0.7rem;font-weight:400;color:var(--muted);display:block;">Follow Us</span></div>
         <div class="socials-row-rect">${qrBtn}${btns}</div>
       `;
     } else {
       socialsHtml=`
-        <div class="section-title">حسابات التواصل <span style="font-size:0.7rem;font-weight:400;color:var(--muted);display:block;">Social Accounts</span></div>
+        <div class="section-title">تابعنا <span style="font-size:0.7rem;font-weight:400;color:var(--muted);display:block;">Follow Us</span></div>
         <div class="socials-row">${qrBtn}${btns}</div>
       `;
     }
@@ -937,19 +985,19 @@ function render(user){
       <div class="profile-handle">electrwni.link/${user.username}</div>
     </div>
 
+    ${user.bio?`<div class="profile-bio">${user.bio}</div>`:''}
+
     <div class="main-search-row">
       <div class="main-search-box">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         <input class="main-search-input" type="text" id="numIn"
           placeholder="أكتب الرقم · Write the number"
           maxlength="6" inputmode="numeric" oninput="convertNum()"
           onkeydown="if(event.key==='Enter'){event.preventDefault();goNav();}">
+        <button type="button" class="main-search-go" onclick="goNav()">إتمام</button>
       </div>
-      <button type="button" class="main-search-go" onclick="goNav()">إتمام</button>
     </div>
     <div class="error-msg" id="errMsg">الرقم غير موجود · Number not found</div>
-
-    ${user.bio?`<div class="profile-bio">${user.bio}</div>`:''}
 
     ${socialsHtml}
     ${contactsHtml}
@@ -1080,8 +1128,9 @@ window.showTextView = showTextView;
 window.showTextViewByIndex = showTextViewByIndex;
 window.closeTextView = closeTextView;
 
-function convertNum(){
-  const inp=document.getElementById('numIn');
+function convertNum(inputId){
+  const inp=document.getElementById(inputId||'numIn');
+  if(!inp) return;
   const cursorFromEnd = inp.value.length - inp.selectionStart;
   const converted = arabicToEnglish(inp.value).replace(/[^0-9]/g,'');
   inp.value = converted;
@@ -1089,8 +1138,8 @@ function convertNum(){
   try{ inp.setSelectionRange(pos, pos); }catch(e){}
 }
 
-function goNav(){
-  const raw=document.getElementById('numIn').value;
+function goNav(inputId){
+  const raw=document.getElementById(inputId||'numIn').value;
   const n=parseInt(arabicToEnglish(raw));
   if(isNaN(n)){
     const err=document.getElementById('errMsg');
