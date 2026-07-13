@@ -100,31 +100,31 @@ nav{
   background-size:cover;background-position:center;
 }
 .numbers-menu-btn{
-  position:absolute;top:16px;left:16px;z-index:5;
+  position:absolute;top:16px;right:16px;z-index:5;
   min-width:44px;height:40px;border-radius:10px;border:none;cursor:pointer;padding:0 10px;
-  background:rgba(255,255,255,0.9);backdrop-filter:blur(6px);color:var(--accent,#3d5af1);
+  background:rgba(255,255,255,0.96);color:var(--accent,#3d5af1);
   display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,0.12);
 }
 .numbers-menu-btn:active{transform:scale(0.94);}
 
-/* قائمة الأرقام المنسدلة — من جهة اليسار */
+/* قائمة الأرقام المنسدلة — من جهة اليمين */
 .numbers-panel{
   position:fixed;inset:0;z-index:300;background:rgba(15,21,53,0.45);
-  display:none;align-items:stretch;justify-content:flex-start;
+  display:none;align-items:stretch;justify-content:flex-end;
 }
 .numbers-panel.open{display:flex;}
 .numbers-panel-box{
   position:relative;background:var(--surface,#fff);height:100%;
-  width:min(340px,84vw);padding:60px 20px 30px;box-shadow:8px 0 30px rgba(0,0,0,0.2);
+  width:min(340px,84vw);padding:60px 20px 30px;box-shadow:-8px 0 30px rgba(0,0,0,0.2);
   display:flex;flex-direction:column;overflow-y:auto;
-  animation:panelSlideInLeft .25s ease-out;
+  animation:panelSlideInRight .25s ease-out;
 }
-@keyframes panelSlideInLeft{
-  from{transform:translateX(-100%);}
+@keyframes panelSlideInRight{
+  from{transform:translateX(100%);}
   to{transform:translateX(0);}
 }
 .numbers-panel-close{
-  position:absolute;top:16px;right:16px;
+  position:absolute;top:16px;left:16px;
   width:32px;height:32px;border-radius:50%;border:none;background:var(--bg2,#f3f3f3);
   color:var(--text2);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;
 }
@@ -368,8 +368,6 @@ nav{
 .skel-social-circle{width:52px;height:52px;border-radius:16px;}
 .skel-pickrow{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 .skel-pickbox{height:64px;border-radius:16px;}
-.loading::before{content:'';display:block;width:36px;height:36px;margin:0 auto;border:3px solid var(--border,#e8ecf5);border-top-color:var(--accent,#3d5af1);border-radius:50%;animation:spin .8s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
 
 @media(max-width:600px){
   .content{padding:0 16px 20px;}
