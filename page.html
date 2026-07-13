@@ -109,11 +109,12 @@ nav{
 /* قائمة الأرقام المنسدلة — من جهة اليمين */
 .numbers-panel{
   position:fixed;inset:0;z-index:300;background:rgba(15,21,53,0.45);
-  display:none;align-items:stretch;justify-content:flex-end;
+  display:none;
 }
-.numbers-panel.open{display:flex;}
+.numbers-panel.open{display:block;}
 .numbers-panel-box{
-  position:relative;background:var(--surface,#fff);height:100%;
+  position:absolute;top:0;right:0;bottom:0;
+  background:var(--surface,#fff);height:100%;
   width:min(340px,84vw);padding:56px 20px 30px;box-shadow:-8px 0 30px rgba(0,0,0,0.2);
   display:flex;flex-direction:column;overflow-y:auto;
   animation:panelSlideInRight .25s cubic-bezier(.2,.8,.3,1);
@@ -151,6 +152,19 @@ nav{
   font-family:inherit;font-weight:700;font-size:0.92rem;color:var(--text);cursor:pointer;
 }
 .numbers-panel-sub{font-size:0.68rem;font-weight:400;color:var(--muted);}
+
+.registry-search-results{display:none;flex-direction:column;gap:6px;margin-bottom:16px;max-height:280px;overflow-y:auto;}
+.registry-search-item{
+  display:flex;align-items:center;gap:10px;width:100%;padding:11px 12px;
+  border:1px solid var(--border);border-radius:10px;background:var(--bg);cursor:pointer;
+  font-family:inherit;text-align:right;
+}
+.registry-search-num{
+  flex-shrink:0;min-width:28px;text-align:center;font-weight:800;font-size:0.8rem;color:var(--accent);
+  font-family:ui-monospace,'SF Mono','Space Mono',monospace;
+}
+.registry-search-title{font-size:0.84rem;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.registry-search-empty{text-align:center;padding:16px;color:var(--muted);font-size:0.8rem;}
 
 .avatar-container{
   position:relative;z-index:10;margin-top:-60px;margin-bottom:10px;
@@ -434,13 +448,12 @@ nav{
     <div class="numbers-panel-search-row">
       <div class="numbers-panel-search">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input class="numbers-panel-search-input" type="text" id="numInPanelTop"
-          placeholder="أكتب الرقم"
-          maxlength="6" inputmode="numeric" oninput="convertNum('numInPanelTop')"
-          onkeydown="if(event.key==='Enter'){event.preventDefault();goNav('numInPanelTop');}">
-        <button type="button" class="numbers-panel-go" onclick="goNav('numInPanelTop')">إتمام</button>
+        <input class="numbers-panel-search-input" type="text" id="registrySearchIn"
+          placeholder="ابحث بسجل الأرقام..."
+          oninput="searchRegistry(this.value)">
       </div>
     </div>
+    <div class="registry-search-results" id="registrySearchResults"></div>
 
     <div class="numbers-panel-list">
       <button type="button" class="numbers-panel-item" onclick="closeNumbersPanel();openSection('recent');">
@@ -1040,6 +1053,54 @@ window.zoomAvatar = function(){
   modal.style.display='flex';
 };
 window.closeImgZoom = function(){ document.getElementById('imgZoomModal').style.display='none'; };
+
+window.searchRegistry = function(query){
+  const resultsEl = document.getElementById('registrySearchResults');
+  const listEl = document.querySelector('.numbers-panel-list');
+  const q = (query||'').trim().toLowerCase();
+  if(!q){
+    resultsEl.innerHTML = '';
+    resultsEl.style.display = 'none';
+    if(listEl) listEl.style.display = '';
+    return;
+  }
+  if(listEl) listEl.style.display = 'none';
+  const data = window.__pageData;
+  const pool = data ? (data.allLinks || data.recentLinks || []) : [];
+  const matches = pool.filter(l => {
+    const num = String(l.num ?? l.number ?? '');
+    const title = String(l.title || l.label || '').toLowerCase();
+    const desc = String(l.description || '').toLowerCase();
+    return num.includes(q) || title.includes(q) || desc.includes(q);
+  }).slice(0, 20);
+
+  if(!matches.length){
+    resultsEl.innerHTML = '<div class="registry-search-empty">لا نتائج مطابقة · No matches</div>';
+    resultsEl.style.display = 'block';
+    return;
+  }
+  resultsEl.innerHTML = matches.map(l => {
+    const num = l.num ?? l.number ?? '';
+    const title = (l.title || l.label || '').replace(/</g,'&lt;');
+    const hasValidUrl = typeof l.url==='string' && /^https?:\/\//i.test(l.url.trim());
+    const isText = l.type==='text' || !hasValidUrl;
+    if(isText){
+      return `<button type="button" class="registry-search-item" onclick="closeNumbersPanel();window.location.hash='';goNav_direct(${num});">
+        <span class="registry-search-num">${num}</span><span class="registry-search-title">${title}</span>
+      </button>`;
+    }
+    const safeUrl = l.url.trim().replace(/'/g,"%27");
+    return `<button type="button" class="registry-search-item" onclick="closeNumbersPanel();trackLinkClick(${num});window.open('${safeUrl}','_blank');">
+      <span class="registry-search-num">${num}</span><span class="registry-search-title">${title}</span>
+    </button>`;
+  }).join('');
+  resultsEl.style.display = 'block';
+};
+// يفتح رقم نصي/مقالة مباشرة من نتائج البحث (نفس منطق سجل الأرقام)
+window.goNav_direct = function(n){
+  document.getElementById('numIn').value = String(n);
+  goNav();
+};
 
 window.openNumbersPanel = function(){
   document.getElementById('numbersPanel').classList.add('open');
