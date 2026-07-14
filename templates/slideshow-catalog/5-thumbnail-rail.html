@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>نموذج ٥ — معاينة كبيرة وشريط مصغّرات | electrwni.link</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  @font-face{font-family:'ThmanyahSerif';src:url('../../fonts/thmanyahseriftext-Bold.otf') format('opentype');font-weight:700;font-display:swap;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{font-size:106.25%;}
+  body{font-family:'ThmanyahSerif','Tajawal',sans-serif;background:#E6F4F1;color:#0B4F4A;min-height:100vh;padding:32px 16px;}
+  :root{--p1:#2A9D8F;--p2:#5cbcaf;}
+  .wrap{max-width:640px;margin:0 auto;}
+  .tag{display:inline-block;font-size:.72rem;font-weight:700;color:var(--p1);background:#d3ece7;border-radius:20px;padding:6px 14px;margin-bottom:14px;}
+  h1{font-size:1.5rem;margin-bottom:6px;}
+  .sub{color:#3d766f;font-size:.88rem;margin-bottom:22px;}
+
+  .preview{position:relative;height:240px;border-radius:20px;overflow:hidden;display:flex;align-items:flex-end;box-shadow:0 8px 24px rgba(42,157,143,.2);}
+  .preview-slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:5rem;color:#fff;opacity:0;transition:opacity .35s;}
+  .preview-slide.active{opacity:1;}
+  .preview-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 45%,rgba(0,0,0,.5) 100%);}
+  .preview-info{position:relative;z-index:2;padding:20px;color:#fff;width:100%;}
+  .preview-num{font-size:.68rem;font-weight:900;background:rgba(255,255,255,.9);color:var(--p1);padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:8px;}
+  .preview-title{font-size:1.15rem;font-weight:700;margin-bottom:3px;}
+  .preview-desc{font-size:.8rem;color:rgba(255,255,255,.85);}
+
+  .rail{display:flex;gap:10px;overflow-x:auto;margin-top:14px;padding-bottom:6px;}
+  .thumb{flex:0 0 64px;height:64px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#fff;cursor:pointer;border:3px solid transparent;opacity:.6;transition:all .2s;}
+  .thumb.active{opacity:1;border-color:var(--p1);transform:translateY(-2px);}
+  .cta-row{margin-top:16px;text-align:center;}
+  .cta{display:inline-block;background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;font-weight:700;font-size:.82rem;padding:10px 28px;border-radius:12px;text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="tag">نموذج ٥ · Thumbnail Rail</span>
+  <h1>معاينة كبيرة + شريط مصغّرات</h1>
+  <div class="sub">معاينة رئيسية واضحة يختار منها الزائر عبر شريط مصغّرات أسفلها — مناسب لكتالوج بعدد بطاقات أكبر.</div>
+
+  <div class="preview" id="preview">
+    <div class="preview-slide active" style="background:linear-gradient(135deg,#2A9D8F,#5cbcaf);">🧢</div>
+    <div class="preview-slide" style="background:linear-gradient(135deg,#0B4F4A,#2A9D8F);">👕</div>
+    <div class="preview-slide" style="background:linear-gradient(135deg,#5cbcaf,#a8ddd3);">🎒</div>
+    <div class="preview-slide" style="background:linear-gradient(135deg,#1d7269,#3fa89a);">🩴</div>
+    <div class="preview-overlay"></div>
+    <div class="preview-info">
+      <span class="preview-num" id="numLabel">#501</span>
+      <div class="preview-title" id="titleLabel">قبعة صيفية</div>
+      <div class="preview-desc" id="descLabel">من مجموعة الكتالوج الجديدة</div>
+    </div>
+  </div>
+
+  <div class="rail" id="rail">
+    <div class="thumb active" style="background:linear-gradient(135deg,#2A9D8F,#5cbcaf);" data-num="#501" data-title="قبعة صيفية" data-desc="من مجموعة الكتالوج الجديدة">🧢</div>
+    <div class="thumb" style="background:linear-gradient(135deg,#0B4F4A,#2A9D8F);" data-num="#502" data-title="قميص قطن" data-desc="مقاسات متعددة متوفرة">👕</div>
+    <div class="thumb" style="background:linear-gradient(135deg,#5cbcaf,#a8ddd3);" data-num="#503" data-title="حقيبة ظهر" data-desc="عملية وأنيقة للاستخدام اليومي">🎒</div>
+    <div class="thumb" style="background:linear-gradient(135deg,#1d7269,#3fa89a);" data-num="#504" data-title="شبشب صيفي" data-desc="مريح لأيام الصيف الحارة">🩴</div>
+  </div>
+
+  <div class="cta-row"><a class="cta" href="#">افتح المنتج المختار</a></div>
+</div>
+<script>
+  const slides=[...document.querySelectorAll('.preview-slide')];
+  const thumbs=[...document.querySelectorAll('.thumb')];
+  const numLabel=document.getElementById('numLabel'), titleLabel=document.getElementById('titleLabel'), descLabel=document.getElementById('descLabel');
+  thumbs.forEach((t,i)=>t.addEventListener('click',()=>{
+    thumbs.forEach(x=>x.classList.remove('active')); t.classList.add('active');
+    slides.forEach(s=>s.classList.remove('active')); slides[i].classList.add('active');
+    numLabel.textContent=t.dataset.num; titleLabel.textContent=t.dataset.title; descLabel.textContent=t.dataset.desc;
+  }));
+</script>
+</body>
+</html>

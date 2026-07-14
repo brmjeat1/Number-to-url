@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>نموذج ١ — كاروسيل كلاسيكي | electrwni.link</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  @font-face{font-family:'ThmanyahSerif';src:url('../../fonts/thmanyahseriftext-Bold.otf') format('opentype');font-weight:700;font-display:swap;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{font-size:106.25%;}
+  body{font-family:'ThmanyahSerif','Tajawal',sans-serif;background:#f4f6fb;color:#0f1535;min-height:100vh;padding:32px 16px;}
+  :root{--p1:#3d5af1;--p2:#6c8fff;--bg:#ffffff;--text:#0f1535;--muted:#7b81a3;}
+  .wrap{max-width:640px;margin:0 auto;}
+  .tag{display:inline-block;font-size:.72rem;font-weight:700;color:var(--p1);background:#eef1ff;border-radius:20px;padding:6px 14px;margin-bottom:14px;}
+  h1{font-size:1.5rem;margin-bottom:6px;}
+  .sub{color:var(--muted);font-size:.88rem;margin-bottom:24px;}
+
+  .carousel{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 2px 18px;-webkit-overflow-scrolling:touch;}
+  .carousel::-webkit-scrollbar{height:6px;}
+  .carousel::-webkit-scrollbar-thumb{background:#dfe3f2;border-radius:10px;}
+  .card{scroll-snap-align:start;flex:0 0 200px;background:var(--bg);border:1px solid #e8ecf5;border-radius:18px;overflow:hidden;box-shadow:0 4px 16px rgba(15,21,53,.05);transition:transform .2s;}
+  .card:hover{transform:translateY(-4px);}
+  .card-media{height:130px;display:flex;align-items:center;justify-content:center;font-size:2.4rem;background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;position:relative;}
+  .card-num{position:absolute;top:10px;left:10px;background:rgba(255,255,255,.92);color:var(--p1);font-size:.68rem;font-weight:900;padding:3px 9px;border-radius:20px;}
+  .card-body{padding:14px;}
+  .card-title{font-size:.92rem;font-weight:700;margin-bottom:3px;}
+  .card-desc{font-size:.74rem;color:var(--muted);margin-bottom:10px;}
+  .card-btn{display:block;text-align:center;font-size:.76rem;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--p1),var(--p2));border-radius:10px;padding:8px;text-decoration:none;}
+
+  .dots{display:flex;justify-content:center;gap:6px;margin-top:4px;}
+  .dot{width:6px;height:6px;border-radius:50%;background:#dfe3f2;}
+  .dot.active{background:var(--p1);width:16px;border-radius:4px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="tag">نموذج ١ · Classic Carousel</span>
+  <h1>كاروسيل بطاقات أفقي</h1>
+  <div class="sub">سحب أفقي بسيط مع Snap لكل بطاقة — الأنسب لعرض منتجات/روابط بشكل متوازن وسريع القراءة.</div>
+
+  <div class="carousel" id="track">
+    <div class="card"><div class="card-media">📦<span class="card-num">#101</span></div><div class="card-body"><div class="card-title">منتج رقم ١</div><div class="card-desc">وصف مختصر للمنتج أو الرابط</div><a class="card-btn" href="#">افتح</a></div></div>
+    <div class="card"><div class="card-media">🎧<span class="card-num">#102</span></div><div class="card-body"><div class="card-title">منتج رقم ٢</div><div class="card-desc">وصف مختصر للمنتج أو الرابط</div><a class="card-btn" href="#">افتح</a></div></div>
+    <div class="card"><div class="card-media">👜<span class="card-num">#103</span></div><div class="card-body"><div class="card-title">منتج رقم ٣</div><div class="card-desc">وصف مختصر للمنتج أو الرابط</div><a class="card-btn" href="#">افتح</a></div></div>
+    <div class="card"><div class="card-media">📱<span class="card-num">#104</span></div><div class="card-body"><div class="card-title">منتج رقم ٤</div><div class="card-desc">وصف مختصر للمنتج أو الرابط</div><a class="card-btn" href="#">افتح</a></div></div>
+    <div class="card"><div class="card-media">🕶️<span class="card-num">#105</span></div><div class="card-body"><div class="card-title">منتج رقم ٥</div><div class="card-desc">وصف مختصر للمنتج أو الرابط</div><a class="card-btn" href="#">افتح</a></div></div>
+  </div>
+  <div class="dots" id="dots"></div>
+</div>
+<script>
+  const track=document.getElementById('track'), dotsEl=document.getElementById('dots');
+  const cards=[...track.children];
+  cards.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');dotsEl.appendChild(d);});
+  const dots=[...dotsEl.children];
+  track.addEventListener('scroll',()=>{
+    const idx=Math.round(track.scrollLeft/cards[0].offsetWidth);
+    dots.forEach((d,i)=>d.classList.toggle('active', i===Math.min(idx,dots.length-1)));
+  });
+</script>
+</body>
+</html>

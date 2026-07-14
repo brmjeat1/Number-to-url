@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>نموذج ٢ — سلايدر بعرض كامل | electrwni.link</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  @font-face{font-family:'ThmanyahSerif';src:url('../../fonts/thmanyahseriftext-Bold.otf') format('opentype');font-weight:700;font-display:swap;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{font-size:106.25%;}
+  body{font-family:'ThmanyahSerif','Tajawal',sans-serif;background:#FEFAE0;color:#7C4A03;min-height:100vh;padding:32px 16px;}
+  :root{--p1:#EE9A00;--p2:#f4b840;--bg:#FEFAE0;--accent:#BB3E03;}
+  .wrap{max-width:640px;margin:0 auto;}
+  .tag{display:inline-block;font-size:.72rem;font-weight:700;color:var(--accent);background:#fff3d6;border-radius:20px;padding:6px 14px;margin-bottom:14px;}
+  h1{font-size:1.5rem;margin-bottom:6px;}
+  .sub{color:#a5691f;font-size:.88rem;margin-bottom:22px;}
+
+  .hero{position:relative;border-radius:22px;overflow:hidden;height:280px;box-shadow:0 10px 30px rgba(238,154,0,.25);}
+  .slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:24px;opacity:0;transition:opacity .5s ease;background:linear-gradient(180deg,rgba(0,0,0,0) 40%,rgba(0,0,0,.55) 100%);}
+  .slide.active{opacity:1;}
+  .slide-bg{position:absolute;inset:0;z-index:-1;display:flex;align-items:center;justify-content:center;font-size:5rem;}
+  .slide-num{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.9);color:var(--accent);font-size:.7rem;font-weight:900;padding:4px 10px;border-radius:20px;z-index:2;}
+  .slide-title{color:#fff;font-size:1.25rem;font-weight:700;margin-bottom:4px;}
+  .slide-desc{color:rgba(255,255,255,.85);font-size:.82rem;margin-bottom:12px;}
+  .slide-btn{align-self:flex-start;background:#fff;color:var(--accent);font-weight:700;font-size:.78rem;padding:8px 18px;border-radius:10px;text-decoration:none;}
+
+  .arrows{display:flex;justify-content:space-between;margin-top:14px;}
+  .arrow-btn{width:38px;height:38px;border-radius:50%;background:#fff;border:1px solid #f2dfae;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--accent);font-size:1.1rem;}
+  .dots{display:flex;justify-content:center;gap:6px;}
+  .dot{width:6px;height:6px;border-radius:50%;background:#f2dfae;cursor:pointer;}
+  .dot.active{background:var(--accent);width:18px;border-radius:4px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="tag">نموذج ٢ · Full-bleed Hero</span>
+  <h1>سلايدر بعرض كامل بتشغيل تلقائي</h1>
+  <div class="sub">شريحة واحدة بارزة بصريًا في كل مرة — مناسب لتسليط الضوء على أهم منتج أو عرض بالكتالوج.</div>
+
+  <div class="hero" id="hero">
+    <div class="slide active" style="background:linear-gradient(135deg,#EE9A00,#f4b840);"><div class="slide-num">#201</div><div class="slide-bg">🛍️</div><div class="slide-title">عرض اليوم</div><div class="slide-desc">خصم خاص على المنتج المميز</div><a class="slide-btn" href="#">تسوّق الآن</a></div>
+    <div class="slide" style="background:linear-gradient(135deg,#BB3E03,#e0703a);"><div class="slide-num">#202</div><div class="slide-bg">👟</div><div class="slide-title">وصل حديثاً</div><div class="slide-desc">تشكيلة جديدة هذا الأسبوع</div><a class="slide-btn" href="#">شاهد المزيد</a></div>
+    <div class="slide" style="background:linear-gradient(135deg,#7fa876,#588157);"><div class="slide-num">#203</div><div class="slide-bg">🎁</div><div class="slide-title">الأكثر مبيعاً</div><div class="slide-desc">المنتج المفضل لعملائنا</div><a class="slide-btn" href="#">اطلب الآن</a></div>
+  </div>
+
+  <div class="arrows">
+    <button class="arrow-btn" onclick="go(1)">‹</button>
+    <div class="dots" id="dots"></div>
+    <button class="arrow-btn" onclick="go(-1)">›</button>
+  </div>
+</div>
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const dotsEl=document.getElementById('dots');
+  slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>show(i);dotsEl.appendChild(d);});
+  const dots=[...dotsEl.children];
+  let cur=0, timer;
+  function show(i){
+    slides[cur].classList.remove('active'); dots[cur].classList.remove('active');
+    cur=(i+slides.length)%slides.length;
+    slides[cur].classList.add('active'); dots[cur].classList.add('active');
+  }
+  function go(dir){ show(cur+dir); reset(); }
+  function reset(){ clearInterval(timer); timer=setInterval(()=>show(cur+1),3500); }
+  reset();
+</script>
+</body>
+</html>

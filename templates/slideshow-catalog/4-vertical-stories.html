@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>نموذج ٤ — ستوري عمودي ليلي | electrwni.link</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  @font-face{font-family:'ThmanyahSerif';src:url('../../fonts/thmanyahseriftext-Bold.otf') format('opentype');font-weight:700;font-display:swap;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{font-size:106.25%;}
+  body{font-family:'ThmanyahSerif','Tajawal',sans-serif;background:#0b0d13;color:#f0f1f5;min-height:100vh;padding:32px 16px;}
+  :root{--p1:#8fb0ff;--p2:#6c8fff;}
+  .wrap{max-width:420px;margin:0 auto;}
+  .tag{display:inline-block;font-size:.72rem;font-weight:700;color:var(--p1);background:#1a1e2c;border-radius:20px;padding:6px 14px;margin-bottom:14px;}
+  h1{font-size:1.4rem;margin-bottom:6px;}
+  .sub{color:#8a8fac;font-size:.85rem;margin-bottom:22px;}
+
+  .story{position:relative;height:520px;border-radius:22px;overflow:hidden;background:#12141c;box-shadow:0 12px 30px rgba(0,0,0,.5);}
+  .progress-row{position:absolute;top:12px;right:12px;left:12px;display:flex;gap:5px;z-index:3;}
+  .pbar{flex:1;height:3px;background:rgba(255,255,255,.25);border-radius:4px;overflow:hidden;}
+  .pbar-fill{height:100%;width:0;background:#fff;border-radius:4px;}
+  .pbar.done .pbar-fill{width:100%;}
+
+  .story-slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:flex-end;padding:26px 20px;}
+  .story-slide.active{display:flex;}
+  .story-bg{position:absolute;inset:0;z-index:-1;display:flex;align-items:center;justify-content:center;font-size:6rem;}
+  .story-shade{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(0,0,0,.15) 0%,rgba(0,0,0,.75) 100%);}
+  .story-num{position:absolute;top:28px;right:16px;font-size:.68rem;font-weight:900;color:#fff;background:rgba(255,255,255,.15);padding:4px 10px;border-radius:20px;z-index:2;}
+  .story-title{font-size:1.3rem;font-weight:700;margin-bottom:6px;}
+  .story-desc{font-size:.85rem;color:rgba(255,255,255,.75);margin-bottom:14px;}
+  .story-btn{align-self:flex-start;background:linear-gradient(135deg,var(--p1),var(--p2));color:#0b0d13;font-weight:700;font-size:.8rem;padding:9px 20px;border-radius:10px;text-decoration:none;}
+
+  .tap-zone{position:absolute;top:0;bottom:0;width:35%;z-index:2;cursor:pointer;}
+  .tap-left{right:0;}
+  .tap-right{left:0;}
+  .hint{text-align:center;font-size:.72rem;color:#6b7090;margin-top:10px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="tag">نموذج ٤ · Vertical Stories</span>
+  <h1>سلايد شو عمودي بطراز الستوري</h1>
+  <div class="sub">تصفح غامر بلمسة واحدة — مثالي لصفحة كتالوج مضغوطة على الجوال بروح داكنة أنيقة.</div>
+
+  <div class="story" id="story">
+    <div class="progress-row" id="progressRow"></div>
+    <div class="story-slide active">
+      <div class="story-bg" style="background:linear-gradient(150deg,#2a2f45,#12141c);">⌚</div><div class="story-shade"></div>
+      <div class="story-num">#401</div>
+      <div class="story-title">إصدار محدود</div>
+      <div class="story-desc">قطعة مميزة من كتالوجك الليلي</div>
+      <a class="story-btn" href="#">استعرض</a>
+    </div>
+    <div class="story-slide">
+      <div class="story-bg" style="background:linear-gradient(150deg,#1e2b4a,#12141c);">🎧</div><div class="story-shade"></div>
+      <div class="story-num">#402</div>
+      <div class="story-title">صوت نقي</div>
+      <div class="story-desc">سماعات مختارة لعشاق الجودة</div>
+      <a class="story-btn" href="#">استعرض</a>
+    </div>
+    <div class="story-slide">
+      <div class="story-bg" style="background:linear-gradient(150deg,#2f2140,#12141c);">💍</div><div class="story-shade"></div>
+      <div class="story-num">#403</div>
+      <div class="story-title">لمسة فخامة</div>
+      <div class="story-desc">إكسسوارات تناسب مناسباتك</div>
+      <a class="story-btn" href="#">استعرض</a>
+    </div>
+    <div class="tap-zone tap-right" onclick="go(-1)"></div>
+    <div class="tap-zone tap-left" onclick="go(1)"></div>
+  </div>
+  <div class="hint">اضغط يمين/يسار الشاشة للتنقّل بين الشرائح</div>
+</div>
+<script>
+  const slides=[...document.querySelectorAll('.story-slide')];
+  const progressRow=document.getElementById('progressRow');
+  slides.forEach(()=>{const p=document.createElement('div');p.className='pbar';p.innerHTML='<div class="pbar-fill"></div>';progressRow.appendChild(p);});
+  const bars=[...progressRow.children];
+  let cur=0, timer, DURATION=4000, startedAt;
+
+  function render(){
+    slides.forEach((s,i)=>s.classList.toggle('active', i===cur));
+    bars.forEach((b,i)=>{
+      b.classList.toggle('done', i<cur);
+      const fill=b.querySelector('.pbar-fill');
+      if(i<cur) fill.style.transition='none', fill.style.width='100%';
+      else if(i>cur) fill.style.transition='none', fill.style.width='0%';
+    });
+  }
+  function playCurrent(){
+    const fill=bars[cur].querySelector('.pbar-fill');
+    fill.style.transition='none'; fill.style.width='0%';
+    requestAnimationFrame(()=>{ fill.style.transition=`width ${DURATION}ms linear`; fill.style.width='100%'; });
+    clearTimeout(timer);
+    timer=setTimeout(()=>go(1), DURATION);
+  }
+  function go(dir){
+    cur=(cur+dir+slides.length)%slides.length;
+    render(); playCurrent();
+  }
+  render(); playCurrent();
+</script>
+</body>
+</html>
