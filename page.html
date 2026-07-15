@@ -77,8 +77,8 @@
 
 *{margin:0;padding:0;box-sizing:border-box;}
 html{font-size:106.25%;} /* Apple-scale baseline (~17px) */
-html{scroll-behavior:smooth;}
-body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;background:#ffffff;color:var(--text);min-height:100vh;}
+html{scroll-behavior:smooth;background:var(--bg);}
+body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 
 /* ========== NAVBAR (قسمان: شعار ثابت يسار + زر ذكي يمين) ========== */
 nav{
@@ -125,33 +125,40 @@ nav{
 }
 .numbers-panel-close-centered{
   position:absolute;top:14px;left:50%;transform:translateX(-50%);
-  width:32px;height:32px;border-radius:50%;border:none;background:var(--bg2,#f3f3f3);
-  color:var(--text2);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  width:46px;height:46px;border-radius:50%;border:none;background:var(--bg2,#f3f3f3);
+  color:var(--text2);font-size:1.4rem;cursor:pointer;display:flex;align-items:center;justify-content:center;
 }
-.numbers-panel-search-row{display:flex;justify-content:center;margin-bottom:18px;}
+.numbers-panel-search-row{display:flex;justify-content:center;margin-bottom:20px;}
 .numbers-panel-search{
-  display:flex;align-items:center;gap:8px;padding:5px 5px 5px 16px;
-  width:min(100%,280px);
+  display:flex;align-items:center;gap:10px;padding:9px 9px 9px 20px;
+  width:min(100%,320px);
   border:1.5px solid var(--border);border-radius:999px;background:var(--bg2,#f7f7f9);
   color:var(--muted);box-shadow:0 2px 8px rgba(0,0,0,0.04);
 }
+.numbers-panel-search svg{width:20px;height:20px;flex-shrink:0;}
 .numbers-panel-search-input{
   flex:1;border:none;background:none;outline:none;color:var(--text);min-width:0;
-  font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-size:0.85rem;font-weight:700;
+  font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-size:1rem;font-weight:700;
   direction:ltr;text-align:right;
 }
 .numbers-panel-search-input::placeholder{color:#b8bfd6;font-family:'Tajawal',inherit;}
 .numbers-panel-go{
-  flex-shrink:0;padding:0 16px;height:34px;border:none;border-radius:999px;background:var(--accent,#3d5af1);
-  color:#fff;font-weight:700;font-size:0.76rem;cursor:pointer;font-family:inherit;
+  flex-shrink:0;padding:0 20px;height:42px;border:none;border-radius:999px;background:var(--accent,#3d5af1);
+  color:#fff;font-weight:700;font-size:0.88rem;cursor:pointer;font-family:inherit;
 }
-.numbers-panel-list{display:flex;flex-direction:column;gap:10px;margin-bottom:22px;}
+.numbers-panel-list{display:flex;flex-direction:column;gap:12px;margin-bottom:26px;}
 .numbers-panel-item{
-  width:100%;display:flex;flex-direction:column;align-items:flex-start;gap:2px;
-  padding:16px;border:1.5px solid var(--border);border-radius:12px;background:var(--bg);
-  font-family:inherit;font-weight:700;font-size:0.92rem;color:var(--text);cursor:pointer;
+  width:100%;display:flex;flex-direction:column;align-items:flex-start;gap:4px;
+  padding:20px 18px;border:1.5px solid var(--border);border-radius:14px;background:var(--bg);
+  font-family:inherit;font-weight:700;font-size:1.08rem;color:var(--text);cursor:pointer;
 }
-.numbers-panel-sub{font-size:0.68rem;font-weight:400;color:var(--muted);}
+.numbers-panel-sub{font-size:0.76rem;font-weight:400;color:var(--muted);}
+/* حقل "أكتب الرقم" مثبّت بأسفل اللوحة، بحجم أكبر */
+.numbers-panel-bottom-row{margin-top:auto;padding-top:14px;}
+.numbers-panel-bottom-row .numbers-panel-search{width:100%;padding:11px 11px 11px 22px;}
+.numbers-panel-bottom-row .numbers-panel-search-input{font-size:1.05rem;}
+.numbers-panel-bottom-row .numbers-panel-search svg{width:22px;height:22px;}
+.numbers-panel-bottom-row .numbers-panel-go{height:46px;padding:0 24px;font-size:0.95rem;}
 
 .registry-search-results{display:none;flex-direction:column;gap:6px;margin-bottom:16px;max-height:280px;overflow-y:auto;}
 .registry-search-item{
@@ -180,7 +187,7 @@ nav{
 
 /* ========== CONTENT ========== */
 .content{padding:0 24px 30px;max-width:500px;margin:0 auto;}
-.page-themed-wrap{background:var(--bg);}
+.page-themed-wrap{background:var(--bg);min-height:calc(100vh - 53px);display:flex;flex-direction:column;}
 .profile-info{text-align:center;margin-bottom:16px;}
 .main-search-row{display:flex;justify-content:center;margin-bottom:6px;}
 .main-search-box{
@@ -423,8 +430,8 @@ nav{
 
 <div class="page-themed-wrap" id="pageThemedWrap">
 <div class="hero-banner" id="heroBanner">
-  <button type="button" class="numbers-menu-btn" onclick="openNumbersPanel()" title="بحث · Search" aria-label="بحث">
-    <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+  <button type="button" class="numbers-menu-btn" onclick="openNumbersPanel()" title="القائمة · Menu" aria-label="القائمة">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="17" x2="20" y2="17"></line></svg>
   </button>
 </div>
 <div class="avatar-container">
@@ -464,7 +471,7 @@ nav{
       </button>
     </div>
 
-    <div class="numbers-panel-search-row">
+    <div class="numbers-panel-search-row numbers-panel-bottom-row">
       <div class="numbers-panel-search">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         <input class="numbers-panel-search-input" type="text" id="numInPanelBottom"
@@ -1014,11 +1021,20 @@ function render(user){
 
     ${socialsHtml}
     ${contactsHtml}
+
+    <div class="footer">
+      <span class="psb-text">صُنعت بواسطة</span>
+      <a href="https://electrwni.link/" class="psb-link">electrwni<em>.link</em></a>
+    </div>
   `;
 
   // تخزين رابط الصفحة للـ QR المنبثق
   window.__pageQrUrl = 'https://electrwni.link/' + user.username;
   window.__pageQrName = user.displayName || user.username;
+  window.__pageQrUsername = user.username || '';
+  window.__pageQrAvatar = user.avatar || '';
+  window.__pageQrColor1 = primary;
+  window.__pageQrColor2 = primary2;
 }
 
 // فتح نافذة QR كبيرة عند الضغط على أيقونة QR
@@ -1042,6 +1058,131 @@ window.openPageQr = function(){
   }
 };
 window.closePageQr = function(){ document.getElementById('qrModal').style.display='none'; };
+
+// ===== تحميل jsPDF عند أول استخدام فقط =====
+window.__ensureJsPdf = function(){
+  if(window.jspdf) return Promise.resolve();
+  return new Promise((resolve,reject)=>{
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+    s.onload=resolve; s.onerror=reject;
+    document.body.appendChild(s);
+  });
+};
+function __roundRectPath(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r);
+  ctx.closePath();
+}
+function __loadImageEl(src){
+  return new Promise((resolve)=>{
+    if(!src){ resolve(null); return; }
+    const img=new Image();
+    img.crossOrigin='anonymous';
+    img.onload=()=>resolve(img);
+    img.onerror=()=>resolve(null);
+    img.src=src;
+  });
+}
+// ===== بناء بطاقة QR (بحجم بطاقة، وليست صفحة كاملة) على Canvas =====
+async function __buildPageQrCardCanvas(){
+  const url = window.__pageQrUrl || location.href;
+  const name = window.__pageQrName || '';
+  const username = window.__pageQrUsername || '';
+  const p1 = window.__pageQrColor1 || '#3d5af1';
+  const p2 = window.__pageQrColor2 || '#6c8fff';
+  const W = 640, H = 900;
+  const canvas=document.createElement('canvas');
+  canvas.width=W; canvas.height=H;
+  const ctx=canvas.getContext('2d');
+
+  ctx.fillStyle='#ffffff';
+  ctx.fillRect(0,0,W,H);
+
+  const grad=ctx.createLinearGradient(0,0,W,H);
+  grad.addColorStop(0,p1); grad.addColorStop(1,p2);
+  ctx.fillStyle=grad;
+  __roundRectPath(ctx,0,0,W,260,0);
+  ctx.fill();
+
+  // الشعار الدائري (يتداخل مع الحد الفاصل)
+  const avatarImg=await __loadImageEl(window.__pageQrAvatar);
+  const avR=70, avCx=W/2, avCy=260;
+  ctx.save();
+  ctx.beginPath(); ctx.arc(avCx,avCy,avR+6,0,Math.PI*2); ctx.fillStyle='#ffffff'; ctx.fill();
+  ctx.beginPath(); ctx.arc(avCx,avCy,avR,0,Math.PI*2); ctx.closePath(); ctx.clip();
+  if(avatarImg){ ctx.drawImage(avatarImg, avCx-avR, avCy-avR, avR*2, avR*2); }
+  else { ctx.fillStyle=p1; ctx.fillRect(avCx-avR,avCy-avR,avR*2,avR*2);
+    ctx.fillStyle='#fff'; ctx.font='bold 60px Tajawal, sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText((name[0]||'?').toUpperCase(), avCx, avCy+4);
+  }
+  ctx.restore();
+
+  ctx.fillStyle='#0f1535'; ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+  ctx.font='bold 34px Tajawal, sans-serif';
+  ctx.fillText(name, W/2, 400);
+  if(username){
+    ctx.font='600 20px "Space Mono", monospace';
+    ctx.fillStyle=p1;
+    ctx.fillText('electrwni.link/'+username, W/2, 432);
+  }
+
+  // مربع الرمز
+  if(!window.QRCode) await new Promise((resolve)=>{
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+    s.onload=resolve; s.onerror=resolve;
+    document.body.appendChild(s);
+  });
+  const qrHolder=document.createElement('div');
+  qrHolder.style.position='fixed'; qrHolder.style.left='-9999px';
+  document.body.appendChild(qrHolder);
+  new QRCode(qrHolder,{text:url,width:300,height:300,colorDark:'#0f1535',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.H});
+  await new Promise(r=>setTimeout(r,60));
+  const qrCanvasEl=qrHolder.querySelector('canvas') || qrHolder.querySelector('img');
+  const qrSize=300, qrX=(W-qrSize)/2, qrY=460;
+  if(qrCanvasEl){
+    ctx.save();
+    ctx.shadowColor='rgba(15,20,64,0.18)'; ctx.shadowBlur=22;
+    ctx.fillStyle='#ffffff';
+    __roundRectPath(ctx,qrX-16,qrY-16,qrSize+32,qrSize+32,18);
+    ctx.fill();
+    ctx.restore();
+    ctx.drawImage(qrCanvasEl,qrX,qrY,qrSize,qrSize);
+  }
+  document.body.removeChild(qrHolder);
+
+  // مربع الرقم/تعليمات المسح بأسفل البطاقة
+  const boxY=qrY+qrSize+34, boxH=64, boxW=W-80;
+  ctx.fillStyle=p1;
+  __roundRectPath(ctx,40,boxY,boxW,boxH,16); ctx.fill();
+  ctx.fillStyle='#ffffff'; ctx.textAlign='center';
+  ctx.font='bold 20px Tajawal, sans-serif';
+  ctx.fillText('امسح الرمز لتصل لكل روابطي', W/2, boxY+boxH/2+7);
+
+  return canvas;
+}
+// ===== تنزيل بطاقة QR كملف PDF بحجم بطاقة (وليس صفحة كاملة) =====
+window.downloadPageQrPdf = async function(){
+  window.showToast ? window.showToast('جاري تجهيز البطاقة...') : null;
+  try{
+    if(!window.jspdf) await window.__ensureJsPdf().catch(()=>{});
+    const canvas = await __buildPageQrCardCanvas();
+    const imgData = canvas.toDataURL('image/png');
+    const { jsPDF } = window.jspdf;
+    const pw = canvas.width*0.75, ph = canvas.height*0.75;
+    const pdf = new jsPDF({ unit:'pt', format:[pw,ph] });
+    pdf.addImage(imgData,'PNG',0,0,pw,ph);
+    pdf.save(`electrwni-${window.__pageQrUsername||'qr'}.pdf`);
+    if(window.showToast) window.showToast('تم تنزيل البطاقة ✓');
+  }catch(e){
+    if(window.showToast) window.showToast('تعذر إنشاء البطاقة: '+(e.message||''));
+  }
+};
 
 // تكبير صورة البروفايل/الشعار عند الضغط
 window.zoomAvatar = function(){
@@ -1263,7 +1404,8 @@ if(!checkArticlePathRedirect()){ init(); }
     <div id="qrModalCanvas" style="display:flex;align-items:center;justify-content:center;margin-bottom:16px;"></div>
     <div style="color:#1a1d24;font-weight:700;font-size:0.95rem;">امسح للوصول لكل روابطي</div>
     <div style="color:#8a91a3;font-size:0.72rem;margin-bottom:18px;">Scan for all my links</div>
-    <button onclick="closePageQr()" style="width:100%;padding:12px;background:#3d5af1;color:#fff;border:none;border-radius:12px;font-weight:700;font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;cursor:pointer;">إغلاق · Close</button>
+    <button onclick="downloadPageQrPdf()" style="width:100%;padding:12px;background:#3d5af1;color:#fff;border:none;border-radius:12px;font-weight:700;font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;cursor:pointer;margin-bottom:10px;">⬇ تنزيل البطاقة PDF</button>
+    <button onclick="closePageQr()" style="width:100%;padding:12px;background:transparent;color:#3d5af1;border:1.5px solid #3d5af1;border-radius:12px;font-weight:700;font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;cursor:pointer;">إغلاق · Close</button>
   </div>
 </div>
 <!-- نافذة تكبير الصورة -->
