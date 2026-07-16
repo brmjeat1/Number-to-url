@@ -836,6 +836,24 @@ function render(user){
     document.documentElement.style.setProperty('--bg', '#ffffff');
     document.documentElement.style.setProperty('--surface', '#f9f9f9');
   }
+  // خلفية الصفحة: ألوان فقط (الافتراضي أعلاه) / خلفية فقط (صورة) / ألوان وخلفية معًا
+  // ملاحظة أداء: الصورة مضغوطة مسبقًا من لوحة التحكم، وتُحمَّل هنا بـ background-image واحدة فقط
+  // بدون أي طبقات إضافية أو ملفات JS ثقيلة، فلا تؤثر على سرعة الصفحة.
+  const bgMode = user.bgMode || (user.bgImage ? 'image' : 'color');
+  if((bgMode === 'image' || bgMode === 'combo') && user.bgImage){
+    if(bgMode === 'image'){
+      document.body.style.backgroundImage = `url(${user.bgImage})`;
+    } else {
+      const overlayHex = chosenBg || '#ffffff';
+      const oh = overlayHex.replace('#','');
+      const r = parseInt(oh.substring(0,2),16), g = parseInt(oh.substring(2,4),16), b = parseInt(oh.substring(4,6),16);
+      document.body.style.backgroundImage = `linear-gradient(rgba(${r},${g},${b},0.55),rgba(${r},${g},${b},0.55)),url(${user.bgImage})`;
+    }
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
+    document.body.style.backgroundAttachment = 'fixed';
+    document.body.style.backgroundRepeat = 'no-repeat';
+  }
   // لون النص: صريح من اختيار المستخدم، وإلا تباين تلقائي مع الخلفية
   if(user.textColor && /^#[0-9A-Fa-f]{6}$/.test(user.textColor)){
     document.documentElement.style.setProperty('--text', user.textColor);
@@ -848,15 +866,6 @@ function render(user){
   const avatarEl=document.getElementById('avatar');
   avatarEl.innerHTML=avatarHtml;
   avatarEl.classList.remove('skeleton-shimmer');
-
-  // خلفية الصفحة الكاملة (صورة) — منفصلة عن لون الخلفية المسطح وعن صورة الغلاف العلوية
-  if(user.pageBackgroundImage){
-    document.body.style.backgroundImage = `url(${user.pageBackgroundImage})`;
-    document.body.style.backgroundSize = 'cover';
-    document.body.style.backgroundPosition = 'center';
-    document.body.style.backgroundAttachment = 'fixed';
-    document.body.style.backgroundRepeat = 'no-repeat';
-  }
 
   if(user.bannerImage){
     document.getElementById('heroBanner').style.backgroundImage=`url(${user.bannerImage})`;
