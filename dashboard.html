@@ -588,6 +588,34 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
             <div style="font-size:0.76rem;font-weight:700;">حواف حادة<span class="lbl-sub" style="display:block;">خط مائل · Slanted</span></div>
           </button>
         </div>
+
+        <!-- ألوان الأيقونات — تُطبَّق فقط عند اختيار "لون موقعك" بنمط لون كل حساب تواصل -->
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+          <div style="font-size:0.76rem;font-weight:700;color:var(--muted);margin-bottom:12px;">تُطبَّق عند اختيار "لون موقعك" كنمط لون الحساب · Applies when account color style is "Site Color"</div>
+          <div class="form-group" style="margin-bottom:10px;">
+            <label style="display:flex;align-items:center;justify-content:space-between;">لون خلفية الأيقونة <input type="color" id="socIconBgColorPicker" value="#3d5af1" onchange="updateSocColors()" style="width:44px;height:34px;border-radius:8px;border:1px solid var(--border);"></label>
+          </div>
+          <div class="form-group" style="margin-bottom:10px;">
+            <label style="display:flex;align-items:center;justify-content:space-between;">لون الأيقونة (الرمز نفسه) <input type="color" id="socIconColorPicker" value="#ffffff" onchange="updateSocColors()" style="width:44px;height:34px;border-radius:8px;border:1px solid var(--border);"></label>
+          </div>
+          <div id="rectColorOptions" style="display:none;">
+            <div class="form-group" style="margin-bottom:10px;">
+              <label style="display:flex;align-items:center;justify-content:space-between;">لون المستطيل <input type="color" id="socRectColorPicker" value="#3d5af1" onchange="updateSocColors()" style="width:44px;height:34px;border-radius:8px;border:1px solid var(--border);"></label>
+            </div>
+            <div class="form-group" style="margin-bottom:10px;">
+              <label style="display:flex;align-items:center;justify-content:space-between;">لون النص <input type="color" id="socTextColorPicker" value="#ffffff" onchange="updateSocColors()" style="width:44px;height:34px;border-radius:8px;border:1px solid var(--border);"></label>
+            </div>
+            <div class="form-group" style="margin-bottom:10px;">
+              <label style="display:flex;align-items:center;justify-content:space-between;">لون إطار المستطيل <input type="color" id="socRectBorderColorPicker" value="#3d5af1" onchange="updateSocColors()" style="width:44px;height:34px;border-radius:8px;border:1px solid var(--border);"></label>
+            </div>
+            <div class="form-group">
+              <label>سعة إطار المستطيل: <span id="socRectBorderWidthVal">2px</span></label>
+              <input type="range" id="socRectBorderWidthPicker" min="0" max="8" step="1" value="2"
+                oninput="document.getElementById('socRectBorderWidthVal').textContent=this.value+'px'"
+                onchange="updateSocColors()" style="width:100%;">
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1364,6 +1392,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     document.getElementById('shapeOptCircle').classList.toggle('active', shape==='circle');
     document.getElementById('shapeOptRect').classList.toggle('active', shape==='rect');
     document.getElementById('rectSubOptions').style.display = shape==='rect' ? 'grid' : 'none';
+    document.getElementById('rectColorOptions').style.display = shape==='rect' ? 'block' : 'none';
     try{
       await setDoc(doc(db, "users", currentUser.uid), { socialIconShape: shape }, { merge: true });
       window.showToast("تم تحديث شكل الأيقونات");
@@ -1380,6 +1409,22 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     }catch(e){ window.showToast("تعذر الحفظ: " + (e.message||'')); }
     loadSocials();
   };
+  // ألوان الأيقونات/المستطيل/النص/الإطار (تُستخدم مع نمط "لون موقعك")
+  window.updateSocColors = async function(){
+    const payload = {
+      socIconBg: document.getElementById('socIconBgColorPicker').value,
+      socIconColor: document.getElementById('socIconColorPicker').value,
+      socRectColor: document.getElementById('socRectColorPicker').value,
+      socTextColor: document.getElementById('socTextColorPicker').value,
+      socRectBorderColor: document.getElementById('socRectBorderColorPicker').value,
+      socRectBorderWidth: parseInt(document.getElementById('socRectBorderWidthPicker').value)
+    };
+    try{
+      await setDoc(doc(db, "users", currentUser.uid), payload, { merge: true });
+      window.showToast("تم تحديث ألوان الأيقونات");
+    }catch(e){ window.showToast("تعذر الحفظ: " + (e.message||'')); }
+    loadSocials();
+  };
   function loadIconShapeSettings(data){
     data = data || {};
     currentIconShape = data.socialIconShape || 'circle';
@@ -1387,8 +1432,17 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     document.getElementById('shapeOptCircle').classList.toggle('active', currentIconShape==='circle');
     document.getElementById('shapeOptRect').classList.toggle('active', currentIconShape==='rect');
     document.getElementById('rectSubOptions').style.display = currentIconShape==='rect' ? 'grid' : 'none';
+    document.getElementById('rectColorOptions').style.display = currentIconShape==='rect' ? 'block' : 'none';
     document.getElementById('rectStyleRounded').classList.toggle('active', currentRectStyle==='rounded');
     document.getElementById('rectStyleSharp').classList.toggle('active', currentRectStyle==='sharp');
+    document.getElementById('socIconBgColorPicker').value = data.socIconBg || '#3d5af1';
+    document.getElementById('socIconColorPicker').value = data.socIconColor || '#ffffff';
+    document.getElementById('socRectColorPicker').value = data.socRectColor || '#3d5af1';
+    document.getElementById('socTextColorPicker').value = data.socTextColor || '#ffffff';
+    document.getElementById('socRectBorderColorPicker').value = data.socRectBorderColor || '#3d5af1';
+    const bw = data.socRectBorderWidth != null ? data.socRectBorderWidth : 2;
+    document.getElementById('socRectBorderWidthPicker').value = bw;
+    document.getElementById('socRectBorderWidthVal').textContent = bw + 'px';
   }
 
   // ===== تخصيص بطاقة QR: نفس مبدأ تخصيص أيقونات التواصل (٤ ألوان) =====
@@ -1598,6 +1652,17 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     }
     window.setPageBgMode(t.bgMode || (t.bgImage ? 'image' : 'color'));
     if(t.iconShape) await window.setIconShape(t.iconShape);
+    if(t.rectStyle) { currentRectStyle = t.rectStyle; }
+    // ألوان أيقونات التواصل من القالب (خلفية الأيقونة/الأيقونة نفسها/المستطيل/النص/الإطار)
+    if(t.socialIconBgColor) document.getElementById('socIconBgColorPicker').value = t.socialIconBgColor;
+    if(t.socialIconColor) document.getElementById('socIconColorPicker').value = t.socialIconColor;
+    if(t.socialRectColor) document.getElementById('socRectColorPicker').value = t.socialRectColor;
+    if(t.socialTextColor) document.getElementById('socTextColorPicker').value = t.socialTextColor;
+    if(t.socialRectBorderColor) document.getElementById('socRectBorderColorPicker').value = t.socialRectBorderColor;
+    if(t.socialRectBorderWidth != null) document.getElementById('socRectBorderWidthPicker').value = t.socialRectBorderWidth;
+    if(t.socialIconBgColor || t.socialIconColor || t.socialRectColor || t.socialTextColor || t.socialRectBorderColor){
+      await window.updateSocColors();
+    }
     document.querySelectorAll('.template-card').forEach(c=>c.classList.toggle('active', c.getAttribute('data-tpl')===id));
     renderPageMockups(id);
     try{ await window.saveDesign(); window.showToast(`تم تطبيق قالب "${t.name}" ✓`); }
