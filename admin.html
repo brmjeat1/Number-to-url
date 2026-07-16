@@ -69,6 +69,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:14px 2
 .tpl-mockup-link{width:100%;height:11px;border-radius:4px;border:1.2px solid;margin-bottom:5px;}
 .tpl-delete-btn{background:#fdecea;color:#c33;border:none;padding:6px 10px;border-radius:7px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px;}
 .tpl-add-btn{width:100%;padding:12px;border:2px dashed #c7cee0;background:#fff;border-radius:14px;color:#3d5af1;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:12px;}
+#errBanner{display:none;position:fixed;top:0;left:0;right:0;z-index:99999;background:#c0392b;color:#fff;padding:10px 16px;font-size:0.75rem;font-weight:700;line-height:1.6;white-space:pre-wrap;}
+#errBanner.show{display:block;}
 
 /* صف القالب المضغوط بالقائمة */
 .tpl-list-row{margin-bottom:10px;}
@@ -133,6 +135,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:14px 2
 </head>
 <body>
 
+<div id="errBanner"></div>
+
 <nav>
   <a href="index.html" style="text-decoration:none;" class="nav-logo">electrwni<em>.link</em></a>
   <span class="nav-badge">ADMIN</span>
@@ -192,27 +196,27 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:14px 2
   <!-- القوالب -->
   <div class="section" id="sec-templates">
     <div class="note-box">✅ التعديلات هنا متصلة فعلياً بتبويب "قوالب" بلوحة تحكم المستخدمين — أي تغيير تحفظه يظهر لهم مباشرة.</div>
-    <button class="tpl-add-btn" onclick="addNewTemplate()">+ إضافة قالب صفحة جديد · Add New Page Template</button>
+    <button type="button" class="tpl-add-btn" data-action="add-template">+ إضافة قالب صفحة جديد · Add New Page Template</button>
     <div id="templatesList"></div>
-    <button class="btn-sm" onclick="saveTemplatesConfig()" style="width:100%;padding:12px;">حفظ كل التعديلات · Save All</button>
+    <button type="button" class="btn-sm" data-action="save-all" style="width:100%;padding:12px;">حفظ كل التعديلات · Save All</button>
   </div>
 
   <!-- المحرر الموسّع لقالب واحد -->
   <div id="tplExpandedOverlay" style="display:none;position:fixed;inset:0;z-index:6000;background:#f4f5f9;flex-direction:column;">
     <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:#fff;border-bottom:1px solid #e8ecf5;flex-shrink:0;">
-      <button onclick="closeTplExpanded()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:#0f1535;">‹</button>
+      <button type="button" data-action="close-expanded" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:#0f1535;">‹</button>
       <div style="font-weight:800;font-size:0.95rem;">تحكم كامل بالقالب</div>
-      <button onclick="saveTemplatesConfig();closeTplExpanded();" style="background:#0ab87a;border:none;width:34px;height:34px;border-radius:50%;color:#fff;font-size:1.1rem;cursor:pointer;">✓</button>
+      <button type="button" data-action="save-and-close" style="background:#0ab87a;border:none;width:34px;height:34px;border-radius:50%;color:#fff;font-size:1.1rem;cursor:pointer;">✓</button>
     </div>
     <div id="tplExpandedBody" style="flex:1;overflow-y:auto;padding:20px;"></div>
   </div>
 
-  <!-- نافذة منبثقة سياقية (شعار/خلفية/تواصل) -->
-  <div id="tplPopoverOverlay" style="display:none;position:fixed;inset:0;z-index:6500;background:rgba(0,0,0,0.5);align-items:flex-end;justify-content:center;" onclick="if(event.target===this)closeTplPopover()">
-    <div style="background:#fff;border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:420px;max-height:75vh;overflow-y:auto;">
+  <!-- نافذة منبثقة سياقية (شعار المنصة/أفتار المستخدم/خلفية/تواصل) -->
+  <div id="tplPopoverOverlay" style="display:none;position:fixed;inset:0;z-index:6500;background:rgba(0,0,0,0.5);align-items:flex-end;justify-content:center;" data-action="popover-backdrop">
+    <div style="background:#fff;border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:420px;max-height:75vh;overflow-y:auto;" onclick="event.stopPropagation()">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
         <div id="tplPopoverTitle" style="font-weight:800;font-size:1rem;"></div>
-        <button onclick="closeTplPopover()" style="background:#f4f5f9;border:none;width:28px;height:28px;border-radius:50%;font-size:0.9rem;cursor:pointer;">✕</button>
+        <button type="button" data-action="close-popover" style="background:#f4f5f9;border:none;width:28px;height:28px;border-radius:50%;font-size:0.9rem;cursor:pointer;">✕</button>
       </div>
       <div id="tplPopoverBody"></div>
     </div>
@@ -231,10 +235,25 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:14px 2
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 <script>
-const cfg={apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",authDomain:"electrwni-link.firebaseapp.com",projectId:"electrwni-link",storageBucket:"electrwni-link.firebasestorage.app",messagingSenderId:"712490301263",appId:"1:712490301263:web:2084210da3f687285ab73a"};
-if(!firebase.apps.length)firebase.initializeApp(cfg);
-const auth=firebase.auth();
-const db=firebase.firestore();
+window.addEventListener('error', function(e){
+  const b = document.getElementById('errBanner');
+  b.textContent = '⚠️ خطأ بالسكربت: ' + e.message + ' (سطر ' + e.lineno + ')';
+  b.classList.add('show');
+});
+let auth = null, db = null, firebaseReady = false;
+try{
+  const cfg={apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",authDomain:"electrwni-link.firebaseapp.com",projectId:"electrwni-link",storageBucket:"electrwni-link.firebasestorage.app",messagingSenderId:"712490301263",appId:"1:712490301263:web:2084210da3f687285ab73a"};
+  if(typeof firebase === 'undefined') throw new Error('تعذر تحميل مكتبة Firebase (تحقق من الاتصال بالإنترنت أو حاجب الإعلانات)');
+  if(!firebase.apps.length) firebase.initializeApp(cfg);
+  auth = firebase.auth();
+  db = firebase.firestore();
+  firebaseReady = true;
+}catch(e){
+  console.error('Firebase init failed:', e);
+  const b = document.getElementById('errBanner');
+  b.textContent = '⚠️ تعذر الاتصال بالخادم: ' + e.message + ' — أعد تحميل الصفحة أو تحقق من الاتصال';
+  b.classList.add('show');
+}
 
 // ⚠️ عدّل هذا البريد ليكون بريدك الحقيقي المسجّل بالموقع — هذا هو مفتاح الوصول للوحة الإدارة
 const ADMIN_EMAIL = "brmjeat1@gmail.com";
@@ -271,6 +290,7 @@ async function adminLogin(){
   const password = document.getElementById('adminPassword').value;
   const errEl = document.getElementById('loginErr');
   errEl.classList.remove('show');
+  if(!firebaseReady){ errEl.textContent='تعذر الاتصال بالخادم، أعد تحميل الصفحة'; errEl.classList.add('show'); return; }
   if(!email || !password){ errEl.textContent='عبّئ البريد وكلمة المرور'; errEl.classList.add('show'); return; }
   document.getElementById('loginBtn').textContent = 'جاري الدخول...';
   try{
@@ -285,109 +305,165 @@ async function adminLogin(){
 window.adminLogin = adminLogin;
 
 function adminLogout(){
+  if(!firebaseReady){ window.location.reload(); return; }
   auth.signOut().then(()=>window.location.reload());
 }
 window.adminLogout = adminLogout;
 
-auth.onAuthStateChanged(async (user) => {
-  if(!user){
-    document.getElementById('gateScreen').style.display='block';
-    document.getElementById('deniedScreen').style.display='none';
-    document.getElementById('mainContainer').classList.remove('show');
-    return;
-  }
-  if(user.email !== ADMIN_EMAIL){
+if(firebaseReady){
+  auth.onAuthStateChanged(async (user) => {
+    if(!user){
+      document.getElementById('gateScreen').style.display='block';
+      document.getElementById('deniedScreen').style.display='none';
+      document.getElementById('mainContainer').classList.remove('show');
+      return;
+    }
+    if(user.email !== ADMIN_EMAIL){
+      document.getElementById('gateScreen').style.display='none';
+      document.getElementById('deniedScreen').style.display='block';
+      document.getElementById('mainContainer').classList.remove('show');
+      return;
+    }
     document.getElementById('gateScreen').style.display='none';
-    document.getElementById('deniedScreen').style.display='block';
-    document.getElementById('mainContainer').classList.remove('show');
-    return;
-  }
-  document.getElementById('gateScreen').style.display='none';
-  document.getElementById('deniedScreen').style.display='none';
-  document.getElementById('mainContainer').classList.add('show');
-  document.getElementById('currentAdminEmail').textContent = user.email;
-  loadOverview();
-  loadUsers();
-  loadFeedback();
-  loadTemplates();
-});
-
-async function loadOverview(){
-  try{
-    const usersSnap = await db.collection('users').get();
-    document.getElementById('statUsers').textContent = usersSnap.size;
-  }catch(e){ console.error(e); }
-  try{
-    const openSnap = await db.collection('feedback').where('status','==','open').get();
-    document.getElementById('statOpenFeedback').textContent = openSnap.size;
-    document.getElementById('feedbackBadge').textContent = openSnap.size ? `(${openSnap.size})` : '';
-  }catch(e){ console.error(e); }
+    document.getElementById('deniedScreen').style.display='none';
+    document.getElementById('mainContainer').classList.add('show');
+    document.getElementById('currentAdminEmail').textContent = user.email;
+    loadUsersData();
+    loadFeedbackData();
+    loadTemplates();
+  });
 }
 
-async function loadUsers(){
-  const el = document.getElementById('usersList');
+// جلب المستخدمين بتحميل تدريجي حقيقي — بلا أي سقف أقصى، الأحدث أولاً
+const USERS_PAGE_SIZE = 100;
+let usersLastDoc = null;
+let usersAllLoaded = false;
+let usersRowsHtml = [];
+
+async function loadUsersData(){
+  // إعادة تصفير عند أول تحميل (تسجيل دخول جديد)
+  usersLastDoc = null;
+  usersAllLoaded = false;
+  usersRowsHtml = [];
+  document.getElementById('usersList').innerHTML = '<div class="empty-note">جاري التحميل...</div>';
+  document.getElementById('statUsers').textContent = '—';
+  await loadMoreUsers();
+}
+
+async function loadMoreUsers(){
+  const listEl = document.getElementById('usersList');
+  if(usersAllLoaded) return;
   try{
-    const snap = await db.collection('users').get();
-    if(snap.empty){ el.innerHTML = '<div class="empty-note">لا يوجد مستخدمون بعد</div>'; return; }
-    const rows = [];
+    let q = db.collection('users').orderBy('createdAt','desc').limit(USERS_PAGE_SIZE);
+    if(usersLastDoc) q = q.startAfter(usersLastDoc);
+    const snap = await q.get();
+
+    if(snap.empty && !usersRowsHtml.length){
+      listEl.innerHTML = '<div class="empty-note">لا يوجد مستخدمون بعد</div>';
+      document.getElementById('statUsers').textContent = '0';
+      usersAllLoaded = true;
+      return;
+    }
     snap.forEach(d => {
       const u = d.data();
       const joined = u.createdAt ? new Date(u.createdAt).toLocaleDateString('ar-SA') : '—';
-      rows.push(`
+      usersRowsHtml.push(`
         <div class="user-row">
-          <div class="user-avatar">${(u.displayName||u.username||'?')[0].toUpperCase()}</div>
+          <div class="user-avatar">${escapeHtml((u.displayName||u.username||'?')[0].toUpperCase())}</div>
           <div class="user-info">
-            <div class="user-name">${(u.displayName||u.username||'—')}</div>
-            <div class="user-meta" dir="ltr">@${u.username||'—'} · ${u.email||'—'}</div>
+            <div class="user-name">${escapeHtml(u.displayName||u.username||'—')}</div>
+            <div class="user-meta" dir="ltr">@${escapeHtml(u.username||'—')} · ${escapeHtml(u.email||'—')}</div>
           </div>
           <div class="user-meta">${joined}</div>
         </div>
       `);
     });
-    el.innerHTML = rows.join('');
-  }catch(e){ el.innerHTML = `<div class="empty-note">تعذر التحميل: ${e.message}</div>`; }
-}
+    if(snap.docs.length) usersLastDoc = snap.docs[snap.docs.length - 1];
+    if(snap.docs.length < USERS_PAGE_SIZE) usersAllLoaded = true;
 
-async function loadFeedback(){
-  const el = document.getElementById('feedbackList');
+    document.getElementById('statUsers').textContent = usersRowsHtml.length + (usersAllLoaded ? '' : '+');
+    const moreBtn = usersAllLoaded ? '' : `<button type="button" class="btn-sm" data-action="load-more-users" style="width:100%;margin-top:4px;">تحميل المزيد · Load More</button>`;
+    listEl.innerHTML = usersRowsHtml.join('') + moreBtn;
+  }catch(e){
+    console.error(e);
+    listEl.innerHTML = usersRowsHtml.join('') + `<div class="empty-note">تعذر تحميل المزيد: ${escapeHtml(e.message)}</div>`;
+  }
+}
+document.addEventListener('click', function(e){
+  if(e.target.closest('[data-action="load-more-users"]')) loadMoreUsers();
+});
+// جلب واحد فقط لكل من إحصاء الملاحظات المفتوحة وقائمتها الكاملة
+let feedbackCache = [];
+async function loadFeedbackData(){
+  const statEl = document.getElementById('statOpenFeedback');
+  const badgeEl = document.getElementById('feedbackBadge');
+  const listEl = document.getElementById('feedbackList');
   try{
-    const snap = await db.collection('feedback').get();
-    if(snap.empty){ el.innerHTML = '<div class="empty-note">لا توجد ملاحظات بعد</div>'; return; }
-    const items = [];
-    snap.forEach(d => items.push({id:d.id, ...d.data()}));
-    items.sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
-    el.innerHTML = items.map(it => `
-      <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-          <b style="font-size:0.85rem;">@${it.username||'—'}</b>
-          <span class="${it.status==='open'?'badge-open':'badge-closed'}">${it.status==='open'?'بانتظار الرد':'تم الرد'}</span>
-        </div>
-        <div style="font-size:0.72rem;color:#9aa2c8;margin-bottom:8px;" dir="ltr">${it.email||''}</div>
-        <div style="font-size:0.86rem;line-height:1.6;margin-bottom:10px;">${(it.message||'').replace(/</g,'&lt;')}</div>
-        ${it.adminReply ? `<div style="background:#f4f5f9;border-radius:8px;padding:10px;font-size:0.8rem;margin-bottom:10px;"><b>ردّك السابق:</b> ${it.adminReply.replace(/</g,'&lt;')}</div>` : ''}
-        <textarea class="reply-box" id="reply_${it.id}" placeholder="اكتب ردك هنا...">${it.adminReply||''}</textarea>
-        <button class="btn-sm" onclick="sendReply('${it.id}')">إرسال الرد وتحديد كمُجاب · Send & Close</button>
+    const snap = await db.collection('feedback').orderBy('createdAt','desc').get();
+    feedbackCache = [];
+    snap.forEach(d => feedbackCache.push({id:d.id, ...d.data()}));
+    const openCount = feedbackCache.filter(it => it.status === 'open').length;
+    statEl.textContent = openCount;
+    badgeEl.textContent = openCount ? `(${openCount})` : '';
+    renderFeedbackList();
+  }catch(e){
+    console.error(e);
+    statEl.textContent = '—';
+    listEl.innerHTML = `<div class="empty-note">تعذر التحميل: ${escapeHtml(e.message)}</div>`;
+  }
+}
+function renderFeedbackList(){
+  const listEl = document.getElementById('feedbackList');
+  if(!feedbackCache.length){ listEl.innerHTML = '<div class="empty-note">لا توجد ملاحظات بعد</div>'; return; }
+  listEl.innerHTML = feedbackCache.map(it => `
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <b style="font-size:0.85rem;">@${escapeHtml(it.username||'—')}</b>
+        <span class="${it.status==='open'?'badge-open':'badge-closed'}">${it.status==='open'?'بانتظار الرد':'تم الرد'}</span>
       </div>
-    `).join('');
-  }catch(e){ el.innerHTML = `<div class="empty-note">تعذر التحميل: ${e.message}</div>`; }
+      <div style="font-size:0.72rem;color:#9aa2c8;margin-bottom:8px;" dir="ltr">${escapeHtml(it.email||'')}</div>
+      <div style="font-size:0.86rem;line-height:1.6;margin-bottom:10px;">${escapeHtml(it.message||'')}</div>
+      ${it.adminReply ? `<div style="background:#f4f5f9;border-radius:8px;padding:10px;font-size:0.8rem;margin-bottom:10px;"><b>ردّك السابق:</b> ${escapeHtml(it.adminReply)}</div>` : ''}
+      <textarea class="reply-box" id="reply_${it.id}" placeholder="اكتب ردك هنا...">${escapeHtml(it.adminReply||'')}</textarea>
+      <button class="btn-sm" type="button" data-action="send-reply" data-key="${it.id}">إرسال الرد وتحديد كمُجاب · Send &amp; Close</button>
+    </div>
+  `).join('');
 }
 async function sendReply(id){
+  const btn = document.querySelector(`[data-action="send-reply"][data-key="${id}"]`);
   const reply = document.getElementById('reply_'+id).value.trim();
   if(!reply){ alert('اكتب رداً أولاً'); return; }
+  if(btn){ btn.disabled = true; btn.textContent = 'جاري الإرسال...'; }
   try{
     await db.collection('feedback').doc(id).update({ adminReply: reply, status: 'closed' });
-    loadFeedback();
-    loadOverview();
-  }catch(e){ alert('تعذر الحفظ: '+e.message); }
+    await loadFeedbackData();
+  }catch(e){
+    alert('تعذر الحفظ: '+e.message);
+    if(btn){ btn.disabled = false; btn.textContent = 'إرسال الرد وتحديد كمُجاب · Send & Close'; }
+  }
 }
 window.sendReply = sendReply;
+document.addEventListener('click', function(e){
+  const el = e.target.closest('[data-action="send-reply"]');
+  if(el) sendReply(el.dataset.key);
+});
 
 let templatesData = {};
 async function loadTemplates(){
+  if(!firebaseReady){
+    Object.keys(DEFAULT_TEMPLATES).forEach(k => { templatesData[k] = {...DEFAULT_TEMPLATES[k]}; });
+    renderTemplatesEditor();
+    return;
+  }
   try{
     const snap = await db.collection('siteConfig').doc('templates').get();
-    templatesData = snap.exists() ? snap.data() : {};
-  }catch(e){ templatesData = {}; }
+    // ⚠️ إصلاح: exists خاصية منطقية (true/false) وليست دالة بمكتبة Firestore compat —
+    // استدعاؤها كـ snap.exists() كان يرمي خطأً يُمسَك بصمت، فتُهمَل كل القوالب المحفوظة وترجع الافتراضية دائمًا.
+    templatesData = snap.exists ? snap.data() : {};
+  }catch(e){
+    console.error('loadTemplates failed:', e);
+    templatesData = {};
+  }
   // ادمج مع الافتراضي لأي قالب غير محفوظ بعد
   Object.keys(DEFAULT_TEMPLATES).forEach(k => {
     if(!templatesData[k]) templatesData[k] = {...DEFAULT_TEMPLATES[k]};
@@ -396,17 +472,26 @@ async function loadTemplates(){
   Object.keys(templatesData).forEach(k => { templatesData[k] = withDesignDefaults(templatesData[k]); });
   renderTemplatesEditor();
 }
+const $ = (id) => document.getElementById(id);
+let currentExpandedTpl = null;
+let currentTplSubTab = 'design';
+const TPL_FONTS = ['Tajawal','IBM Plex Sans Arabic','Cairo','Almarai','Space Mono'];
+
+function escapeHtml(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
 function renderTemplatesEditor(){
-  const el = document.getElementById('templatesList');
-  el.innerHTML = Object.keys(templatesData).map(key => {
+  const el = $('templatesList');
+  const keys = Object.keys(templatesData);
+  if(!keys.length){ el.innerHTML = '<div class="empty-note">لا توجد قوالب — أضف واحدًا من الزر أعلاه</div>'; return; }
+  el.innerHTML = keys.map(key => {
     const t = templatesData[key];
     return `
-      <div class="card tpl-list-row" onclick="openTplExpanded('${key}')" style="cursor:pointer;display:flex;align-items:center;gap:14px;">
+      <div class="card tpl-list-row" data-action="open-template" data-key="${key}" style="cursor:pointer;display:flex;align-items:center;gap:14px;">
         <div class="tpl-mini-preview" style="background:${t.bg};">
           <div class="tpl-mini-dot" style="background:linear-gradient(135deg,${t.p1},${t.p2});"></div>
         </div>
         <div style="flex:1;min-width:0;">
-          <div style="font-weight:700;font-size:0.92rem;">${t.name}</div>
+          <div style="font-weight:700;font-size:0.92rem;">${escapeHtml(t.name)}</div>
           <div style="font-size:0.72rem;color:#9aa2c8;">اضغط للتحكم الكامل · Tap for full control</div>
         </div>
         <div style="font-size:1.3rem;color:#c7cee0;">‹</div>
@@ -415,27 +500,26 @@ function renderTemplatesEditor(){
   }).join('');
 }
 
-/* ===== المحرر الموسّع: يفتح بملء الشاشة عند الضغط على أي قالب ===== */
-let currentExpandedTpl = null;
+/* ===== المحرر الموسّع ===== */
 function openTplExpanded(key){
   currentExpandedTpl = key;
+  currentTplSubTab = 'design';
   renderTplExpanded();
-  document.getElementById('tplExpandedOverlay').style.display = 'flex';
+  $('tplExpandedOverlay').style.display = 'flex';
 }
 function closeTplExpanded(){
-  document.getElementById('tplExpandedOverlay').style.display = 'none';
+  $('tplExpandedOverlay').style.display = 'none';
   currentExpandedTpl = null;
   renderTemplatesEditor();
 }
-const TPL_FONTS = ['Tajawal','IBM Plex Sans Arabic','Cairo','Almarai','Space Mono'];
-let currentTplSubTab = 'design';
 
-// يبني HTML لوحة المعاينة الحيّة فقط (يُستدعى عند أول فتح، وعند كل تعديل سريع بدون إعادة رسم عناصر التحكم)
-function buildTplMockupHtml(key){
+// يبني لوحة المعاينة الحيّة فقط — تحديث سريع بدون لمس عناصر التحكم
+function buildMockupHtml(key){
   const t = templatesData[key];
   const isRect = t.iconShape === 'rect';
   const rectStyle = t.rectStyle || 'rounded';
   const showAvatar = t.showAvatar !== false;
+  const showLogo = t.showLogo !== false;
   const showSocials = t.showSocials !== false;
   const showLinks = t.showLinks !== false;
   const bgStyle = t.bgImage ? `background-image:url(${t.bgImage});background-size:cover;background-position:center;` : `background:${t.bg};`;
@@ -443,23 +527,41 @@ function buildTplMockupHtml(key){
   const linkRadiusPx = t.linkRadius==='sharp' ? '4px' : t.linkRadius==='pill' ? '999px' : '10px';
   const linkFillStyle = t.linkFill ? `background:${t.p1};color:${t.linkText};` : `background:transparent;color:${t.linkText};`;
   const linkShadowStyle = t.linkShadow ? `box-shadow:0 6px 14px -4px rgba(0,0,0,.35);` : '';
+  const socialsHtml = isRect
+    ? `<div style="display:flex;flex-direction:column;gap:6px;width:100%;margin:14px 0;">
+         <div style="width:100%;height:16px;border-radius:${rectStyle==='sharp'?'4px':'10px'};background:${t.p1};"></div>
+         <div style="width:100%;height:16px;border-radius:${rectStyle==='sharp'?'4px':'10px'};background:${t.p2};"></div>
+       </div>`
+    : `<div style="display:flex;gap:10px;margin:14px 0;">
+         <div style="width:22px;height:22px;border-radius:50%;background:${t.p1};"></div>
+         <div style="width:22px;height:22px;border-radius:50%;background:${t.p2};"></div>
+       </div>`;
+
   return `
     <div class="tpl-mockup-lg" id="tplMockupLg" style="${bgStyle}position:relative;font-family:'${t.fontFamily}',sans-serif;padding-top:${28+t.gap}px;">
-      <button class="tpl-plus-badge" style="top:8px;left:8px;" onclick="event.stopPropagation();openBgPopover('${key}')" title="الخلفية">+</button>
+      <!-- + الخلفية: أعلى يسار -->
+      <button type="button" class="tpl-plus-badge" style="top:8px;left:8px;" data-action="open-bg-popover" data-key="${key}" title="الخلفية">+</button>
+
+      <!-- + الشعار (شعار المنصة/البراند): أعلى يمين — منفصل تمامًا عن الأفتار -->
+      <button type="button" class="tpl-plus-badge" style="top:8px;right:8px;" data-action="open-logo-popover" data-key="${key}" title="الشعار">+</button>
+      ${showLogo ? `
+        <div style="position:absolute;top:8px;right:44px;width:30px;height:30px;border-radius:8px;overflow:hidden;${t.logoImg ? `background-image:url(${t.logoImg});background-size:cover;background-position:center;` : `background:rgba(255,255,255,.55);border:1.5px dashed #b9c0d9;`}"></div>
+      ` : ''}
 
       ${showAvatar ? `
         <div style="position:relative;margin-bottom:${t.gap}px;">
-          <div style="width:${t.avatarSize}px;height:${t.avatarSize}px;border-radius:${avatarRadius};${t.avatarImg ? `background-image:url(${t.avatarImg});background-size:cover;` : `background:linear-gradient(135deg,${t.p1},${t.p2});`}"></div>
-          <button class="tpl-plus-badge" style="bottom:0;left:calc(50% - 40px);" onclick="event.stopPropagation();openAvatarPopover('${key}')" title="الأفتار/الشعار">+</button>
+          <div style="width:${t.avatarSize}px;height:${t.avatarSize}px;border-radius:${avatarRadius};${t.avatarImg ? `background-image:url(${t.avatarImg});background-size:cover;background-position:center;` : `background:linear-gradient(135deg,${t.p1},${t.p2});`}"></div>
+          <!-- + الأفتار (صورة المستخدم الشخصية): أسفل دائرة الأفتار مباشرة — منفصل عن الشعار -->
+          <button type="button" class="tpl-plus-badge" style="bottom:0;left:calc(50% - 40px);" data-action="open-avatar-popover" data-key="${key}" title="الأفتار">+</button>
         </div>
       ` : ''}
-      <div style="color:${t.text};font-size:${t.nameSize}px;font-weight:${t.nameWeight};margin-bottom:${Math.max(6,t.gap*0.4)}px;">${t.sampleName || 'اسمك هنا'}</div>
+      <div style="color:${t.text};font-size:${t.nameSize}px;font-weight:${t.nameWeight};margin-bottom:${Math.max(6,t.gap*0.4)}px;">${escapeHtml(t.sampleName || 'اسمك هنا')}</div>
       <div style="height:${t.bioSize*0.35}px;width:70%;border-radius:3px;opacity:.35;background:${t.text};margin-bottom:6px;"></div>
       <div style="height:${t.bioSize*0.35}px;width:45%;border-radius:3px;opacity:.35;background:${t.text};margin-bottom:${t.gap}px;"></div>
 
       <div style="position:relative;width:100%;">
-        <button class="tpl-plus-badge" style="top:-6px;left:8px;" onclick="event.stopPropagation();openSocialsPopover('${key}')" title="التواصل">+</button>
-        ${showSocials ? renderSocialsPreview(t, isRect, rectStyle) : `<div style="height:14px;"></div>`}
+        <button type="button" class="tpl-plus-badge" style="top:-6px;left:8px;" data-action="open-socials-popover" data-key="${key}" title="التواصل">+</button>
+        ${showSocials ? socialsHtml : `<div style="height:14px;"></div>`}
       </div>
 
       ${showLinks ? `
@@ -469,41 +571,41 @@ function buildTplMockupHtml(key){
     </div>
   `;
 }
-// تحديث سريع: يعيد رسم لوحة المعاينة فقط (يُستخدم مع كل سحب لمنزلق أو تغيير لون، بدون لمس عناصر التحكم نفسها)
-function refreshTplMockupOnly(key){
-  const holder = document.getElementById('tplMockupHolder');
-  if(holder) holder.innerHTML = buildTplMockupHtml(key);
+function refreshMockupOnly(key){
+  const holder = $('tplMockupHolder');
+  if(holder) holder.innerHTML = buildMockupHtml(key);
 }
-window.refreshTplMockupOnly = refreshTplMockupOnly;
 
 function renderTplExpanded(){
   const key = currentExpandedTpl;
   const t = withDesignDefaults(templatesData[key]);
   templatesData[key] = t;
   if(!t) return;
+  const showAvatar = t.showAvatar !== false;
+  const showLogo = t.showLogo !== false;
+  const showSocials = t.showSocials !== false;
+  const showLinks = t.showLinks !== false;
 
-  document.getElementById('tplExpandedBody').innerHTML = `
-    <!-- ===== لوحة معاينة حيّة — كل تعديل ينعكس هنا فورًا ===== -->
-    <div id="tplMockupHolder">${buildTplMockupHtml(key)}</div>
+  const tabs = [
+    ['design','عام'], ['colors','الألوان'], ['fonts','الخطوط'],
+    ['buttons','الأزرار'], ['spacing','المسافات'], ['elements','العناصر']
+  ];
 
-    <!-- ===== تبويبات فرعية — أسلوب لوحة خصائص فوتوشوب ===== -->
+  $('tplExpandedBody').innerHTML = `
+    <div id="tplMockupHolder">${buildMockupHtml(key)}</div>
+
     <div class="tpl-sub-tabs">
-      <button class="tpl-sub-tab ${currentTplSubTab==='design'?'active':''}" onclick="showTplSubTab('design',this)">عام</button>
-      <button class="tpl-sub-tab ${currentTplSubTab==='colors'?'active':''}" onclick="showTplSubTab('colors',this)">الألوان</button>
-      <button class="tpl-sub-tab ${currentTplSubTab==='fonts'?'active':''}" onclick="showTplSubTab('fonts',this)">الخطوط</button>
-      <button class="tpl-sub-tab ${currentTplSubTab==='buttons'?'active':''}" onclick="showTplSubTab('buttons',this)">الأزرار</button>
-      <button class="tpl-sub-tab ${currentTplSubTab==='spacing'?'active':''}" onclick="showTplSubTab('spacing',this)">المسافات</button>
-      <button class="tpl-sub-tab ${currentTplSubTab==='elements'?'active':''}" onclick="showTplSubTab('elements',this)">العناصر</button>
+      ${tabs.map(([id,label]) => `<button type="button" class="tpl-sub-tab ${currentTplSubTab===id?'active':''}" data-action="sub-tab" data-tab="${id}">${label}</button>`).join('')}
     </div>
 
     <!-- عام -->
     <div class="tpl-sub-panel ${currentTplSubTab==='design'?'active':''}" data-panel="design">
       <div class="tpl-dash-section">
         <div class="tpl-field"><span class="tpl-field-label">اسم القالب (للإدارة فقط)</span>
-          <input type="text" value="${t.name}" class="tpl-expanded-input" onchange="templatesData['${key}'].name=this.value">
+          <input type="text" class="tpl-expanded-input" value="${escapeHtml(t.name)}" data-field="name" data-key="${key}" data-live="lg">
         </div>
         <div class="tpl-field"><span class="tpl-field-label">نص الاسم بالمعاينة</span>
-          <input type="text" value="${t.sampleName || 'اسمك هنا'}" class="tpl-expanded-input" onchange="updateTplLiveLg('${key}','sampleName',this.value)">
+          <input type="text" class="tpl-expanded-input" value="${escapeHtml(t.sampleName || 'اسمك هنا')}" data-field="sampleName" data-key="${key}" data-live="lg">
         </div>
       </div>
     </div>
@@ -512,11 +614,11 @@ function renderTplExpanded(){
     <div class="tpl-sub-panel ${currentTplSubTab==='colors'?'active':''}" data-panel="colors">
       <div class="tpl-dash-section">
         <div class="tpl-dash-label">لوحة الألوان الكاملة</div>
-        <div class="tpl-color-mini-row"><span>اللون الأساسي</span><input type="color" value="${t.p1}" oninput="updateTplPreviewLive('${key}','p1',this.value)"></div>
-        <div class="tpl-color-mini-row"><span>اللون الثانوي</span><input type="color" value="${t.p2}" oninput="updateTplPreviewLive('${key}','p2',this.value)"></div>
-        <div class="tpl-color-mini-row"><span>لون النص</span><input type="color" value="${t.text}" oninput="updateTplPreviewLive('${key}','text',this.value)"></div>
-        <div class="tpl-color-mini-row"><span>لون نص الأزرار</span><input type="color" value="${t.linkText}" oninput="updateTplPreviewLive('${key}','linkText',this.value)"></div>
-        ${!t.bgImage ? `<div class="tpl-color-mini-row"><span>لون الخلفية</span><input type="color" value="${t.bg}" oninput="updateTplPreviewLive('${key}','bg',this.value)"></div>` : `<div style="font-size:0.72rem;color:#9aa2c8;">الخلفية حالياً صورة — احذفها من قسم "الخلفية" بالمعاينة لاستخدام لون بدلاً منها.</div>`}
+        <div class="tpl-color-mini-row"><span>اللون الأساسي</span><input type="color" value="${t.p1}" data-field="p1" data-key="${key}" data-live="fast"></div>
+        <div class="tpl-color-mini-row"><span>اللون الثانوي</span><input type="color" value="${t.p2}" data-field="p2" data-key="${key}" data-live="fast"></div>
+        <div class="tpl-color-mini-row"><span>لون النص</span><input type="color" value="${t.text}" data-field="text" data-key="${key}" data-live="fast"></div>
+        <div class="tpl-color-mini-row"><span>لون نص الأزرار</span><input type="color" value="${t.linkText}" data-field="linkText" data-key="${key}" data-live="fast"></div>
+        ${!t.bgImage ? `<div class="tpl-color-mini-row"><span>لون الخلفية</span><input type="color" value="${t.bg}" data-field="bg" data-key="${key}" data-live="fast"></div>` : `<div style="font-size:0.72rem;color:#9aa2c8;">الخلفية حالياً صورة — احذفها من زر "+" الخلفية بالمعاينة لاستخدام لون.</div>`}
       </div>
     </div>
 
@@ -524,20 +626,20 @@ function renderTplExpanded(){
     <div class="tpl-sub-panel ${currentTplSubTab==='fonts'?'active':''}" data-panel="fonts">
       <div class="tpl-dash-section">
         <div class="tpl-field"><span class="tpl-field-label">نوع الخط</span>
-          <select class="tpl-expanded-select" onchange="updateTplLiveLg('${key}','fontFamily',this.value)">
+          <select class="tpl-expanded-select" data-field="fontFamily" data-key="${key}" data-live="lg">
             ${TPL_FONTS.map(f=>`<option value="${f}" ${t.fontFamily===f?'selected':''}>${f}</option>`).join('')}
           </select>
         </div>
         <div class="tpl-field"><span class="tpl-field-label">حجم الاسم</span>
-          <div class="tpl-range-row"><input type="range" min="14" max="40" value="${t.nameSize}" oninput="this.nextElementSibling.textContent=this.value+'px';updateTplPreviewLive('${key}','nameSize',this.value)"><span class="tpl-range-val">${t.nameSize}px</span></div>
+          <div class="tpl-range-row"><input type="range" min="14" max="40" value="${t.nameSize}" data-field="nameSize" data-key="${key}" data-live="fast" data-unit="px"><span class="tpl-range-val">${t.nameSize}px</span></div>
         </div>
         <div class="tpl-field"><span class="tpl-field-label">وزن خط الاسم</span>
-          <select class="tpl-expanded-select" onchange="updateTplLiveLg('${key}','nameWeight',this.value)">
+          <select class="tpl-expanded-select" data-field="nameWeight" data-key="${key}" data-live="lg">
             ${[400,500,600,700,800,900].map(w=>`<option value="${w}" ${+t.nameWeight===w?'selected':''}>${w}</option>`).join('')}
           </select>
         </div>
-        <div class="tpl-field"><span class="tpl-field-label">حجم سطور الوصف (bio)</span>
-          <div class="tpl-range-row"><input type="range" min="8" max="20" value="${t.bioSize}" oninput="this.nextElementSibling.textContent=this.value+'px';updateTplPreviewLive('${key}','bioSize',this.value)"><span class="tpl-range-val">${t.bioSize}px</span></div>
+        <div class="tpl-field"><span class="tpl-field-label">حجم سطور الوصف</span>
+          <div class="tpl-range-row"><input type="range" min="8" max="20" value="${t.bioSize}" data-field="bioSize" data-key="${key}" data-live="fast" data-unit="px"><span class="tpl-range-val">${t.bioSize}px</span></div>
         </div>
       </div>
     </div>
@@ -547,19 +649,19 @@ function renderTplExpanded(){
       <div class="tpl-dash-section">
         <div class="tpl-field"><span class="tpl-field-label">شكل الحواف</span>
           <div class="tpl-seg-row">
-            <button type="button" class="tpl-seg-btn ${t.linkRadius==='sharp'?'active':''}" onclick="updateTplLiveLg('${key}','linkRadius','sharp');renderTplExpanded()">▭ حاد</button>
-            <button type="button" class="tpl-seg-btn ${t.linkRadius==='rounded'?'active':''}" onclick="updateTplLiveLg('${key}','linkRadius','rounded');renderTplExpanded()">▢ دائري</button>
-            <button type="button" class="tpl-seg-btn ${t.linkRadius==='pill'?'active':''}" onclick="updateTplLiveLg('${key}','linkRadius','pill');renderTplExpanded()">⬭ كبسولة</button>
+            <button type="button" class="tpl-seg-btn ${t.linkRadius==='sharp'?'active':''}" data-action="set-field" data-field="linkRadius" data-value="sharp" data-key="${key}">▭ حاد</button>
+            <button type="button" class="tpl-seg-btn ${t.linkRadius==='rounded'?'active':''}" data-action="set-field" data-field="linkRadius" data-value="rounded" data-key="${key}">▢ دائري</button>
+            <button type="button" class="tpl-seg-btn ${t.linkRadius==='pill'?'active':''}" data-action="set-field" data-field="linkRadius" data-value="pill" data-key="${key}">⬭ كبسولة</button>
           </div>
         </div>
         <div class="tpl-field"><span class="tpl-field-label">ارتفاع الزر</span>
-          <div class="tpl-range-row"><input type="range" min="16" max="56" value="${t.linkHeight}" oninput="this.nextElementSibling.textContent=this.value+'px';updateTplPreviewLive('${key}','linkHeight',this.value)"><span class="tpl-range-val">${t.linkHeight}px</span></div>
+          <div class="tpl-range-row"><input type="range" min="16" max="56" value="${t.linkHeight}" data-field="linkHeight" data-key="${key}" data-live="fast" data-unit="px"><span class="tpl-range-val">${t.linkHeight}px</span></div>
         </div>
         <div class="tpl-field"><span class="tpl-field-label">سُمك الحدود</span>
-          <div class="tpl-range-row"><input type="range" min="0" max="6" value="${t.linkBorderWidth}" oninput="this.nextElementSibling.textContent=this.value+'px';updateTplPreviewLive('${key}','linkBorderWidth',this.value)"><span class="tpl-range-val">${t.linkBorderWidth}px</span></div>
+          <div class="tpl-range-row"><input type="range" min="0" max="6" value="${t.linkBorderWidth}" data-field="linkBorderWidth" data-key="${key}" data-live="fast" data-unit="px"><span class="tpl-range-val">${t.linkBorderWidth}px</span></div>
         </div>
-        <label class="tpl-toggle-row"><input type="checkbox" ${t.linkFill?'checked':''} onchange="updateTplFlagLg('${key}','linkFill',this.checked)"><span>تعبئة الزر بلون خلفية (بدل شفاف)</span></label>
-        <label class="tpl-toggle-row"><input type="checkbox" ${t.linkShadow?'checked':''} onchange="updateTplFlagLg('${key}','linkShadow',this.checked)"><span>ظل خفيف تحت الزر</span></label>
+        <label class="tpl-toggle-row"><input type="checkbox" ${t.linkFill?'checked':''} data-field="linkFill" data-key="${key}" data-live="flag"><span>تعبئة الزر بلون خلفية</span></label>
+        <label class="tpl-toggle-row"><input type="checkbox" ${t.linkShadow?'checked':''} data-field="linkShadow" data-key="${key}" data-live="flag"><span>ظل خفيف تحت الزر</span></label>
       </div>
     </div>
 
@@ -567,17 +669,17 @@ function renderTplExpanded(){
     <div class="tpl-sub-panel ${currentTplSubTab==='spacing'?'active':''}" data-panel="spacing">
       <div class="tpl-dash-section">
         <div class="tpl-field"><span class="tpl-field-label">حجم الأفتار</span>
-          <div class="tpl-range-row"><input type="range" min="40" max="110" value="${t.avatarSize}" oninput="this.nextElementSibling.textContent=this.value+'px';updateTplPreviewLive('${key}','avatarSize',this.value)"><span class="tpl-range-val">${t.avatarSize}px</span></div>
+          <div class="tpl-range-row"><input type="range" min="40" max="110" value="${t.avatarSize}" data-field="avatarSize" data-key="${key}" data-live="fast" data-unit="px"><span class="tpl-range-val">${t.avatarSize}px</span></div>
         </div>
         <div class="tpl-field"><span class="tpl-field-label">شكل الأفتار</span>
           <div class="tpl-seg-row">
-            <button type="button" class="tpl-seg-btn ${t.avatarShape==='circle'?'active':''}" onclick="updateTplLiveLg('${key}','avatarShape','circle');renderTplExpanded()">⚪ دائري</button>
-            <button type="button" class="tpl-seg-btn ${t.avatarShape==='rounded'?'active':''}" onclick="updateTplLiveLg('${key}','avatarShape','rounded');renderTplExpanded()">▢ ناعم</button>
-            <button type="button" class="tpl-seg-btn ${t.avatarShape==='square'?'active':''}" onclick="updateTplLiveLg('${key}','avatarShape','square');renderTplExpanded()">▭ مربع</button>
+            <button type="button" class="tpl-seg-btn ${t.avatarShape==='circle'?'active':''}" data-action="set-field" data-field="avatarShape" data-value="circle" data-key="${key}">⚪ دائري</button>
+            <button type="button" class="tpl-seg-btn ${t.avatarShape==='rounded'?'active':''}" data-action="set-field" data-field="avatarShape" data-value="rounded" data-key="${key}">▢ ناعم</button>
+            <button type="button" class="tpl-seg-btn ${t.avatarShape==='square'?'active':''}" data-action="set-field" data-field="avatarShape" data-value="square" data-key="${key}">▭ مربع</button>
           </div>
         </div>
         <div class="tpl-field"><span class="tpl-field-label">المسافة بين العناصر</span>
-          <div class="tpl-range-row"><input type="range" min="6" max="30" value="${t.gap}" oninput="this.nextElementSibling.textContent=this.value+'px';updateTplPreviewLive('${key}','gap',this.value)"><span class="tpl-range-val">${t.gap}px</span></div>
+          <div class="tpl-range-row"><input type="range" min="6" max="30" value="${t.gap}" data-field="gap" data-key="${key}" data-live="fast" data-unit="px"><span class="tpl-range-val">${t.gap}px</span></div>
         </div>
       </div>
     </div>
@@ -585,203 +687,226 @@ function renderTplExpanded(){
     <!-- العناصر -->
     <div class="tpl-sub-panel ${currentTplSubTab==='elements'?'active':''}" data-panel="elements">
       <div class="tpl-dash-section">
-        <label class="tpl-toggle-row"><input type="checkbox" ${showAvatar?'checked':''} onchange="updateTplFlagLg('${key}','showAvatar',this.checked)"><span>إظهار الأفتار</span></label>
-        <label class="tpl-toggle-row"><input type="checkbox" ${showSocials?'checked':''} onchange="updateTplFlagLg('${key}','showSocials',this.checked)"><span>إظهار حسابات التواصل</span></label>
-        <label class="tpl-toggle-row"><input type="checkbox" ${showLinks?'checked':''} onchange="updateTplFlagLg('${key}','showLinks',this.checked)"><span>إظهار الروابط</span></label>
+        <label class="tpl-toggle-row"><input type="checkbox" ${showAvatar?'checked':''} data-field="showAvatar" data-key="${key}" data-live="flag"><span>إظهار الأفتار (صورة المستخدم)</span></label>
+        <label class="tpl-toggle-row"><input type="checkbox" ${showLogo?'checked':''} data-field="showLogo" data-key="${key}" data-live="flag"><span>إظهار الشعار (البراند)</span></label>
+        <label class="tpl-toggle-row"><input type="checkbox" ${showSocials?'checked':''} data-field="showSocials" data-key="${key}" data-live="flag"><span>إظهار حسابات التواصل</span></label>
+        <label class="tpl-toggle-row"><input type="checkbox" ${showLinks?'checked':''} data-field="showLinks" data-key="${key}" data-live="flag"><span>إظهار الروابط</span></label>
       </div>
     </div>
 
-    <button class="tpl-delete-btn" style="width:100%;" onclick="deleteTemplate('${key}');closeTplExpanded();">🗑 حذف هذا القالب</button>
+    <button type="button" class="tpl-delete-btn" style="width:100%;" data-action="delete-template" data-key="${key}">🗑 حذف هذا القالب</button>
   `;
 }
-function showTplSubTab(id, btn){
-  currentTplSubTab = id;
-  document.querySelectorAll('.tpl-sub-tab').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.tpl-sub-panel').forEach(p=>p.classList.remove('active'));
-  if(btn) btn.classList.add('active');
-  const panel = document.querySelector(`.tpl-sub-panel[data-panel="${id}"]`);
-  if(panel) panel.classList.add('active');
+
+/* ===== نافذة منبثقة عامة ===== */
+function showPopover(title, bodyHtml){
+  $('tplPopoverTitle').textContent = title;
+  $('tplPopoverBody').innerHTML = bodyHtml;
+  $('tplPopoverOverlay').style.display = 'flex';
 }
-window.showTplSubTab = showTplSubTab;
-function renderSocialsPreview(t, isRect, rectStyle){
-  if(isRect){
-    const radius = rectStyle === 'sharp' ? '4px' : '10px';
-    return `<div style="display:flex;flex-direction:column;gap:6px;width:100%;margin:14px 0;">
-      <div style="width:100%;height:16px;border-radius:${radius};background:${t.p1};"></div>
-      <div style="width:100%;height:16px;border-radius:${radius};background:${t.p2};"></div>
-    </div>`;
+function closeTplPopover(){ $('tplPopoverOverlay').style.display = 'none'; }
+
+// يصغّر ويضغط الصورة عبر Canvas قبل تحويلها لـ base64 — يمنع تضخم مستند القوالب ببطء/فشل الحفظ
+// (مستندات Firestore محدودة بـ1MB تقريبًا؛ صورة هاتف واحدة غير مضغوطة ممكن تتجاوزه لوحدها)
+function fileToBase64(file, cb, maxDim = 480, quality = 0.82){
+  if(!file.type || !file.type.startsWith('image/')){
+    // ملف غير صورة (احتياط) — نرجع بالطريقة الخام
+    const reader = new FileReader();
+    reader.onload = () => cb(reader.result);
+    reader.onerror = () => alert('تعذرت قراءة الملف');
+    reader.readAsDataURL(file);
+    return;
   }
-  return `<div style="display:flex;gap:10px;margin:14px 0;">
-    <div style="width:22px;height:22px;border-radius:50%;background:${t.p1};"></div>
-    <div style="width:22px;height:22px;border-radius:50%;background:${t.p2};"></div>
-  </div>`;
-}
-// ===== نافذة صغيرة منبثقة عامة =====
-function showTplPopover(title, bodyHtml){
-  document.getElementById('tplPopoverTitle').textContent = title;
-  document.getElementById('tplPopoverBody').innerHTML = bodyHtml;
-  document.getElementById('tplPopoverOverlay').style.display = 'flex';
-}
-function closeTplPopover(){
-  document.getElementById('tplPopoverOverlay').style.display = 'none';
-}
-function fileToBase64(file, cb){
-  const reader = new FileReader();
-  reader.onload = () => cb(reader.result);
-  reader.readAsDataURL(file);
+  const img = new Image();
+  const objUrl = URL.createObjectURL(file);
+  img.onload = () => {
+    URL.revokeObjectURL(objUrl);
+    let { width, height } = img;
+    if(width > maxDim || height > maxDim){
+      const ratio = Math.min(maxDim / width, maxDim / height);
+      width = Math.round(width * ratio);
+      height = Math.round(height * ratio);
+    }
+    const canvas = document.createElement('canvas');
+    canvas.width = width; canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, width, height);
+    // JPEG أخف بكثير من PNG للصور الفوتوغرافية؛ نحافظ على PNG لو الأصل شفاف صغير الحجم أصلاً
+    const mime = file.type === 'image/png' && file.size < 60000 ? 'image/png' : 'image/jpeg';
+    cb(canvas.toDataURL(mime, quality));
+  };
+  img.onerror = () => { URL.revokeObjectURL(objUrl); alert('تعذر تحميل الصورة، جرّب ملفًا آخر'); };
+  img.src = objUrl;
 }
 
-// ===== + الأفتار/الشعار: رفع صورة من الألبوم =====
+// ===== + الأفتار (صورة المستخدم الشخصية فقط) =====
 function openAvatarPopover(key){
-  showTplPopover('الأفتار / الشعار', `
-    <p style="font-size:0.8rem;color:#6b7280;margin-bottom:12px;">هذي صورة توضيحية للمعاينة فقط (كل مستخدم يرفع صورته الحقيقية بحسابه).</p>
-    <input type="file" accept="image/*" onchange="avatarPopoverFileChosen('${key}', this)" style="width:100%;padding:10px;border:1.5px solid #e0e0e0;border-radius:10px;">
+  showPopover('الأفتار (صورة المستخدم)', `
+    <p style="font-size:0.8rem;color:#6b7280;margin-bottom:12px;">هذي صورة توضيحية للمعاينة فقط — كل مستخدم يرفع صورته الشخصية الحقيقية بحسابه.</p>
+    <input type="file" accept="image/*" data-action="avatar-file" data-key="${key}" style="width:100%;padding:10px;border:1.5px solid #e0e0e0;border-radius:10px;">
   `);
 }
-function avatarPopoverFileChosen(key, input){
-  if(!input.files || !input.files[0]) return;
-  fileToBase64(input.files[0], (dataUrl) => {
-    templatesData[key].avatarImg = dataUrl;
-    renderTplExpanded();
-    closeTplPopover();
-  });
+
+// ===== + الشعار (شعار المنصة/البراند — منفصل تمامًا عن الأفتار) =====
+function openLogoPopover(key){
+  const t = templatesData[key];
+  showPopover('الشعار (Logo)', `
+    <p style="font-size:0.8rem;color:#6b7280;margin-bottom:12px;">شعار ثابت يظهر بزاوية الصفحة لكل من يستخدم هذا القالب (شعار منصتك أو علامتك التجارية) — مختلف عن صورة المستخدم الشخصية.</p>
+    <input type="file" accept="image/*" data-action="logo-file" data-key="${key}" style="width:100%;padding:10px;border:1.5px solid #e0e0e0;border-radius:10px;margin-bottom:10px;">
+    ${t.logoImg ? `<button type="button" data-action="remove-logo" data-key="${key}" style="width:100%;padding:10px;border:1.5px solid #e0e0e0;border-radius:10px;background:#fdecea;color:#c33;font-weight:700;cursor:pointer;font-family:inherit;">🗑 إزالة الشعار الحالي</button>` : ''}
+  `);
 }
 
-// ===== + الخلفية: لون أو صورة من الألبوم =====
+// ===== + الخلفية: لون أو صورة =====
 function openBgPopover(key){
   const t = templatesData[key];
-  showTplPopover('خلفية الصفحة', `
+  showPopover('خلفية الصفحة', `
     <div style="display:flex;gap:8px;margin-bottom:14px;">
-      <button type="button" id="bgModeColorBtn" onclick="setBgPopoverMode('${key}','color')" style="flex:1;padding:10px;border:2px solid #3d5af1;border-radius:9px;background:#f4f5f9;font-weight:700;cursor:pointer;">لون</button>
-      <button type="button" id="bgModeImageBtn" onclick="setBgPopoverMode('${key}','image')" style="flex:1;padding:10px;border:2px solid #e0e0e0;border-radius:9px;background:#fff;font-weight:700;cursor:pointer;">صورة من الألبوم</button>
+      <button type="button" data-action="bg-mode" data-mode="color" data-key="${key}" id="bgModeColorBtn" style="flex:1;padding:10px;border:2px solid #3d5af1;border-radius:9px;background:#f4f5f9;font-weight:700;cursor:pointer;">لون</button>
+      <button type="button" data-action="bg-mode" data-mode="image" data-key="${key}" id="bgModeImageBtn" style="flex:1;padding:10px;border:2px solid #e0e0e0;border-radius:9px;background:#fff;font-weight:700;cursor:pointer;">صورة من الألبوم</button>
     </div>
     <div id="bgModeColorBox">
-      <input type="color" value="${t.bg}" style="width:100%;height:44px;border-radius:10px;border:1px solid #e0e0e0;" onchange="updateTplLiveLg('${key}','bg',this.value);templatesData['${key}'].bgImage=null;">
+      <input type="color" value="${t.bg}" data-field="bg" data-key="${key}" data-live="lg" style="width:100%;height:44px;border-radius:10px;border:1px solid #e0e0e0;">
     </div>
     <div id="bgModeImageBox" style="display:none;">
-      <input type="file" accept="image/*" onchange="bgPopoverFileChosen('${key}', this)" style="width:100%;padding:10px;border:1.5px solid #e0e0e0;border-radius:10px;">
+      <input type="file" accept="image/*" data-action="bg-file" data-key="${key}" style="width:100%;padding:10px;border:1.5px solid #e0e0e0;border-radius:10px;">
     </div>
   `);
 }
-function setBgPopoverMode(key, mode){
-  document.getElementById('bgModeColorBox').style.display = mode==='color' ? 'block' : 'none';
-  document.getElementById('bgModeImageBox').style.display = mode==='image' ? 'block' : 'none';
-  document.getElementById('bgModeColorBtn').style.borderColor = mode==='color' ? '#3d5af1' : '#e0e0e0';
-  document.getElementById('bgModeImageBtn').style.borderColor = mode==='image' ? '#3d5af1' : '#e0e0e0';
-}
-function bgPopoverFileChosen(key, input){
-  if(!input.files || !input.files[0]) return;
-  fileToBase64(input.files[0], (dataUrl) => {
-    templatesData[key].bgImage = dataUrl;
-    renderTplExpanded();
-    closeTplPopover();
-  });
-}
 
-// ===== + التواصل: ألوان لون-لون + شكل (أيقونات/مستطيل حاد/مستطيل دائري) + إعادة ترتيب =====
+// ===== + التواصل =====
 function openSocialsPopover(key){
   const t = templatesData[key];
   const shape = t.iconShape === 'rect' ? (t.rectStyle==='sharp' ? 'sharp' : 'rounded') : 'icons';
-  showTplPopover('حسابات التواصل', `
+  showPopover('حسابات التواصل', `
     <div class="tpl-dash-label">الشكل</div>
-    <div style="display:flex;gap:6px;margin-bottom:16px;">
-      <button type="button" class="tpl-shape-btn" data-shape="icons" onclick="setSocialsShape('${key}','icons')" style="flex:1;padding:10px 4px;border:2px solid ${shape==='icons'?'#3d5af1':'#e0e0e0'};border-radius:9px;background:#fff;font-size:0.72rem;font-weight:700;cursor:pointer;">⚪ أيقونات</button>
-      <button type="button" class="tpl-shape-btn" data-shape="rounded" onclick="setSocialsShape('${key}','rounded')" style="flex:1;padding:10px 4px;border:2px solid ${shape==='rounded'?'#3d5af1':'#e0e0e0'};border-radius:9px;background:#fff;font-size:0.72rem;font-weight:700;cursor:pointer;">▢ مستطيل دائري</button>
-      <button type="button" class="tpl-shape-btn" data-shape="sharp" onclick="setSocialsShape('${key}','sharp')" style="flex:1;padding:10px 4px;border:2px solid ${shape==='sharp'?'#3d5af1':'#e0e0e0'};border-radius:9px;background:#fff;font-size:0.72rem;font-weight:700;cursor:pointer;">▭ مستطيل حاد</button>
+    <div class="tpl-seg-row" style="margin-bottom:16px;">
+      <button type="button" class="tpl-seg-btn ${shape==='icons'?'active':''}" data-action="social-shape" data-shape="icons" data-key="${key}">⚪ أيقونات</button>
+      <button type="button" class="tpl-seg-btn ${shape==='rounded'?'active':''}" data-action="social-shape" data-shape="rounded" data-key="${key}">▢ مستطيل دائري</button>
+      <button type="button" class="tpl-seg-btn ${shape==='sharp'?'active':''}" data-action="social-shape" data-shape="sharp" data-key="${key}">▭ مستطيل حاد</button>
     </div>
     <div class="tpl-dash-label">الألوان (لون لون)</div>
-    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <span style="font-size:0.8rem;flex:1;">الحساب الأول</span>
-        <input type="color" value="${t.p1}" onchange="updateTplLiveLg('${key}','p1',this.value)" style="width:50px;height:36px;border-radius:8px;border:1px solid #e0e0e0;">
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;">
-        <span style="font-size:0.8rem;flex:1;">الحساب الثاني</span>
-        <input type="color" value="${t.p2}" onchange="updateTplLiveLg('${key}','p2',this.value)" style="width:50px;height:36px;border-radius:8px;border:1px solid #e0e0e0;">
-      </div>
-    </div>
-    <div style="font-size:0.72rem;color:#9aa2c8;">⋮⋮ اسحب لإعادة ترتيب الحسابات — يظهر لكل مستخدم بحسابه الفعلي</div>
+    <div class="tpl-color-mini-row"><span>الحساب الأول</span><input type="color" value="${t.p1}" data-field="p1" data-key="${key}" data-live="lg"></div>
+    <div class="tpl-color-mini-row"><span>الحساب الثاني</span><input type="color" value="${t.p2}" data-field="p2" data-key="${key}" data-live="lg"></div>
+    <div style="font-size:0.72rem;color:#9aa2c8;margin-top:10px;">⋮⋮ يظهر لكل مستخدم بحساباته الفعلية</div>
   `);
 }
-function setSocialsShape(key, shape){
-  if(shape === 'icons'){ templatesData[key].iconShape = 'circle'; }
-  else { templatesData[key].iconShape = 'rect'; templatesData[key].rectStyle = shape; }
-  openSocialsPopover(key); // أعد رسم النافذة المنبثقة لتحديث تحديد الزر النشط
-  renderTplExpanded();
-}
-window.openAvatarPopover = openAvatarPopover;
-window.avatarPopoverFileChosen = avatarPopoverFileChosen;
-window.openBgPopover = openBgPopover;
-window.setBgPopoverMode = setBgPopoverMode;
-window.bgPopoverFileChosen = bgPopoverFileChosen;
-window.openSocialsPopover = openSocialsPopover;
-window.setSocialsShape = setSocialsShape;
-window.closeTplPopover = closeTplPopover;
 
-// تحديث خفيف يُستخدم مع المنزلقات ومنتقيات الألوان (سحب مستمر) — لا يعيد رسم عناصر التحكم، فقط المعاينة
-function updateTplPreviewLive(key, field, value){
-  templatesData[key][field] = value;
-  refreshTplMockupOnly(key);
-}
-window.updateTplPreviewLive = updateTplPreviewLive;
-function updateTplLiveLg(key, field, value){
-  templatesData[key][field] = value;
-  renderTplExpanded();
-}
-function updateTplShapeLg(key, checked){
-  templatesData[key].iconShape = checked ? 'rect' : 'circle';
-  renderTplExpanded();
-}
-function updateTplFlagLg(key, field, checked){
-  templatesData[key][field] = checked;
-  renderTplExpanded();
-}
-window.openTplExpanded = openTplExpanded;
-window.closeTplExpanded = closeTplExpanded;
-window.updateTplLiveLg = updateTplLiveLg;
-window.updateTplShapeLg = updateTplShapeLg;
-window.updateTplFlagLg = updateTplFlagLg;
-function updateTplShape(key, checked){
-  templatesData[key].iconShape = checked ? 'rect' : 'circle';
-  renderTemplatesEditor();
-}
-function updateTplFlag(key, field, checked){
-  templatesData[key][field] = checked;
-  renderTemplatesEditor();
-}
-window.updateTplShape = updateTplShape;
-window.updateTplFlag = updateTplFlag;
-function updateTplLive(key, field, value){
-  templatesData[key][field] = value;
-  const t = templatesData[key];
-  const m = document.getElementById('tplMockup_'+key);
-  if(!m) return;
-  m.style.background = t.bg;
-  m.querySelector('.tpl-mockup-avatar').style.background = `linear-gradient(135deg,${t.p1},${t.p2})`;
-  m.querySelector('.tpl-mockup-name').style.color = t.text;
-  m.querySelectorAll('.tpl-mockup-bio').forEach(b=>b.style.background=t.text);
-  m.querySelectorAll('.tpl-mockup-link').forEach(l=>l.style.borderColor=t.p1);
-}
+/* ===== منطق تعديل الحقول ===== */
+function setField(key, field, value){ templatesData[key][field] = value; }
+function setFieldAndRerender(key, field, value){ setField(key, field, value); renderTplExpanded(); }
+
 function deleteTemplate(key){
   if(!confirm(`حذف قالب "${templatesData[key].name}"؟ سيختفي من تبويب القوالب لكل المستخدمين.`)) return;
   delete templatesData[key];
-  renderTemplatesEditor();
+  closeTplExpanded();
 }
 function addNewTemplate(){
   const id = 'custom_' + Date.now();
-  templatesData[id] = { name: 'قالب جديد', p1:'#3d5af1', p2:'#6c8fff', text:'#0f1535', bg:'#ffffff', iconShape:'circle', showAvatar:true, showSocials:true, showLinks:true, ...TPL_DESIGN_DEFAULTS };
+  templatesData[id] = { name: 'قالب جديد', p1:'#3d5af1', p2:'#6c8fff', text:'#0f1535', bg:'#ffffff', iconShape:'circle', showAvatar:true, showLogo:true, showSocials:true, showLinks:true, ...TPL_DESIGN_DEFAULTS };
   renderTemplatesEditor();
 }
-window.updateTplLive = updateTplLive;
-window.deleteTemplate = deleteTemplate;
-window.addNewTemplate = addNewTemplate;
+let isSaving = false;
 async function saveTemplatesConfig(){
+  if(isSaving) return;
+  if(!firebaseReady){ alert('تعذر الاتصال بالخادم، أعد تحميل الصفحة'); return; }
+
+  // فحص الحجم مسبقًا — مستندات Firestore محدودة بـ1 ميجابايت تقريبًا
+  const approxSize = new Blob([JSON.stringify(templatesData)]).size;
+  if(approxSize > 900000){
+    alert('⚠️ حجم بيانات القوالب كبير جدًا (' + Math.round(approxSize/1024) + ' كيلوبايت) وقد يفشل الحفظ. قلّل عدد الصور المرفوعة يدويًا (الخلفيات/الشعارات) بالقوالب.');
+  }
+
+  const btns = document.querySelectorAll('[data-action="save-all"], [data-action="save-and-close"]');
+  isSaving = true;
+  btns.forEach(b => { b.dataset.origText = b.textContent; b.disabled = true; if(b.dataset.action==='save-all') b.textContent = 'جاري الحفظ...'; });
   try{
     await db.collection('siteConfig').doc('templates').set(templatesData);
     alert('تم الحفظ ✓');
-  }catch(e){ alert('تعذر الحفظ: '+e.message); }
+  }catch(e){
+    alert('تعذر الحفظ: '+e.message);
+  }finally{
+    isSaving = false;
+    btns.forEach(b => { b.disabled = false; if(b.dataset.origText) b.textContent = b.dataset.origText; });
+  }
 }
-window.saveTemplatesConfig = saveTemplatesConfig;
+
+/* ===== تفويض الأحداث — نقطة دخول موثوقة واحدة لكل الأزرار ===== */
+document.addEventListener('click', function(e){
+  const popBackdrop = e.target.closest('[data-action="popover-backdrop"]');
+  if(popBackdrop && e.target === popBackdrop){ closeTplPopover(); return; }
+
+  const el = e.target.closest('[data-action]');
+  if(!el) return;
+  const action = el.dataset.action;
+  const key = el.dataset.key;
+
+  if(action === 'open-template'){ openTplExpanded(key); return; }
+  if(action === 'close-expanded'){ closeTplExpanded(); return; }
+  if(action === 'save-and-close'){ saveTemplatesConfig(); closeTplExpanded(); return; }
+  if(action === 'save-all'){ saveTemplatesConfig(); return; }
+  if(action === 'add-template'){ addNewTemplate(); return; }
+  if(action === 'delete-template'){ deleteTemplate(key); return; }
+  if(action === 'sub-tab'){ currentTplSubTab = el.dataset.tab; renderTplExpanded(); return; }
+  if(action === 'set-field'){ setFieldAndRerender(key, el.dataset.field, el.dataset.value); return; }
+  if(action === 'open-bg-popover'){ openBgPopover(key); return; }
+  if(action === 'open-avatar-popover'){ openAvatarPopover(key); return; }
+  if(action === 'open-logo-popover'){ openLogoPopover(key); return; }
+  if(action === 'open-socials-popover'){ openSocialsPopover(key); return; }
+  if(action === 'close-popover'){ closeTplPopover(); return; }
+  if(action === 'remove-logo'){ setField(key,'logoImg',null); closeTplPopover(); renderTplExpanded(); return; }
+  if(action === 'bg-mode'){
+    const mode = el.dataset.mode;
+    $('bgModeColorBox').style.display = mode==='color' ? 'block' : 'none';
+    $('bgModeImageBox').style.display = mode==='image' ? 'block' : 'none';
+    $('bgModeColorBtn').style.borderColor = mode==='color' ? '#3d5af1' : '#e0e0e0';
+    $('bgModeImageBtn').style.borderColor = mode==='image' ? '#3d5af1' : '#e0e0e0';
+    return;
+  }
+  if(action === 'social-shape'){
+    const shape = el.dataset.shape;
+    if(shape === 'icons'){ setField(key,'iconShape','circle'); }
+    else { setField(key,'iconShape','rect'); setField(key,'rectStyle',shape); }
+    openSocialsPopover(key);
+    refreshMockupOnly(key);
+    return;
+  }
+});
+
+/* ===== تفويض الأحداث (input) — منزلقات وألوان: سحب سلس بدون إعادة رسم عناصر التحكم ===== */
+document.addEventListener('input', function(e){
+  const el = e.target;
+  if(el.dataset.live !== 'fast') return;
+  const value = el.type === 'checkbox' ? el.checked : el.value;
+  setField(el.dataset.key, el.dataset.field, value);
+  refreshMockupOnly(el.dataset.key);
+  const valSpan = el.parentElement.querySelector('.tpl-range-val');
+  if(valSpan) valSpan.textContent = value + (el.dataset.unit || '');
+});
+
+/* ===== تفويض الأحداث (change) — قوائم/سويتشات/ملفات ===== */
+document.addEventListener('change', function(e){
+  const el = e.target;
+
+  if(el.dataset.action === 'avatar-file' && el.files && el.files[0]){
+    fileToBase64(el.files[0], (dataUrl) => { setField(el.dataset.key, 'avatarImg', dataUrl); renderTplExpanded(); closeTplPopover(); });
+    return;
+  }
+  if(el.dataset.action === 'logo-file' && el.files && el.files[0]){
+    fileToBase64(el.files[0], (dataUrl) => { setField(el.dataset.key, 'logoImg', dataUrl); renderTplExpanded(); closeTplPopover(); });
+    return;
+  }
+  if(el.dataset.action === 'bg-file' && el.files && el.files[0]){
+    fileToBase64(el.files[0], (dataUrl) => { setField(el.dataset.key, 'bgImage', dataUrl); renderTplExpanded(); closeTplPopover(); });
+    return;
+  }
+
+  const live = el.dataset.live;
+  if(!live) return;
+  const value = el.type === 'checkbox' ? el.checked : el.value;
+  setField(el.dataset.key, el.dataset.field, value);
+  if(live === 'lg' || live === 'flag'){ renderTplExpanded(); }
+});
 </script>
 </body>
 </html>
