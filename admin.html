@@ -106,6 +106,29 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:14px 2
   background:#3d5af1;color:#fff;border:2px solid #fff;font-size:1rem;font-weight:900;
   cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.25);display:flex;align-items:center;justify-content:center;line-height:1;
 }
+
+/* ===== عناصر تحكم المحرر الشامل الجديدة (فوتوشوب-ستايل) ===== */
+.tpl-expanded-select{
+  width:100%;padding:11px;border:1.5px solid #e0e0e0;border-radius:10px;font-family:inherit;font-size:0.85rem;font-weight:700;background:#fff;
+}
+.tpl-field-label{font-size:0.75rem;color:#9aa2c8;font-weight:700;margin-bottom:6px;display:block;}
+.tpl-field{margin-bottom:14px;}
+.tpl-field:last-child{margin-bottom:0;}
+.tpl-range-row{display:flex;align-items:center;gap:10px;}
+.tpl-range-row input[type=range]{flex:1;accent-color:#3d5af1;height:4px;}
+.tpl-range-val{font-family:'Space Mono',monospace;font-size:0.72rem;font-weight:700;color:#3d5af1;min-width:34px;text-align:center;background:#eef0fb;border-radius:6px;padding:3px 4px;}
+.tpl-seg-row{display:flex;gap:6px;}
+.tpl-seg-btn{flex:1;padding:10px 4px;border:2px solid #e0e0e0;border-radius:9px;background:#fff;font-size:0.72rem;font-weight:700;cursor:pointer;color:#0f1535;}
+.tpl-seg-btn.active{border-color:#3d5af1;background:#eef0fb;color:#3d5af1;}
+.tpl-color-mini-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.tpl-color-mini-row:last-child{margin-bottom:0;}
+.tpl-color-mini-row span{font-size:0.8rem;flex:1;}
+.tpl-color-mini-row input[type=color]{width:50px;height:36px;border-radius:8px;border:1px solid #e0e0e0;padding:2px;}
+.tpl-sub-tabs{display:flex;gap:4px;overflow-x:auto;margin-bottom:16px;padding-bottom:2px;}
+.tpl-sub-tab{flex-shrink:0;padding:8px 13px;border-radius:9px;border:1.5px solid #e0e0e0;background:#fff;font-family:inherit;font-weight:700;font-size:0.74rem;cursor:pointer;color:#6b7280;}
+.tpl-sub-tab.active{background:#0f1535;color:#fff;border-color:#0f1535;}
+.tpl-sub-panel{display:none;}
+.tpl-sub-panel.active{display:block;}
 </style>
 </head>
 <body>
@@ -216,15 +239,24 @@ const db=firebase.firestore();
 // ⚠️ عدّل هذا البريد ليكون بريدك الحقيقي المسجّل بالموقع — هذا هو مفتاح الوصول للوحة الإدارة
 const ADMIN_EMAIL = "brmjeat1@gmail.com";
 
-const DEFAULT_TEMPLATES = {
-  default: { name:'الافتراضي', p1:'#3d5af1', p2:'#6c8fff', text:'#0f1535', bg:'#ffffff' },
-  natural: { name:'طبيعي',     p1:'#588157', p2:'#7fa876', text:'#344E41', bg:'#DAD7CD' },
-  warm:    { name:'دافئ',      p1:'#EE9A00', p2:'#f4b840', text:'#BB3E03', bg:'#FEFAE0' },
-  calm:    { name:'هادئ',      p1:'#0D21A1', p2:'#4d5cc9', text:'#0D21A1', bg:'#EEF0F2' },
-  night:   { name:'ليلي',      p1:'#8fb0ff', p2:'#6c8fff', text:'#f0f1f5', bg:'#12141c' },
-  earthy:  { name:'ترابي',     p1:'#C97D34', p2:'#dba05f', text:'#7C4A03', bg:'#FDF6EC' },
-  fresh:   { name:'منعش',      p1:'#2A9D8F', p2:'#5cbcaf', text:'#0B4F4A', bg:'#E6F4F1' }
+const TPL_DESIGN_DEFAULTS = {
+  fontFamily:'Tajawal', nameSize:21, nameWeight:800, bioSize:12,
+  avatarSize:64, avatarShape:'circle', gap:14,
+  linkRadius:'rounded', linkHeight:22, linkBorderWidth:2, linkShadow:false, linkFill:false, linkText:'#0f1535'
 };
+const DEFAULT_TEMPLATES = {
+  default: { name:'الافتراضي', p1:'#3d5af1', p2:'#6c8fff', text:'#0f1535', bg:'#ffffff', ...TPL_DESIGN_DEFAULTS },
+  natural: { name:'طبيعي',     p1:'#588157', p2:'#7fa876', text:'#344E41', bg:'#DAD7CD', ...TPL_DESIGN_DEFAULTS },
+  warm:    { name:'دافئ',      p1:'#EE9A00', p2:'#f4b840', text:'#BB3E03', bg:'#FEFAE0', ...TPL_DESIGN_DEFAULTS },
+  calm:    { name:'هادئ',      p1:'#0D21A1', p2:'#4d5cc9', text:'#0D21A1', bg:'#EEF0F2', ...TPL_DESIGN_DEFAULTS },
+  night:   { name:'ليلي',      p1:'#8fb0ff', p2:'#6c8fff', text:'#f0f1f5', bg:'#12141c', ...TPL_DESIGN_DEFAULTS },
+  earthy:  { name:'ترابي',     p1:'#C97D34', p2:'#dba05f', text:'#7C4A03', bg:'#FDF6EC', ...TPL_DESIGN_DEFAULTS },
+  fresh:   { name:'منعش',      p1:'#2A9D8F', p2:'#5cbcaf', text:'#0B4F4A', bg:'#E6F4F1', ...TPL_DESIGN_DEFAULTS }
+};
+// دمج القيم الافتراضية الجديدة لأي قالب قديم محفوظ لا يملكها بعد
+function withDesignDefaults(t){
+  return { ...TPL_DESIGN_DEFAULTS, ...t };
+}
 
 function showAdminTab(id, btn){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
@@ -360,6 +392,8 @@ async function loadTemplates(){
   Object.keys(DEFAULT_TEMPLATES).forEach(k => {
     if(!templatesData[k]) templatesData[k] = {...DEFAULT_TEMPLATES[k]};
   });
+  // كمّل أي حقول خط/أزرار/مسافات ناقصة بالقوالب المحفوظة مسبقاً (توافق مع بيانات قديمة)
+  Object.keys(templatesData).forEach(k => { templatesData[k] = withDesignDefaults(templatesData[k]); });
   renderTemplatesEditor();
 }
 function renderTemplatesEditor(){
@@ -393,59 +427,182 @@ function closeTplExpanded(){
   currentExpandedTpl = null;
   renderTemplatesEditor();
 }
-function renderTplExpanded(){
-  const key = currentExpandedTpl;
+const TPL_FONTS = ['Tajawal','IBM Plex Sans Arabic','Cairo','Almarai','Space Mono'];
+let currentTplSubTab = 'design';
+
+// يبني HTML لوحة المعاينة الحيّة فقط (يُستدعى عند أول فتح، وعند كل تعديل سريع بدون إعادة رسم عناصر التحكم)
+function buildTplMockupHtml(key){
   const t = templatesData[key];
-  if(!t) return;
   const isRect = t.iconShape === 'rect';
   const rectStyle = t.rectStyle || 'rounded';
   const showAvatar = t.showAvatar !== false;
   const showSocials = t.showSocials !== false;
   const showLinks = t.showLinks !== false;
   const bgStyle = t.bgImage ? `background-image:url(${t.bgImage});background-size:cover;background-position:center;` : `background:${t.bg};`;
-
-  document.getElementById('tplExpandedBody').innerHTML = `
-    <div class="tpl-mockup-lg" id="tplMockupLg" style="${bgStyle}position:relative;">
+  const avatarRadius = t.avatarShape==='circle' ? '50%' : t.avatarShape==='rounded' ? '24%' : '10px';
+  const linkRadiusPx = t.linkRadius==='sharp' ? '4px' : t.linkRadius==='pill' ? '999px' : '10px';
+  const linkFillStyle = t.linkFill ? `background:${t.p1};color:${t.linkText};` : `background:transparent;color:${t.linkText};`;
+  const linkShadowStyle = t.linkShadow ? `box-shadow:0 6px 14px -4px rgba(0,0,0,.35);` : '';
+  return `
+    <div class="tpl-mockup-lg" id="tplMockupLg" style="${bgStyle}position:relative;font-family:'${t.fontFamily}',sans-serif;padding-top:${28+t.gap}px;">
       <button class="tpl-plus-badge" style="top:8px;left:8px;" onclick="event.stopPropagation();openBgPopover('${key}')" title="الخلفية">+</button>
 
       ${showAvatar ? `
-        <div style="position:relative;">
-          <div class="tpl-mockup-lg-avatar" style="${t.avatarImg ? `background-image:url(${t.avatarImg});background-size:cover;` : `background:linear-gradient(135deg,${t.p1},${t.p2});`}"></div>
-          <button class="tpl-plus-badge" style="bottom:10px;left:calc(50% - 40px);" onclick="event.stopPropagation();openAvatarPopover('${key}')" title="الأفتار/الشعار">+</button>
+        <div style="position:relative;margin-bottom:${t.gap}px;">
+          <div style="width:${t.avatarSize}px;height:${t.avatarSize}px;border-radius:${avatarRadius};${t.avatarImg ? `background-image:url(${t.avatarImg});background-size:cover;` : `background:linear-gradient(135deg,${t.p1},${t.p2});`}"></div>
+          <button class="tpl-plus-badge" style="bottom:0;left:calc(50% - 40px);" onclick="event.stopPropagation();openAvatarPopover('${key}')" title="الأفتار/الشعار">+</button>
         </div>
       ` : ''}
-      <div class="tpl-mockup-lg-name" style="color:${t.text};">${t.sampleName || 'اسمك هنا'}</div>
-      <div class="tpl-mockup-lg-bio" style="background:${t.text};"></div>
-      <div class="tpl-mockup-lg-bio short" style="background:${t.text};"></div>
+      <div style="color:${t.text};font-size:${t.nameSize}px;font-weight:${t.nameWeight};margin-bottom:${Math.max(6,t.gap*0.4)}px;">${t.sampleName || 'اسمك هنا'}</div>
+      <div style="height:${t.bioSize*0.35}px;width:70%;border-radius:3px;opacity:.35;background:${t.text};margin-bottom:6px;"></div>
+      <div style="height:${t.bioSize*0.35}px;width:45%;border-radius:3px;opacity:.35;background:${t.text};margin-bottom:${t.gap}px;"></div>
 
       <div style="position:relative;width:100%;">
         <button class="tpl-plus-badge" style="top:-6px;left:8px;" onclick="event.stopPropagation();openSocialsPopover('${key}')" title="التواصل">+</button>
         ${showSocials ? renderSocialsPreview(t, isRect, rectStyle) : `<div style="height:14px;"></div>`}
       </div>
 
-      ${showLinks ? `<div class="tpl-mockup-lg-link" style="border-color:${t.p1};"></div><div class="tpl-mockup-lg-link" style="border-color:${t.p1};"></div>` : ''}
+      ${showLinks ? `
+        <div style="width:100%;height:${t.linkHeight}px;border-radius:${linkRadiusPx};border:${t.linkBorderWidth}px solid ${t.p1};${linkFillStyle}${linkShadowStyle}margin-bottom:${Math.max(6,t.gap*0.55)}px;"></div>
+        <div style="width:100%;height:${t.linkHeight}px;border-radius:${linkRadiusPx};border:${t.linkBorderWidth}px solid ${t.p1};${linkFillStyle}${linkShadowStyle}"></div>
+      ` : ''}
+    </div>
+  `;
+}
+// تحديث سريع: يعيد رسم لوحة المعاينة فقط (يُستخدم مع كل سحب لمنزلق أو تغيير لون، بدون لمس عناصر التحكم نفسها)
+function refreshTplMockupOnly(key){
+  const holder = document.getElementById('tplMockupHolder');
+  if(holder) holder.innerHTML = buildTplMockupHtml(key);
+}
+window.refreshTplMockupOnly = refreshTplMockupOnly;
+
+function renderTplExpanded(){
+  const key = currentExpandedTpl;
+  const t = withDesignDefaults(templatesData[key]);
+  templatesData[key] = t;
+  if(!t) return;
+
+  document.getElementById('tplExpandedBody').innerHTML = `
+    <!-- ===== لوحة معاينة حيّة — كل تعديل ينعكس هنا فورًا ===== -->
+    <div id="tplMockupHolder">${buildTplMockupHtml(key)}</div>
+
+    <!-- ===== تبويبات فرعية — أسلوب لوحة خصائص فوتوشوب ===== -->
+    <div class="tpl-sub-tabs">
+      <button class="tpl-sub-tab ${currentTplSubTab==='design'?'active':''}" onclick="showTplSubTab('design',this)">عام</button>
+      <button class="tpl-sub-tab ${currentTplSubTab==='colors'?'active':''}" onclick="showTplSubTab('colors',this)">الألوان</button>
+      <button class="tpl-sub-tab ${currentTplSubTab==='fonts'?'active':''}" onclick="showTplSubTab('fonts',this)">الخطوط</button>
+      <button class="tpl-sub-tab ${currentTplSubTab==='buttons'?'active':''}" onclick="showTplSubTab('buttons',this)">الأزرار</button>
+      <button class="tpl-sub-tab ${currentTplSubTab==='spacing'?'active':''}" onclick="showTplSubTab('spacing',this)">المسافات</button>
+      <button class="tpl-sub-tab ${currentTplSubTab==='elements'?'active':''}" onclick="showTplSubTab('elements',this)">العناصر</button>
     </div>
 
-    <div class="tpl-dash-section">
-      <div class="tpl-dash-label">اسم القالب (للإدارة فقط)</div>
-      <input type="text" value="${t.name}" class="tpl-expanded-input" onchange="templatesData['${key}'].name=this.value">
+    <!-- عام -->
+    <div class="tpl-sub-panel ${currentTplSubTab==='design'?'active':''}" data-panel="design">
+      <div class="tpl-dash-section">
+        <div class="tpl-field"><span class="tpl-field-label">اسم القالب (للإدارة فقط)</span>
+          <input type="text" value="${t.name}" class="tpl-expanded-input" onchange="templatesData['${key}'].name=this.value">
+        </div>
+        <div class="tpl-field"><span class="tpl-field-label">نص الاسم بالمعاينة</span>
+          <input type="text" value="${t.sampleName || 'اسمك هنا'}" class="tpl-expanded-input" onchange="updateTplLiveLg('${key}','sampleName',this.value)">
+        </div>
+      </div>
     </div>
 
-    <div class="tpl-dash-section">
-      <div class="tpl-dash-label">نص الاسم بالمعاينة</div>
-      <input type="text" value="${t.sampleName || 'اسمك هنا'}" class="tpl-expanded-input" onchange="updateTplLiveLg('${key}','sampleName',this.value)">
+    <!-- الألوان -->
+    <div class="tpl-sub-panel ${currentTplSubTab==='colors'?'active':''}" data-panel="colors">
+      <div class="tpl-dash-section">
+        <div class="tpl-dash-label">لوحة الألوان الكاملة</div>
+        <div class="tpl-color-mini-row"><span>اللون الأساسي</span><input type="color" value="${t.p1}" oninput="updateTplPreviewLive('${key}','p1',this.value)"></div>
+        <div class="tpl-color-mini-row"><span>اللون الثانوي</span><input type="color" value="${t.p2}" oninput="updateTplPreviewLive('${key}','p2',this.value)"></div>
+        <div class="tpl-color-mini-row"><span>لون النص</span><input type="color" value="${t.text}" oninput="updateTplPreviewLive('${key}','text',this.value)"></div>
+        <div class="tpl-color-mini-row"><span>لون نص الأزرار</span><input type="color" value="${t.linkText}" oninput="updateTplPreviewLive('${key}','linkText',this.value)"></div>
+        ${!t.bgImage ? `<div class="tpl-color-mini-row"><span>لون الخلفية</span><input type="color" value="${t.bg}" oninput="updateTplPreviewLive('${key}','bg',this.value)"></div>` : `<div style="font-size:0.72rem;color:#9aa2c8;">الخلفية حالياً صورة — احذفها من قسم "الخلفية" بالمعاينة لاستخدام لون بدلاً منها.</div>`}
+      </div>
     </div>
 
-    <div class="tpl-dash-section">
-      <div class="tpl-dash-label">عناصر الصفحة</div>
-      <label class="tpl-toggle-row"><input type="checkbox" ${showAvatar?'checked':''} onchange="updateTplFlagLg('${key}','showAvatar',this.checked)"><span>إظهار الأفتار</span></label>
-      <label class="tpl-toggle-row"><input type="checkbox" ${showSocials?'checked':''} onchange="updateTplFlagLg('${key}','showSocials',this.checked)"><span>إظهار حسابات التواصل</span></label>
-      <label class="tpl-toggle-row"><input type="checkbox" ${showLinks?'checked':''} onchange="updateTplFlagLg('${key}','showLinks',this.checked)"><span>إظهار الروابط</span></label>
+    <!-- الخطوط -->
+    <div class="tpl-sub-panel ${currentTplSubTab==='fonts'?'active':''}" data-panel="fonts">
+      <div class="tpl-dash-section">
+        <div class="tpl-field"><span class="tpl-field-label">نوع الخط</span>
+          <select class="tpl-expanded-select" onchange="updateTplLiveLg('${key}','fontFamily',this.value)">
+            ${TPL_FONTS.map(f=>`<option value="${f}" ${t.fontFamily===f?'selected':''}>${f}</option>`).join('')}
+          </select>
+        </div>
+        <div class="tpl-field"><span class="tpl-field-label">حجم الاسم</span>
+          <div class="tpl-range-row"><input type="range" min="14" max="40" value="${t.nameSize}" oninput="this.nextElementSibling.textContent=this.value+'px';updateTplPreviewLive('${key}','nameSize',this.value)"><span class="tpl-range-val">${t.nameSize}px</span></div>
+        </div>
+        <div class="tpl-field"><span class="tpl-field-label">وزن خط الاسم</span>
+          <select class="tpl-expanded-select" onchange="updateTplLiveLg('${key}','nameWeight',this.value)">
+            ${[400,500,600,700,800,900].map(w=>`<option value="${w}" ${+t.nameWeight===w?'selected':''}>${w}</option>`).join('')}
+          </select>
+        </div>
+        <div class="tpl-field"><span class="tpl-field-label">حجم سطور الوصف (bio)</span>
+          <div class="tpl-range-row"><input type="range" min="8" max="20" value="${t.bioSize}" oninput="this.nextElementSibling.textContent=this.value+'px';updateTplPreviewLive('${key}','bioSize',this.value)"><span class="tpl-range-val">${t.bioSize}px</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- الأزرار -->
+    <div class="tpl-sub-panel ${currentTplSubTab==='buttons'?'active':''}" data-panel="buttons">
+      <div class="tpl-dash-section">
+        <div class="tpl-field"><span class="tpl-field-label">شكل الحواف</span>
+          <div class="tpl-seg-row">
+            <button type="button" class="tpl-seg-btn ${t.linkRadius==='sharp'?'active':''}" onclick="updateTplLiveLg('${key}','linkRadius','sharp');renderTplExpanded()">▭ حاد</button>
+            <button type="button" class="tpl-seg-btn ${t.linkRadius==='rounded'?'active':''}" onclick="updateTplLiveLg('${key}','linkRadius','rounded');renderTplExpanded()">▢ دائري</button>
+            <button type="button" class="tpl-seg-btn ${t.linkRadius==='pill'?'active':''}" onclick="updateTplLiveLg('${key}','linkRadius','pill');renderTplExpanded()">⬭ كبسولة</button>
+          </div>
+        </div>
+        <div class="tpl-field"><span class="tpl-field-label">ارتفاع الزر</span>
+          <div class="tpl-range-row"><input type="range" min="16" max="56" value="${t.linkHeight}" oninput="this.nextElementSibling.textContent=this.value+'px';updateTplPreviewLive('${key}','linkHeight',this.value)"><span class="tpl-range-val">${t.linkHeight}px</span></div>
+        </div>
+        <div class="tpl-field"><span class="tpl-field-label">سُمك الحدود</span>
+          <div class="tpl-range-row"><input type="range" min="0" max="6" value="${t.linkBorderWidth}" oninput="this.nextElementSibling.textContent=this.value+'px';updateTplPreviewLive('${key}','linkBorderWidth',this.value)"><span class="tpl-range-val">${t.linkBorderWidth}px</span></div>
+        </div>
+        <label class="tpl-toggle-row"><input type="checkbox" ${t.linkFill?'checked':''} onchange="updateTplFlagLg('${key}','linkFill',this.checked)"><span>تعبئة الزر بلون خلفية (بدل شفاف)</span></label>
+        <label class="tpl-toggle-row"><input type="checkbox" ${t.linkShadow?'checked':''} onchange="updateTplFlagLg('${key}','linkShadow',this.checked)"><span>ظل خفيف تحت الزر</span></label>
+      </div>
+    </div>
+
+    <!-- المسافات -->
+    <div class="tpl-sub-panel ${currentTplSubTab==='spacing'?'active':''}" data-panel="spacing">
+      <div class="tpl-dash-section">
+        <div class="tpl-field"><span class="tpl-field-label">حجم الأفتار</span>
+          <div class="tpl-range-row"><input type="range" min="40" max="110" value="${t.avatarSize}" oninput="this.nextElementSibling.textContent=this.value+'px';updateTplPreviewLive('${key}','avatarSize',this.value)"><span class="tpl-range-val">${t.avatarSize}px</span></div>
+        </div>
+        <div class="tpl-field"><span class="tpl-field-label">شكل الأفتار</span>
+          <div class="tpl-seg-row">
+            <button type="button" class="tpl-seg-btn ${t.avatarShape==='circle'?'active':''}" onclick="updateTplLiveLg('${key}','avatarShape','circle');renderTplExpanded()">⚪ دائري</button>
+            <button type="button" class="tpl-seg-btn ${t.avatarShape==='rounded'?'active':''}" onclick="updateTplLiveLg('${key}','avatarShape','rounded');renderTplExpanded()">▢ ناعم</button>
+            <button type="button" class="tpl-seg-btn ${t.avatarShape==='square'?'active':''}" onclick="updateTplLiveLg('${key}','avatarShape','square');renderTplExpanded()">▭ مربع</button>
+          </div>
+        </div>
+        <div class="tpl-field"><span class="tpl-field-label">المسافة بين العناصر</span>
+          <div class="tpl-range-row"><input type="range" min="6" max="30" value="${t.gap}" oninput="this.nextElementSibling.textContent=this.value+'px';updateTplPreviewLive('${key}','gap',this.value)"><span class="tpl-range-val">${t.gap}px</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- العناصر -->
+    <div class="tpl-sub-panel ${currentTplSubTab==='elements'?'active':''}" data-panel="elements">
+      <div class="tpl-dash-section">
+        <label class="tpl-toggle-row"><input type="checkbox" ${showAvatar?'checked':''} onchange="updateTplFlagLg('${key}','showAvatar',this.checked)"><span>إظهار الأفتار</span></label>
+        <label class="tpl-toggle-row"><input type="checkbox" ${showSocials?'checked':''} onchange="updateTplFlagLg('${key}','showSocials',this.checked)"><span>إظهار حسابات التواصل</span></label>
+        <label class="tpl-toggle-row"><input type="checkbox" ${showLinks?'checked':''} onchange="updateTplFlagLg('${key}','showLinks',this.checked)"><span>إظهار الروابط</span></label>
+      </div>
     </div>
 
     <button class="tpl-delete-btn" style="width:100%;" onclick="deleteTemplate('${key}');closeTplExpanded();">🗑 حذف هذا القالب</button>
   `;
 }
+function showTplSubTab(id, btn){
+  currentTplSubTab = id;
+  document.querySelectorAll('.tpl-sub-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tpl-sub-panel').forEach(p=>p.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  const panel = document.querySelector(`.tpl-sub-panel[data-panel="${id}"]`);
+  if(panel) panel.classList.add('active');
+}
+window.showTplSubTab = showTplSubTab;
 function renderSocialsPreview(t, isRect, rectStyle){
   if(isRect){
     const radius = rectStyle === 'sharp' ? '4px' : '10px';
@@ -561,6 +718,12 @@ window.openSocialsPopover = openSocialsPopover;
 window.setSocialsShape = setSocialsShape;
 window.closeTplPopover = closeTplPopover;
 
+// تحديث خفيف يُستخدم مع المنزلقات ومنتقيات الألوان (سحب مستمر) — لا يعيد رسم عناصر التحكم، فقط المعاينة
+function updateTplPreviewLive(key, field, value){
+  templatesData[key][field] = value;
+  refreshTplMockupOnly(key);
+}
+window.updateTplPreviewLive = updateTplPreviewLive;
 function updateTplLiveLg(key, field, value){
   templatesData[key][field] = value;
   renderTplExpanded();
@@ -606,7 +769,7 @@ function deleteTemplate(key){
 }
 function addNewTemplate(){
   const id = 'custom_' + Date.now();
-  templatesData[id] = { name: 'قالب جديد', p1:'#3d5af1', p2:'#6c8fff', text:'#0f1535', bg:'#ffffff', iconShape:'circle', showAvatar:true, showSocials:true, showLinks:true };
+  templatesData[id] = { name: 'قالب جديد', p1:'#3d5af1', p2:'#6c8fff', text:'#0f1535', bg:'#ffffff', iconShape:'circle', showAvatar:true, showSocials:true, showLinks:true, ...TPL_DESIGN_DEFAULTS };
   renderTemplatesEditor();
 }
 window.updateTplLive = updateTplLive;
