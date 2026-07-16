@@ -43,8 +43,8 @@ input:focus{border-color:#3d5af1;box-shadow:0 0 0 3px rgba(61,90,241,0.1);}
   </div>
   <div class="header">
     <div class="logo">electrwni<em>.link</em></div>
-    <div class="title">تسجيل الدخول <span style="font-size:1rem;font-weight:400;color:#9aa2c8;">Sign In</span></div>
-    <div class="subtitle">أدخل بيانات حسابك · Enter your credentials</div>
+    <div class="title" id="pageTitle">تسجيل الدخول <span style="font-size:1rem;font-weight:400;color:#9aa2c8;">Sign In</span></div>
+    <div class="subtitle" id="pageSubtitle">أدخل بيانات حسابك · Enter your credentials</div>
   </div>
   <div class="error" id="error"></div>
   <div class="success" id="success"></div>
@@ -69,9 +69,40 @@ input:focus{border-color:#3d5af1;box-shadow:0 0 0 3px rgba(61,90,241,0.1);}
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 <script>
 const cfg={apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",authDomain:"electrwni-link.firebaseapp.com",projectId:"electrwni-link",storageBucket:"electrwni-link.firebasestorage.app",messagingSenderId:"712490301263",appId:"1:712490301263:web:2084210da3f687285ab73a"};
-if(!firebase.apps.length)firebase.initializeApp(cfg);
-const auth=firebase.auth();
-const db=firebase.firestore();
+
+// ===== نظام تعدد الحسابات =====
+// المشكلة السابقة: كل الحسابات كانت تشترك بنفس نسخة Firebase الافتراضية، فتسجيل حساب جديد
+// كان يستبدل الجلسة المحفوظة للحساب السابق تلقائيًا (حساب واحد نشط فقط لكل متصفح).
+// الحل: كل حساب يسجّل دخول يحصل على نسخة Firebase منفصلة تمامًا (باسم فريد)، فتُحفظ
+// جلسته بشكل مستقل تمامًا عن أي حساب آخر — ويقدر يرجع لها لاحقًا بضغطة وحدة بدون كلمة مرور.
+const ELS_ACCOUNTS_KEY = 'elSavedAccounts';   // قائمة الحسابات المحفوظة بهذا المتصفح
+const ELS_ACTIVE_KEY = 'elActiveAccountApp';  // اسم نسخة Firebase النشطة حاليًا
+
+function elsGetAccounts(){
+  try{ return JSON.parse(localStorage.getItem(ELS_ACCOUNTS_KEY) || '[]'); }catch(e){ return []; }
+}
+function elsSaveAccounts(list){
+  localStorage.setItem(ELS_ACCOUNTS_KEY, JSON.stringify(list));
+}
+// يحفظ/يحدّث حساب هذا التسجيل ضمن القائمة (يستبدل أي إدخال قديم لنفس البريد بنسخة التطبيق الجديدة)
+function elsUpsertAccount(appName, uid, email, username, displayName){
+  const list = elsGetAccounts().filter(a => a.email !== email);
+  list.push({ appName, uid, email, username: username || '', displayName: displayName || '' });
+  elsSaveAccounts(list);
+}
+
+const params = new URLSearchParams(window.location.search);
+const isAddingAccount = params.get('addAccount') === '1';
+if(isAddingAccount){
+  document.getElementById('pageTitle').innerHTML = 'إضافة حساب آخر <span style="font-size:1rem;font-weight:400;color:#9aa2c8;">Add Account</span>';
+  document.getElementById('pageSubtitle').textContent = 'حساباتك الأخرى بهذا المتصفح تبقى بمكانها — بدون أي تسجيل خروج';
+}
+
+// نسخة Firebase منعزلة خاصة بمحاولة الدخول هذه (اسم فريد بكل مرة)
+const slotAppName = 'acct_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+const slotApp = firebase.initializeApp(cfg, slotAppName);
+const auth = slotApp.auth();
+const db = slotApp.firestore();
 let unverifiedUser=null;
 
 // نجهّز إعداد الجلسة كوعد واحد نستطيع انتظاره — يمنع أي محاولة دخول قبل اكتمال هذا الإعداد
@@ -109,13 +140,10 @@ async function login(){
   if(!input||!password){showError('⚠️ يرجى ملء جميع الحقول');return;}
   setLoading(true);
   try{
-    // ١) تأكد أولاً أن إعداد الجلسة اكتمل فعلاً (يحل سباق الحالات المحتمل)
+    // تأكد أولاً أن إعداد الجلسة اكتمل فعلاً (يحل سباق الحالات المحتمل)
     await withTimeout(persistenceReady, 8000, 'persistence');
-
-    // ٢) دخول دفاعي: لو فيه جلسة سابقة عالقة من حساب مختلف، نظّفها قبل المحاولة الجديدة
-    if(auth.currentUser){
-      try{ await withTimeout(auth.signOut(), 5000, 'presignout'); }catch(e){ /* تجاهل، نكمل بأي حال */ }
-    }
+    // ملاحظة: لا حاجة لتسجيل خروج أي جلسة سابقة هنا — هذا التسجيل يستخدم نسخة Firebase
+    // معزولة تمامًا (slotApp)، فلا يمكنه لمس أي حساب آخر مسجّل دخول بهذا المتصفح إطلاقًا.
 
     let email=input;
     if(!input.includes('@')){
@@ -138,6 +166,7 @@ async function login(){
     // تعافٍ تلقائي: إن كانت بيانات المستخدم مفقودة، أعد إنشاءها
     const uid=cred.user.uid;
     const ud=await withTimeout(db.collection('users').doc(uid).get(), 10000, 'user-doc-check');
+    let finalUsername;
     if(!ud.exists){
       // استخرج اسم مستخدم من البريد كبداية، وأعد بناء الوثيقة
       const base=(cred.user.email.split('@')[0]||'user').toLowerCase().replace(/[^a-z0-9_]/g,'').slice(0,18)||'user';
@@ -155,11 +184,16 @@ async function login(){
       },{merge:true}), 10000, 'user-doc-restore');
       await withTimeout(db.collection('usernames').doc(uname).set({uid}), 10000, 'username-doc-restore');
       localStorage.setItem('elUserUsername',uname);
+      finalUsername = uname;
       showSuccess('✅ تم استعادة حسابك! جاري الانتقال...');
     } else {
       localStorage.setItem('elUserUsername',ud.data().username);
+      finalUsername = ud.data().username;
       showSuccess('✅ تم تسجيل الدخول! جاري الانتقال...');
     }
+    // سجّل هذا الحساب بقائمة الحسابات المحفوظة بهذا المتصفح، واجعله الحساب النشط حاليًا
+    elsUpsertAccount(slotAppName, uid, cred.user.email, finalUsername, cred.user.displayName || '');
+    localStorage.setItem(ELS_ACTIVE_KEY, slotAppName);
     setTimeout(()=>{window.location.href='dashboard.html';},900);
   }catch(e){
     setLoading(false);
