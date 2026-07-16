@@ -91,9 +91,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:14px 2
   border:2px dashed #c7cee0;border-radius:16px;padding:16px;margin-bottom:14px;background:#fff;
 }
 .tpl-dash-label{font-size:0.78rem;font-weight:800;color:#6b7280;margin-bottom:10px;text-align:right;}
-.tpl-settings-content{max-width:460px;margin:0 auto;text-align:right;}
-.tpl-settings-content .form-group label,
-.tpl-settings-content label{text-align:right;display:block;}
 .tpl-expanded-input{
   width:100%;padding:11px;border:1.5px solid #e0e0e0;border-radius:10px;font-family:inherit;font-size:0.9rem;font-weight:700;
 }
@@ -217,7 +214,7 @@ const auth=firebase.auth();
 const db=firebase.firestore();
 
 // ⚠️ عدّل هذا البريد ليكون بريدك الحقيقي المسجّل بالموقع — هذا هو مفتاح الوصول للوحة الإدارة
-const ADMIN_EMAIL = "brmjeat1@gmail.com";
+const ADMIN_EMAIL = "your-admin-email@example.com";
 
 const DEFAULT_TEMPLATES = {
   default: { name:'الافتراضي', p1:'#3d5af1', p2:'#6c8fff', text:'#0f1535', bg:'#ffffff' },
@@ -408,7 +405,6 @@ function renderTplExpanded(){
   const bgStyle = getTplBgStyle(t);
 
   document.getElementById('tplExpandedBody').innerHTML = `
-  <div class="tpl-settings-content">
     <div class="tpl-mockup-lg" id="tplMockupLg" style="${bgStyle}position:relative;">
       <button class="tpl-plus-badge" style="top:8px;left:8px;" onclick="event.stopPropagation();openBgPopover('${key}')" title="الخلفية">+</button>
 
@@ -448,7 +444,6 @@ function renderTplExpanded(){
     </div>
 
     <button class="tpl-delete-btn" style="width:100%;" onclick="deleteTemplate('${key}');closeTplExpanded();">🗑 حذف هذا القالب</button>
-  </div>
   `;
 }
 function renderSocialsPreview(t, isRect, rectStyle){
@@ -471,7 +466,7 @@ function renderSocialsPreview(t, isRect, rectStyle){
 // ===== نافذة صغيرة منبثقة عامة =====
 function showTplPopover(title, bodyHtml){
   document.getElementById('tplPopoverTitle').textContent = title;
-  document.getElementById('tplPopoverBody').innerHTML = `<div class="tpl-settings-content">${bodyHtml}</div>`;
+  document.getElementById('tplPopoverBody').innerHTML = bodyHtml;
   document.getElementById('tplPopoverOverlay').style.display = 'flex';
 }
 function closeTplPopover(){
