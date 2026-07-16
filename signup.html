@@ -140,9 +140,11 @@ input:focus,textarea:focus{border-color:#3d5af1;box-shadow:0 0 0 3px rgba(61,90,
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 <script>
 const cfg={apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",authDomain:"electrwni-link.firebaseapp.com",projectId:"electrwni-link",storageBucket:"electrwni-link.firebasestorage.app",messagingSenderId:"712490301263",appId:"1:712490301263:web:2084210da3f687285ab73a"};
-if(!firebase.apps.length)firebase.initializeApp(cfg);
-const auth=firebase.auth();
-const db=firebase.firestore();
+// نسخة Firebase معزولة لعملية الإنشاء — حتى لا تؤثر مؤقتًا على أي حساب آخر مسجّل دخول بتبويب آخر
+// من نفس المتصفح (تناسق مع نظام تعدد الحسابات في صفحة الدخول)
+const signupApp = firebase.initializeApp(cfg, 'signup_' + Date.now());
+const auth=signupApp.auth();
+const db=signupApp.firestore();
 const reserved=['admin','root','api','www','app','demo','test','page','signin','signup','dashboard','index'];
 
 // ===== قوالب التصميم (نفس ألوان سمات المقالة، لتناسق الهوية) =====
