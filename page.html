@@ -919,30 +919,38 @@ function render(user){
       if(mode==='upload' && s.icon && String(s.icon).startsWith('data:')){
         return `<a href="${s.url}" target="_blank" class="social-btn" title="${s.name||''}" style="border-color:var(--accent-light);" onclick="trackSocialClick('${s.id}')"><img src="${s.icon}"></a>`;
       }
-      // لون١=خلفية المربع، لون٢=الإطار، الشعار=لون النص (نمط site) — أو تخصيص كامل بأربع ألوان مستقلة
+      // لون خلفية الأيقونة، لون الأيقونة نفسها، لون المستطيل، لون النص، لون/سعة الإطار — قابلة للتخصيص المستقل
       let circleBg, borderCol, iconColor, containerBg='transparent';
+      let rectBg, rectTextColor, borderWidth=2; // خاصة بشكل "أيقونة مع مستطيل للاسم" فقط
       if(mode==='custom'){
         circleBg = s.customBg || 'var(--accent)';
         borderCol = s.customRing || 'transparent';
         iconColor = s.customIconColor || '#ffffff';
         containerBg = s.customContainer || 'transparent';
+        rectBg = iconColor; rectTextColor = circleBg; // نفس السلوك القديم لتخصيص الحساب الفردي
       } else if(mode==='site'){
-        circleBg='var(--accent)'; borderCol='var(--accent-light)'; iconColor='var(--text)';
+        // ألوان مخصّصة من لوحة التحكم (تُطبَّق على كل الحسابات دفعة واحدة)
+        circleBg = user.socIconBg || 'var(--accent)';
+        iconColor = user.socIconColor || 'var(--text)';
+        borderCol = user.socRectBorderColor || 'var(--accent-light)';
+        rectBg = user.socRectColor || 'var(--text)';
+        rectTextColor = user.socTextColor || '#ffffff';
+        borderWidth = user.socRectBorderWidth != null ? user.socRectBorderWidth : 2;
       } else {
         // لون التطبيق الرسمي
         circleBg=s.brandColor||platColor(pid); borderCol='var(--accent-light)'; iconColor='#ffffff';
+        rectBg = 'var(--text)'; rectTextColor = circleBg; // نفس السلوك القديم
       }
       const inner = svg ? svg : `<span style="font-weight:700;font-size:1.4rem;">${(s.name||'?')[0].toUpperCase()}</span>`;
 
       // ===== الشكل المستطيل: أيقونة + يوزر، بخط فاصل مستقيم أو مائل =====
-      // نعكس الألوان بين منطقة الأيقونة ومنطقة الاسم ليتميّزا بصرياً عن بعض
       if(iconShape === 'rect'){
         const rectClass = rectStyle === 'sharp' ? 'social-rect social-rect-sharp' : 'social-rect';
         const smallInner = svg ? svg.replace('width="28"','width="20"').replace('height="28"','height="20"') : inner;
-        return `<a href="${s.url}" target="_blank" class="${rectClass}" title="${s.name||pid}" style="border-color:${borderCol};background:${iconColor};color:${circleBg};" onclick="trackSocialClick('${s.id}')">
+        return `<a href="${s.url}" target="_blank" class="${rectClass}" title="${s.name||pid}" style="border-color:${borderCol};border-width:${borderWidth}px;background:${rectBg};color:${rectTextColor};" onclick="trackSocialClick('${s.id}')">
           <span class="social-rect-icon" style="background:${circleBg};color:${iconColor};">${smallInner}</span>
           <span class="social-rect-divider"></span>
-          <span class="social-rect-label" style="background:${iconColor};color:${circleBg};">${extractHandle(s.url)||s.name||pid}</span>
+          <span class="social-rect-label" style="background:${rectBg};color:${rectTextColor};">${extractHandle(s.url)||s.name||pid}</span>
         </a>`;
       }
 
