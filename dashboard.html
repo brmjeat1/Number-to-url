@@ -306,31 +306,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 </div>
 
 <!-- TOPBAR -->
-<div class="topbar" style="position:relative;">
+<div class="topbar">
   <div class="topbar-brand" id="topbarBrand" dir="ltr">electrwni.link</div>
   <div class="topbar-btns">
-    <button class="btn btn-white" id="viewPageBtn" onclick="toggleTopbarQrMenu()" title="صفحتك · My Page" style="display:flex;align-items:center;justify-content:center;padding:10px;">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><line x1="14" y1="14" x2="21" y2="14"></line><line x1="14" y1="21" x2="21" y2="21"></line><line x1="17" y1="14" x2="17" y2="21"></line></svg>
-    </button>
-    <button class="btn btn-white" id="acctSwitchBtn" onclick="toggleAccountSwitcher()" title="الحسابات · Accounts" style="display:flex;align-items:center;justify-content:center;padding:10px;">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-    </button>
+    <button class="btn btn-white" id="viewPageBtn" onclick="openMyPage()">صفحتك <span style="font-size:0.65rem;display:block;opacity:0.7;">My Page</span></button>
     <button class="btn btn-logout" onclick="logout()" title="خروج · Logout" style="display:flex;align-items:center;justify-content:center;padding:10px;">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
     </button>
-  </div>
-
-  <!-- لوحة مبدّل الحسابات -->
-  <div id="acctSwitchPanel" style="display:none;position:absolute;top:100%;left:16px;margin-top:8px;background:#fff;border:1px solid var(--border,#e8ecf5);border-radius:14px;box-shadow:0 12px 32px -8px rgba(0,0,0,0.25);width:280px;max-width:88vw;z-index:2000;overflow:hidden;">
-    <div id="acctSwitchList" style="max-height:280px;overflow-y:auto;"></div>
-    <button type="button" onclick="goAddAccount()" style="width:100%;padding:13px;border:none;border-top:1px solid var(--border,#e8ecf5);background:var(--bg2,#f4f5f9);font-weight:700;font-size:0.85rem;cursor:pointer;font-family:inherit;color:#3d5af1;">+ إضافة حساب آخر</button>
-  </div>
-
-  <!-- لوحة زر صفحتك (نسخ الرابط / عرض QR) -->
-  <div id="topbarQrMenu" style="display:none;position:absolute;top:100%;right:16px;margin-top:8px;background:#fff;border:1px solid var(--border,#e8ecf5);border-radius:14px;box-shadow:0 12px 32px -8px rgba(0,0,0,0.25);width:200px;max-width:80vw;z-index:2000;overflow:hidden;">
-    <button type="button" onclick="closeTopbarQrMenu();window.copyMyLink()" style="width:100%;padding:13px 16px;border:none;border-bottom:1px solid var(--border,#f0f0f0);background:#fff;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:inherit;text-align:right;display:flex;align-items:center;gap:10px;">🔗 نسخ الرابط</button>
-    <button type="button" onclick="closeTopbarQrMenu();window.openQrCard()" style="width:100%;padding:13px 16px;border:none;border-bottom:1px solid var(--border,#f0f0f0);background:#fff;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:inherit;text-align:right;display:flex;align-items:center;gap:10px;">▦ عرض / تنزيل QR</button>
-    <button type="button" onclick="closeTopbarQrMenu();openMyPage()" style="width:100%;padding:13px 16px;border:none;background:var(--bg2,#f4f5f9);font-weight:700;font-size:0.82rem;cursor:pointer;font-family:inherit;text-align:right;display:flex;align-items:center;gap:10px;color:#3d5af1;">↗ فتح صفحتك</button>
   </div>
 </div>
 
@@ -758,18 +740,18 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
           </div>
         </div>
 
-        <!-- خلفية الصفحة كصورة كاملة — منفصلة عن اللون المسطح وعن صورة الغلاف العلوية -->
         <div class="form-group" style="margin-top:20px;">
-          <label>خلفية الصفحة (صورة) <span class="lbl-sub">/ Page Background Image</span></label>
-          <div id="pageBgPreview" style="width:100%;height:90px;border-radius:10px;border:1.5px dashed var(--border);background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:0.78rem;margin-bottom:10px;">لا توجد صورة خلفية — الصفحة تستخدم اللون بالأعلى</div>
-          <div style="display:flex;gap:8px;">
-            <label style="flex:1;text-align:center;padding:11px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-weight:700;font-size:0.85rem;background:var(--bg2);">
-              📷 رفع صورة من الألبوم
-              <input type="file" id="pageBgInput" accept="image/*" onchange="selectPageBackground(this)" style="display:none;">
-            </label>
-            <button type="button" id="pageBgRemoveBtn" onclick="removePageBackground()" style="display:none;padding:11px 16px;border:1.5px solid var(--error);border-radius:10px;background:transparent;color:var(--error);font-weight:700;cursor:pointer;font-family:inherit;">إزالة</button>
+          <label>خلفية الصفحة <span class="lbl-sub">/ Page Background</span></label>
+          <div style="display:flex;gap:6px;margin-bottom:10px;">
+            <button type="button" id="bgModeBtn_color" onclick="setPageBgMode('color')" style="flex:1;padding:9px 4px;border:2px solid var(--primary);border-radius:9px;background:var(--bg2);font-weight:700;font-size:0.76rem;cursor:pointer;font-family:inherit;">ألوان فقط</button>
+            <button type="button" id="bgModeBtn_image" onclick="setPageBgMode('image')" style="flex:1;padding:9px 4px;border:2px solid var(--border);border-radius:9px;background:var(--bg);font-weight:700;font-size:0.76rem;cursor:pointer;font-family:inherit;">خلفية فقط</button>
+            <button type="button" id="bgModeBtn_combo" onclick="setPageBgMode('combo')" style="flex:1;padding:9px 4px;border:2px solid var(--border);border-radius:9px;background:var(--bg);font-weight:700;font-size:0.76rem;cursor:pointer;font-family:inherit;">ألوان وخلفية</button>
           </div>
-          <div style="font-size:0.72rem;color:var(--text2);margin-top:8px;">تظهر خلف كامل صفحتك العامة. يُنصح بصورة خفيفة التباين حتى يبقى النص واضحًا.</div>
+          <div id="bgImageUploadBox" style="display:none;">
+            <p style="font-size:0.72rem;color:var(--muted);margin-bottom:8px;">تُضغط الصورة تلقائيًا بجودة عالية دون إبطاء تحميل صفحتك.</p>
+            <input type="file" accept="image/*" onchange="pageBgFileChosen(this)" style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font-family:inherit;">
+            <img id="bgImagePreviewThumb" style="display:none;width:100%;height:90px;object-fit:cover;border-radius:10px;margin-top:8px;">
+          </div>
         </div>
 
         <!-- معاينة حية لشكل الصفحة بالألوان المختارة -->
@@ -997,17 +979,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   import { getAuth, onAuthStateChanged, signOut, deleteUser, updatePassword, reauthenticateWithCredential, EmailAuthProvider, setPersistence, browserLocalPersistence, indexedDBLocalPersistence, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, getDoc, collection, getDocs, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  // ===== نظام تعدد الحسابات =====
-  // نفس المفاتيح المستخدمة بصفحة الدخول (signin.html) — القراءة والكتابة تتشاركان نفس localStorage
-  // بما إن كل الملفات على نفس النطاق (نفس الموقع).
-  const ELS_ACCOUNTS_KEY = 'elSavedAccounts';
-  const ELS_ACTIVE_KEY = 'elActiveAccountApp';
-  function elsGetAccounts(){
-    try{ return JSON.parse(localStorage.getItem(ELS_ACCOUNTS_KEY) || '[]'); }catch(e){ return []; }
-  }
-  function elsSaveAccounts(list){ localStorage.setItem(ELS_ACCOUNTS_KEY, JSON.stringify(list)); }
-  const activeAccountApp = localStorage.getItem(ELS_ACTIVE_KEY);
-
   // إعدادات Firebase الخاصة بمشروعك الحقيقي لحل مشكلة الآيفون
   const firebaseConfig = {
     apiKey: "AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",
@@ -1018,9 +989,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     appId: "1:712490301263:web:2084210da3f687285ab73a"
   };
 
-  // لو فيه حساب نشط محدَّد من نظام تعدد الحسابات، نفتح بنفس نسخة Firebase الخاصة فيه بالضبط
-  // (بنفس الاسم اللي أُنشئت فيه من صفحة الدخول) — غير كذا، النسخة الافتراضية (توافق مع جلسات قديمة قبل هذه الميزة)
-  const app = activeAccountApp ? initializeApp(firebaseConfig, activeAccountApp) : initializeApp(firebaseConfig);
+  const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   // ضبط التخزين ليطابق signin (يمنع عدم مشاركة الجلسة → الحلقة)
   // نحاkey indexedDB أولاً ثم local كاحتياطي
@@ -1041,7 +1010,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   let socialColorMode = 'brand';
   let croppedAvatarBase64 = null;
   let croppedBannerBase64 = null;
-  let pageBgImageBase64 = null; // خلفية الصفحة الكاملة (منفصلة عن صورة الغلاف)
   let customSocialIconBase64 = null;
 
   // مكتبة أيقونات SVG للمنصات (بدل الإيموجي)
@@ -1198,16 +1166,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         try { sessionStorage.removeItem('el_redirect_count'); } catch(e){}
         console.log("تمت استعادة الجلسة بنجاح:", user.uid);
 
-        // سجّل/حدّث هذا الحساب بقائمة مبدّل الحسابات — يشمل جلسات قديمة كانت على النسخة الافتراضية
-        // قبل إضافة هذه الميزة، فتظهر تلقائيًا بالمبدّل من أول دخول بعد التحديث
-        try{
-          const slotName = activeAccountApp || '[DEFAULT]';
-          if(!activeAccountApp) localStorage.setItem(ELS_ACTIVE_KEY, slotName);
-          const list = elsGetAccounts().filter(a => a.appName !== slotName);
-          list.push({ appName: slotName, uid: user.uid, email: user.email || '', username: '', displayName: user.displayName || '' });
-          elsSaveAccounts(list);
-        }catch(e){ console.error('account switcher registration failed:', e); }
-
         if (!user.emailVerified) {
           const createdMs = (user.metadata && user.metadata.creationTime) ? new Date(user.metadata.creationTime).getTime() : Date.now();
           const elapsed = Date.now() - createdMs;
@@ -1228,20 +1186,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
         await initDashboard();
       } else {
-        // الجلسة غير موجودة/انتهت — نظّف إدخال هذا الحساب من قائمة المبدّل لو كان مسجّلاً هناك
-        try{
-          if(activeAccountApp){
-            const remaining = elsGetAccounts().filter(a => a.appName !== activeAccountApp);
-            elsSaveAccounts(remaining);
-            if(remaining.length){
-              // فيه حساب آخر محفوظ صالح — بدّل له تلقائيًا بدل التوجيه لصفحة الدخول
-              localStorage.setItem(ELS_ACTIVE_KEY, remaining[0].appName);
-              window.location.reload();
-              return;
-            }
-            localStorage.removeItem(ELS_ACTIVE_KEY);
-          }
-        }catch(e){}
         // حماية من الحلقة: لا نوجّه أكثر من مرة متتالية دون جلسة
         let count = 0;
         try { count = parseInt(sessionStorage.getItem('el_redirect_count')||'0'); } catch(e){}
@@ -1275,13 +1219,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       username = data.username || username;
       const topbarBrandEl = document.getElementById('topbarBrand');
       if(topbarBrandEl) topbarBrandEl.textContent = `electrwni.link/${username}`;
-      // كمّل اسم المستخدم الحقيقي بإدخال المبدّل (كان فارغًا وقت أول تسجيل بهذه الجلسة)
-      try{
-        const slotName = activeAccountApp || '[DEFAULT]';
-        const list = elsGetAccounts();
-        const idx = list.findIndex(a => a.appName === slotName);
-        if(idx > -1 && !list[idx].username){ list[idx].username = username; elsSaveAccounts(list); }
-      }catch(e){}
       document.getElementById('pfName').value = data.fullName || '';
       document.getElementById('pfBio').value = data.bio || '';
       document.getElementById('websiteInput').value = data.website || '';
@@ -1316,16 +1253,16 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         document.getElementById('bgColorPicker').value = data.bgColor;
         document.getElementById('bgHexInput').value = data.bgColor;
       }
+      // وضع الخلفية (ألوان فقط / خلفية فقط / ألوان وخلفية) + صورة الخلفية المحفوظة
+      if (data.bgImage) {
+        window.__currentBgImage = data.bgImage;
+        const thumb = document.getElementById('bgImagePreviewThumb');
+        if(thumb){ thumb.src = data.bgImage; thumb.style.display = 'block'; }
+      }
+      if (window.setPageBgMode) window.setPageBgMode(data.bgMode || 'color');
       // الصور (base64 من Firestore) — أسماء موحّدة مع page.html
       if (data.avatar) { document.getElementById('avatarPreview').innerHTML = `<img src="${data.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`; window.__currentAvatarUrl = data.avatar; }
       if (data.bannerImage) document.getElementById('bannerPreview').style.backgroundImage = `url(${data.bannerImage})`;
-      if (data.pageBackgroundImage) {
-        pageBgImageBase64 = data.pageBackgroundImage;
-        const pv = document.getElementById('pageBgPreview');
-        pv.style.backgroundImage = `url(${data.pageBackgroundImage})`;
-        pv.textContent = '';
-        document.getElementById('pageBgRemoveBtn').style.display = 'inline-block';
-      }
     } else {
       await setDoc(userDocRef, { username, email: currentUser.email, createdAt: new Date() }, { merge: true });
     }
@@ -1580,12 +1517,22 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       window.showToast("تمت إضافة القالب — عدّل ألوانه من لوحة الإدارة");
     }catch(e){ window.showToast("تعذر الحفظ: " + (e.message||'')); }
   };
+  // نمط خلفية القالب — يدعم ألوان فقط / خلفية فقط / ألوان وخلفية (يُحدَّد من لوحة الإدارة)
+  function tplBgStyle(t){
+    const mode = t.bgMode || (t.bgImage ? 'image' : 'color');
+    if(mode === 'image' && t.bgImage) return `background-image:url(${t.bgImage});background-size:cover;background-position:center;background-repeat:no-repeat;`;
+    if(mode === 'combo' && t.bgImage){
+      const overlay = hexToRgbaDash(t.bg || '#ffffff', 0.55);
+      return `background-image:linear-gradient(${overlay},${overlay}),url(${t.bgImage});background-size:cover;background-position:center;background-repeat:no-repeat;`;
+    }
+    return `background:${t.bg};`;
+  }
   function renderTemplateCarousel(activeId){
     const el = document.getElementById('templateCarousel');
     if(!el) return;
     el.innerHTML = DESIGN_TEMPLATES.map(t => `
       <button type="button" class="template-card ${activeId===t.id?'active':''}" data-tpl="${t.id}" onclick="applyTemplate('${t.id}')">
-        <div class="tpl-preview" style="background:${t.bg};">
+        <div class="tpl-preview" style="${tplBgStyle(t)}">
           <div class="tpl-dot" style="background:linear-gradient(135deg,${t.p1},${t.p2});"></div>
         </div>
         <div class="tpl-name">${t.name}</div>
@@ -1620,7 +1567,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         <div class="mockup-link" style="border-color:${t.p1};"></div>
       ` : '';
       return `
-      <button type="button" class="mockup-card ${activeId===t.id?'active':''}" onclick="applyTemplate('${t.id}')" style="background:${t.bg};">
+      <button type="button" class="mockup-card ${activeId===t.id?'active':''}" onclick="applyTemplate('${t.id}')" style="${tplBgStyle(t)}">
         ${showAvatar ? `<div class="mockup-avatar" style="background:linear-gradient(135deg,${t.p1},${t.p2});"></div>` : ''}
         <div class="mockup-name" style="color:${t.text};">${name}</div>
         <div class="mockup-bio" style="background:${t.text};"></div>
@@ -1642,21 +1589,14 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     window.onColor2Pick(t.p2);
     window.onTextColorPick(t.text);
     window.onBgColorPick(t.bg);
-    // ⚠️ إصلاح: القالب من لوحة الإدارة قد يحمل صورة خلفية كاملة (t.bgImage) — كانت تُتجاهل بالكامل هنا
-    // فتُطبَّق ألوان القالب فقط بدون الصورة، مما يجعل تصميم الخلفية بالإدارة "لا يظهر" عند المستخدم.
-    const pv = document.getElementById('pageBgPreview');
+    // خلفية القالب (ألوان فقط / خلفية فقط / ألوان وخلفية) تنتقل مباشرة لتصميم المستخدم
     if(t.bgImage){
       pageBgImageBase64 = t.bgImage;
-      pv.style.backgroundImage = `url(${t.bgImage})`;
-      pv.textContent = '';
-      document.getElementById('pageBgRemoveBtn').style.display = 'inline-block';
-    } else {
-      // القالب المختار لا يحمل صورة خلفية — نرجع للون المسطح حتى لا تبقى صورة قالب سابق عالقة
-      pageBgImageBase64 = null;
-      pv.style.backgroundImage = 'none';
-      pv.textContent = 'لا توجد صورة خلفية — الصفحة تستخدم اللون بالأعلى';
-      document.getElementById('pageBgRemoveBtn').style.display = 'none';
+      window.__currentBgImage = t.bgImage;
+      const thumb = document.getElementById('bgImagePreviewThumb');
+      if(thumb){ thumb.src = t.bgImage; thumb.style.display = 'block'; }
     }
+    window.setPageBgMode(t.bgMode || (t.bgImage ? 'image' : 'color'));
     if(t.iconShape) await window.setIconShape(t.iconShape);
     document.querySelectorAll('.template-card').forEach(c=>c.classList.toggle('active', c.getAttribute('data-tpl')===id));
     renderPageMockups(id);
@@ -2122,44 +2062,18 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   }
 
   // ===== توليد بطاقة QR كاملة كـ Canvas واحد — يحل مشكلة اختفاء الرمز نهائياً (رسم مباشر، بدون التقاط صورة للصفحة) =====
-  async function buildQrCardCanvas({ url, number, name, username, avatarSrc, primaryColor, primaryColor2, qrStyleMode, qrCustomBg, qrCustomIconColor, qrCustomRing, qrCustomContainer }){
+  async function buildQrCardCanvas({ url, number, name, username, avatarSrc, primaryColor, primaryColor2 }){
     if(!window.QRCode) await window.__ensureQr().catch(()=>{});
-
-    // ===== الألوان: تُستخدم القيم المخصّصة فعليًا الآن لو المستخدم فعّل "تخصيص" (كانت تُحفظ فقط ولا تُستخدم أبدًا سابقًا) =====
-    const useCustom = qrStyleMode === 'custom';
-    const p1 = primaryColor || '#3d5af1', p2 = primaryColor2 || '#6c8fff';
-    const borderColor  = useCustom && qrCustomBg        ? qrCustomBg        : p1;      // الإطار الخارجي
-    const boxColor     = useCustom && qrCustomContainer ? qrCustomContainer : p1;      // مربعات اليوزرنيم/الرابط + مربع الرقم اليمين
-    const qrDarkColor  = useCustom && qrCustomIconColor ? qrCustomIconColor : '#0f1535'; // لون نقاط رمز QR
-    const ringColor    = useCustom && qrCustomRing      ? qrCustomRing      : '#ffffff'; // حلقة الشعار الدائري
-    const numberBoxColor = useCustom && qrCustomBg ? shiftColor(qrCustomBg, -18) : (primaryColor2 || '#1732B2');
-
-    // ===== أبعاد البطاقة: نفس نسبة البطاقة المرجعية (عمودية، إطار سميك) =====
-    const OUTER_W = 590, OUTER_H = 1000;
-    const BORDER = 26; // سُمك الإطار الخارجي الملوّن
-    const W = OUTER_W - BORDER*2, H = OUTER_H - BORDER*2;
-
-    const outer = document.createElement('canvas');
-    outer.width = OUTER_W; outer.height = OUTER_H;
-    const octx = outer.getContext('2d');
-
-    // الإطار الخارجي الملوّن
-    octx.fillStyle = borderColor;
-    roundRectPath(octx, 0, 0, OUTER_W, OUTER_H, 28);
-    octx.fill();
-
-    // البطاقة البيضاء الداخلية
+    const W = 640, H = 900;
     const canvas = document.createElement('canvas');
     canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#ffffff';
-    roundRectPath(ctx, 0, 0, W, H, 20);
-    ctx.fill();
-    ctx.save();
-    roundRectPath(ctx, 0, 0, W, H, 20);
-    ctx.clip();
+    const p1 = primaryColor || '#3d5af1', p2 = primaryColor2 || '#6c8fff';
 
-    // خلفية ضبابية خفيفة من الشعار (نسيج زخرفي خفيف جداً)
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0,0,W,H);
+
+    // خلفية ضبابية خفيفة من الشعار (شفافية ٩٠٪ تقريباً — يعني ظهور خفيف جداً كنسيج زخرفي)
     const avatarImg = await loadImageEl(avatarSrc);
     if(avatarImg){
       const bgCanvas = document.createElement('canvas');
@@ -2181,8 +2095,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       ctx.globalAlpha = 1;
     }
 
-    // الشعار الدائري بالأعلى
-    const logoR = 62, logoCx = W/2, logoCy = 110;
+    // الشعار الدائري بالأعلى (واضح تماماً)
+    const logoR = 70, logoCx = W/2, logoCy = 130;
     ctx.save();
     ctx.beginPath(); ctx.arc(logoCx, logoCy, logoR, 0, Math.PI*2); ctx.closePath(); ctx.clip();
     ctx.fillStyle = p1; ctx.fillRect(logoCx-logoR, logoCy-logoR, logoR*2, logoR*2);
@@ -2191,128 +2105,73 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       const iw = avatarImg.width*s, ih = avatarImg.height*s;
       ctx.drawImage(avatarImg, logoCx-iw/2, logoCy-ih/2, iw, ih);
     } else {
-      ctx.fillStyle = '#fff'; ctx.font = 'bold 52px Tajawal, sans-serif';
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 60px Tajawal, sans-serif';
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText((name||'E')[0].toUpperCase(), logoCx, logoCy+4);
     }
     ctx.restore();
     ctx.beginPath(); ctx.arc(logoCx, logoCy, logoR, 0, Math.PI*2);
-    ctx.lineWidth = 4; ctx.strokeStyle = ringColor; ctx.stroke();
+    ctx.lineWidth = 4; ctx.strokeStyle = '#ffffff'; ctx.stroke();
 
-    // الاسم — مخفَّض الحجم (كان كبيرًا جدًا سابقًا)
+    // الاسم + الرابط
     ctx.fillStyle = '#0f1535'; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
-    ctx.font = 'bold 27px Tajawal, sans-serif';
-    ctx.fillText(truncateForCanvas(ctx, name || username || 'حسابي', W - 60), W/2, 215);
-
-    // مربع USERNAME
-    const boxMarginX = 55, boxW2 = W - boxMarginX*2;
-    let curY = 245;
-    ctx.fillStyle = boxColor;
-    roundRectPath(ctx, boxMarginX, curY, boxW2, 46, 10); ctx.fill();
-    ctx.fillStyle = '#ffffff'; ctx.font = 'bold 18px Tajawal, sans-serif'; ctx.textAlign = 'center';
-    ctx.fillText((username || '').toUpperCase(), W/2, curY + 30);
-    curY += 46 + 14;
-
-    // مربع الرابط (ELECTRWNI.LINK/USERNAME)
-    ctx.fillStyle = boxColor;
-    roundRectPath(ctx, boxMarginX, curY, boxW2, 46, 10); ctx.fill();
-    ctx.fillStyle = '#ffffff'; ctx.font = 'bold 17px Tajawal, sans-serif'; ctx.textAlign = 'center';
-    ctx.fillText(truncateForCanvas(ctx, `ELECTRWNI.LINK/${(username||'').toUpperCase()}`, boxW2 - 24), W/2, curY + 30);
-    curY += 46 + 28;
+    ctx.font = 'bold 32px Tajawal, sans-serif';
+    ctx.fillText(name || username || 'حسابي', W/2, 250);
+    ctx.fillStyle = p1;
+    ctx.font = '22px "Space Mono", monospace';
+    ctx.fillText(`electrwni.link/${username}`, W/2, 285);
 
     // رمز QR — يُولَّد وننتظره فعلياً قبل الرسم (هذا هو الإصلاح الجوهري لمشكلة الاختفاء)
     const qrHolder = document.createElement('div');
     qrHolder.style.position='fixed'; qrHolder.style.left='-9999px'; qrHolder.style.top='0';
     document.body.appendChild(qrHolder);
     await new Promise(resolve=>{
-      new QRCode(qrHolder, { text: url, width: 300, height: 300, colorDark: qrDarkColor, colorLight:'#ffffff', correctLevel: QRCode.CorrectLevel.H });
+      new QRCode(qrHolder, { text: url, width: 320, height: 320, colorDark:'#0f1535', colorLight:'#ffffff', correctLevel: QRCode.CorrectLevel.H });
       setTimeout(resolve, 180);
     });
     const qrCanvasEl = qrHolder.querySelector('canvas');
-    const qrSize = boxW2, qrX = boxMarginX, qrY = curY;
+    const qrSize = 320, qrX = (W-qrSize)/2, qrY = 330;
     if(qrCanvasEl){
       ctx.save();
-      ctx.shadowColor = 'rgba(0,0,0,0.14)'; ctx.shadowBlur = 18;
-      ctx.fillStyle = '#f4f6fb';
-      roundRectPath(ctx, qrX-12, qrY-12, qrSize+24, qrSize+24, 14);
+      ctx.shadowColor = 'rgba(0,0,0,0.14)'; ctx.shadowBlur = 22;
+      ctx.fillStyle = '#ffffff';
+      roundRectPath(ctx, qrX-16, qrY-16, qrSize+32, qrSize+32, 18);
       ctx.fill();
       ctx.restore();
-      const pad = (qrSize - qrSize*0.92)/2 + 12;
-      ctx.drawImage(qrCanvasEl, qrX+pad-12, qrY+pad-12, qrSize-2*(pad-12), qrSize-2*(pad-12));
+      ctx.drawImage(qrCanvasEl, qrX, qrY, qrSize, qrSize);
     }
     document.body.removeChild(qrHolder);
-    curY = qrY + qrSize + 34;
 
-    // مربع الرقم (يسار، بلون مختلف) + مربع "أمسح الرمز أو الرقم بالبايو" (يمين)
-    const boxH = 84, gap = 14;
-    const numBoxW = (boxW2 - gap) * 0.34, txtBoxW = (boxW2 - gap) * 0.66;
-    ctx.fillStyle = numberBoxColor;
-    roundRectPath(ctx, boxMarginX, curY, numBoxW, boxH, 14); ctx.fill();
-    ctx.fillStyle = '#ffffff'; ctx.font = 'bold 40px "Space Mono", monospace'; ctx.textAlign = 'center';
-    ctx.fillText(`${number}`, boxMarginX + numBoxW/2, curY + boxH/2 + 14);
+    // مربع الرقم (يسار) + مربع "امسح الرمز لتصل للرابط" بلون مختلف (يمين)
+    const boxY = qrY + qrSize + 40, boxH = 74, boxW = 250;
+    ctx.fillStyle = '#0f1535';
+    roundRectPath(ctx, 40, boxY, boxW, boxH, 16); ctx.fill();
+    ctx.fillStyle = '#ffffff'; ctx.font = 'bold 30px "Space Mono", monospace'; ctx.textAlign = 'center';
+    ctx.fillText(`#${number}`, 40+boxW/2, boxY+boxH/2+10);
 
-    ctx.fillStyle = boxColor;
-    roundRectPath(ctx, boxMarginX + numBoxW + gap, curY, txtBoxW, boxH, 14); ctx.fill();
-    ctx.fillStyle = '#ffffff'; ctx.font = 'bold 16px Tajawal, sans-serif';
-    const txtCx = boxMarginX + numBoxW + gap + txtBoxW/2;
-    ctx.fillText('أمسح الرمز', txtCx, curY + boxH/2 - 6);
-    ctx.fillText('أو الرقم بالبايو', txtCx, curY + boxH/2 + 20);
+    ctx.fillStyle = p1;
+    roundRectPath(ctx, W-40-boxW, boxY, boxW, boxH, 16); ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 19px Tajawal, sans-serif';
+    ctx.fillText('امسح الرمز', W-40-boxW/2, boxY+30);
+    ctx.font = '15px Tajawal, sans-serif';
+    ctx.fillText('لتصل للرابط', W-40-boxW/2, boxY+54);
 
-    ctx.restore(); // نهاية القص الدائري للبطاقة الداخلية
-
-    // ألصق البطاقة الداخلية داخل الإطار الخارجي
-    octx.drawImage(canvas, BORDER, BORDER);
-    return outer;
-  }
-  // يقصّر النص تلقائيًا لو تجاوز العرض المتاح (يمنع خروج النص عن حدود البطاقة)
-  function truncateForCanvas(ctx, text, maxWidth){
-    if(ctx.measureText(text).width <= maxWidth) return text;
-    let t = text;
-    while(t.length > 1 && ctx.measureText(t + '…').width > maxWidth){ t = t.slice(0, -1); }
-    return t + '…';
-  }
-  // يُغمّق/يُفتّح لونًا سداسيًا بنسبة معيّنة (لتوليد لون ثانٍ متناسق تلقائيًا من لون واحد)
-  function shiftColor(hex, percent){
-    try{
-      const n = parseInt(hex.replace('#',''), 16);
-      let r = (n >> 16) & 0xff, g = (n >> 8) & 0xff, b = n & 0xff;
-      const amt = Math.round(2.55 * percent);
-      r = Math.max(0, Math.min(255, r + amt));
-      g = Math.max(0, Math.min(255, g + amt));
-      b = Math.max(0, Math.min(255, b + amt));
-      return '#' + [r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');
-    }catch(e){ return hex; }
+    return canvas;
   }
 
-  // ===== تصدير البطاقة كصورة PNG وحفظها بالألبوم مباشرة (بدل PDF الذي لا يذهب لمعرض الصور) =====
-  async function exportQrCardAsImage({ url, number, name, username, avatarSrc, primaryColor, primaryColor2, qrStyleMode, qrCustomBg, qrCustomIconColor, qrCustomRing, qrCustomContainer }){
+  // ===== تصدير البطاقة كـ PDF مباشرة (بدون فتح أي نافذة منبثقة) =====
+  async function exportQrCardAsPdf({ url, number, name, username, avatarSrc, primaryColor, primaryColor2 }){
     window.showToast("جاري تجهيز البطاقة...");
     try{
-      const canvas = await buildQrCardCanvas({ url, number, name, username, avatarSrc, primaryColor, primaryColor2, qrStyleMode, qrCustomBg, qrCustomIconColor, qrCustomRing, qrCustomContainer });
-      const fileName = `electrwni-${username}-${number}.png`;
-
-      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-      if(!blob){ window.showToast("تعذر إنشاء الصورة"); return; }
-      const file = new File([blob], fileName, { type: 'image/png' });
-
-      // المسار الأول (الأفضل بالجوال): مشاركة الملف مباشرة — يعطي خيار "حفظ الصورة" فيذهب فعليًا لمعرض الصور/الألبوم
-      if(navigator.canShare && navigator.canShare({ files: [file] })){
-        try{
-          await navigator.share({ files: [file], title: 'بطاقة QR' });
-          window.showToast("تم ✓");
-          return;
-        }catch(shareErr){
-          // المستخدم ألغى المشاركة أو فشلت — نكمل للمسار الاحتياطي بدل ما نعتبرها خطأ
-          if(shareErr && shareErr.name === 'AbortError') return;
-        }
-      }
-
-      // المسار الاحتياطي: تنزيل مباشر كملف صورة (يعمل بمعظم متصفحات الكمبيوتر وأندرويد)
-      const blobUrl = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = blobUrl; a.download = fileName;
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(blobUrl), 4000);
+      if(!window.jspdf) await window.__ensureJsPdf().catch(()=>{});
+      const canvas = await buildQrCardCanvas({ url, number, name, username, avatarSrc, primaryColor, primaryColor2 });
+      const imgData = canvas.toDataURL('image/png');
+      const { jsPDF } = window.jspdf;
+      const pw = canvas.width * 0.75, ph = canvas.height * 0.75; // بكسل → نقطة تقريباً
+      const pdf = new jsPDF({ unit:'pt', format:[pw, ph] });
+      pdf.addImage(imgData, 'PNG', 0, 0, pw, ph);
+      pdf.save(`electrwni-${username}-${number}.pdf`);
       window.showToast("تم تنزيل البطاقة ✓");
     }catch(e){
       window.showToast("تعذر إنشاء البطاقة: " + (e.message||''));
@@ -2324,7 +2183,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     const u = (document.getElementById('pfUser').value || '').trim();
     const name = (document.getElementById('pfName') && document.getElementById('pfName').value.trim()) || u;
     let avatarSrc = null, primaryColor = null, primaryColor2 = null;
-    let qrStyleMode = 'brand', qrCustomBg = null, qrCustomIconColor = null, qrCustomRing = null, qrCustomContainer = null;
     const avEl = document.getElementById('avatarPreview')?.querySelector('img');
     if(avEl) avatarSrc = avEl.src;
     try{
@@ -2334,27 +2192,19 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         if(!avatarSrc) avatarSrc = data.avatar || null;
         primaryColor = data.primaryColor || null;
         primaryColor2 = data.primaryColor2 || null;
-        // ⚠️ إصلاح: هذي الألوان كانت تُحفظ من تبويب "تخصيص بطاقة QR" لكن لا تُستخدم إطلاقًا بالبطاقة النهائية
-        qrStyleMode = data.qrStyleMode === 'custom' ? 'custom' : 'brand';
-        qrCustomBg = data.qrCustomBg || null;
-        qrCustomIconColor = data.qrCustomIconColor || null;
-        qrCustomRing = data.qrCustomRing || null;
-        qrCustomContainer = data.qrCustomContainer || null;
       }
     }catch(e){}
-    return { username: u, name, avatarSrc, primaryColor, primaryColor2, qrStyleMode, qrCustomBg, qrCustomIconColor, qrCustomRing, qrCustomContainer };
+    return { username: u, name, avatarSrc, primaryColor, primaryColor2 };
   }
 
   // تنزيل مباشر لبطاقة QR الخاصة برابط الصفحة (رقم ٢٠٥) — بدون فتح أي نافذة منبثقة
   window.downloadPageQrDirect = async function(){
     const owner = await getQrCardOwnerData();
     if(!owner.username){ window.showToast("لا يوجد اسم مستخدم بعد"); return; }
-    await exportQrCardAsImage({
+    await exportQrCardAsPdf({
       url: `https://electrwni.link/${owner.username}`,
       number: 205, name: owner.name, username: owner.username,
-      avatarSrc: owner.avatarSrc, primaryColor: owner.primaryColor, primaryColor2: owner.primaryColor2,
-      qrStyleMode: owner.qrStyleMode, qrCustomBg: owner.qrCustomBg, qrCustomIconColor: owner.qrCustomIconColor,
-      qrCustomRing: owner.qrCustomRing, qrCustomContainer: owner.qrCustomContainer
+      avatarSrc: owner.avatarSrc, primaryColor: owner.primaryColor, primaryColor2: owner.primaryColor2
     });
   };
 
@@ -2362,11 +2212,9 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   window.downloadLinkQr = async function(number, url){
     const owner = await getQrCardOwnerData();
     if(!owner.username){ window.showToast("لا يوجد اسم مستخدم بعد"); return; }
-    await exportQrCardAsImage({
+    await exportQrCardAsPdf({
       url, number, name: owner.name, username: owner.username,
-      avatarSrc: owner.avatarSrc, primaryColor: owner.primaryColor, primaryColor2: owner.primaryColor2,
-      qrStyleMode: owner.qrStyleMode, qrCustomBg: owner.qrCustomBg, qrCustomIconColor: owner.qrCustomIconColor,
-      qrCustomRing: owner.qrCustomRing, qrCustomContainer: owner.qrCustomContainer
+      avatarSrc: owner.avatarSrc, primaryColor: owner.primaryColor, primaryColor2: owner.primaryColor2
     });
   };
 
@@ -2378,87 +2226,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   window.downloadQrCard = function(){ window.downloadPageQrDirect(); };
 
   window.logout = function() {
-    signOut(auth).then(() => {
-      // امسح هذا الحساب فقط من قائمة الحسابات المحفوظة — لا يمس أي حساب آخر بهذا المتصفح
-      const remaining = elsGetAccounts().filter(a => a.appName !== (activeAccountApp || '[DEFAULT]'));
-      elsSaveAccounts(remaining);
-      if(remaining.length){
-        // فيه حسابات ثانية محفوظة — بدّل لأول واحد منها تلقائيًا بدل الرجوع لصفحة الدخول
-        localStorage.setItem(ELS_ACTIVE_KEY, remaining[0].appName);
-      } else {
-        localStorage.removeItem(ELS_ACTIVE_KEY);
-      }
-      window.location.href = "signin.html";
-    });
-  };
-
-  // ===== قائمة زر صفحتك (نسخ الرابط / عرض QR) =====
-  window.toggleTopbarQrMenu = function(){
-    const panel = document.getElementById('topbarQrMenu');
-    const willOpen = panel.style.display === 'none';
-    document.getElementById('acctSwitchPanel').style.display = 'none';
-    panel.style.display = willOpen ? 'block' : 'none';
-  };
-  window.closeTopbarQrMenu = function(){ document.getElementById('topbarQrMenu').style.display = 'none'; };
-  document.addEventListener('click', function(e){
-    const panel = document.getElementById('topbarQrMenu');
-    if(!panel || panel.style.display === 'none') return;
-    if(!panel.contains(e.target) && e.target.id !== 'viewPageBtn' && !document.getElementById('viewPageBtn')?.contains(e.target)){
-      panel.style.display = 'none';
-    }
-  });
-
-  // ===== مبدّل الحسابات =====
-  window.toggleAccountSwitcher = function(){
-    const panel = document.getElementById('acctSwitchPanel');
-    const willOpen = panel.style.display === 'none';
-    document.getElementById('topbarQrMenu').style.display = 'none';
-    panel.style.display = willOpen ? 'block' : 'none';
-    if(willOpen) renderAccountSwitcher();
-  };
-  document.addEventListener('click', function(e){
-    const panel = document.getElementById('acctSwitchPanel');
-    if(!panel || panel.style.display === 'none') return;
-    if(!panel.contains(e.target) && e.target.id !== 'acctSwitchBtn' && !document.getElementById('acctSwitchBtn')?.contains(e.target)){
-      panel.style.display = 'none';
-    }
-  });
-  function renderAccountSwitcher(){
-    const list = elsGetAccounts();
-    const el = document.getElementById('acctSwitchList');
-    const currentAppName = activeAccountApp || '[DEFAULT]';
-    if(!list.length){
-      el.innerHTML = `<div style="padding:16px;font-size:0.8rem;color:#9aa2c8;text-align:center;">لا توجد حسابات أخرى محفوظة بعد</div>`;
-      return;
-    }
-    el.innerHTML = list.map(a => {
-      const isActive = a.appName === currentAppName;
-      const initial = (a.displayName || a.username || a.email || '?')[0].toUpperCase();
-      return `
-        <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border,#f0f0f0);${isActive?'background:var(--bg2,#f4f5f9);':''}cursor:${isActive?'default':'pointer'};" ${isActive?'':`onclick="switchToAccount('${a.appName}')"`}>
-          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#3d5af1,#6c8fff);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;">${initial}</div>
-          <div style="flex:1;min-width:0;overflow:hidden;">
-            <div style="font-weight:700;font-size:0.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.displayName || a.username || 'مستخدم'}</div>
-            <div style="font-size:0.7rem;color:#9aa2c8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" dir="ltr">${a.email || ''}</div>
-          </div>
-          ${isActive ? '<span style="font-size:0.68rem;color:#0ab87a;font-weight:800;flex-shrink:0;">الحالي ✓</span>' : `<button type="button" onclick="event.stopPropagation();removeAccountFromSwitcher('${a.appName}')" style="background:none;border:none;color:#c33;font-size:0.9rem;cursor:pointer;padding:4px;flex-shrink:0;">✕</button>`}
-        </div>
-      `;
-    }).join('');
-  }
-  window.switchToAccount = function(appName){
-    if(appName === (activeAccountApp || '[DEFAULT]')) return;
-    localStorage.setItem(ELS_ACTIVE_KEY, appName);
-    window.location.reload();
-  };
-  window.removeAccountFromSwitcher = async function(appName){
-    if(!confirm('إزالة هذا الحساب من القائمة؟ (لن يُحذف الحساب نفسه، فقط يختفي من هذا المتصفح)')) return;
-    const remaining = elsGetAccounts().filter(a => a.appName !== appName);
-    elsSaveAccounts(remaining);
-    renderAccountSwitcher();
-  };
-  window.goAddAccount = function(){
-    window.location.href = 'signin.html?addAccount=1';
+    signOut(auth).then(() => window.location.href = "signin.html");
   };
 
   // 4. محرك إدارة الروابط (Links Page)
@@ -3637,6 +3405,67 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     updateLivePreview();
   };
 
+  // ===== خلفية الصفحة: ألوان فقط / خلفية فقط (صورة) / ألوان وخلفية =====
+  let currentBgMode = 'color';
+  let pageBgImageBase64 = null;
+
+  // ضغط صورة الخلفية بجودة عالية وحجم صغير حتى لا تُبطئ تحميل الصفحة
+  function compressBgImage(file, cb, maxDim = 1600, quality = 0.82){
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if(width > maxDim || height > maxDim){
+          const ratio = Math.min(maxDim / width, maxDim / height);
+          width = Math.round(width * ratio);
+          height = Math.round(height * ratio);
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width; canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        cb(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = () => cb(reader.result);
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  window.setPageBgMode = function(mode){
+    currentBgMode = mode;
+    ['color','image','combo'].forEach(m=>{
+      const btn = document.getElementById('bgModeBtn_'+m);
+      if(btn){
+        btn.style.borderColor = mode===m ? 'var(--primary)' : 'var(--border)';
+        btn.style.background = mode===m ? 'var(--bg2)' : 'var(--bg)';
+      }
+    });
+    const uploadBox = document.getElementById('bgImageUploadBox');
+    if(uploadBox) uploadBox.style.display = (mode==='image' || mode==='combo') ? 'block' : 'none';
+    updateLivePreview();
+  };
+
+  window.pageBgFileChosen = function(input){
+    if(!input.files || !input.files[0]) return;
+    compressBgImage(input.files[0], (dataUrl) => {
+      pageBgImageBase64 = dataUrl;
+      const thumb = document.getElementById('bgImagePreviewThumb');
+      if(thumb){ thumb.src = dataUrl; thumb.style.display = 'block'; }
+      updateLivePreview();
+      window.showToast("تم تجهيز صورة الخلفية، لا تنسَ الحفظ");
+    });
+  };
+
+  function hexToRgbaDash(hex, alpha){
+    hex = (hex || '#ffffff').replace('#','');
+    if(hex.length === 3) hex = hex.split('').map(c=>c+c).join('');
+    const r = parseInt(hex.substring(0,2),16) || 0;
+    const g = parseInt(hex.substring(2,4),16) || 0;
+    const b = parseInt(hex.substring(4,6),16) || 0;
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
+
   // تحديث المعاينة الحية بألوان الموقع
   function updateLivePreview(){
     const primary = document.getElementById('colorPicker').value;        // لون١: خلفية المربع
@@ -3644,7 +3473,23 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     const bg = document.getElementById('bgColorPicker').value;           // الخلفية
     const textC = document.getElementById('textColorPicker').value;      // النص (والشعار)
     const lp=v=>document.getElementById(v);
-    const lpBg=lp('lpBg'); if(lpBg) lpBg.style.background=bg;
+    const lpBg=lp('lpBg');
+    if(lpBg){
+      const bgImg = pageBgImageBase64 || window.__currentBgImage;
+      if(currentBgMode === 'image' && bgImg){
+        lpBg.style.backgroundImage = `url(${bgImg})`;
+        lpBg.style.backgroundSize = 'cover';
+        lpBg.style.backgroundPosition = 'center';
+      } else if(currentBgMode === 'combo' && bgImg){
+        const overlay = hexToRgbaDash(bg, 0.55);
+        lpBg.style.backgroundImage = `linear-gradient(${overlay},${overlay}),url(${bgImg})`;
+        lpBg.style.backgroundSize = 'cover';
+        lpBg.style.backgroundPosition = 'center';
+      } else {
+        lpBg.style.backgroundImage = 'none';
+        lpBg.style.background = bg;
+      }
+    }
     const lpAvatar=lp('lpAvatar'); if(lpAvatar){ lpAvatar.style.background=primary; lpAvatar.style.border='3px solid '+primary2; }
     const lpBtn=lp('lpBtn'); if(lpBtn){ lpBtn.style.background=primary; lpBtn.style.color='#fff'; }
     const lpName=lp('lpName'); if(lpName) lpName.style.color=textC;
@@ -3742,49 +3587,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   window.selectAvatar = function(input) { if (input.files && input.files[0]) openCropModal(input.files[0], 'avatar', 1); };
   window.selectBanner = function(input) { if (input.files && input.files[0]) openCropModal(input.files[0], 'banner', 16/6); };
 
-  // خلفية الصفحة الكاملة: بدون قص (تُعرض بـ background-size:cover فتتأقلم مع أي أبعاد)،
-  // لكن نصغّرها ونضغطها أولًا حتى لا يتضخم مستند المستخدم ببطء الحفظ (نفس أسلوب لوحة الإدارة)
-  function compressImageFile(file, cb, maxDim = 1280, quality = 0.82){
-    if(!file.type || !file.type.startsWith('image/')){ window.showToast('الملف المختار ليس صورة'); return; }
-    const img = new Image();
-    const objUrl = URL.createObjectURL(file);
-    img.onload = () => {
-      URL.revokeObjectURL(objUrl);
-      let { width, height } = img;
-      if(width > maxDim || height > maxDim){
-        const ratio = Math.min(maxDim / width, maxDim / height);
-        width = Math.round(width * ratio);
-        height = Math.round(height * ratio);
-      }
-      const canvas = document.createElement('canvas');
-      canvas.width = width; canvas.height = height;
-      canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-      cb(canvas.toDataURL('image/jpeg', quality));
-    };
-    img.onerror = () => { URL.revokeObjectURL(objUrl); window.showToast('تعذر تحميل الصورة، جرّب ملفًا آخر'); };
-    img.src = objUrl;
-  }
-  window.selectPageBackground = function(input){
-    if(!(input.files && input.files[0])) return;
-    compressImageFile(input.files[0], (dataUrl) => {
-      pageBgImageBase64 = dataUrl;
-      const pv = document.getElementById('pageBgPreview');
-      pv.style.backgroundImage = `url(${dataUrl})`;
-      pv.textContent = '';
-      document.getElementById('pageBgRemoveBtn').style.display = 'inline-block';
-      window.showToast('تم اختيار الصورة — لا تنسَ الحفظ');
-    });
-    input.value = ''; // يسمح باختيار نفس الملف مرة أخرى لاحقًا لو احتاج المستخدم
-  };
-  window.removePageBackground = function(){
-    pageBgImageBase64 = null;
-    const pv = document.getElementById('pageBgPreview');
-    pv.style.backgroundImage = 'none';
-    pv.textContent = 'لا توجد صورة خلفية — الصفحة تستخدم اللون بالأعلى';
-    document.getElementById('pageBgRemoveBtn').style.display = 'none';
-    window.showToast('أُزيلت — اضغط حفظ لتأكيد الإزالة');
-  };
-
   function openCropModal(file, type, ratio) {
     currentCropType = type;
     const reader = new FileReader();
@@ -3837,12 +3639,12 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         primaryColor2: primary2,     // لون٢: إطار المربع
         themeColor: primary,         // توافق قديم
         textColor: textColor,        // لون النص (والشعار يتبعه)
-        bgColor: bg                  // لون الخلفية
+        bgColor: bg,                 // لون الخلفية
+        bgMode: currentBgMode        // color / image / combo
       };
       if(croppedAvatarBase64) upData.avatar = croppedAvatarBase64;
       if(croppedBannerBase64) upData.bannerImage = croppedBannerBase64;
-      // خلفية الصفحة: نحفظ القيمة الحالية دائمًا (base64 لو موجودة، أو null لو أزالها المستخدم) حتى تنعكس الإزالة فعليًا
-      upData.pageBackgroundImage = pageBgImageBase64 || null;
+      if(pageBgImageBase64) upData.bgImage = pageBgImageBase64;
 
       await setDoc(doc(db, "users", currentUser.uid), upData, { merge: true });
       window.showToast("تم حفظ التصميم والصور بنجاح");
