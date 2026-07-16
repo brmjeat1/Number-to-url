@@ -309,7 +309,9 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 <div class="topbar" style="position:relative;">
   <div class="topbar-brand" id="topbarBrand" dir="ltr">electrwni.link</div>
   <div class="topbar-btns">
-    <button class="btn btn-white" id="viewPageBtn" onclick="openMyPage()">صفحتك <span style="font-size:0.65rem;display:block;opacity:0.7;">My Page</span></button>
+    <button class="btn btn-white" id="viewPageBtn" onclick="toggleTopbarQrMenu()" title="صفحتك · My Page" style="display:flex;align-items:center;justify-content:center;padding:10px;">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><line x1="14" y1="14" x2="21" y2="14"></line><line x1="14" y1="21" x2="21" y2="21"></line><line x1="17" y1="14" x2="17" y2="21"></line></svg>
+    </button>
     <button class="btn btn-white" id="acctSwitchBtn" onclick="toggleAccountSwitcher()" title="الحسابات · Accounts" style="display:flex;align-items:center;justify-content:center;padding:10px;">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
     </button>
@@ -322,6 +324,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   <div id="acctSwitchPanel" style="display:none;position:absolute;top:100%;left:16px;margin-top:8px;background:#fff;border:1px solid var(--border,#e8ecf5);border-radius:14px;box-shadow:0 12px 32px -8px rgba(0,0,0,0.25);width:280px;max-width:88vw;z-index:2000;overflow:hidden;">
     <div id="acctSwitchList" style="max-height:280px;overflow-y:auto;"></div>
     <button type="button" onclick="goAddAccount()" style="width:100%;padding:13px;border:none;border-top:1px solid var(--border,#e8ecf5);background:var(--bg2,#f4f5f9);font-weight:700;font-size:0.85rem;cursor:pointer;font-family:inherit;color:#3d5af1;">+ إضافة حساب آخر</button>
+  </div>
+
+  <!-- لوحة زر صفحتك (نسخ الرابط / عرض QR) -->
+  <div id="topbarQrMenu" style="display:none;position:absolute;top:100%;right:16px;margin-top:8px;background:#fff;border:1px solid var(--border,#e8ecf5);border-radius:14px;box-shadow:0 12px 32px -8px rgba(0,0,0,0.25);width:200px;max-width:80vw;z-index:2000;overflow:hidden;">
+    <button type="button" onclick="closeTopbarQrMenu();window.copyMyLink()" style="width:100%;padding:13px 16px;border:none;border-bottom:1px solid var(--border,#f0f0f0);background:#fff;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:inherit;text-align:right;display:flex;align-items:center;gap:10px;">🔗 نسخ الرابط</button>
+    <button type="button" onclick="closeTopbarQrMenu();window.openQrCard()" style="width:100%;padding:13px 16px;border:none;border-bottom:1px solid var(--border,#f0f0f0);background:#fff;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:inherit;text-align:right;display:flex;align-items:center;gap:10px;">▦ عرض / تنزيل QR</button>
+    <button type="button" onclick="closeTopbarQrMenu();openMyPage()" style="width:100%;padding:13px 16px;border:none;background:var(--bg2,#f4f5f9);font-weight:700;font-size:0.82rem;cursor:pointer;font-family:inherit;text-align:right;display:flex;align-items:center;gap:10px;color:#3d5af1;">↗ فتح صفحتك</button>
   </div>
 </div>
 
@@ -2113,18 +2122,44 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   }
 
   // ===== توليد بطاقة QR كاملة كـ Canvas واحد — يحل مشكلة اختفاء الرمز نهائياً (رسم مباشر، بدون التقاط صورة للصفحة) =====
-  async function buildQrCardCanvas({ url, number, name, username, avatarSrc, primaryColor, primaryColor2 }){
+  async function buildQrCardCanvas({ url, number, name, username, avatarSrc, primaryColor, primaryColor2, qrStyleMode, qrCustomBg, qrCustomIconColor, qrCustomRing, qrCustomContainer }){
     if(!window.QRCode) await window.__ensureQr().catch(()=>{});
-    const W = 640, H = 900;
+
+    // ===== الألوان: تُستخدم القيم المخصّصة فعليًا الآن لو المستخدم فعّل "تخصيص" (كانت تُحفظ فقط ولا تُستخدم أبدًا سابقًا) =====
+    const useCustom = qrStyleMode === 'custom';
+    const p1 = primaryColor || '#3d5af1', p2 = primaryColor2 || '#6c8fff';
+    const borderColor  = useCustom && qrCustomBg        ? qrCustomBg        : p1;      // الإطار الخارجي
+    const boxColor     = useCustom && qrCustomContainer ? qrCustomContainer : p1;      // مربعات اليوزرنيم/الرابط + مربع الرقم اليمين
+    const qrDarkColor  = useCustom && qrCustomIconColor ? qrCustomIconColor : '#0f1535'; // لون نقاط رمز QR
+    const ringColor    = useCustom && qrCustomRing      ? qrCustomRing      : '#ffffff'; // حلقة الشعار الدائري
+    const numberBoxColor = useCustom && qrCustomBg ? shiftColor(qrCustomBg, -18) : (primaryColor2 || '#1732B2');
+
+    // ===== أبعاد البطاقة: نفس نسبة البطاقة المرجعية (عمودية، إطار سميك) =====
+    const OUTER_W = 590, OUTER_H = 1000;
+    const BORDER = 26; // سُمك الإطار الخارجي الملوّن
+    const W = OUTER_W - BORDER*2, H = OUTER_H - BORDER*2;
+
+    const outer = document.createElement('canvas');
+    outer.width = OUTER_W; outer.height = OUTER_H;
+    const octx = outer.getContext('2d');
+
+    // الإطار الخارجي الملوّن
+    octx.fillStyle = borderColor;
+    roundRectPath(octx, 0, 0, OUTER_W, OUTER_H, 28);
+    octx.fill();
+
+    // البطاقة البيضاء الداخلية
     const canvas = document.createElement('canvas');
     canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext('2d');
-    const p1 = primaryColor || '#3d5af1', p2 = primaryColor2 || '#6c8fff';
-
     ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0,0,W,H);
+    roundRectPath(ctx, 0, 0, W, H, 20);
+    ctx.fill();
+    ctx.save();
+    roundRectPath(ctx, 0, 0, W, H, 20);
+    ctx.clip();
 
-    // خلفية ضبابية خفيفة من الشعار (شفافية ٩٠٪ تقريباً — يعني ظهور خفيف جداً كنسيج زخرفي)
+    // خلفية ضبابية خفيفة من الشعار (نسيج زخرفي خفيف جداً)
     const avatarImg = await loadImageEl(avatarSrc);
     if(avatarImg){
       const bgCanvas = document.createElement('canvas');
@@ -2146,8 +2181,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       ctx.globalAlpha = 1;
     }
 
-    // الشعار الدائري بالأعلى (واضح تماماً)
-    const logoR = 70, logoCx = W/2, logoCy = 130;
+    // الشعار الدائري بالأعلى
+    const logoR = 62, logoCx = W/2, logoCy = 110;
     ctx.save();
     ctx.beginPath(); ctx.arc(logoCx, logoCy, logoR, 0, Math.PI*2); ctx.closePath(); ctx.clip();
     ctx.fillStyle = p1; ctx.fillRect(logoCx-logoR, logoCy-logoR, logoR*2, logoR*2);
@@ -2156,73 +2191,128 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       const iw = avatarImg.width*s, ih = avatarImg.height*s;
       ctx.drawImage(avatarImg, logoCx-iw/2, logoCy-ih/2, iw, ih);
     } else {
-      ctx.fillStyle = '#fff'; ctx.font = 'bold 60px Tajawal, sans-serif';
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 52px Tajawal, sans-serif';
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText((name||'E')[0].toUpperCase(), logoCx, logoCy+4);
     }
     ctx.restore();
     ctx.beginPath(); ctx.arc(logoCx, logoCy, logoR, 0, Math.PI*2);
-    ctx.lineWidth = 4; ctx.strokeStyle = '#ffffff'; ctx.stroke();
+    ctx.lineWidth = 4; ctx.strokeStyle = ringColor; ctx.stroke();
 
-    // الاسم + الرابط
+    // الاسم — مخفَّض الحجم (كان كبيرًا جدًا سابقًا)
     ctx.fillStyle = '#0f1535'; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
-    ctx.font = 'bold 32px Tajawal, sans-serif';
-    ctx.fillText(name || username || 'حسابي', W/2, 250);
-    ctx.fillStyle = p1;
-    ctx.font = '22px "Space Mono", monospace';
-    ctx.fillText(`electrwni.link/${username}`, W/2, 285);
+    ctx.font = 'bold 27px Tajawal, sans-serif';
+    ctx.fillText(truncateForCanvas(ctx, name || username || 'حسابي', W - 60), W/2, 215);
+
+    // مربع USERNAME
+    const boxMarginX = 55, boxW2 = W - boxMarginX*2;
+    let curY = 245;
+    ctx.fillStyle = boxColor;
+    roundRectPath(ctx, boxMarginX, curY, boxW2, 46, 10); ctx.fill();
+    ctx.fillStyle = '#ffffff'; ctx.font = 'bold 18px Tajawal, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText((username || '').toUpperCase(), W/2, curY + 30);
+    curY += 46 + 14;
+
+    // مربع الرابط (ELECTRWNI.LINK/USERNAME)
+    ctx.fillStyle = boxColor;
+    roundRectPath(ctx, boxMarginX, curY, boxW2, 46, 10); ctx.fill();
+    ctx.fillStyle = '#ffffff'; ctx.font = 'bold 17px Tajawal, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(truncateForCanvas(ctx, `ELECTRWNI.LINK/${(username||'').toUpperCase()}`, boxW2 - 24), W/2, curY + 30);
+    curY += 46 + 28;
 
     // رمز QR — يُولَّد وننتظره فعلياً قبل الرسم (هذا هو الإصلاح الجوهري لمشكلة الاختفاء)
     const qrHolder = document.createElement('div');
     qrHolder.style.position='fixed'; qrHolder.style.left='-9999px'; qrHolder.style.top='0';
     document.body.appendChild(qrHolder);
     await new Promise(resolve=>{
-      new QRCode(qrHolder, { text: url, width: 320, height: 320, colorDark:'#0f1535', colorLight:'#ffffff', correctLevel: QRCode.CorrectLevel.H });
+      new QRCode(qrHolder, { text: url, width: 300, height: 300, colorDark: qrDarkColor, colorLight:'#ffffff', correctLevel: QRCode.CorrectLevel.H });
       setTimeout(resolve, 180);
     });
     const qrCanvasEl = qrHolder.querySelector('canvas');
-    const qrSize = 320, qrX = (W-qrSize)/2, qrY = 330;
+    const qrSize = boxW2, qrX = boxMarginX, qrY = curY;
     if(qrCanvasEl){
       ctx.save();
-      ctx.shadowColor = 'rgba(0,0,0,0.14)'; ctx.shadowBlur = 22;
-      ctx.fillStyle = '#ffffff';
-      roundRectPath(ctx, qrX-16, qrY-16, qrSize+32, qrSize+32, 18);
+      ctx.shadowColor = 'rgba(0,0,0,0.14)'; ctx.shadowBlur = 18;
+      ctx.fillStyle = '#f4f6fb';
+      roundRectPath(ctx, qrX-12, qrY-12, qrSize+24, qrSize+24, 14);
       ctx.fill();
       ctx.restore();
-      ctx.drawImage(qrCanvasEl, qrX, qrY, qrSize, qrSize);
+      const pad = (qrSize - qrSize*0.92)/2 + 12;
+      ctx.drawImage(qrCanvasEl, qrX+pad-12, qrY+pad-12, qrSize-2*(pad-12), qrSize-2*(pad-12));
     }
     document.body.removeChild(qrHolder);
+    curY = qrY + qrSize + 34;
 
-    // مربع الرقم (يسار) + مربع "امسح الرمز لتصل للرابط" بلون مختلف (يمين)
-    const boxY = qrY + qrSize + 40, boxH = 74, boxW = 250;
-    ctx.fillStyle = '#0f1535';
-    roundRectPath(ctx, 40, boxY, boxW, boxH, 16); ctx.fill();
-    ctx.fillStyle = '#ffffff'; ctx.font = 'bold 30px "Space Mono", monospace'; ctx.textAlign = 'center';
-    ctx.fillText(`#${number}`, 40+boxW/2, boxY+boxH/2+10);
+    // مربع الرقم (يسار، بلون مختلف) + مربع "أمسح الرمز أو الرقم بالبايو" (يمين)
+    const boxH = 84, gap = 14;
+    const numBoxW = (boxW2 - gap) * 0.34, txtBoxW = (boxW2 - gap) * 0.66;
+    ctx.fillStyle = numberBoxColor;
+    roundRectPath(ctx, boxMarginX, curY, numBoxW, boxH, 14); ctx.fill();
+    ctx.fillStyle = '#ffffff'; ctx.font = 'bold 40px "Space Mono", monospace'; ctx.textAlign = 'center';
+    ctx.fillText(`${number}`, boxMarginX + numBoxW/2, curY + boxH/2 + 14);
 
-    ctx.fillStyle = p1;
-    roundRectPath(ctx, W-40-boxW, boxY, boxW, boxH, 16); ctx.fill();
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 19px Tajawal, sans-serif';
-    ctx.fillText('امسح الرمز', W-40-boxW/2, boxY+30);
-    ctx.font = '15px Tajawal, sans-serif';
-    ctx.fillText('لتصل للرابط', W-40-boxW/2, boxY+54);
+    ctx.fillStyle = boxColor;
+    roundRectPath(ctx, boxMarginX + numBoxW + gap, curY, txtBoxW, boxH, 14); ctx.fill();
+    ctx.fillStyle = '#ffffff'; ctx.font = 'bold 16px Tajawal, sans-serif';
+    const txtCx = boxMarginX + numBoxW + gap + txtBoxW/2;
+    ctx.fillText('أمسح الرمز', txtCx, curY + boxH/2 - 6);
+    ctx.fillText('أو الرقم بالبايو', txtCx, curY + boxH/2 + 20);
 
-    return canvas;
+    ctx.restore(); // نهاية القص الدائري للبطاقة الداخلية
+
+    // ألصق البطاقة الداخلية داخل الإطار الخارجي
+    octx.drawImage(canvas, BORDER, BORDER);
+    return outer;
+  }
+  // يقصّر النص تلقائيًا لو تجاوز العرض المتاح (يمنع خروج النص عن حدود البطاقة)
+  function truncateForCanvas(ctx, text, maxWidth){
+    if(ctx.measureText(text).width <= maxWidth) return text;
+    let t = text;
+    while(t.length > 1 && ctx.measureText(t + '…').width > maxWidth){ t = t.slice(0, -1); }
+    return t + '…';
+  }
+  // يُغمّق/يُفتّح لونًا سداسيًا بنسبة معيّنة (لتوليد لون ثانٍ متناسق تلقائيًا من لون واحد)
+  function shiftColor(hex, percent){
+    try{
+      const n = parseInt(hex.replace('#',''), 16);
+      let r = (n >> 16) & 0xff, g = (n >> 8) & 0xff, b = n & 0xff;
+      const amt = Math.round(2.55 * percent);
+      r = Math.max(0, Math.min(255, r + amt));
+      g = Math.max(0, Math.min(255, g + amt));
+      b = Math.max(0, Math.min(255, b + amt));
+      return '#' + [r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');
+    }catch(e){ return hex; }
   }
 
-  // ===== تصدير البطاقة كـ PDF مباشرة (بدون فتح أي نافذة منبثقة) =====
-  async function exportQrCardAsPdf({ url, number, name, username, avatarSrc, primaryColor, primaryColor2 }){
+  // ===== تصدير البطاقة كصورة PNG وحفظها بالألبوم مباشرة (بدل PDF الذي لا يذهب لمعرض الصور) =====
+  async function exportQrCardAsImage({ url, number, name, username, avatarSrc, primaryColor, primaryColor2, qrStyleMode, qrCustomBg, qrCustomIconColor, qrCustomRing, qrCustomContainer }){
     window.showToast("جاري تجهيز البطاقة...");
     try{
-      if(!window.jspdf) await window.__ensureJsPdf().catch(()=>{});
-      const canvas = await buildQrCardCanvas({ url, number, name, username, avatarSrc, primaryColor, primaryColor2 });
-      const imgData = canvas.toDataURL('image/png');
-      const { jsPDF } = window.jspdf;
-      const pw = canvas.width * 0.75, ph = canvas.height * 0.75; // بكسل → نقطة تقريباً
-      const pdf = new jsPDF({ unit:'pt', format:[pw, ph] });
-      pdf.addImage(imgData, 'PNG', 0, 0, pw, ph);
-      pdf.save(`electrwni-${username}-${number}.pdf`);
+      const canvas = await buildQrCardCanvas({ url, number, name, username, avatarSrc, primaryColor, primaryColor2, qrStyleMode, qrCustomBg, qrCustomIconColor, qrCustomRing, qrCustomContainer });
+      const fileName = `electrwni-${username}-${number}.png`;
+
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+      if(!blob){ window.showToast("تعذر إنشاء الصورة"); return; }
+      const file = new File([blob], fileName, { type: 'image/png' });
+
+      // المسار الأول (الأفضل بالجوال): مشاركة الملف مباشرة — يعطي خيار "حفظ الصورة" فيذهب فعليًا لمعرض الصور/الألبوم
+      if(navigator.canShare && navigator.canShare({ files: [file] })){
+        try{
+          await navigator.share({ files: [file], title: 'بطاقة QR' });
+          window.showToast("تم ✓");
+          return;
+        }catch(shareErr){
+          // المستخدم ألغى المشاركة أو فشلت — نكمل للمسار الاحتياطي بدل ما نعتبرها خطأ
+          if(shareErr && shareErr.name === 'AbortError') return;
+        }
+      }
+
+      // المسار الاحتياطي: تنزيل مباشر كملف صورة (يعمل بمعظم متصفحات الكمبيوتر وأندرويد)
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl; a.download = fileName;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 4000);
       window.showToast("تم تنزيل البطاقة ✓");
     }catch(e){
       window.showToast("تعذر إنشاء البطاقة: " + (e.message||''));
@@ -2234,6 +2324,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     const u = (document.getElementById('pfUser').value || '').trim();
     const name = (document.getElementById('pfName') && document.getElementById('pfName').value.trim()) || u;
     let avatarSrc = null, primaryColor = null, primaryColor2 = null;
+    let qrStyleMode = 'brand', qrCustomBg = null, qrCustomIconColor = null, qrCustomRing = null, qrCustomContainer = null;
     const avEl = document.getElementById('avatarPreview')?.querySelector('img');
     if(avEl) avatarSrc = avEl.src;
     try{
@@ -2243,19 +2334,27 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         if(!avatarSrc) avatarSrc = data.avatar || null;
         primaryColor = data.primaryColor || null;
         primaryColor2 = data.primaryColor2 || null;
+        // ⚠️ إصلاح: هذي الألوان كانت تُحفظ من تبويب "تخصيص بطاقة QR" لكن لا تُستخدم إطلاقًا بالبطاقة النهائية
+        qrStyleMode = data.qrStyleMode === 'custom' ? 'custom' : 'brand';
+        qrCustomBg = data.qrCustomBg || null;
+        qrCustomIconColor = data.qrCustomIconColor || null;
+        qrCustomRing = data.qrCustomRing || null;
+        qrCustomContainer = data.qrCustomContainer || null;
       }
     }catch(e){}
-    return { username: u, name, avatarSrc, primaryColor, primaryColor2 };
+    return { username: u, name, avatarSrc, primaryColor, primaryColor2, qrStyleMode, qrCustomBg, qrCustomIconColor, qrCustomRing, qrCustomContainer };
   }
 
   // تنزيل مباشر لبطاقة QR الخاصة برابط الصفحة (رقم ٢٠٥) — بدون فتح أي نافذة منبثقة
   window.downloadPageQrDirect = async function(){
     const owner = await getQrCardOwnerData();
     if(!owner.username){ window.showToast("لا يوجد اسم مستخدم بعد"); return; }
-    await exportQrCardAsPdf({
+    await exportQrCardAsImage({
       url: `https://electrwni.link/${owner.username}`,
       number: 205, name: owner.name, username: owner.username,
-      avatarSrc: owner.avatarSrc, primaryColor: owner.primaryColor, primaryColor2: owner.primaryColor2
+      avatarSrc: owner.avatarSrc, primaryColor: owner.primaryColor, primaryColor2: owner.primaryColor2,
+      qrStyleMode: owner.qrStyleMode, qrCustomBg: owner.qrCustomBg, qrCustomIconColor: owner.qrCustomIconColor,
+      qrCustomRing: owner.qrCustomRing, qrCustomContainer: owner.qrCustomContainer
     });
   };
 
@@ -2263,9 +2362,11 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   window.downloadLinkQr = async function(number, url){
     const owner = await getQrCardOwnerData();
     if(!owner.username){ window.showToast("لا يوجد اسم مستخدم بعد"); return; }
-    await exportQrCardAsPdf({
+    await exportQrCardAsImage({
       url, number, name: owner.name, username: owner.username,
-      avatarSrc: owner.avatarSrc, primaryColor: owner.primaryColor, primaryColor2: owner.primaryColor2
+      avatarSrc: owner.avatarSrc, primaryColor: owner.primaryColor, primaryColor2: owner.primaryColor2,
+      qrStyleMode: owner.qrStyleMode, qrCustomBg: owner.qrCustomBg, qrCustomIconColor: owner.qrCustomIconColor,
+      qrCustomRing: owner.qrCustomRing, qrCustomContainer: owner.qrCustomContainer
     });
   };
 
@@ -2291,10 +2392,27 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     });
   };
 
+  // ===== قائمة زر صفحتك (نسخ الرابط / عرض QR) =====
+  window.toggleTopbarQrMenu = function(){
+    const panel = document.getElementById('topbarQrMenu');
+    const willOpen = panel.style.display === 'none';
+    document.getElementById('acctSwitchPanel').style.display = 'none';
+    panel.style.display = willOpen ? 'block' : 'none';
+  };
+  window.closeTopbarQrMenu = function(){ document.getElementById('topbarQrMenu').style.display = 'none'; };
+  document.addEventListener('click', function(e){
+    const panel = document.getElementById('topbarQrMenu');
+    if(!panel || panel.style.display === 'none') return;
+    if(!panel.contains(e.target) && e.target.id !== 'viewPageBtn' && !document.getElementById('viewPageBtn')?.contains(e.target)){
+      panel.style.display = 'none';
+    }
+  });
+
   // ===== مبدّل الحسابات =====
   window.toggleAccountSwitcher = function(){
     const panel = document.getElementById('acctSwitchPanel');
     const willOpen = panel.style.display === 'none';
+    document.getElementById('topbarQrMenu').style.display = 'none';
     panel.style.display = willOpen ? 'block' : 'none';
     if(willOpen) renderAccountSwitcher();
   };
