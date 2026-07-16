@@ -275,12 +275,14 @@ try{
 }
 
 // ⚠️ عدّل هذا البريد ليكون بريدك الحقيقي المسجّل بالموقع — هذا هو مفتاح الوصول للوحة الإدارة
-const ADMIN_EMAIL = "brmjeat1@gmail.com";
+const ADMIN_EMAIL = "your-admin-email@example.com";
 
 const TPL_DESIGN_DEFAULTS = {
   fontFamily:'Tajawal', nameSize:21, nameWeight:800, bioSize:12,
   avatarSize:64, avatarShape:'circle', gap:14,
-  linkRadius:'rounded', linkHeight:22, linkBorderWidth:2, linkShadow:false, linkFill:false, linkText:'#0f1535'
+  linkRadius:'rounded', linkHeight:22, linkBorderWidth:2, linkShadow:false, linkFill:false, linkText:'#0f1535',
+  socialSize:38, socialBorderWidth:0, socialBorderColor:'#ffffff', socialShowLabel:false, socialTextBold:false, socialTextColor:'#0f1535', socialTextSize:11,
+  socialLabel1:'حساب 1', socialLabel2:'حساب 2'
 };
 const DEFAULT_TEMPLATES = {
   default: { name:'الافتراضي', p1:'#3d5af1', p2:'#6c8fff', text:'#0f1535', bg:'#ffffff', ...TPL_DESIGN_DEFAULTS },
@@ -533,6 +535,29 @@ function closeTplExpanded(){
 }
 
 // يبني لوحة المعاينة الحيّة فقط — تحديث سريع بدون لمس عناصر التحكم
+// يبني عنصر واحد لأيقونة/مربع تواصل: لون + حجم + حدود + تسمية اختيارية (Bold قابل للتحكم)
+function buildSocialItem(t, isRect, rectStyle, color, label){
+  const border = t.socialBorderWidth > 0 ? `border:${t.socialBorderWidth}px solid ${t.socialBorderColor};` : '';
+  const boxStyle = isRect
+    ? `width:100%;height:${Math.max(28,t.socialSize*0.45)}px;border-radius:${rectStyle==='sharp'?'4px':'10px'};background:${color};${border}`
+    : `width:${t.socialSize}px;height:${t.socialSize}px;border-radius:50%;background:${color};${border};flex-shrink:0;`;
+  const labelHtml = t.socialShowLabel
+    ? `<div style="font-size:${t.socialTextSize}px;font-weight:${t.socialTextBold?800:400};color:${t.socialTextColor};margin-top:5px;text-align:center;">${escapeHtml(label)}</div>`
+    : '';
+  return isRect
+    ? `<div style="width:100%;"><div style="${boxStyle}"></div>${labelHtml}</div>`
+    : `<div style="display:flex;flex-direction:column;align-items:center;"><div style="${boxStyle}"></div>${labelHtml}</div>`;
+}
+function buildSocialsPreview(t, isRect, rectStyle){
+  const items = [
+    buildSocialItem(t, isRect, rectStyle, t.p1, t.socialLabel1 || 'حساب 1'),
+    buildSocialItem(t, isRect, rectStyle, t.p2, t.socialLabel2 || 'حساب 2'),
+  ];
+  return isRect
+    ? `<div style="display:flex;flex-direction:column;gap:8px;width:100%;margin:14px 0;">${items.join('')}</div>`
+    : `<div style="display:flex;gap:14px;margin:14px 0;">${items.join('')}</div>`;
+}
+
 function buildMockupHtml(key){
   const t = templatesData[key];
   const isRect = t.iconShape === 'rect';
@@ -546,15 +571,7 @@ function buildMockupHtml(key){
   const linkRadiusPx = t.linkRadius==='sharp' ? '4px' : t.linkRadius==='pill' ? '999px' : '10px';
   const linkFillStyle = t.linkFill ? `background:${t.p1};color:${t.linkText};` : `background:transparent;color:${t.linkText};`;
   const linkShadowStyle = t.linkShadow ? `box-shadow:0 6px 14px -4px rgba(0,0,0,.35);` : '';
-  const socialsHtml = isRect
-    ? `<div style="display:flex;flex-direction:column;gap:6px;width:100%;margin:14px 0;">
-         <div style="width:100%;height:16px;border-radius:${rectStyle==='sharp'?'4px':'10px'};background:${t.p1};"></div>
-         <div style="width:100%;height:16px;border-radius:${rectStyle==='sharp'?'4px':'10px'};background:${t.p2};"></div>
-       </div>`
-    : `<div style="display:flex;gap:10px;margin:14px 0;">
-         <div style="width:22px;height:22px;border-radius:50%;background:${t.p1};"></div>
-         <div style="width:22px;height:22px;border-radius:50%;background:${t.p2};"></div>
-       </div>`;
+  const socialsHtml = buildSocialsPreview(t, isRect, rectStyle);
 
   return `
     <div class="tpl-mockup-lg" id="tplMockupLg" style="${bgStyle}position:relative;font-family:'${t.fontFamily}',sans-serif;padding-top:${28+t.gap}px;">
@@ -826,16 +843,50 @@ function openSocialsPopover(key){
   const t = templatesData[key];
   const shape = t.iconShape === 'rect' ? (t.rectStyle==='sharp' ? 'sharp' : 'rounded') : 'icons';
   showPopover('حسابات التواصل', `
-    <div class="tpl-dash-label">الشكل</div>
-    <div class="tpl-seg-row" style="margin-bottom:16px;">
-      <button type="button" class="tpl-seg-btn ${shape==='icons'?'active':''}" data-action="social-shape" data-shape="icons" data-key="${key}">⚪ أيقونات</button>
-      <button type="button" class="tpl-seg-btn ${shape==='rounded'?'active':''}" data-action="social-shape" data-shape="rounded" data-key="${key}">▢ مستطيل دائري</button>
-      <button type="button" class="tpl-seg-btn ${shape==='sharp'?'active':''}" data-action="social-shape" data-shape="sharp" data-key="${key}">▭ مستطيل حاد</button>
+    <div class="tpl-dash-section">
+      <div class="tpl-dash-label">الشكل</div>
+      <div class="tpl-seg-row">
+        <button type="button" class="tpl-seg-btn ${shape==='icons'?'active':''}" data-action="social-shape" data-shape="icons" data-key="${key}">⚪ أيقونات</button>
+        <button type="button" class="tpl-seg-btn ${shape==='rounded'?'active':''}" data-action="social-shape" data-shape="rounded" data-key="${key}">▢ مستطيل دائري</button>
+        <button type="button" class="tpl-seg-btn ${shape==='sharp'?'active':''}" data-action="social-shape" data-shape="sharp" data-key="${key}">▭ مستطيل حاد</button>
+      </div>
     </div>
-    <div class="tpl-dash-label">الألوان (لون لون)</div>
-    <div class="tpl-color-mini-row"><span>الحساب الأول</span><input type="color" value="${t.p1}" data-field="p1" data-key="${key}" data-live="lg"></div>
-    <div class="tpl-color-mini-row"><span>الحساب الثاني</span><input type="color" value="${t.p2}" data-field="p2" data-key="${key}" data-live="lg"></div>
-    <div style="font-size:0.72rem;color:#9aa2c8;margin-top:10px;">⋮⋮ يظهر لكل مستخدم بحساباته الفعلية</div>
+
+    <div class="tpl-dash-section">
+      <div class="tpl-dash-label">حجم الأيقونة/المربع</div>
+      <div class="tpl-range-row"><input type="range" min="24" max="72" value="${t.socialSize}" data-field="socialSize" data-key="${key}" data-live="fast" data-unit="px"><span class="tpl-range-val">${t.socialSize}px</span></div>
+    </div>
+
+    <div class="tpl-dash-section">
+      <div class="tpl-dash-label">الحدود</div>
+      <div class="tpl-field"><span class="tpl-field-label">سُمك الحدود</span>
+        <div class="tpl-range-row"><input type="range" min="0" max="6" value="${t.socialBorderWidth}" data-field="socialBorderWidth" data-key="${key}" data-live="fast" data-unit="px"><span class="tpl-range-val">${t.socialBorderWidth}px</span></div>
+      </div>
+      <div class="tpl-color-mini-row"><span>لون الحدود</span><input type="color" value="${t.socialBorderColor}" data-field="socialBorderColor" data-key="${key}" data-live="lg"></div>
+    </div>
+
+    <div class="tpl-dash-section">
+      <div class="tpl-dash-label">تسمية الحساب (النص)</div>
+      <label class="tpl-toggle-row"><input type="checkbox" ${t.socialShowLabel?'checked':''} data-field="socialShowLabel" data-key="${key}" data-live="flag"><span>إظهار اسم الحساب تحت الأيقونة</span></label>
+      <div class="tpl-field" style="margin-top:12px;"><span class="tpl-field-label">اسم الحساب الأول</span>
+        <input type="text" class="tpl-expanded-input" value="${escapeHtml(t.socialLabel1)}" data-field="socialLabel1" data-key="${key}" data-live="lg">
+      </div>
+      <div class="tpl-field"><span class="tpl-field-label">اسم الحساب الثاني</span>
+        <input type="text" class="tpl-expanded-input" value="${escapeHtml(t.socialLabel2)}" data-field="socialLabel2" data-key="${key}" data-live="lg">
+      </div>
+      <div class="tpl-field"><span class="tpl-field-label">حجم خط الاسم</span>
+        <div class="tpl-range-row"><input type="range" min="8" max="18" value="${t.socialTextSize}" data-field="socialTextSize" data-key="${key}" data-live="fast" data-unit="px"><span class="tpl-range-val">${t.socialTextSize}px</span></div>
+      </div>
+      <div class="tpl-color-mini-row"><span>لون النص</span><input type="color" value="${t.socialTextColor}" data-field="socialTextColor" data-key="${key}" data-live="lg"></div>
+      <label class="tpl-toggle-row"><input type="checkbox" ${t.socialTextBold?'checked':''} data-field="socialTextBold" data-key="${key}" data-live="flag"><span>خط عريض Bold</span></label>
+    </div>
+
+    <div class="tpl-dash-section">
+      <div class="tpl-dash-label">الألوان (لون لكل حساب)</div>
+      <div class="tpl-color-mini-row"><span>الحساب الأول</span><input type="color" value="${t.p1}" data-field="p1" data-key="${key}" data-live="lg"></div>
+      <div class="tpl-color-mini-row"><span>الحساب الثاني</span><input type="color" value="${t.p2}" data-field="p2" data-key="${key}" data-live="lg"></div>
+    </div>
+    <div style="font-size:0.72rem;color:#9aa2c8;">⋮⋮ هذا تصميم افتراضي للعرض — يظهر لكل مستخدم بحساباته الفعلية وأسمائها الحقيقية</div>
   `);
 }
 
