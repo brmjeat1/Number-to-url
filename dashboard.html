@@ -740,6 +740,20 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
           </div>
         </div>
 
+        <!-- خلفية الصفحة كصورة كاملة — منفصلة عن اللون المسطح وعن صورة الغلاف العلوية -->
+        <div class="form-group" style="margin-top:20px;">
+          <label>خلفية الصفحة (صورة) <span class="lbl-sub">/ Page Background Image</span></label>
+          <div id="pageBgPreview" style="width:100%;height:90px;border-radius:10px;border:1.5px dashed var(--border);background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:0.78rem;margin-bottom:10px;">لا توجد صورة خلفية — الصفحة تستخدم اللون بالأعلى</div>
+          <div style="display:flex;gap:8px;">
+            <label style="flex:1;text-align:center;padding:11px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-weight:700;font-size:0.85rem;background:var(--bg2);">
+              📷 رفع صورة من الألبوم
+              <input type="file" id="pageBgInput" accept="image/*" onchange="selectPageBackground(this)" style="display:none;">
+            </label>
+            <button type="button" id="pageBgRemoveBtn" onclick="removePageBackground()" style="display:none;padding:11px 16px;border:1.5px solid var(--error);border-radius:10px;background:transparent;color:var(--error);font-weight:700;cursor:pointer;font-family:inherit;">إزالة</button>
+          </div>
+          <div style="font-size:0.72rem;color:var(--text2);margin-top:8px;">تظهر خلف كامل صفحتك العامة. يُنصح بصورة خفيفة التباين حتى يبقى النص واضحًا.</div>
+        </div>
+
         <!-- معاينة حية لشكل الصفحة بالألوان المختارة -->
         <div class="form-group">
           <label>معاينة مباشرة <span class="lbl-sub">/ Live Preview</span></label>
@@ -996,6 +1010,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   let socialColorMode = 'brand';
   let croppedAvatarBase64 = null;
   let croppedBannerBase64 = null;
+  let pageBgImageBase64 = null; // خلفية الصفحة الكاملة (منفصلة عن صورة الغلاف)
   let customSocialIconBase64 = null;
 
   // مكتبة أيقونات SVG للمنصات (بدل الإيموجي)
@@ -1242,6 +1257,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       // الصور (base64 من Firestore) — أسماء موحّدة مع page.html
       if (data.avatar) { document.getElementById('avatarPreview').innerHTML = `<img src="${data.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`; window.__currentAvatarUrl = data.avatar; }
       if (data.bannerImage) document.getElementById('bannerPreview').style.backgroundImage = `url(${data.bannerImage})`;
+      if (data.pageBackgroundImage) {
+        pageBgImageBase64 = data.pageBackgroundImage;
+        const pv = document.getElementById('pageBgPreview');
+        pv.style.backgroundImage = `url(${data.pageBackgroundImage})`;
+        pv.textContent = '';
+        document.getElementById('pageBgRemoveBtn').style.display = 'inline-block';
+      }
     } else {
       await setDoc(userDocRef, { username, email: currentUser.email, createdAt: new Date() }, { merge: true });
     }
@@ -1558,6 +1580,21 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     window.onColor2Pick(t.p2);
     window.onTextColorPick(t.text);
     window.onBgColorPick(t.bg);
+    // ⚠️ إصلاح: القالب من لوحة الإدارة قد يحمل صورة خلفية كاملة (t.bgImage) — كانت تُتجاهل بالكامل هنا
+    // فتُطبَّق ألوان القالب فقط بدون الصورة، مما يجعل تصميم الخلفية بالإدارة "لا يظهر" عند المستخدم.
+    const pv = document.getElementById('pageBgPreview');
+    if(t.bgImage){
+      pageBgImageBase64 = t.bgImage;
+      pv.style.backgroundImage = `url(${t.bgImage})`;
+      pv.textContent = '';
+      document.getElementById('pageBgRemoveBtn').style.display = 'inline-block';
+    } else {
+      // القالب المختار لا يحمل صورة خلفية — نرجع للون المسطح حتى لا تبقى صورة قالب سابق عالقة
+      pageBgImageBase64 = null;
+      pv.style.backgroundImage = 'none';
+      pv.textContent = 'لا توجد صورة خلفية — الصفحة تستخدم اللون بالأعلى';
+      document.getElementById('pageBgRemoveBtn').style.display = 'none';
+    }
     if(t.iconShape) await window.setIconShape(t.iconShape);
     document.querySelectorAll('.template-card').forEach(c=>c.classList.toggle('active', c.getAttribute('data-tpl')===id));
     renderPageMockups(id);
@@ -3471,6 +3508,49 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   window.selectAvatar = function(input) { if (input.files && input.files[0]) openCropModal(input.files[0], 'avatar', 1); };
   window.selectBanner = function(input) { if (input.files && input.files[0]) openCropModal(input.files[0], 'banner', 16/6); };
 
+  // خلفية الصفحة الكاملة: بدون قص (تُعرض بـ background-size:cover فتتأقلم مع أي أبعاد)،
+  // لكن نصغّرها ونضغطها أولًا حتى لا يتضخم مستند المستخدم ببطء الحفظ (نفس أسلوب لوحة الإدارة)
+  function compressImageFile(file, cb, maxDim = 1280, quality = 0.82){
+    if(!file.type || !file.type.startsWith('image/')){ window.showToast('الملف المختار ليس صورة'); return; }
+    const img = new Image();
+    const objUrl = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(objUrl);
+      let { width, height } = img;
+      if(width > maxDim || height > maxDim){
+        const ratio = Math.min(maxDim / width, maxDim / height);
+        width = Math.round(width * ratio);
+        height = Math.round(height * ratio);
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width; canvas.height = height;
+      canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+      cb(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = () => { URL.revokeObjectURL(objUrl); window.showToast('تعذر تحميل الصورة، جرّب ملفًا آخر'); };
+    img.src = objUrl;
+  }
+  window.selectPageBackground = function(input){
+    if(!(input.files && input.files[0])) return;
+    compressImageFile(input.files[0], (dataUrl) => {
+      pageBgImageBase64 = dataUrl;
+      const pv = document.getElementById('pageBgPreview');
+      pv.style.backgroundImage = `url(${dataUrl})`;
+      pv.textContent = '';
+      document.getElementById('pageBgRemoveBtn').style.display = 'inline-block';
+      window.showToast('تم اختيار الصورة — لا تنسَ الحفظ');
+    });
+    input.value = ''; // يسمح باختيار نفس الملف مرة أخرى لاحقًا لو احتاج المستخدم
+  };
+  window.removePageBackground = function(){
+    pageBgImageBase64 = null;
+    const pv = document.getElementById('pageBgPreview');
+    pv.style.backgroundImage = 'none';
+    pv.textContent = 'لا توجد صورة خلفية — الصفحة تستخدم اللون بالأعلى';
+    document.getElementById('pageBgRemoveBtn').style.display = 'none';
+    window.showToast('أُزيلت — اضغط حفظ لتأكيد الإزالة');
+  };
+
   function openCropModal(file, type, ratio) {
     currentCropType = type;
     const reader = new FileReader();
@@ -3527,6 +3607,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       };
       if(croppedAvatarBase64) upData.avatar = croppedAvatarBase64;
       if(croppedBannerBase64) upData.bannerImage = croppedBannerBase64;
+      // خلفية الصفحة: نحفظ القيمة الحالية دائمًا (base64 لو موجودة، أو null لو أزالها المستخدم) حتى تنعكس الإزالة فعليًا
+      upData.pageBackgroundImage = pageBgImageBase64 || null;
 
       await setDoc(doc(db, "users", currentUser.uid), upData, { merge: true });
       window.showToast("تم حفظ التصميم والصور بنجاح");
