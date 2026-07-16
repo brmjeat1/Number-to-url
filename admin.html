@@ -90,7 +90,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:14px 2
 .tpl-dash-section{
   border:2px dashed #c7cee0;border-radius:16px;padding:16px;margin-bottom:14px;background:#fff;
 }
-.tpl-dash-label{font-size:0.78rem;font-weight:800;color:#6b7280;margin-bottom:10px;}
+.tpl-dash-label{font-size:0.78rem;font-weight:800;color:#6b7280;margin-bottom:10px;text-align:right;}
+.tpl-settings-content{max-width:460px;margin:0 auto;text-align:right;}
+.tpl-settings-content .form-group label,
+.tpl-settings-content label{text-align:right;display:block;}
 .tpl-expanded-input{
   width:100%;padding:11px;border:1.5px solid #e0e0e0;border-radius:10px;font-family:inherit;font-size:0.9rem;font-weight:700;
 }
@@ -181,7 +184,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:14px 2
       <div style="font-weight:800;font-size:0.95rem;">تحكم كامل بالقالب</div>
       <button onclick="saveTemplatesConfig();closeTplExpanded();" style="background:#0ab87a;border:none;width:34px;height:34px;border-radius:50%;color:#fff;font-size:1.1rem;cursor:pointer;">✓</button>
     </div>
-    <div id="tplExpandedBody" style="flex:1;overflow-y:auto;padding:20px;"></div>
+    <div id="tplExpandedBody" style="flex:1;overflow-y:auto;padding:20px;text-align:right;"></div>
   </div>
 
   <!-- نافذة منبثقة سياقية (شعار/خلفية/تواصل) -->
@@ -214,7 +217,7 @@ const auth=firebase.auth();
 const db=firebase.firestore();
 
 // ⚠️ عدّل هذا البريد ليكون بريدك الحقيقي المسجّل بالموقع — هذا هو مفتاح الوصول للوحة الإدارة
-const ADMIN_EMAIL = "brmjeat1@gmail.com";
+const ADMIN_EMAIL = "your-admin-email@example.com";
 
 const DEFAULT_TEMPLATES = {
   default: { name:'الافتراضي', p1:'#3d5af1', p2:'#6c8fff', text:'#0f1535', bg:'#ffffff' },
@@ -405,6 +408,7 @@ function renderTplExpanded(){
   const bgStyle = getTplBgStyle(t);
 
   document.getElementById('tplExpandedBody').innerHTML = `
+  <div class="tpl-settings-content">
     <div class="tpl-mockup-lg" id="tplMockupLg" style="${bgStyle}position:relative;">
       <button class="tpl-plus-badge" style="top:8px;left:8px;" onclick="event.stopPropagation();openBgPopover('${key}')" title="الخلفية">+</button>
 
@@ -428,12 +432,12 @@ function renderTplExpanded(){
 
     <div class="tpl-dash-section">
       <div class="tpl-dash-label">اسم القالب (للإدارة فقط)</div>
-      <input type="text" value="${t.name}" class="tpl-expanded-input" onchange="templatesData['${key}'].name=this.value">
+      <input type="text" value="${t.name}" class="tpl-expanded-input" style="text-align:right;" onchange="templatesData['${key}'].name=this.value">
     </div>
 
     <div class="tpl-dash-section">
       <div class="tpl-dash-label">نص الاسم بالمعاينة</div>
-      <input type="text" value="${t.sampleName || 'اسمك هنا'}" class="tpl-expanded-input" onchange="updateTplLiveLg('${key}','sampleName',this.value)">
+      <input type="text" value="${t.sampleName || 'اسمك هنا'}" class="tpl-expanded-input" style="text-align:right;" onchange="updateTplLiveLg('${key}','sampleName',this.value)">
     </div>
 
     <div class="tpl-dash-section">
@@ -444,25 +448,30 @@ function renderTplExpanded(){
     </div>
 
     <button class="tpl-delete-btn" style="width:100%;" onclick="deleteTemplate('${key}');closeTplExpanded();">🗑 حذف هذا القالب</button>
+  </div>
   `;
 }
 function renderSocialsPreview(t, isRect, rectStyle){
+  const iconColor = t.socialIconColor || t.p1;
   if(isRect){
     const radius = rectStyle === 'sharp' ? '4px' : '10px';
-    return `<div style="display:flex;flex-direction:column;gap:6px;width:100%;margin:14px 0;">
-      <div style="width:100%;height:16px;border-radius:${radius};background:${t.p1};"></div>
-      <div style="width:100%;height:16px;border-radius:${radius};background:${t.p2};"></div>
+    const rectColor = t.socialRectColor || t.p1;
+    const textColor = t.socialTextColor || '#ffffff';
+    const row = () => `<div style="width:100%;height:22px;border-radius:${radius};background:${rectColor};display:flex;align-items:center;gap:6px;padding:0 8px;">
+      <span style="width:10px;height:10px;border-radius:50%;background:${iconColor};flex-shrink:0;"></span>
+      <span style="height:3px;flex:1;border-radius:2px;background:${textColor};opacity:0.9;"></span>
     </div>`;
+    return `<div style="display:flex;flex-direction:column;gap:6px;width:100%;margin:14px 0;">${row()}${row()}</div>`;
   }
   return `<div style="display:flex;gap:10px;margin:14px 0;">
-    <div style="width:22px;height:22px;border-radius:50%;background:${t.p1};"></div>
-    <div style="width:22px;height:22px;border-radius:50%;background:${t.p2};"></div>
+    <div style="width:22px;height:22px;border-radius:50%;background:${t.p1};display:flex;align-items:center;justify-content:center;"><span style="width:9px;height:9px;border-radius:50%;background:${iconColor};"></span></div>
+    <div style="width:22px;height:22px;border-radius:50%;background:${t.p2};display:flex;align-items:center;justify-content:center;"><span style="width:9px;height:9px;border-radius:50%;background:${iconColor};"></span></div>
   </div>`;
 }
 // ===== نافذة صغيرة منبثقة عامة =====
 function showTplPopover(title, bodyHtml){
   document.getElementById('tplPopoverTitle').textContent = title;
-  document.getElementById('tplPopoverBody').innerHTML = bodyHtml;
+  document.getElementById('tplPopoverBody').innerHTML = `<div class="tpl-settings-content">${bodyHtml}</div>`;
   document.getElementById('tplPopoverOverlay').style.display = 'flex';
 }
 function closeTplPopover(){
@@ -582,10 +591,14 @@ function bgPopoverFileChosen(key, input){
   });
 }
 
-// ===== + التواصل: ألوان لون-لون + شكل (أيقونات/مستطيل حاد/مستطيل دائري) + إعادة ترتيب =====
+// ===== + التواصل: شكل (أيقونات/مستطيل حاد/مستطيل دائري) + ألوان مخصصة (أيقونة/مستطيل/نص) + إعادة ترتيب =====
 function openSocialsPopover(key){
   const t = templatesData[key];
-  const shape = t.iconShape === 'rect' ? (t.rectStyle==='sharp' ? 'sharp' : 'rounded') : 'icons';
+  const isRect = t.iconShape === 'rect';
+  const shape = isRect ? (t.rectStyle==='sharp' ? 'sharp' : 'rounded') : 'icons';
+  const iconColor = t.socialIconColor || t.p1;
+  const rectColor = t.socialRectColor || t.p1;
+  const textColor = t.socialTextColor || '#ffffff';
   showTplPopover('حسابات التواصل', `
     <div class="tpl-dash-label">الشكل</div>
     <div style="display:flex;gap:6px;margin-bottom:16px;">
@@ -593,18 +606,24 @@ function openSocialsPopover(key){
       <button type="button" class="tpl-shape-btn" data-shape="rounded" onclick="setSocialsShape('${key}','rounded')" style="flex:1;padding:10px 4px;border:2px solid ${shape==='rounded'?'#3d5af1':'#e0e0e0'};border-radius:9px;background:#fff;font-size:0.72rem;font-weight:700;cursor:pointer;">▢ مستطيل دائري</button>
       <button type="button" class="tpl-shape-btn" data-shape="sharp" onclick="setSocialsShape('${key}','sharp')" style="flex:1;padding:10px 4px;border:2px solid ${shape==='sharp'?'#3d5af1':'#e0e0e0'};border-radius:9px;background:#fff;font-size:0.72rem;font-weight:700;cursor:pointer;">▭ مستطيل حاد</button>
     </div>
-    <div class="tpl-dash-label">الألوان (لون لون)</div>
+    <div class="tpl-dash-label">ألوان الأيقونة${isRect ? ' والمستطيل' : ''}</div>
     <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;">
       <div style="display:flex;align-items:center;gap:10px;">
-        <span style="font-size:0.8rem;flex:1;">الحساب الأول</span>
-        <input type="color" value="${t.p1}" onchange="updateTplLiveLg('${key}','p1',this.value)" style="width:50px;height:36px;border-radius:8px;border:1px solid #e0e0e0;">
+        <span style="font-size:0.8rem;flex:1;">لون الأيقونة</span>
+        <input type="color" value="${iconColor}" onchange="updateTplLiveLg('${key}','socialIconColor',this.value)" style="width:50px;height:36px;border-radius:8px;border:1px solid #e0e0e0;">
+      </div>
+      ${isRect ? `
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:0.8rem;flex:1;">لون المستطيل</span>
+        <input type="color" value="${rectColor}" onchange="updateTplLiveLg('${key}','socialRectColor',this.value)" style="width:50px;height:36px;border-radius:8px;border:1px solid #e0e0e0;">
       </div>
       <div style="display:flex;align-items:center;gap:10px;">
-        <span style="font-size:0.8rem;flex:1;">الحساب الثاني</span>
-        <input type="color" value="${t.p2}" onchange="updateTplLiveLg('${key}','p2',this.value)" style="width:50px;height:36px;border-radius:8px;border:1px solid #e0e0e0;">
+        <span style="font-size:0.8rem;flex:1;">لون النص</span>
+        <input type="color" value="${textColor}" onchange="updateTplLiveLg('${key}','socialTextColor',this.value)" style="width:50px;height:36px;border-radius:8px;border:1px solid #e0e0e0;">
       </div>
+      ` : ''}
     </div>
-    <div style="font-size:0.72rem;color:#9aa2c8;">⋮⋮ اسحب لإعادة ترتيب الحسابات — يظهر لكل مستخدم بحسابه الفعلي</div>
+    <div style="font-size:0.72rem;color:#9aa2c8;">⋮⋮ ترتيب الحسابات يظهر لكل مستخدم بحسابه الفعلي</div>
   `);
 }
 function setSocialsShape(key, shape){
