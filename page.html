@@ -115,7 +115,7 @@ nav{
 .numbers-panel-box{
   position:absolute;top:0;right:0;bottom:0;
   background:var(--surface,#fff);height:100%;
-  width:min(340px,84vw);padding:56px 20px 30px;box-shadow:-8px 0 30px rgba(0,0,0,0.2);
+  width:min(340px,84vw);padding:74px 20px 30px;box-shadow:-8px 0 30px rgba(0,0,0,0.2);
   display:flex;flex-direction:column;overflow-y:auto;
   animation:panelSlideInRight .25s cubic-bezier(.2,.8,.3,1);
 }
@@ -124,11 +124,11 @@ nav{
   to{transform:translateX(0);}
 }
 .numbers-panel-close-centered{
-  position:absolute;top:14px;left:50%;transform:translateX(-50%);
-  width:32px;height:32px;border-radius:50%;border:none;background:var(--bg2,#f3f3f3);
-  color:var(--text2);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  position:absolute;top:16px;left:50%;transform:translateX(-50%);
+  width:42px;height:42px;border-radius:50%;border:none;background:var(--bg2,#f3f3f3);
+  color:var(--text2);font-size:1.35rem;cursor:pointer;display:flex;align-items:center;justify-content:center;
 }
-.numbers-panel-search-row{display:flex;justify-content:center;margin-bottom:18px;}
+.numbers-panel-search-row{display:flex;justify-content:center;margin-bottom:28px;}
 .numbers-panel-search{
   display:flex;align-items:center;gap:8px;padding:5px 5px 5px 16px;
   width:min(100%,280px);
@@ -176,6 +176,7 @@ nav{
   color:var(--accent);font-weight:700;font-size:2.6rem;overflow:hidden;
   box-shadow:0 10px 40px rgba(0,0,0,0.15);
 }
+.avatar-circle.shape-rect{border-radius:22px;} /* افتار مستطيل بدل الدائري الافتراضي */
 .avatar-circle img{width:100%;height:100%;object-fit:cover;}
 
 /* ========== CONTENT ========== */
@@ -333,12 +334,13 @@ nav{
 }
 .text-view-overlay.open{display:flex;}
 .text-view-card{
-  background:var(--surface,#fff);border-radius:18px;padding:26px 22px;
+  background:var(--surface,#fff);border-radius:18px;padding:34px 22px 26px;
   max-width:380px;width:100%;max-height:75vh;overflow-y:auto;position:relative;
 }
 .text-view-close{
-  position:absolute;top:14px;left:14px;background:transparent;border:none;
-  font-size:1.2rem;cursor:pointer;color:var(--muted);
+  position:absolute;top:12px;left:12px;background:var(--bg2,#f3f3f3);border:none;
+  width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;cursor:pointer;color:var(--text2);
 }
 .text-view-num{
   font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-weight:700;
@@ -886,6 +888,7 @@ function render(user){
   const avatarEl=document.getElementById('avatar');
   avatarEl.innerHTML=avatarHtml;
   avatarEl.classList.remove('skeleton-shimmer');
+  avatarEl.classList.toggle('shape-rect', user.avatarShape === 'rect'); // افتار مستطيل بدل الدائري لو اختاره صاحب الصفحة
 
   if(user.bannerImage){
     document.getElementById('heroBanner').style.backgroundImage=`url(${user.bannerImage})`;
@@ -1043,20 +1046,20 @@ function render(user){
 
     ${user.bio?`<div class="profile-bio">${user.bio}</div>`:''}
 
+    ${socialsHtml}
+    ${contactsHtml}
+
     <div class="main-search-row">
       <div class="main-search-box">
         <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         <input class="main-search-input" type="text" id="numIn"
-          placeholder="أكتب الرقم · Write the number"
+          placeholder="اكتب رقم يحيلك لرابط"
           maxlength="6" inputmode="numeric" oninput="convertNum()"
           onkeydown="if(event.key==='Enter'){event.preventDefault();goNav();}">
         <button type="button" class="main-search-go" onclick="goNav()">إتمام</button>
       </div>
     </div>
     <div class="error-msg" id="errMsg">الرقم غير موجود · Number not found</div>
-
-    ${socialsHtml}
-    ${contactsHtml}
   `;
 
   // تخزين رابط الصفحة للـ QR المنبثق
