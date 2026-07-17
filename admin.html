@@ -1063,7 +1063,8 @@ document.addEventListener('change', function(e){
     return;
   }
   if(el.dataset.action === 'bg-file' && el.files && el.files[0]){
-    fileToBase64(el.files[0], (dataUrl) => { setField(el.dataset.key, 'bgImage', dataUrl); renderTplExpanded(); closeTplPopover(); });
+    // خلفية كاملة الصفحة تحتاج دقة أعلى من الأفتار/الشعار (480px تصير مموّهة لو تمددت على الشاشة كاملة)
+    fileToBase64(el.files[0], (dataUrl) => { setField(el.dataset.key, 'bgImage', dataUrl); renderTplExpanded(); closeTplPopover(); }, 1080, 0.75);
     return;
   }
 
