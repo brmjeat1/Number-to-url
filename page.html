@@ -701,6 +701,15 @@ function setupSmartNav(pageUid){
   else { setTimeout(loadAuthCheck, 800); }
 }
 
+// يحوّل لون hex إلى rgba بدرجة شفافية معينة — تُستخدم لطبقة "خلفية + ألوان"
+function hexToRgba(hex, alpha){
+  let h = (hex || '#ffffff').replace('#','');
+  if(h.length === 3) h = h.split('').map(c => c+c).join('');
+  const r = parseInt(h.substring(0,2),16) || 0;
+  const g = parseInt(h.substring(2,4),16) || 0;
+  const b = parseInt(h.substring(4,6),16) || 0;
+  return `rgba(${r},${g},${b},${alpha})`;
+}
 function applyThemeColor(hex){
   if(!/^#[0-9A-Fa-f]{6}$/.test(hex))return;
   document.documentElement.style.setProperty('--accent',hex);
@@ -822,10 +831,27 @@ function render(user){
   if(/^#[0-9A-Fa-f]{6}$/.test(primary2)){
     document.documentElement.style.setProperty('--accent-light', primary2);
   }
-  // لون الخلفية (الافتراضي أبيض، أو وضع ليلي لو جهاز الزائر ليلي ولا خلفية مختارة)
+  // خلفية الصفحة: ٣ أوضاع — image (صورة فقط) / imageColor (صورة + طبقة لون أمامها) / color (لون فقط، الوضع الافتراضي القديم)
+  const bgMode = user.bgMode || 'color';
   const chosenBg = user.bgColor && /^#[0-9A-Fa-f]{6}$/.test(user.bgColor) ? user.bgColor : null;
   const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  if(chosenBg){
+  // نصفّر أي خلفية-صورة سابقة قبل نعيد تطبيقها حسب الوضع الحالي (يمنع بقايا صورة قديمة عند التبديل للون فقط)
+  document.body.style.backgroundImage = '';
+  if((bgMode === 'image' || bgMode === 'imageColor') && user.bgImage){
+    const overlayColor = chosenBg || '#ffffff';
+    const op = (typeof user.bgOverlayOpacity === 'number') ? user.bgOverlayOpacity : 0.55;
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
+    document.body.style.backgroundRepeat = 'no-repeat';
+    if(bgMode === 'imageColor'){
+      document.body.style.backgroundImage = `linear-gradient(${hexToRgba(overlayColor, op)},${hexToRgba(overlayColor, op)}),url(${user.bgImage})`;
+    } else {
+      document.body.style.backgroundImage = `url(${user.bgImage})`;
+    }
+    // نبقي --bg كخلفية احتياطية خلف الصورة (لحظة التحميل) بنفس لون الطبقة إن وجد
+    document.documentElement.style.setProperty('--bg', overlayColor);
+    document.documentElement.style.setProperty('--surface', overlayColor);
+  } else if(chosenBg){
     document.documentElement.style.setProperty('--bg', chosenBg);
     document.documentElement.style.setProperty('--surface', chosenBg);
   } else if(prefersDark){
@@ -835,24 +861,6 @@ function render(user){
   } else {
     document.documentElement.style.setProperty('--bg', '#ffffff');
     document.documentElement.style.setProperty('--surface', '#f9f9f9');
-  }
-  // خلفية الصفحة: ألوان فقط (الافتراضي أعلاه) / خلفية فقط (صورة) / ألوان وخلفية معًا
-  // ملاحظة أداء: الصورة مضغوطة مسبقًا من لوحة التحكم، وتُحمَّل هنا بـ background-image واحدة فقط
-  // بدون أي طبقات إضافية أو ملفات JS ثقيلة، فلا تؤثر على سرعة الصفحة.
-  const bgMode = user.bgMode || (user.bgImage ? 'image' : 'color');
-  if((bgMode === 'image' || bgMode === 'combo') && user.bgImage){
-    if(bgMode === 'image'){
-      document.body.style.backgroundImage = `url(${user.bgImage})`;
-    } else {
-      const overlayHex = chosenBg || '#ffffff';
-      const oh = overlayHex.replace('#','');
-      const r = parseInt(oh.substring(0,2),16), g = parseInt(oh.substring(2,4),16), b = parseInt(oh.substring(4,6),16);
-      document.body.style.backgroundImage = `linear-gradient(rgba(${r},${g},${b},0.55),rgba(${r},${g},${b},0.55)),url(${user.bgImage})`;
-    }
-    document.body.style.backgroundSize = 'cover';
-    document.body.style.backgroundPosition = 'center';
-    document.body.style.backgroundAttachment = 'fixed';
-    document.body.style.backgroundRepeat = 'no-repeat';
   }
   // لون النص: صريح من اختيار المستخدم، وإلا تباين تلقائي مع الخلفية
   if(user.textColor && /^#[0-9A-Fa-f]{6}$/.test(user.textColor)){
@@ -876,6 +884,10 @@ function render(user){
   userSocials=socials;
   const iconShape = user.socialIconShape || 'circle';
   const rectStyle = user.socialRectStyle || 'rounded';
+  // لوحة الـ٤ ألوان الخاصة بالشكل الحالي (مستطيل/دائري) — لو موجودة، تُوزَّع بالتناوب على الأيقونات بنمط "site"
+  const iconPalette = iconShape === 'rect'
+    ? (Array.isArray(user.iconPaletteRect) && user.iconPaletteRect.length ? user.iconPaletteRect : null)
+    : (Array.isArray(user.iconPaletteCircle) && user.iconPaletteCircle.length ? user.iconPaletteCircle : null);
   function extractHandle(url){
     if(!url) return '';
     try{
@@ -910,7 +922,7 @@ function render(user){
   }
   let socialsHtml='';
   if(socials.length){
-    const btns=socials.map(s=>{
+    const btns=socials.map((s, idx)=>{
       const pid=s.platformId||detectPlat(s.url);
       const svg=pid&&PAGE_SVG[pid]?PAGE_SVG[pid]:null;
       // النمط: upload=صورة مرفوعة، site=لون موقعك، brand=لون التطبيق (الافتراضي)، custom=تخصيص كامل
@@ -919,38 +931,31 @@ function render(user){
       if(mode==='upload' && s.icon && String(s.icon).startsWith('data:')){
         return `<a href="${s.url}" target="_blank" class="social-btn" title="${s.name||''}" style="border-color:var(--accent-light);" onclick="trackSocialClick('${s.id}')"><img src="${s.icon}"></a>`;
       }
-      // لون خلفية الأيقونة، لون الأيقونة نفسها، لون المستطيل، لون النص، لون/سعة الإطار — قابلة للتخصيص المستقل
+      // لون١=خلفية المربع، لون٢=الإطار، الشعار=لون النص (نمط site) — أو تخصيص كامل بأربع ألوان مستقلة
       let circleBg, borderCol, iconColor, containerBg='transparent';
-      let rectBg, rectTextColor, borderWidth=2; // خاصة بشكل "أيقونة مع مستطيل للاسم" فقط
       if(mode==='custom'){
         circleBg = s.customBg || 'var(--accent)';
         borderCol = s.customRing || 'transparent';
         iconColor = s.customIconColor || '#ffffff';
         containerBg = s.customContainer || 'transparent';
-        rectBg = iconColor; rectTextColor = circleBg; // نفس السلوك القديم لتخصيص الحساب الفردي
       } else if(mode==='site'){
-        // ألوان مخصّصة من لوحة التحكم (تُطبَّق على كل الحسابات دفعة واحدة)
-        circleBg = user.socIconBg || 'var(--accent)';
-        iconColor = user.socIconColor || 'var(--text)';
-        borderCol = user.socRectBorderColor || 'var(--accent-light)';
-        rectBg = user.socRectColor || 'var(--text)';
-        rectTextColor = user.socTextColor || '#ffffff';
-        borderWidth = user.socRectBorderWidth != null ? user.socRectBorderWidth : 2;
+        circleBg = iconPalette ? iconPalette[idx % iconPalette.length] : 'var(--accent)';
+        borderCol='var(--accent-light)'; iconColor='var(--text)';
       } else {
         // لون التطبيق الرسمي
         circleBg=s.brandColor||platColor(pid); borderCol='var(--accent-light)'; iconColor='#ffffff';
-        rectBg = 'var(--text)'; rectTextColor = circleBg; // نفس السلوك القديم
       }
       const inner = svg ? svg : `<span style="font-weight:700;font-size:1.4rem;">${(s.name||'?')[0].toUpperCase()}</span>`;
 
       // ===== الشكل المستطيل: أيقونة + يوزر، بخط فاصل مستقيم أو مائل =====
+      // نعكس الألوان بين منطقة الأيقونة ومنطقة الاسم ليتميّزا بصرياً عن بعض
       if(iconShape === 'rect'){
         const rectClass = rectStyle === 'sharp' ? 'social-rect social-rect-sharp' : 'social-rect';
         const smallInner = svg ? svg.replace('width="28"','width="20"').replace('height="28"','height="20"') : inner;
-        return `<a href="${s.url}" target="_blank" class="${rectClass}" title="${s.name||pid}" style="border-color:${borderCol};border-width:${borderWidth}px;background:${rectBg};color:${rectTextColor};" onclick="trackSocialClick('${s.id}')">
+        return `<a href="${s.url}" target="_blank" class="${rectClass}" title="${s.name||pid}" style="border-color:${borderCol};background:${iconColor};color:${circleBg};" onclick="trackSocialClick('${s.id}')">
           <span class="social-rect-icon" style="background:${circleBg};color:${iconColor};">${smallInner}</span>
           <span class="social-rect-divider"></span>
-          <span class="social-rect-label" style="background:${rectBg};color:${rectTextColor};">${extractHandle(s.url)||s.name||pid}</span>
+          <span class="social-rect-label" style="background:${iconColor};color:${circleBg};">${extractHandle(s.url)||s.name||pid}</span>
         </a>`;
       }
 
