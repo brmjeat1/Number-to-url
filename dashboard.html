@@ -75,7 +75,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display'
 .form-group{margin-bottom:14px;}
 label{display:block;font-size:0.85rem;font-weight:700;margin-bottom:6px;color:var(--text2);}
 label .lbl-sub{font-size:0.7rem;font-weight:400;color:var(--muted);}
-input[type=text],input[type=url],input[type=number],input[type=email],input[type=tel],textarea,select{
+input[type=text],input[type=url],input[type=number],input[type=email],input[type=tel],input[type=password],textarea,select{
   width:100%;padding:10px 12px;border:1.5px solid var(--border);
   border-radius:8px;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-size:0.9rem;
   outline:none;transition:border .2s;background:var(--bg);
@@ -307,12 +307,47 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
 <!-- TOPBAR -->
 <div class="topbar">
-  <div class="topbar-brand" id="topbarBrand" dir="ltr">electrwni.link</div>
+  <div style="display:flex;align-items:center;gap:8px;overflow:hidden;flex:1;min-width:0;">
+    <div class="topbar-brand" id="topbarBrand" dir="ltr" style="max-width:none;flex:1;min-width:0;">electrwni.link</div>
+    <button type="button" onclick="openMyPage()" title="افتح صفحتك · Open your page" style="background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.28);color:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:7px;padding:0;flex-shrink:0;">
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"></path><path d="M7 7h10v10"></path></svg>
+    </button>
+  </div>
   <div class="topbar-btns">
-    <button class="btn btn-white" id="viewPageBtn" onclick="openMyPage()">صفحتك <span style="font-size:0.65rem;display:block;opacity:0.7;">My Page</span></button>
+    <button class="btn btn-white" onclick="openAccountsModal()" title="أكثر من حساب · Accounts" style="display:flex;align-items:center;justify-content:center;padding:10px;">
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+    </button>
+    <button class="btn btn-white" onclick="window.openQrCard()" title="رمز QR · QR Code" style="display:flex;align-items:center;justify-content:center;padding:10px;">
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v2h-3v-2zm0 4h3v4h-2v-2h-1v-2zm-5-4h3v3h-2v-1h-1v-2zm0 5h2v2h-2v-2z"></path></svg>
+    </button>
+    <button class="btn btn-white" id="viewPageBtn" onclick="openMyPage()" title="صفحتك · My Page" style="display:flex;align-items:center;justify-content:center;padding:10px;">
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+    </button>
     <button class="btn btn-logout" onclick="logout()" title="خروج · Logout" style="display:flex;align-items:center;justify-content:center;padding:10px;">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+
     </button>
+  </div>
+</div>
+
+<!-- نافذة إدارة الحسابات: تبديل بين أكثر من حساب بدون تسجيل خروج كامل -->
+<div id="accountsModal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.5);align-items:flex-end;justify-content:center;" onclick="if(event.target===this)closeAccountsModal()">
+  <div style="background:var(--bg,#fff);border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+      <div style="font-weight:800;font-size:1.05rem;">حساباتك <span class="lbl-sub" style="font-weight:400;">Accounts</span></div>
+      <button type="button" onclick="closeAccountsModal()" style="background:var(--surface,#f4f5f9);border:none;width:28px;height:28px;border-radius:50%;font-size:0.9rem;cursor:pointer;">✕</button>
+    </div>
+    <div style="font-size:0.76rem;color:var(--muted);margin-bottom:16px;">بدّل بين حساباتك بضغطة وحدة، أو أضف حساب جديد · Switch instantly, or add another account</div>
+    <div id="accountsList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div>
+
+    <div id="addAccountForm" style="display:none;border-top:1px solid var(--border,#e8ecf5);padding-top:14px;margin-top:4px;">
+      <div style="font-weight:700;font-size:0.85rem;margin-bottom:10px;">إضافة حساب آخر <span class="lbl-sub" style="font-weight:400;">Add Account</span></div>
+      <input type="email" id="addAcctEmail" placeholder="البريد الإلكتروني · Email" dir="ltr" style="width:100%;margin-bottom:8px;">
+      <input type="password" id="addAcctPassword" placeholder="كلمة المرور · Password" dir="ltr" style="width:100%;margin-bottom:8px;">
+      <div id="addAcctErr" style="display:none;color:#c33;font-size:0.76rem;margin-bottom:8px;"></div>
+      <button type="button" class="btn-add" id="addAcctSubmitBtn" onclick="submitAddAccount()" style="margin:0;width:100%;">دخول وإضافة · Sign in & Add</button>
+    </div>
+    <button type="button" class="btn-add" id="addAccountToggleBtn" onclick="toggleAddAccountForm()" style="margin:0;width:100%;background:var(--surface,#f4f5f9);color:var(--text,#1a1d24);border:1.5px dashed var(--border,#c7cee0);">+ إضافة حساب آخر · Add Account</button>
   </div>
 </div>
 
@@ -984,7 +1019,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 <!-- FIREBASE SDK V10 MODULES -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut, deleteUser, updatePassword, reauthenticateWithCredential, EmailAuthProvider, setPersistence, browserLocalPersistence, indexedDBLocalPersistence, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, deleteUser, updatePassword, reauthenticateWithCredential, EmailAuthProvider, setPersistence, browserLocalPersistence, indexedDBLocalPersistence, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, getDoc, collection, getDocs, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   // إعدادات Firebase الخاصة بمشروعك الحقيقي لحل مشكلة الآيفون
@@ -997,7 +1032,22 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     appId: "1:712490301263:web:2084210da3f687285ab73a"
   };
 
-  const app = initializeApp(firebaseConfig);
+  // ===== دعم أكثر من حساب: كل حساب يُربط بتطبيق Firebase منفصل بالاسم، فتُحفظ جلسته باستقلالية =====
+  // ولا يؤثر هذا على المستخدمين الحاليين إطلاقاً: الحساب الأول يبقى دائماً بالتطبيق الافتراضي [DEFAULT]
+  const ACCOUNTS_KEY = 'electrwni_saved_accounts';
+  const ACTIVE_ACCOUNT_KEY = 'electrwni_active_account';
+  function getSavedAccounts(){ try{ return JSON.parse(localStorage.getItem(ACCOUNTS_KEY) || '[]'); }catch(e){ return []; } }
+  function setSavedAccounts(list){ try{ localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(list)); }catch(e){} }
+  function upsertSavedAccount(acc){
+    const list = getSavedAccounts();
+    const i = list.findIndex(a => a.uid === acc.uid);
+    if(i > -1) list[i] = { ...list[i], ...acc };
+    else list.push(acc);
+    setSavedAccounts(list);
+  }
+  const activeAppName = localStorage.getItem(ACTIVE_ACCOUNT_KEY) || '[DEFAULT]';
+
+  const app = activeAppName === '[DEFAULT]' ? initializeApp(firebaseConfig) : initializeApp(firebaseConfig, activeAppName);
   const auth = getAuth(app);
   // ضبط التخزين ليطابق signin (يمنع عدم مشاركة الجلسة → الحلقة)
   // نحاkey indexedDB أولاً ثم local كاحتياطي
@@ -1304,6 +1354,10 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     loadCategoryGoalSettings(userDoc.exists() ? userDoc.data() : {});
     loadQaConfig(userDoc.exists() ? userDoc.data() : {});
     loadFeedbackHistory();
+
+    // سجّل الحساب الحالي (أو حدّث بياناته) بقائمة "أكثر من حساب" — يشمل هذا الحساب الأصلي تلقائياً
+    upsertSavedAccount({ uid: currentUser.uid, email: currentUser.email, username, appName: activeAppName });
+    renderAccountsList();
 
     const loadOverlay = document.getElementById('dashLoadOverlay');
     if(loadOverlay) loadOverlay.style.display = 'none';
@@ -2243,6 +2297,87 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
   window.logout = function() {
     signOut(auth).then(() => window.location.href = "signin.html");
+  };
+
+  // ===== إدارة نافذة "أكثر من حساب" =====
+  function renderAccountsList(){
+    const el = document.getElementById('accountsList');
+    if(!el) return;
+    const list = getSavedAccounts();
+    if(!list.length){ el.innerHTML = '<div style="font-size:0.78rem;color:var(--muted);">لا توجد حسابات محفوظة بعد</div>'; return; }
+    el.innerHTML = list.map(acc => {
+      const isActive = acc.appName === activeAppName;
+      return `
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;border:1.5px solid ${isActive?'var(--primary,#3d5af1)':'var(--border,#e8ecf5)'};background:${isActive?'rgba(61,90,241,.06)':'transparent'};">
+          <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#3d5af1,#6c8fff);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.9rem;flex-shrink:0;">${(acc.username||acc.email||'?')[0].toUpperCase()}</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-weight:700;font-size:0.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${acc.username ? '@'+acc.username : (acc.email||'')}</div>
+            <div style="font-size:0.7rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" dir="ltr">${acc.email||''}</div>
+          </div>
+          ${isActive
+            ? `<span style="font-size:0.7rem;color:var(--primary,#3d5af1);font-weight:700;flex-shrink:0;">الحالي ✓</span>`
+            : `<button type="button" onclick="switchAccount('${acc.appName}')" style="flex-shrink:0;padding:7px 12px;border-radius:8px;border:none;background:var(--primary,#3d5af1);color:#fff;font-weight:700;font-size:0.72rem;cursor:pointer;">تبديل</button>
+               <button type="button" onclick="removeSavedAccount('${acc.uid}')" title="إزالة من القائمة" style="flex-shrink:0;padding:7px;border-radius:8px;border:1.5px solid var(--border,#e8ecf5);background:transparent;cursor:pointer;font-size:0.72rem;">🗑</button>`
+          }
+        </div>
+      `;
+    }).join('');
+  }
+  window.openAccountsModal = function(){
+    renderAccountsList();
+    document.getElementById('addAccountForm').style.display = 'none';
+    document.getElementById('addAccountToggleBtn').style.display = 'block';
+    document.getElementById('accountsModal').style.display = 'flex';
+  };
+  window.closeAccountsModal = function(){
+    document.getElementById('accountsModal').style.display = 'none';
+  };
+  window.toggleAddAccountForm = function(){
+    document.getElementById('addAccountForm').style.display = 'block';
+    document.getElementById('addAccountToggleBtn').style.display = 'none';
+  };
+  window.switchAccount = function(appName){
+    if(appName === activeAppName){ window.closeAccountsModal(); return; }
+    localStorage.setItem(ACTIVE_ACCOUNT_KEY, appName);
+    window.showToast('جاري التبديل للحساب...');
+    setTimeout(()=>location.reload(), 300);
+  };
+  window.removeSavedAccount = function(uid){
+    if(uid === currentUser.uid){ window.showToast('هذا حسابك الحالي — لا يمكن إزالته من القائمة وأنت مسجّل فيه'); return; }
+    setSavedAccounts(getSavedAccounts().filter(a => a.uid !== uid));
+    renderAccountsList();
+  };
+  window.submitAddAccount = async function(){
+    const email = (document.getElementById('addAcctEmail').value || '').trim();
+    const password = document.getElementById('addAcctPassword').value;
+    const errEl = document.getElementById('addAcctErr');
+    errEl.style.display = 'none';
+    if(!email || !password){ errEl.textContent = 'عبّئ البريد وكلمة المرور'; errEl.style.display = 'block'; return; }
+    const btn = document.getElementById('addAcctSubmitBtn');
+    btn.textContent = 'جاري الدخول...';
+    try{
+      // تطبيق Firebase منفصل بالاسم لهذا الحساب — تُحفظ جلسته باستقلالية عن الحساب الحالي
+      const newAppName = 'acct_' + Date.now();
+      const secApp = initializeApp(firebaseConfig, newAppName);
+      const secAuth = getAuth(secApp);
+      try{ await setPersistence(secAuth, indexedDBLocalPersistence); }
+      catch(e){ try{ await setPersistence(secAuth, browserLocalPersistence); }catch(e2){} }
+      const cred = await signInWithEmailAndPassword(secAuth, email, password);
+      const secDb = getFirestore(secApp);
+      let uname = cred.user.email.split('@')[0];
+      try{
+        const uSnap = await getDoc(doc(secDb, "users", cred.user.uid));
+        if(uSnap.exists()) uname = uSnap.data().username || uname;
+      }catch(e){}
+      upsertSavedAccount({ uid: cred.user.uid, email: cred.user.email, username: uname, appName: newAppName });
+      localStorage.setItem(ACTIVE_ACCOUNT_KEY, newAppName);
+      window.showToast('تمت الإضافة — جاري التبديل للحساب الجديد...');
+      setTimeout(()=>location.reload(), 400);
+    }catch(e){
+      errEl.textContent = 'بيانات الدخول غير صحيحة أو تعذر الاتصال';
+      errEl.style.display = 'block';
+      btn.textContent = 'دخول وإضافة · Sign in & Add';
+    }
   };
 
   // 4. محرك إدارة الروابط (Links Page)
