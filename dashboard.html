@@ -1113,6 +1113,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   let currentIconPaletteRect = null;   // [4 ألوان] للأيقونات المستطيلة
   let currentIconPaletteCircle = null; // [4 ألوان] للأيقونات الدائرية
   let currentAvatarShape = 'circle';   // circle | rect — شكل الأفتار/الشعار
+  let currentShowAvatar = true;        // هل يظهر الأفتار بالصفحة الفعلية أم لا (من القالب)
   let customSocialIconBase64 = null;
 
   // مكتبة أيقونات SVG للمنصات (بدل الإيموجي)
@@ -1721,6 +1722,9 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(typeof window.onAvatarShapeToggle === 'function'){
       window.onAvatarShapeToggle(t.avatarShape && t.avatarShape !== 'circle');
     }
+
+    // إظهار/إخفاء الأفتار حسب إعداد القالب — هذا هو الحقل الذي كان مفقوداً ولا يصل للصفحة الفعلية
+    currentShowAvatar = t.showAvatar !== false;
 
     document.querySelectorAll('.template-card').forEach(c=>c.classList.toggle('active', c.getAttribute('data-tpl')===id));
     renderPageMockups(id);
@@ -3842,7 +3846,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         bgColor: bg,                 // لون الخلفية (أو لون الطبقة أمام الصورة بوضع "خلفية + ألوان")
         bgMode: currentBgMode,       // color | image | imageColor
         bgOverlayOpacity: currentBgOverlayOpacity,
-        avatarShape: currentAvatarShape  // circle | rect
+        avatarShape: currentAvatarShape,  // circle | rect
+        showAvatar: currentShowAvatar     // true | false — الحقل الذي كان مفقوداً
       };
       if(croppedAvatarBase64) upData.avatar = croppedAvatarBase64;
       if(croppedBannerBase64) upData.bannerImage = croppedBannerBase64;
