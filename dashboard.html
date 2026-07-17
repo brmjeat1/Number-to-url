@@ -424,6 +424,29 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         <label>لون النص (الاسم والوصف) <span class="lbl-sub">/ Text Color</span></label>
         <input type="color" id="tplPersonalizeText" class="color-box-picker" oninput="tplPersonalizeLive()">
       </div>
+
+      <!-- خلفية الصفحة: لون فقط / خلفية فقط / خلفية + ألوان — نفس منطق تبويب التصميم، متاح هنا مباشرة من تبويب قوالب -->
+      <div class="form-group">
+        <label>خلفية الصفحة <span class="lbl-sub">/ Page Background</span></label>
+        <div style="display:flex;gap:6px;margin-bottom:10px;">
+          <button type="button" class="bg-mode-btn" data-bg-mode="color" onclick="window.setBgMode('color')" style="flex:1;padding:9px 4px;border-radius:9px;border:2px solid var(--border);background:var(--surface);font-weight:700;font-size:0.7rem;cursor:pointer;">⬤ لون فقط</button>
+          <button type="button" class="bg-mode-btn" data-bg-mode="image" onclick="window.setBgMode('image')" style="flex:1;padding:9px 4px;border-radius:9px;border:2px solid var(--border);background:var(--surface);font-weight:700;font-size:0.7rem;cursor:pointer;">🖼 خلفية فقط</button>
+          <button type="button" class="bg-mode-btn" data-bg-mode="imageColor" onclick="window.setBgMode('imageColor')" style="flex:1;padding:9px 4px;border-radius:9px;border:2px solid var(--border);background:var(--surface);font-weight:700;font-size:0.7rem;cursor:pointer;">🎨 خلفية+ألوان</button>
+        </div>
+        <div id="bgImageUploadRow2" style="display:none;margin-bottom:10px;">
+          <button type="button" onclick="document.getElementById('bgImageInput2').click()" style="width:100%;padding:11px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font-family:inherit;font-weight:700;cursor:pointer;">🖼 اختر صورة من الألبوم · Choose Image</button>
+          <input type="file" id="bgImageInput2" accept="image/*" onchange="window.selectBgImage(this)" style="display:none;">
+          <div id="bgImagePreview2" style="margin-top:8px;height:80px;border-radius:10px;border:1.5px dashed var(--border);background-size:cover;background-position:center;"></div>
+        </div>
+        <div id="bgOverlayOpacityRow2" style="display:none;">
+          <label style="font-size:0.76rem;">شفافية طبقة اللون <span class="lbl-sub">/ Overlay Opacity</span></label>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <input type="range" id="bgOverlayOpacitySlider2" min="0" max="100" value="55" oninput="window.onBgOverlayOpacityInput(this.value)" style="flex:1;">
+            <span id="bgOverlayOpacityVal2" style="font-size:0.76rem;color:var(--muted);min-width:34px;">55%</span>
+          </div>
+        </div>
+      </div>
+
       <div class="form-group">
         <label>اليوزر <span class="lbl-sub">/ Username (ثابت · fixed)</span></label>
         <input type="text" id="tplPersonalizeUser" disabled dir="ltr" style="opacity:0.6;font-family:ui-monospace,monospace;">
@@ -1554,6 +1577,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(bgEl) bgEl.value = document.getElementById('bgColorPicker')?.value || '#ffffff';
     if(txtEl) txtEl.value = document.getElementById('textColorPicker')?.value || '#0f1535';
     if(userEl) userEl.value = 'electrwni.link/' + (document.getElementById('pfUser')?.value || '').trim();
+    if(typeof refreshBgModeUI === 'function') refreshBgModeUI();
     document.getElementById('tplPersonalizeModal').style.display = 'flex';
   };
   window.closeTplPersonalize = function(){
@@ -3619,18 +3643,54 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       b.style.background = active ? 'rgba(61,90,241,.08)' : 'var(--surface)';
     });
     const showImageRow = currentBgMode === 'image' || currentBgMode === 'imageColor';
-    document.getElementById('bgImageUploadRow').style.display = showImageRow ? 'block' : 'none';
-    document.getElementById('bgOverlayOpacityRow').style.display = currentBgMode === 'imageColor' ? 'block' : 'none';
-    const previewEl = document.getElementById('bgImagePreview');
     const imgSrc = croppedBgImageBase64 || currentBgImage;
-    if(previewEl) previewEl.style.backgroundImage = imgSrc ? `url(${imgSrc})` : '';
+    // يحدّث النسخة الأصلية (تبويب التصميم) والنسخة المصغّرة (مودال "تخصيص صفحتك" بتبويب قوالب) معاً — لهما نفس الكلاس والـ id بلاحقة "2"
+    ['', '2'].forEach(suffix => {
+      const uploadRow = document.getElementById('bgImageUploadRow'+suffix);
+      const opacityRow = document.getElementById('bgOverlayOpacityRow'+suffix);
+      const previewEl = document.getElementById('bgImagePreview'+suffix);
+      const opacitySlider = document.getElementById('bgOverlayOpacitySlider'+suffix);
+      const opacityVal = document.getElementById('bgOverlayOpacityVal'+suffix);
+      if(uploadRow) uploadRow.style.display = showImageRow ? 'block' : 'none';
+      if(opacityRow) opacityRow.style.display = currentBgMode === 'imageColor' ? 'block' : 'none';
+      if(previewEl) previewEl.style.backgroundImage = imgSrc ? `url(${imgSrc})` : '';
+      if(opacitySlider) opacitySlider.value = Math.round(currentBgOverlayOpacity*100);
+      if(opacityVal) opacityVal.textContent = Math.round(currentBgOverlayOpacity*100) + '%';
+    });
   }
+  // رفع خلفية الصفحة — مباشر وبسيط بدون أي مكتبة خارجية (لا يعتمد على Cropper) عشان يشتغل دايماً حتى لو تعذّر تحميل مكتبة القص من CDN
   window.selectBgImage = function(input){
-    if(input.files && input.files[0]) openCropModal(input.files[0], 'pagebg', NaN); // بدون نسبة ثابتة — خلفية كاملة الصفحة
+    const file = input.files && input.files[0];
+    if(!file) return;
+    if(!file.type || !file.type.startsWith('image/')){ window.showToast('اختر ملف صورة صالح'); return; }
+    const reader = new FileReader();
+    reader.onerror = function(){ window.showToast('تعذر قراءة الصورة — جرّب صورة أخرى'); };
+    reader.onload = function(e){
+      const img = new Image();
+      img.onerror = function(){ window.showToast('تعذر معالجة الصورة — جرّب صورة أخرى'); };
+      img.onload = function(){
+        // نقصّر أطول ضلع لـ١080px كحد أقصى — يبقي الحجم صغيراً بما يكفي لحد وثيقة Firestore (~1MB) مهما كانت أبعاد الصورة الأصلية
+        const MAX_DIM = 1080;
+        let w = img.naturalWidth, h = img.naturalHeight;
+        if(w > MAX_DIM || h > MAX_DIM){
+          if(w >= h){ h = Math.round(h * (MAX_DIM / w)); w = MAX_DIM; }
+          else { w = Math.round(w * (MAX_DIM / h)); h = MAX_DIM; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        const base64 = canvas.toDataURL('image/jpeg', 0.72);
+        croppedBgImageBase64 = base64;
+        refreshBgModeUI();
+        window.showToast('تمت معالجة الصورة — اضغط "حفظ" لتظهر بصفحتك');
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
   };
   window.onBgOverlayOpacityInput = function(val){
     currentBgOverlayOpacity = (+val) / 100;
-    document.getElementById('bgOverlayOpacityVal').textContent = val + '%';
+    refreshBgModeUI();
   };
 
 
@@ -3713,8 +3773,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   window.confirmCrop = function() {
     if(!cropper) return;
     // أبعاد محسوبة لإبقاء base64 صغيراً (حد وثيقة Firestore ~1MB)
-    const widthByType = { avatar: 256, banner: 640, pagebg: 720 };
-    const qualityByType = { avatar: 0.85, banner: 0.75, pagebg: 0.72 };
+    const widthByType = { avatar: 256, banner: 640 };
+    const qualityByType = { avatar: 0.85, banner: 0.75 };
     const canvas = cropper.getCroppedCanvas({ width: widthByType[currentCropType] || 640 });
     const quality = qualityByType[currentCropType] || 0.75;
     const base64 = canvas.toDataURL('image/jpeg', quality);
@@ -3722,9 +3782,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if (currentCropType === 'avatar') {
       croppedAvatarBase64 = base64;
       document.getElementById('avatarPreview').innerHTML = `<img src="${base64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-    } else if (currentCropType === 'pagebg') {
-      croppedBgImageBase64 = base64;
-      refreshBgModeUI();
     } else {
       croppedBannerBase64 = base64;
       document.getElementById('bannerPreview').style.backgroundImage = `url(${base64})`;
