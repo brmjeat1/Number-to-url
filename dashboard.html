@@ -425,12 +425,12 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         </label>
       </div>
       <div class="form-group">
-        <label>لون الخلفية <span class="lbl-sub">/ Background</span></label>
-        <input type="color" id="tplPersonalizeBg" class="color-box-picker" oninput="tplPersonalizeLive()">
-      </div>
-      <div class="form-group">
         <label>لون النص (الاسم والوصف) <span class="lbl-sub">/ Text Color</span></label>
         <input type="color" id="tplPersonalizeText" class="color-box-picker" oninput="tplPersonalizeLive()">
+      </div>
+      <div class="form-group">
+        <label>لون خلفية الصفحة (وضع "لون فقط") <span class="lbl-sub">/ Background</span></label>
+        <input type="color" id="tplPersonalizeBg" class="color-box-picker" oninput="tplPersonalizeLive()">
       </div>
 
       <!-- خلفية الصفحة: لون فقط / خلفية فقط / خلفية + ألوان — نفس منطق تبويب التصميم، متاح هنا مباشرة من تبويب قوالب -->
@@ -778,7 +778,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         </div>
 
         <div class="form-group">
-          <label>اللون الأساسي ١ <span class="lbl-sub">/ Primary 1</span></label>
+          <label>لون خلفية الأيقونة <span class="lbl-sub">/ Icon Background</span></label>
           <div id="colorPalette" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;"></div>
           <div style="display:flex;align-items:center;gap:10px;">
             <input type="color" id="colorPicker" value="#3d5af1" onchange="onColorPick(this.value)" style="width:50px;height:40px;padding:2px;cursor:pointer;">
@@ -787,7 +787,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         </div>
 
         <div class="form-group">
-          <label>اللون الأساسي ٢ <span class="lbl-sub">/ Primary 2</span></label>
+          <label>لون إطار الأيقونة <span class="lbl-sub">/ Icon Border</span></label>
           <div id="colorPalette2" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;"></div>
           <div style="display:flex;align-items:center;gap:10px;">
             <input type="color" id="colorPicker2" value="#6c8fff" onchange="onColor2Pick(this.value)" style="width:50px;height:40px;padding:2px;cursor:pointer;">
