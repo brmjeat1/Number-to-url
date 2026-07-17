@@ -306,14 +306,16 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 </div>
 
 <!-- TOPBAR -->
-<div class="topbar">
-  <div style="display:flex;align-items:center;gap:8px;overflow:hidden;flex:1;min-width:0;">
-    <div class="topbar-brand" id="topbarBrand" dir="ltr" style="max-width:none;flex:1;min-width:0;">electrwni.link</div>
-    <button type="button" onclick="openMyPage()" title="افتح صفحتك · Open your page" style="background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.28);color:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:7px;padding:0;flex-shrink:0;">
-      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"></path><path d="M7 7h10v10"></path></svg>
-    </button>
+<div class="topbar" style="flex-direction:column;align-items:stretch;gap:10px;">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+    <div style="display:flex;align-items:center;gap:8px;min-width:0;flex:1;">
+      <div class="topbar-brand" id="topbarBrand" dir="ltr" style="max-width:none;overflow:visible;white-space:normal;word-break:break-all;">electrwni.link</div>
+      <button type="button" onclick="openMyPage()" title="افتح صفحتك · Open your page" style="background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.28);color:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:7px;padding:0;flex-shrink:0;">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"></path><path d="M7 7h10v10"></path></svg>
+      </button>
+    </div>
   </div>
-  <div class="topbar-btns">
+  <div class="topbar-btns" style="justify-content:flex-end;">
     <button class="btn btn-white" onclick="openAccountsModal()" title="أكثر من حساب · Accounts" style="display:flex;align-items:center;justify-content:center;padding:10px;">
       <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
     </button>
@@ -415,6 +417,12 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       <div class="form-group">
         <label>صورة الشعار/الأفتار <span class="lbl-sub">/ Avatar</span></label>
         <button type="button" onclick="document.getElementById('avatarInput').click()" style="width:100%;padding:11px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font-family:inherit;font-weight:700;cursor:pointer;">📷 اختر صورة · Choose Image</button>
+      </div>
+      <div class="form-group">
+        <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="document.getElementById('avatarShapeToggle2').click()">
+          <span>افتار مستطيل خلف الشعار <span class="lbl-sub">/ Rectangular Avatar</span></span>
+          <input type="checkbox" id="avatarShapeToggle2" onclick="event.stopPropagation();window.onAvatarShapeToggle(this.checked)" style="width:20px;height:20px;accent-color:var(--primary);cursor:pointer;">
+        </label>
       </div>
       <div class="form-group">
         <label>لون الخلفية <span class="lbl-sub">/ Background</span></label>
@@ -754,6 +762,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         <div class="form-group">
           <label>صورة الشعار <span class="lbl-sub">/ Logo Image</span></label>
           <input type="file" id="avatarInput" accept="image/*" onchange="selectAvatar(this)">
+        </div>
+        <div class="form-group">
+          <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="document.getElementById('avatarShapeToggle').click()">
+            <span>افتار مستطيل خلف الشعار <span class="lbl-sub">/ Rectangular Avatar</span></span>
+            <input type="checkbox" id="avatarShapeToggle" onclick="event.stopPropagation();window.onAvatarShapeToggle(this.checked)" style="width:20px;height:20px;accent-color:var(--primary);cursor:pointer;">
+          </label>
+          <div style="font-size:0.72rem;color:var(--muted);margin-top:4px;">مفعّل = افتار بزوايا مربعة ناعمة بدل الدائري الافتراضي</div>
         </div>
 
         <div class="form-group">
@@ -1097,6 +1112,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   let currentBgOverlayOpacity = 0.55;
   let currentIconPaletteRect = null;   // [4 ألوان] للأيقونات المستطيلة
   let currentIconPaletteCircle = null; // [4 ألوان] للأيقونات الدائرية
+  let currentAvatarShape = 'circle';   // circle | rect — شكل الأفتار/الشعار
   let customSocialIconBase64 = null;
 
   // مكتبة أيقونات SVG للمنصات (بدل الإيموجي)
@@ -1350,6 +1366,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       // لوحتا ألوان الأيقونات (٤ ألوان مستطيلة + ٤ ألوان دائرية) — تُملأ عند تطبيق قالب من لوحة الإدارة
       currentIconPaletteRect = Array.isArray(data.iconPaletteRect) ? data.iconPaletteRect : null;
       currentIconPaletteCircle = Array.isArray(data.iconPaletteCircle) ? data.iconPaletteCircle : null;
+      // شكل الأفتار: دائري (افتراضي) أو مستطيل
+      currentAvatarShape = data.avatarShape === 'rect' ? 'rect' : 'circle';
+      if(typeof window.onAvatarShapeToggle === 'function'){
+        ['avatarShapeToggle','avatarShapeToggle2'].forEach(id => { const el = document.getElementById(id); if(el) el.checked = (currentAvatarShape === 'rect'); });
+        const preview = document.getElementById('avatarPreview');
+        if(preview) preview.style.borderRadius = currentAvatarShape === 'rect' ? '18px' : '50%';
+      }
       // الصور (base64 من Firestore) — أسماء موحّدة مع page.html
       if (data.avatar) { document.getElementById('avatarPreview').innerHTML = `<img src="${data.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`; window.__currentAvatarUrl = data.avatar; }
       if (data.bannerImage) document.getElementById('bannerPreview').style.backgroundImage = `url(${data.bannerImage})`;
@@ -1578,6 +1601,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(txtEl) txtEl.value = document.getElementById('textColorPicker')?.value || '#0f1535';
     if(userEl) userEl.value = 'electrwni.link/' + (document.getElementById('pfUser')?.value || '').trim();
     if(typeof refreshBgModeUI === 'function') refreshBgModeUI();
+    const shapeToggle2 = document.getElementById('avatarShapeToggle2');
+    if(shapeToggle2) shapeToggle2.checked = (currentAvatarShape === 'rect');
     document.getElementById('tplPersonalizeModal').style.display = 'flex';
   };
   window.closeTplPersonalize = function(){
@@ -1691,6 +1716,11 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       ? [t.rectColor1, t.rectColor2, t.rectColor3, t.rectColor4].filter(Boolean) : null;
     currentIconPaletteCircle = (t.circleColor1 || t.circleColor2 || t.circleColor3 || t.circleColor4)
       ? [t.circleColor1, t.circleColor2, t.circleColor3, t.circleColor4].filter(Boolean) : null;
+
+    // شكل الأفتار من القالب (دائري يبقى دائري، أي شكل ثاني بالقالب "ناعم/مربع" يتحول لخيارنا الثنائي "مستطيل")
+    if(typeof window.onAvatarShapeToggle === 'function'){
+      window.onAvatarShapeToggle(t.avatarShape && t.avatarShape !== 'circle');
+    }
 
     document.querySelectorAll('.template-card').forEach(c=>c.classList.toggle('active', c.getAttribute('data-tpl')===id));
     renderPageMockups(id);
@@ -3692,6 +3722,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     currentBgOverlayOpacity = (+val) / 100;
     refreshBgModeUI();
   };
+  // ===== شكل الأفتار: دائري (افتراضي) أو مستطيل =====
+  window.onAvatarShapeToggle = function(checked){
+    currentAvatarShape = checked ? 'rect' : 'circle';
+    ['avatarShapeToggle','avatarShapeToggle2'].forEach(id => { const el = document.getElementById(id); if(el) el.checked = checked; });
+    const preview = document.getElementById('avatarPreview');
+    if(preview) preview.style.borderRadius = checked ? '18px' : '50%';
+  };
 
 
 
@@ -3804,7 +3841,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         textColor: textColor,        // لون النص (والشعار يتبعه)
         bgColor: bg,                 // لون الخلفية (أو لون الطبقة أمام الصورة بوضع "خلفية + ألوان")
         bgMode: currentBgMode,       // color | image | imageColor
-        bgOverlayOpacity: currentBgOverlayOpacity
+        bgOverlayOpacity: currentBgOverlayOpacity,
+        avatarShape: currentAvatarShape  // circle | rect
       };
       if(croppedAvatarBase64) upData.avatar = croppedAvatarBase64;
       if(croppedBannerBase64) upData.bannerImage = croppedBannerBase64;
