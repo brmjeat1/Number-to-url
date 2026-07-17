@@ -351,7 +351,7 @@ nav{
 
 /* ========== FOOTER ========== */
 .footer{
-  background:#ffffff;
+  background:transparent;
   text-align:center;padding:22px 16px 28px;margin-top:30px;
   margin-left:-24px;margin-right:-24px;margin-bottom:-30px;
 }
@@ -860,6 +860,10 @@ function render(user){
     // نبقي --bg كخلفية احتياطية خلف الصورة (لحظة التحميل) بنفس لون الطبقة إن وجد
     document.documentElement.style.setProperty('--bg', overlayColor);
     document.documentElement.style.setProperty('--surface', overlayColor);
+    // خلفية موحّدة: نشفّف البانر العلوي (منطقة الأفتار) طالما ما فيه صورة غلاف مرفوعة خصيصاً،
+    // بحيث خلفية الصفحة تمتد من أعلى نقطة للصفحة (خلف البانر والأفتار) لآخرها بلا فاصل أو تصادم بين طبقتين
+    const heroBannerEl = document.getElementById('heroBanner');
+    if(heroBannerEl && !user.bannerImage) heroBannerEl.style.background = 'transparent';
   } else if(chosenBg){
     if(themedWrap) themedWrap.style.background = '';
     document.documentElement.style.setProperty('--bg', chosenBg);
