@@ -835,6 +835,7 @@ function render(user){
   const bgMode = user.bgMode || 'color';
   const chosenBg = user.bgColor && /^#[0-9A-Fa-f]{6}$/.test(user.bgColor) ? user.bgColor : null;
   const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const themedWrap = document.getElementById('pageThemedWrap'); // الغلاف اللي فيه كل محتوى الصفحة الظاهر — له خلفية صريحة (var(--bg)) تغطي html/body بالكامل، لازم نشفّفه وقت وضع الصورة وإلا الصورة ما تبان أبداً خلفه
   // نصفّر أي خلفية-صورة سابقة قبل نعيد تطبيقها حسب الوضع الحالي (يمنع بقايا صورة قديمة عند التبديل للون فقط)
   document.body.style.backgroundImage = '';
   document.documentElement.style.backgroundImage = '';
@@ -852,19 +853,24 @@ function render(user){
       el.style.backgroundPosition = 'center top';
       el.style.backgroundRepeat = 'no-repeat';
     });
+    // بدون هذا السطر، الصورة تنحجب بالكامل خلف الغلاف المصمت (كان هذا سبب ظهورها كشريط صغير بالأسفل بس)
+    if(themedWrap) themedWrap.style.background = 'transparent';
     // نبقي --bg كخلفية احتياطية خلف الصورة (لحظة التحميل) بنفس لون الطبقة إن وجد
     document.documentElement.style.setProperty('--bg', overlayColor);
     document.documentElement.style.setProperty('--surface', overlayColor);
   } else if(chosenBg){
+    if(themedWrap) themedWrap.style.background = '';
     document.documentElement.style.setProperty('--bg', chosenBg);
     document.documentElement.style.setProperty('--surface', chosenBg);
     document.documentElement.style.background = chosenBg; // يمنع نفس مشكلة شريط اللون عند الارتداد حتى بوضع "لون فقط"
   } else if(prefersDark){
+    if(themedWrap) themedWrap.style.background = '';
     document.documentElement.style.setProperty('--bg', '#15171c');
     document.documentElement.style.setProperty('--surface', '#1e2128');
     document.documentElement.style.setProperty('--border', '#2a2e37');
     document.documentElement.style.background = '#15171c';
   } else {
+    if(themedWrap) themedWrap.style.background = '';
     document.documentElement.style.setProperty('--bg', '#ffffff');
     document.documentElement.style.setProperty('--surface', '#f9f9f9');
   }
