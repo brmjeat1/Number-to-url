@@ -76,7 +76,7 @@
 }
 
 *{margin:0;padding:0;box-sizing:border-box;}
-html{font-size:106.25%;} /* Apple-scale baseline (~17px) */
+html{font-size:106.25%;background:#ffffff;} /* Apple-scale baseline (~17px) */
 html{scroll-behavior:smooth;}
 body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;background:#ffffff;color:var(--text);min-height:100vh;}
 
@@ -837,27 +837,33 @@ function render(user){
   const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   // نصفّر أي خلفية-صورة سابقة قبل نعيد تطبيقها حسب الوضع الحالي (يمنع بقايا صورة قديمة عند التبديل للون فقط)
   document.body.style.backgroundImage = '';
+  document.documentElement.style.backgroundImage = '';
   if((bgMode === 'image' || bgMode === 'imageColor') && user.bgImage){
     const overlayColor = chosenBg || '#ffffff';
     const op = (typeof user.bgOverlayOpacity === 'number') ? user.bgOverlayOpacity : 0.55;
-    document.body.style.backgroundSize = 'cover';
-    document.body.style.backgroundPosition = 'center';
-    document.body.style.backgroundRepeat = 'no-repeat';
-    if(bgMode === 'imageColor'){
-      document.body.style.backgroundImage = `linear-gradient(${hexToRgba(overlayColor, op)},${hexToRgba(overlayColor, op)}),url(${user.bgImage})`;
-    } else {
-      document.body.style.backgroundImage = `url(${user.bgImage})`;
-    }
+    const bgImageValue = bgMode === 'imageColor'
+      ? `linear-gradient(${hexToRgba(overlayColor, op)},${hexToRgba(overlayColor, op)}),url(${user.bgImage})`
+      : `url(${user.bgImage})`;
+    // نطبّق نفس الخلفية على html و body معاً — لو اتحطت على body لوحدها، أي ارتداد سحب فوق/تحت (خاصية شائعة بمتصفحات الجوال)
+    // يكشف خلفية html الافتراضية (بيضاء) للحظة فيبان شريط لون فوق أو تحت. تطبيقها على الاثنين يمنع هذا تمامًا، وبما إن ارتفاع body = ارتفاع كل محتوى الصفحة فعليًا، الخلفية تمتد وتغطي الصفحة كاملة من أول سطر لآخر سطر بدون فراغ
+    [document.documentElement, document.body].forEach(el => {
+      el.style.backgroundImage = bgImageValue;
+      el.style.backgroundSize = 'cover';
+      el.style.backgroundPosition = 'center top';
+      el.style.backgroundRepeat = 'no-repeat';
+    });
     // نبقي --bg كخلفية احتياطية خلف الصورة (لحظة التحميل) بنفس لون الطبقة إن وجد
     document.documentElement.style.setProperty('--bg', overlayColor);
     document.documentElement.style.setProperty('--surface', overlayColor);
   } else if(chosenBg){
     document.documentElement.style.setProperty('--bg', chosenBg);
     document.documentElement.style.setProperty('--surface', chosenBg);
+    document.documentElement.style.background = chosenBg; // يمنع نفس مشكلة شريط اللون عند الارتداد حتى بوضع "لون فقط"
   } else if(prefersDark){
     document.documentElement.style.setProperty('--bg', '#15171c');
     document.documentElement.style.setProperty('--surface', '#1e2128');
     document.documentElement.style.setProperty('--border', '#2a2e37');
+    document.documentElement.style.background = '#15171c';
   } else {
     document.documentElement.style.setProperty('--bg', '#ffffff');
     document.documentElement.style.setProperty('--surface', '#f9f9f9');
