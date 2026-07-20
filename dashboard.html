@@ -49,28 +49,48 @@ body::after{width:300px;height:300px;background:#FFFF52;opacity:.18;bottom:-80px
 .btn-logout{background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.4);}
 .btn-logout:active{transform:scale(0.95);}
 
-/* CONTAINER */
+/* أزرار "فروع الفروع" — بشكل الكبسولة الزجاجية اللامعة (Liquid Glass Pill) */
+.export-pill{
+  display:flex;align-items:center;gap:12px;padding:13px 18px;width:100%;
+  border-radius:100px;cursor:pointer;text-align:right;border:1px solid rgba(255,255,255,.4);
+  font-family:inherit;color:#fff;position:relative;overflow:hidden;
+  box-shadow:0 10px 22px var(--pill-shadow,rgba(0,0,0,.2)), inset 0 1px 0 rgba(255,255,255,.45);
+  transition:transform .2s ease;
+}
+.export-pill:active{transform:scale(.97);}
+.export-pill::after{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(120deg, rgba(255,255,255,.4) 0%, transparent 40%, transparent 60%, rgba(255,255,255,.12) 100%);
+}
+.export-pill .pill-badge{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.24);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.6rem;flex-shrink:0;color:#fff;}
+.export-pill .pill-text{flex:1;position:relative;z-index:1;}
+.export-pill .pill-text b{font-size:.9rem;display:block;}
+.export-pill .pill-text small{font-size:.72rem;opacity:.85;display:block;font-weight:400;}
+.export-pill.pill-json{background:linear-gradient(135deg,#2b2f3a,#4a5164);--pill-shadow:rgba(30,35,45,.35);}
+.export-pill.pill-pdf{background:linear-gradient(135deg,#e2231a,#ff6b5c);--pill-shadow:rgba(226,35,26,.35);}
+.export-pill.pill-excel{background:linear-gradient(135deg,#1d6f42,#3fbf7f);--pill-shadow:rgba(29,111,66,.35);}
 .container{max-width:900px;margin:0 auto;padding:24px 88px 24px 20px;transition:padding .25s ease;}
 body.rail-collapsed .container{padding-right:20px;}
 
 /* NAV TABS — عمود مربعات زجاجي ثابت باليمين */
-.nav-tabs{
-  position:fixed; top:90px; bottom:16px; right:10px; z-index:40;
-  display:flex; flex-direction:column; gap:8px;
-  width:66px; overflow-y:auto; padding:4px 0;
-  transition:transform .3s cubic-bezier(.34,1.56,.64,1), opacity .3s ease;
+.rail-wrap{
+  position:fixed; top:50%; right:10px; z-index:41; transform:translateY(-50%);
+  display:flex; flex-direction:column; align-items:center; gap:10px;
 }
-.nav-tabs.collapsed{ transform:translateX(90px); opacity:0; pointer-events:none; }
+.nav-tabs{
+  display:flex; flex-direction:column; gap:8px;
+  width:66px; max-height:74vh; overflow-y:auto; padding:4px 0;
+  transition:max-height .3s ease, opacity .25s ease;
+}
+.nav-tabs.collapsed{ max-height:0; opacity:0; pointer-events:none; gap:0; }
 .rail-toggle{
-  position:fixed; top:56px; right:14px; z-index:41;
   width:34px;height:34px;border-radius:50%;
   background:var(--glass-bg);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
   border:1px solid var(--glass-border);box-shadow:0 6px 14px rgba(23,50,178,.15);
   display:flex;align-items:center;justify-content:center;cursor:pointer;
-  color:var(--primary);transition:transform .3s ease;
+  color:var(--primary);flex-shrink:0;
 }
 .rail-toggle svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s ease;}
-.rail-toggle.collapsed{ transform:translateX(60px); }
 .nav-tabs::-webkit-scrollbar{ width:0; }
 .nav-tab{
   background:var(--glass-bg);
@@ -431,11 +451,11 @@ body.rail-collapsed .qa-widget{padding-right:20px;}
 <div class="container">
 
   <!-- TABS -->
-<!-- زر إظهار/إخفاء عمود التبويبات -->
-<button type="button" class="rail-toggle" id="railToggleBtn" onclick="window.toggleRail()" title="إخفاء/إظهار التبويبات">
-  <svg id="railToggleIcon" viewBox="0 0 24 24"><path d="M15 4l5 5M20 4l-5 5"/><path d="M9 20l-5-5M4 20l5-5"/></svg>
-</button>
-
+<!-- عمود التبويبات: زر الإخفاء/الإظهار + الرف، معاً كوحدة واحدة متمركزة رأسياً منتصف الشاشة -->
+<div class="rail-wrap">
+  <button type="button" class="rail-toggle" id="railToggleBtn" onclick="window.toggleRail()" title="إخفاء/إظهار التبويبات">
+    <svg id="railToggleIcon" viewBox="0 0 24 24"><path d="M15 4l5 5M20 4l-5 5"/><path d="M9 20l-5-5M4 20l5-5"/></svg>
+  </button>
   <div class="nav-tabs" id="navTabsRail">
     <button class="nav-tab active" onclick="showPage('templates',this)"><span class="tab-ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="9" x2="9" y2="21"/></svg></span>قوالب<span class="tab-sub">Templates</span></button>
     <button class="nav-tab" onclick="showPage('links',this)"><span class="tab-ic"><svg viewBox="0 0 24 24"><line x1="9" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="15" y2="20"/><line x1="4" y1="9" x2="20" y2="9"/><line x1="3" y1="15" x2="19" y2="15"/></svg></span>الأرقام<span class="tab-sub">Numbers</span></button>
@@ -444,6 +464,7 @@ body.rail-collapsed .qa-widget{padding-right:20px;}
     <button class="nav-tab" onclick="showPage('profile',this)"><span class="tab-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c0-4.2 3.3-6.5 7.5-6.5s7.5 2.3 7.5 6.5"/></svg></span>ملفي<span class="tab-sub">Profile</span></button>
     <button class="nav-tab" onclick="showPage('stats',this)"><span class="tab-ic"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="3.2" height="10"/><rect x="10.4" y="4" width="3.2" height="16"/><rect x="16.8" y="14" width="3.2" height="6"/></svg></span>إحصائيات<span class="tab-sub">Stats</span></button>
   </div>
+</div>
 
   <!-- PAGE: LINKS -->
   <div class="page active" id="page-templates">
@@ -1016,17 +1037,17 @@ body.rail-collapsed .qa-widget{padding-right:20px;}
       <div class="expandable-content open">
         <p style="font-size:0.82rem;color:var(--muted);margin-bottom:16px;line-height:1.6;">احفظ كل روابطك (الرقم، العنوان، الرابط، الوصف، المشاهدات) بالصيغة التي تريد · Export all your links data</p>
         <div style="display:flex;flex-direction:column;gap:10px;">
-          <button onclick="exportLinks('json')" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;text-align:right;">
-            <span style="width:40px;height:40px;border-radius:10px;background:#1a1d24;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.7rem;flex-shrink:0;">JSON</span>
-            <span style="flex:1;"><b style="font-size:0.9rem;">ملف JSON</b><br><span style="font-size:0.72rem;color:var(--muted);">للنقل لحساب آخر · لاستيراده لاحقاً</span></span>
+          <button onclick="exportLinks('json')" class="export-pill pill-json">
+            <span class="pill-badge">JSON</span>
+            <span class="pill-text"><b>ملف JSON</b><small>للنقل لحساب آخر · لاستيراده لاحقاً</small></span>
           </button>
-          <button onclick="exportLinks('pdf')" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;text-align:right;">
-            <span style="width:40px;height:40px;border-radius:10px;background:#e2231a;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.62rem;flex-shrink:0;">PDF</span>
-            <span style="flex:1;"><b style="font-size:0.9rem;">Adobe PDF</b><br><span style="font-size:0.72rem;color:var(--muted);">مستند للطباعة والعرض</span></span>
+          <button onclick="exportLinks('pdf')" class="export-pill pill-pdf">
+            <span class="pill-badge">PDF</span>
+            <span class="pill-text"><b>Adobe PDF</b><small>مستند للطباعة والعرض</small></span>
           </button>
-          <button onclick="exportLinks('excel')" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;text-align:right;">
-            <span style="width:40px;height:40px;border-radius:10px;background:#1d6f42;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.6rem;flex-shrink:0;">XLS</span>
-            <span style="flex:1;"><b style="font-size:0.9rem;">Excel</b><br><span style="font-size:0.72rem;color:var(--muted);">جدول بيانات (CSV)</span></span>
+          <button onclick="exportLinks('excel')" class="export-pill pill-excel">
+            <span class="pill-badge">XLS</span>
+            <span class="pill-text"><b>Excel</b><small>جدول بيانات (CSV)</small></span>
           </button>
         </div>
         <div style="height:1px;background:var(--border);margin:18px 0;"></div>
