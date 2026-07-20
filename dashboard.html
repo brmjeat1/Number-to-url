@@ -79,7 +79,7 @@ body.rail-collapsed .container{padding-right:20px;}
 }
 .nav-tabs{
   display:flex; flex-direction:column; gap:8px;
-  width:66px; max-height:74vh; overflow-y:auto; padding:4px 0;
+  width:66px; max-height:460px; padding:4px 0;
   transition:max-height .3s ease, opacity .25s ease;
 }
 .nav-tabs.collapsed{ max-height:0; opacity:0; pointer-events:none; gap:0; }
@@ -281,21 +281,30 @@ body.rail-collapsed .qa-widget{padding-right:20px;}
   width:26px;height:26px;border-radius:50%;border:none;background:var(--primary);color:#fff;
   font-size:1rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;
 }
-.qa-carousel{display:block;}
-.qa-card-viewport{
-  display:flex;overflow-x:auto;scroll-snap-type:x mandatory;
-  border-radius:18px;gap:0;
-  -webkit-overflow-scrolling:touch;scrollbar-width:none;
+.qa-square-row{display:flex;gap:9px;overflow-x:auto;padding:4px 2px 10px;-webkit-overflow-scrolling:touch;}
+.qa-square-row::-webkit-scrollbar{display:none;}
+.qa-square{
+  flex-shrink:0;width:54px;height:54px;border-radius:15px;
+  background:var(--glass-bg);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border:1px solid var(--glass-border);box-shadow:0 6px 14px rgba(23,50,178,.10);
+  display:flex;align-items:center;justify-content:center;font-size:1.3rem;cursor:pointer;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease, background .2s ease;
 }
-.qa-card-viewport::-webkit-scrollbar{display:none;}
-.qa-card-slide{
-  flex:0 0 100%;scroll-snap-align:center;scroll-snap-stop:always;
-  background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:12px;
-  height:168px;box-sizing:border-box;
+.qa-square:active{transform:scale(.93);}
+.qa-square.active{
+  background:linear-gradient(135deg, rgba(23,50,178,.6), rgba(0,105,253,.5));
+  border-color:rgba(255,255,255,.5);
+  box-shadow:0 10px 20px rgba(0,105,253,.32), inset 0 1px 0 rgba(255,255,255,.5);
+  transform:translateY(-2px) scale(1.05);
 }
-.qa-dots{display:flex;justify-content:center;gap:5px;margin-top:8px;}
-.qa-dot{width:5px;height:5px;border-radius:50%;background:var(--border);transition:all .2s;}
-.qa-dot.active{background:var(--primary);width:14px;border-radius:4px;}
+.qa-square-plus{
+  flex-shrink:0;width:54px;height:54px;border-radius:15px;
+  background:rgba(255,255,255,.18);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1.5px dashed var(--primary-light);color:var(--primary);
+  display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;cursor:pointer;
+}
+.qa-panel{border-radius:18px;padding:14px;min-height:150px;}
+.qa-empty{font-size:0.8rem;color:var(--muted);text-align:center;padding:20px 10px;}
 
 .qa-source-tab{
   font-size:0.6rem;font-weight:800;color:var(--muted);text-transform:uppercase;
@@ -429,12 +438,9 @@ body.rail-collapsed .qa-widget{padding-right:20px;}
 <div class="qa-widget" id="qaWidget">
   <div class="qa-header">
     <span class="qa-title">إجراءات سريعة <span class="lbl-sub" style="font-weight:400;">Quick Actions</span></span>
-    <button type="button" class="qa-add-btn" onclick="openQaCustomize()">+</button>
   </div>
-  <div class="qa-carousel">
-    <div class="qa-card-viewport" id="qaGrid"></div>
-  </div>
-  <div class="qa-dots" id="qaDots"></div>
+  <div class="qa-square-row" id="qaSquareRow"></div>
+  <div class="qa-panel glass" id="qaGrid"></div>
 </div>
 
 <!-- نافذة تخصيص الإجراءات السريعة -->
@@ -457,32 +463,16 @@ body.rail-collapsed .qa-widget{padding-right:20px;}
     <svg id="railToggleIcon" viewBox="0 0 24 24"><path d="M15 4l5 5M20 4l-5 5"/><path d="M9 20l-5-5M4 20l5-5"/></svg>
   </button>
   <div class="nav-tabs" id="navTabsRail">
-    <button class="nav-tab active" onclick="showPage('templates',this)"><span class="tab-ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="9" x2="9" y2="21"/></svg></span>قوالب<span class="tab-sub">Templates</span></button>
+    <button class="nav-tab active" onclick="showPage('design',this)"><span class="tab-ic"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 100 18c1.4 0 2-.9 2-1.9s-.5-1.4-.5-2.4c0-1 .9-1.5 1.9-1.5H17A3.5 3.5 0 0020.5 11.5C20.5 6.8 16.7 3 12 3z"/><circle cx="8" cy="10" r="1.1"/><circle cx="12" cy="7.5" r="1.1"/><circle cx="16" cy="10" r="1.1"/><circle cx="9" cy="14.3" r="1.1"/></svg></span>التصميم<span class="tab-sub">Design</span></button>
     <button class="nav-tab" onclick="showPage('links',this)"><span class="tab-ic"><svg viewBox="0 0 24 24"><line x1="9" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="15" y2="20"/><line x1="4" y1="9" x2="20" y2="9"/><line x1="3" y1="15" x2="19" y2="15"/></svg></span>الأرقام<span class="tab-sub">Numbers</span></button>
     <button class="nav-tab" onclick="showPage('socials',this)"><span class="tab-ic"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="11" rx="4"/><path d="M9 16l-2.5 3.2V16"/></svg></span>تواصل<span class="tab-sub">Contact</span></button>
-    <button class="nav-tab" onclick="showPage('design',this)"><span class="tab-ic"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 100 18c1.4 0 2-.9 2-1.9s-.5-1.4-.5-2.4c0-1 .9-1.5 1.9-1.5H17A3.5 3.5 0 0020.5 11.5C20.5 6.8 16.7 3 12 3z"/><circle cx="8" cy="10" r="1.1"/><circle cx="12" cy="7.5" r="1.1"/><circle cx="16" cy="10" r="1.1"/><circle cx="9" cy="14.3" r="1.1"/></svg></span>التصميم<span class="tab-sub">Design</span></button>
     <button class="nav-tab" onclick="showPage('profile',this)"><span class="tab-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c0-4.2 3.3-6.5 7.5-6.5s7.5 2.3 7.5 6.5"/></svg></span>ملفي<span class="tab-sub">Profile</span></button>
     <button class="nav-tab" onclick="showPage('stats',this)"><span class="tab-ic"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="3.2" height="10"/><rect x="10.4" y="4" width="3.2" height="16"/><rect x="16.8" y="14" width="3.2" height="6"/></svg></span>إحصائيات<span class="tab-sub">Stats</span></button>
   </div>
 </div>
 
   <!-- PAGE: LINKS -->
-  <div class="page active" id="page-templates">
-    <div class="expandable">
-      <div class="expandable-header open" onclick="toggleExpand(this)">
-        <div class="expandable-title"><div class="expandable-icon">◧</div><span>قوالب جاهزة<span class="title-sub">Ready Templates</span></span></div>
-        <div class="expandable-toggle">▼</div>
-      </div>
-      <div class="expandable-content open">
-        <div class="form-group" style="margin-bottom:0;">
-          <div style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;">هذا شكل صفحتك تقريباً بكل قالب — اضغط على أي واحدة لتطبيقها · This is roughly how your page will look with each template</div>
-          <div id="pageMockupCarousel" style="display:flex;gap:12px;overflow-x:auto;padding:4px 4px 10px;-webkit-overflow-scrolling:touch;"></div>
-          <button type="button" onclick="openTplPersonalize()" style="width:100%;margin-top:10px;padding:12px;border:2px dashed var(--primary);border-radius:12px;background:var(--bg2);color:var(--primary);font-weight:700;font-family:inherit;cursor:pointer;">+ تخصيص صفحتك (الشعار، الأفتار، الألوان) · Personalize</button>
-          <button type="button" id="adminAddTplBtn" onclick="adminAddTemplateInline()" style="display:none;width:100%;margin-top:10px;padding:11px;border:2px dashed var(--primary);border-radius:12px;background:var(--bg2);color:var(--primary);font-weight:700;font-family:inherit;cursor:pointer;">+ إضافة قالب جديد (أدمن) · Add Template (Admin)</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- تم دمج قسم "قوالب جاهزة" داخل تبويب التصميم أدناه -->
 
   <!-- نافذة تخصيص سريع: شعار + أفتار + ألوان (اليوزر يبقى ثابتاً دائماً) -->
   <div id="tplPersonalizeModal" style="display:none;position:fixed;inset:0;z-index:1200;background:rgba(0,0,0,0.5);align-items:flex-end;justify-content:center;" onclick="if(event.target===this)closeTplPersonalize()">
@@ -666,9 +656,9 @@ body.rail-collapsed .qa-widget{padding-right:20px;}
           </div>
 
           <div class="form-group">
-            <label id="socUrlLabel">الرابط أو اسم المستخدم <span class="lbl-sub">/ URL or @username</span></label>
+            <label id="socUrlLabel">رابط الحساب <span class="lbl-sub">/ Account Link</span></label>
             <div style="display:flex;gap:8px;">
-              <input type="text" id="socUrl" placeholder="https://instagram.com/username أو @username" dir="ltr" style="flex:1;" oninput="debounceDetect(this.value)">
+              <input type="text" id="socUrl" placeholder="https://instagram.com/username" dir="ltr" style="flex:1;" oninput="debounceDetect(this.value)">
               <button onclick="detectNow()" style="padding:0 13px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.85rem;white-space:nowrap;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;flex-shrink:0;">فحص</button>
             </div>
             <div id="socDetectHint" style="font-size:0.72rem;color:var(--muted);margin-top:4px;min-height:16px;"></div>
@@ -820,13 +810,27 @@ body.rail-collapsed .qa-widget{padding-right:20px;}
   </div>
 
   <!-- PAGE: DESIGN -->
-  <div class="page" id="page-design">
+  <div class="page active" id="page-design">
     <div class="expandable">
       <div class="expandable-header open" onclick="toggleExpand(this)">
-        <div class="expandable-title"><div class="expandable-icon">T</div><span>تصميم صفحتك<span class="title-sub">Page Design</span></span></div>
+        <div class="expandable-title"><div class="expandable-icon">◧</div><span>قوالب جاهزة<span class="title-sub">Ready Templates</span></span></div>
         <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content open">
+        <div class="form-group" style="margin-bottom:0;">
+          <div style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;">هذا شكل صفحتك تقريباً بكل قالب — اضغط على أي واحدة لتطبيقها · This is roughly how your page will look with each template</div>
+          <div id="pageMockupCarousel" style="display:flex;gap:12px;overflow-x:auto;padding:4px 4px 10px;-webkit-overflow-scrolling:touch;"></div>
+          <button type="button" onclick="openTplPersonalize()" style="width:100%;margin-top:10px;padding:12px;border:2px dashed var(--primary);border-radius:12px;background:var(--bg2);color:var(--primary);font-weight:700;font-family:inherit;cursor:pointer;">+ تخصيص صفحتك (الشعار، الأفتار، الألوان) · Personalize</button>
+          <button type="button" id="adminAddTplBtn" onclick="adminAddTemplateInline()" style="display:none;width:100%;margin-top:10px;padding:11px;border:2px dashed var(--primary);border-radius:12px;background:var(--bg2);color:var(--primary);font-weight:700;font-family:inherit;cursor:pointer;">+ إضافة قالب جديد (أدمن) · Add Template (Admin)</button>
+        </div>
+      </div>
+    </div>
+    <div class="expandable">
+      <div class="expandable-header" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon">T</div><span>تصميم صفحتك<span class="title-sub">Page Design</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content">
         <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:20px;padding:16px;background:var(--bg2);border-radius:12px;">
           <div id="bannerPreview" style="width:100%;height:100px;border-radius:10px;background:linear-gradient(135deg,#3d5af1,#6c8fff);background-size:cover;background-position:center;"></div>
           <div id="avatarPreview" style="width:70px;height:70px;border-radius:50%;background:var(--bg);border:3px solid var(--primary-light);margin-top:-45px;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--primary);font-size:1.5rem;overflow:hidden;">-</div>
@@ -1961,7 +1965,7 @@ body.rail-collapsed .qa-widget{padding-right:20px;}
     avatarQuickUpload: { name: 'رفع صورة الشعار',        icon: '🖼️', tab: 'التصميم' },
     bannerQuickUpload: { name: 'رفع صورة الغلاف',        icon: '🌄', tab: 'التصميم' },
     exportJson: { name: 'تصدير JSON',                    icon: '⬇️', tab: 'إحصائيات' },
-    templateQuickApply: { name: 'تطبيق قالب سريع',        icon: '◧', tab: 'قوالب' },
+    templateQuickApply: { name: 'تطبيق قالب سريع',        icon: '◧', tab: 'التصميم' },
     viewsSummary: { name: 'ملخص المشاهدات',               icon: '📊', tab: 'إحصائيات' }
   };
   const QA_DEFAULT = ['addNum','printStats','colors','copyLink','qrCode'];
@@ -2061,19 +2065,19 @@ body.rail-collapsed .qa-widget{padding-right:20px;}
       return `<div class="qa-tile qa-tile-action" onclick="window.exportLinks('json')"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div></div>`;
     }
     if(key === 'templateQuickApply'){
-      return `<div class="qa-tile qa-tile-action" onclick="showPage('templates', document.querySelectorAll('.nav-tab')[0])"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div></div>`;
+      return `<div class="qa-tile qa-tile-action" onclick="showPage('design', document.querySelectorAll('.nav-tab')[0])"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div></div>`;
     }
     if(key === 'viewsSummary'){
       return `<div class="qa-tile" id="qaViewsSummaryTile"><div class="qa-tile-title">${item.icon} ${item.name}</div><div id="qaViewsSummaryBody" style="font-size:0.72rem;color:var(--muted);">جاري الحساب...</div></div>`;
     }
     if(key === 'bioQuickEdit'){
-      return `<div class="qa-tile qa-tile-action" onclick="showPage('profile', document.querySelectorAll('.nav-tab')[4])"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div></div>`;
+      return `<div class="qa-tile qa-tile-action" onclick="showPage('profile', document.querySelectorAll('.nav-tab')[3])"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div></div>`;
     }
     if(key === 'avatarQuickUpload'){
-      return `<div class="qa-tile qa-tile-action" onclick="document.getElementById('avatarInput')?.click(); showPage('design', document.querySelectorAll('.nav-tab')[3]);"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div></div>`;
+      return `<div class="qa-tile qa-tile-action" onclick="document.getElementById('avatarInput')?.click(); showPage('design', document.querySelectorAll('.nav-tab')[0]);"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div></div>`;
     }
     if(key === 'bannerQuickUpload'){
-      return `<div class="qa-tile qa-tile-action" onclick="document.getElementById('bannerInput')?.click(); showPage('design', document.querySelectorAll('.nav-tab')[3]);"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div></div>`;
+      return `<div class="qa-tile qa-tile-action" onclick="document.getElementById('bannerInput')?.click(); showPage('design', document.querySelectorAll('.nav-tab')[0]);"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div></div>`;
     }
     if(key === 'featuredToggle' || key === 'hideToggle'){
       return `<div class="qa-tile qa-tile-action" onclick="showPage('links', document.querySelectorAll('.nav-tab')[1])"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div></div>`;
@@ -2082,25 +2086,26 @@ body.rail-collapsed .qa-widget{padding-right:20px;}
   }
 
   function renderQaWidget(){
-    const viewport = document.getElementById('qaGrid');
-    const dotsEl = document.getElementById('qaDots');
-    if(!viewport) return;
-    if(!qaConfig.length){
-      viewport.innerHTML = '<div class="qa-empty">ما فيه إجراءات مفعّلة — اضغط + لإضافة · No active actions, tap + to add</div>';
-      if(dotsEl) dotsEl.innerHTML = '';
-      return;
-    }
+    const row = document.getElementById('qaSquareRow');
+    const panel = document.getElementById('qaGrid');
+    if(!row || !panel) return;
+
     if(qaCurrentIndex >= qaConfig.length) qaCurrentIndex = 0;
     if(qaCurrentIndex < 0) qaCurrentIndex = 0;
 
-    viewport.innerHTML = qaConfig.map(key => {
+    row.innerHTML = qaConfig.map((key,i) => {
+      const libItem = QA_LIBRARY[key];
+      if(!libItem) return '';
+      return `<div class="qa-square ${i===qaCurrentIndex?'active':''}" data-i="${i}" onclick="window.qaSelectSquare(${i})" title="${libItem.name}">${libItem.icon}</div>`;
+    }).join('') + `<div class="qa-square-plus" onclick="openQaCustomize()" title="إضافة/تخصيص">+</div>`;
+
+    if(!qaConfig.length){
+      panel.innerHTML = '<div class="qa-empty">ما فيه إجراءات مفعّلة — اضغط + لإضافة · No active actions, tap + to add</div>';
+    } else {
+      const key = qaConfig[qaCurrentIndex];
       const libItem = QA_LIBRARY[key];
       const tabLabel = libItem?.tab ? `<div class="qa-source-tab">${libItem.tab}</div>` : '';
-      return `<div class="qa-card-slide" data-key="${key}">${tabLabel}${qaTileHtml(key)}</div>`;
-    }).join('');
-
-    if(dotsEl){
-      dotsEl.innerHTML = qaConfig.map((k,i) => `<span class="qa-dot ${i===qaCurrentIndex?'active':''}"></span>`).join('');
+      panel.innerHTML = `${tabLabel}${qaTileHtml(key)}`;
     }
 
     const p1 = document.getElementById('colorPicker')?.value;
@@ -2116,30 +2121,12 @@ body.rail-collapsed .qa-widget{padding-right:20px;}
     if(qaConfig.includes('viewsSummary')) qaComputeViewsSummary();
   }
 
-  // مزامنة النقطة النشطة مع موضع السحب الطبيعي (Native Scroll Snap) — نفس أسلوب آبل بالودجت والـ App Store
-  function qaScrollToIndex(idx, smooth){
-    const viewport = document.getElementById('qaGrid');
-    if(!viewport) return;
-    viewport.scrollTo({ left: idx * viewport.clientWidth, behavior: smooth===false ? 'auto' : 'smooth' });
-  }
-  (function setupQaScrollSync(){
-    const viewport = document.getElementById('qaGrid');
-    if(!viewport) return;
-    let scrollTimer;
-    viewport.addEventListener('scroll', () => {
-      clearTimeout(scrollTimer);
-      scrollTimer = setTimeout(() => {
-        const w = viewport.clientWidth;
-        if(!w) return;
-        const idx = Math.round(viewport.scrollLeft / w);
-        if(idx !== qaCurrentIndex){
-          qaCurrentIndex = idx;
-          qaMenuOpenFor = null;
-        }
-        document.querySelectorAll('#qaDots .qa-dot').forEach((d,i)=>d.classList.toggle('active', i===idx));
-      }, 90);
-    });
-  })();
+  // اختيار مربع من صف الإجراءات السريعة — يعرض محتواه بالوحة أسفل الصف
+  window.qaSelectSquare = function(i){
+    qaCurrentIndex = i;
+    qaMenuOpenFor = null;
+    renderQaWidget();
+  };
 
   window.qaToggleMenu = function(key){
     qaMenuOpenFor = (qaMenuOpenFor === key) ? null : key;
@@ -3290,7 +3277,8 @@ body.rail-collapsed .qa-widget{padding-right:20px;}
   window.detectFromPaste = function(){
     const val = document.getElementById('pasteUrlInput').value.trim();
     if(!val){ document.getElementById('pasteHint').textContent='الصق رابطاً أولاً'; return; }
-    const p = detectPlatformFromUrl(val) || { id:'website', name:'موقع', color:'#3d5af1', prefix:'' };
+    const detected = detectPlatformFromUrl(val);
+    const p = detected || { id:'website', name:'موقع', color:'#3d5af1', prefix:'' };
     selectedSocialPlatform = p;
     document.getElementById('socialFormBox').style.display = 'block';
     document.getElementById('socUrlLabel').innerHTML = `حساب ${p.name}`;
@@ -3298,6 +3286,9 @@ body.rail-collapsed .qa-widget{padding-right:20px;}
     document.getElementById('socColorModeGroup').style.display = 'block';
     setSocColorMode('brand');
     detectNow();
+    if(!detected){
+      window.showToast("⚠️ ما تعرّفنا على منصة معروفة من هذا الرابط — تم حفظه كـ«موقع» عام، تأكد إن الرابط صحيح");
+    }
   };
 
   window.closeSocialForm = function() {
@@ -3330,7 +3321,9 @@ body.rail-collapsed .qa-widget{padding-right:20px;}
     iconEl.style.background = selectedSocialPlatform.color;
     document.getElementById('socDetectedName').textContent = selectedSocialPlatform.name;
     document.getElementById('socDetectedUrl').textContent = val;
-    document.getElementById('socDetectHint').textContent = "تم فحص البنية اللغوية وصيغة الحساب جاهزة ✓";
+    document.getElementById('socDetectHint').textContent = selectedSocialPlatform.id === 'website'
+      ? "⚠️ ما تعرّفنا على منصة معروفة — سيُحفظ كرابط موقع عام"
+      : "تم فحص البنية اللغوية وصيغة الحساب جاهزة ✓";
   };
 
   window.previewCustomIcon = function(input) {
