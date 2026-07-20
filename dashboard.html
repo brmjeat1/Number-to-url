@@ -353,7 +353,14 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 .qr-icon-btn svg{width:14px;height:14px;}
 .qr-icon-btn-table{width:20px;height:20px;margin-inline-start:4px;border-radius:5px;}
 .qr-icon-btn-table svg{width:11px;height:11px;}
-.qa-tile{background:var(--bg);border-radius:12px;padding:10px;display:flex;flex-direction:column;height:100%;overflow-y:auto;}
+/* ===== الصندوق الزجاجي الشفاف الموحّد (يُستخدم بكل بطاقات/أزرار الإجراءات) ===== */
+.glass{
+  background:var(--glass-bg);
+  backdrop-filter:blur(18px) saturate(180%);-webkit-backdrop-filter:blur(18px) saturate(180%);
+  border:1px solid var(--glass-border);
+  box-shadow:0 10px 26px rgba(23,50,178,.14), inset 0 1px 0 rgba(255,255,255,.45);
+}
+.qa-tile{background:var(--glass-bg);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border:1px solid var(--glass-border);box-shadow:0 8px 20px rgba(23,50,178,.12), inset 0 1px 0 rgba(255,255,255,.4);border-radius:14px;padding:10px;display:flex;flex-direction:column;height:100%;overflow-y:auto;}
 .qa-tile-title{font-size:0.7rem;font-weight:800;margin-bottom:6px;color:var(--text);}
 .qa-tile-action{align-items:center;justify-content:center;text-align:center;cursor:pointer;gap:4px;transition:transform .15s;}
 .qa-tile-action:active{transform:scale(0.96);}
@@ -381,13 +388,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 .qa-choose-btn{
   position:relative; overflow:hidden;
   flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
-  padding:14px 6px; border-radius:12px; border:1.5px solid var(--border); background:var(--bg2);
+  padding:14px 6px; border-radius:12px; border:1px solid var(--glass-border);
+  background:var(--glass-bg); backdrop-filter:blur(14px) saturate(180%); -webkit-backdrop-filter:blur(14px) saturate(180%);
+  box-shadow:0 8px 18px rgba(23,50,178,.10);
   cursor:pointer; font-family:inherit; font-size:1.3rem; color:var(--text);
-  transition:transform .2s cubic-bezier(.34,1.56,.64,1), border-color .2s ease, background .2s ease;
 }
 .qa-choose-btn span{ font-size:0.72rem; font-weight:700; color:var(--text2); }
 .qa-choose-btn:active{ transform:scale(.94); }
-.qa-choose-btn:hover{ border-color:var(--primary); background:#eef0fb; }
 .qa-back-btn{
   background:none; border:none; color:var(--primary); font-weight:700; font-size:0.78rem;
   cursor:pointer; font-family:inherit; padding:2px 0; margin-bottom:2px; text-align:right;
@@ -403,7 +410,12 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 .qa-wizard-qr img, .qa-wizard-qr canvas{ border-radius:8px; }
 .qa-color-mini{width:100%;height:26px;border-radius:6px;border:1px solid var(--border);cursor:pointer;padding:1px;}
 .qa-empty{text-align:center;padding:16px;color:var(--muted);font-size:0.78rem;}
-.qa-option-row{display:flex;align-items:center;gap:10px;padding:12px;border:1.5px solid var(--border);border-radius:12px;background:var(--bg2);}
+.qa-option-row{
+  display:flex;align-items:center;gap:10px;padding:12px;border-radius:12px;
+  border:1px solid var(--glass-border); background:var(--glass-bg);
+  backdrop-filter:blur(12px) saturate(180%); -webkit-backdrop-filter:blur(12px) saturate(180%);
+  box-shadow:0 6px 16px rgba(23,50,178,.08);
+}
 .qa-option-row input{width:auto;}
 
 /* أزرار ••• داخل كل تايل + القوائم المنسدلة الداخلية */
@@ -464,7 +476,12 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 .qa-action-btn:hover .qa-btn-hover-ic, .qa-action-btn:focus-visible .qa-btn-hover-ic{ opacity:1; transform:scale(1); }
 
 /* ===== قوائم الأدلة والتلميحات (دليل الاستخدام) ===== */
-.guide-card{border:1.5px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden;background:var(--bg2);}
+.guide-card{
+  border-radius:14px;margin-bottom:10px;overflow:hidden;
+  border:1px solid var(--glass-border); background:var(--glass-bg);
+  backdrop-filter:blur(14px) saturate(180%); -webkit-backdrop-filter:blur(14px) saturate(180%);
+  box-shadow:0 8px 18px rgba(23,50,178,.10);
+}
 .guide-card-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;}
 .guide-card-title{font-weight:800;font-size:0.84rem;display:flex;align-items:center;gap:9px;}
 .guide-card-num{width:24px;height:24px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800;flex-shrink:0;}
@@ -587,6 +604,70 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     </div>
     <div style="font-size:0.76rem;color:var(--muted);margin-bottom:16px;">كل كيفية بأقل من دقيقة · Every guide takes under a minute</div>
     <div id="guideList"></div>
+  </div>
+</div>
+
+<!-- نافذة "توليد AI لصفحتك": يصف المستخدم مجاله فيولّد له تصميماً متكاملاً (ألوان + شعار + بايو مقترح) -->
+<div id="aiDesignModal" style="display:none;position:fixed;inset:0;z-index:1100;background:rgba(0,0,0,0.55);align-items:flex-end;justify-content:center;" onclick="if(event.target===this)window.closeAiDesignModal()">
+  <div style="background:var(--bg);border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:480px;max-height:88vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <div style="font-weight:800;font-size:1.05rem;display:flex;align-items:center;gap:8px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>
+        توليد AI لصفحتك <span class="lbl-sub" style="font-weight:400;">AI Page Design</span>
+      </div>
+      <button type="button" onclick="window.closeAiDesignModal()" style="background:var(--surface,#f4f5f9);border:none;width:28px;height:28px;border-radius:50%;font-size:0.9rem;cursor:pointer;">✕</button>
+    </div>
+
+    <div style="display:flex;justify-content:center;gap:8px;margin-bottom:18px;">
+      <div class="step-dot active" id="aiDot1" style="width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .3s;"></div>
+      <div class="step-dot" id="aiDot2" style="width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .3s;"></div>
+      <div class="step-dot" id="aiDot3" style="width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .3s;"></div>
+    </div>
+
+    <div class="glass" style="border-radius:18px;padding:20px 16px;">
+
+      <!-- الخطوة ١: وصف الصفحة -->
+      <div id="aiStep1">
+        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:16px;line-height:1.6;">أخبرنا عن مجالك وطابعك المفضّل، وسنجهّز لك تصميماً متكاملاً خلال ثوانٍ</div>
+        <label style="display:block;font-size:0.82rem;font-weight:700;margin-bottom:6px;color:var(--text2);">صف صفحتك بكلماتك</label>
+        <textarea id="aiDescInput" class="qa-input-sm" style="min-height:120px;font-size:0.86rem;line-height:1.8;padding:12px 14px;" placeholder="مثال:&#10;• مجال عملك: مطعم إيطالي صغير&#10;• الطابع المطلوب: فخم وهادئ بلمسة دافئة&#10;• أي تفضيل إضافي: ألوان ترابية"></textarea>
+        <div onclick="window.aiUseExample()" style="display:inline-flex;align-items:center;gap:6px;background:var(--bg2);color:var(--primary);border:1.5px dashed var(--primary);border-radius:20px;padding:7px 14px;font-size:0.76rem;font-weight:700;cursor:pointer;margin:10px 0 16px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          جرّب مثالاً جاهزاً
+        </div>
+        <button type="button" class="btn-add qa-action-btn" id="aiGoBtn" onclick="window.aiRunDemo()" style="margin:0;background:linear-gradient(135deg,var(--primary),var(--primary-light));display:flex;align-items:center;justify-content:center;gap:8px;">
+          <span class="qa-btn-txt" id="aiGoBtnText">توليد التصميم · Generate</span>
+          <span class="qa-btn-hover-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg></span>
+        </button>
+      </div>
+
+      <!-- الخطوة ٢: معاينة النتيجة -->
+      <div id="aiStep2" style="display:none;">
+        <div style="font-weight:800;font-size:0.95rem;margin-bottom:14px;">تصميمك جاهز ✨</div>
+        <div id="aiPreviewCard" style="border-radius:16px;padding:26px 16px;text-align:center;margin-bottom:14px;border:1.5px solid var(--border);transition:background .4s;">
+          <div id="aiPreviewAvatar" style="width:60px;height:60px;margin:0 auto 12px;transition:all .4s;"></div>
+          <div id="aiPreviewName" style="font-weight:800;font-size:0.98rem;margin-bottom:10px;transition:color .4s;"></div>
+          <div style="display:flex;gap:8px;justify-content:center;">
+            <div id="aiPreviewIcon1" style="width:32px;height:32px;transition:all .4s;"></div>
+            <div id="aiPreviewIcon2" style="width:32px;height:32px;transition:all .4s;"></div>
+          </div>
+        </div>
+        <div id="aiPreviewBio" style="font-size:0.78rem;color:var(--muted);text-align:center;margin-bottom:6px;line-height:1.6;"></div>
+        <div id="aiPaletteTag" style="font-size:0.68rem;color:var(--muted);text-align:center;margin-bottom:16px;"></div>
+        <button type="button" class="btn-add qa-action-btn" onclick="window.aiApplyDesign()" style="margin:0 0 8px;background:linear-gradient(135deg,var(--primary),var(--primary-light));"><span class="qa-btn-txt">تطبيق على صفحتي · Apply</span></button>
+        <button type="button" onclick="window.aiRegenerate()" style="width:100%;background:none;border:none;color:var(--muted);font-weight:700;font-size:0.78rem;padding:8px 0;cursor:pointer;font-family:inherit;">🎲 نتيجة عشوائية أخرى بنفس الوصف</button>
+        <button type="button" onclick="window.aiGoStep(1)" style="width:100%;background:none;border:none;color:var(--muted);font-weight:700;font-size:0.78rem;padding:2px 0;cursor:pointer;font-family:inherit;">جرّب وصفاً آخر</button>
+      </div>
+
+      <!-- الخطوة ٣: تم التطبيق -->
+      <div id="aiStep3" style="display:none;text-align:center;">
+        <div style="font-weight:800;font-size:0.95rem;margin-bottom:4px;color:var(--success);">✓ تم تطبيق التصميم</div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:16px;">راجعه وعدّل عليه من تبويب التصميم متى شئت</div>
+        <button type="button" class="btn-add qa-action-btn" onclick="window.closeAiDesignModal(); window.qaGoToSection('design','تصميم صفحتك',0);" style="margin:0 0 8px;background:linear-gradient(135deg,var(--primary),var(--primary-light));"><span class="qa-btn-txt">افتح تصميم صفحتك</span></button>
+        <button type="button" onclick="window.aiGoStep(1)" style="width:100%;background:none;border:none;color:var(--muted);font-weight:700;font-size:0.78rem;padding:8px 0;cursor:pointer;font-family:inherit;">جرّب وصفاً آخر</button>
+      </div>
+
+    </div>
   </div>
 </div>
 
@@ -962,6 +1043,10 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content open">
+        <button type="button" onclick="window.openAiDesignModal()" class="qa-action-btn" style="width:100%;margin-bottom:14px;padding:14px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;font-weight:800;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 10px 22px rgba(0,105,253,.28);">
+          <span class="qa-btn-ic" style="display:flex;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg></span>
+          <span class="qa-btn-txt">توليد AI لصفحتك · دع الذكاء الاصطناعي يصمم لك</span>
+        </button>
         <div class="form-group" style="margin-bottom:0;">
           <div style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;">هذا شكل صفحتك تقريباً بكل قالب — اضغط على أي واحدة لتطبيقها · This is roughly how your page will look with each template</div>
           <div id="pageMockupCarousel" style="display:flex;gap:12px;overflow-x:auto;padding:4px 4px 10px;-webkit-overflow-scrolling:touch;"></div>
@@ -1923,17 +2008,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
   // ===== قوالب جاهزة (نفس منظومة ألوان سمات المقالة، لتناسق الهوية بكل الموقع) =====
   let DESIGN_TEMPLATES = [
-    { id:'default', name:'الافتراضي', p1:'#3d5af1', p2:'#6c8fff', text:'#0f1535', bg:'#ffffff', iconShape:'circle', showAvatar:true, showSocials:true, showLinks:true },
-    { id:'natural', name:'طبيعي',     p1:'#588157', p2:'#7fa876', text:'#344E41', bg:'#DAD7CD', iconShape:'circle', showAvatar:true, showSocials:true, showLinks:true },
-    { id:'warm',    name:'دافئ',      p1:'#EE9A00', p2:'#f4b840', text:'#BB3E03', bg:'#FEFAE0', iconShape:'circle', showAvatar:true, showSocials:true, showLinks:true },
-    { id:'calm',    name:'هادئ',      p1:'#0D21A1', p2:'#4d5cc9', text:'#0D21A1', bg:'#EEF0F2', iconShape:'circle', showAvatar:true, showSocials:true, showLinks:true },
-    { id:'night',   name:'ليلي',      p1:'#8fb0ff', p2:'#6c8fff', text:'#f0f1f5', bg:'#12141c', iconShape:'circle', showAvatar:true, showSocials:true, showLinks:true },
-    { id:'earthy',  name:'ترابي',     p1:'#C97D34', p2:'#dba05f', text:'#7C4A03', bg:'#FDF6EC', iconShape:'circle', showAvatar:true, showSocials:true, showLinks:true },
-    { id:'fresh',   name:'منعش',      p1:'#2A9D8F', p2:'#5cbcaf', text:'#0B4F4A', bg:'#E6F4F1', iconShape:'circle', showAvatar:true, showSocials:true, showLinks:true },
-    { id:'rect_accounts',   name:'حسابات مستطيلة', p1:'#3d5af1', p2:'#6c8fff', text:'#0f1535', bg:'#ffffff', iconShape:'rect',   showAvatar:true,  showSocials:true,  showLinks:true },
-    { id:'circle_accounts', name:'حسابات دائرية',  p1:'#3d5af1', p2:'#6c8fff', text:'#0f1535', bg:'#ffffff', iconShape:'circle', showAvatar:true,  showSocials:true,  showLinks:true },
-    { id:'logo_avatar_only',name:'شعار وأفتار فقط', p1:'#3d5af1', p2:'#6c8fff', text:'#0f1535', bg:'#ffffff', iconShape:'circle', showAvatar:true,  showSocials:false, showLinks:false },
-    { id:'logo_social_only',name:'شعار ووسائل تواصل',p1:'#3d5af1', p2:'#6c8fff', text:'#0f1535', bg:'#ffffff', iconShape:'circle', showAvatar:true,  showSocials:true,  showLinks:false }
+    { id:'default', name:'الافتراضي', p1:'#1732B2', p2:'#0069FD', text:'#0f1535', bg:'#EDF2FB', iconShape:'circle', showAvatar:true, showSocials:true, showLinks:true, bgMode:'color' }
   ];
   // القوالب هذي افتراضية (احتياط)؛ لو الآدمن عدّل/أضاف قوالب من لوحة الإدارة، نستبدلها بالنسخة الحيّة من قاعدة البيانات
   async function loadTemplatesFromConfig(){
@@ -2238,6 +2313,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       calendarWeek: `<svg ${s}><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="7" y1="14" x2="7" y2="14"/><line x1="12" y1="14" x2="12" y2="14"/><line x1="17" y1="14" x2="17" y2="14"/></svg>`,
       swap: `<svg ${s}><path d="M17 3l4 4-4 4"/><path d="M3 7h18"/><path d="M7 21l-4-4 4-4"/><path d="M21 17H3"/></svg>`,
       layers: `<svg ${s}><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/><path d="M3 17l9 5 9-5"/></svg>`,
+      sparkles: `<svg ${s}><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>`,
     };
     return icons[id] || '';
   }
@@ -2277,6 +2353,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     qrForFeatured:   { name: 'QR لأرقام مختارة', icon: qaIconSvg('qr'),   tab: 'الأرقام' },
 
     // ===== قسم التصميم =====
+    aiPageDesign:      { name: 'توليد AI لصفحتك', icon: qaIconSvg('sparkles'), tab: 'التصميم' },
     bgActionsDesign:   { name: 'إجراءات الخلفية', icon: qaIconSvg('image'),  tab: 'التصميم', nav:{pageId:'design', title:'تصميم صفحتك', tabIdx:0, after:'scrollBg'} },
     logoCoverDesign:   { name: 'الشعار والغلاف',  icon: qaIconSvg('banner'), tab: 'التصميم', nav:{pageId:'design', title:'تصميم صفحتك', tabIdx:0, after:'scrollLogo'} },
     textActionsDesign: { name: 'إجراءات النص',    icon: qaIconSvg('edit'),   tab: 'التصميم', nav:{pageId:'design', title:'تصميم صفحتك', tabIdx:0, after:'scrollText'} },
@@ -2306,7 +2383,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     printStatsExcel: { name: 'إحصائيات Excel',   icon: qaIconSvg('download'),     tab: 'إحصائيات' },
     importExportData:{ name: 'نقل واستيراد',     icon: qaIconSvg('swap'),         tab: 'إحصائيات', nav:{pageId:'stats', title:'تنزيل', tabIdx:4} }
   };
-  const QA_DEFAULT = ['addNum','printStats','colors','copyLink','qrCode'];
+  const QA_DEFAULT = ['addNum','aiPageDesign','printStats','colors','copyLink','qrCode'];
   const QA_AFTER_FNS = {
     linkMode:    () => { window.setEntryMode && window.setEntryMode('link'); },
     textMode:    () => { window.setEntryMode && window.setEntryMode('text'); },
@@ -2319,7 +2396,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   // القوائم/الأقسام المعروضة داخل نافذة "تخصيص الإجراءات السريعة"
   const QA_CATEGORIES = [
     { label:'الأرقام',      keys:['numLinkQuick','numTextQuick','numArticleQuick','numImageQuick','numAlbumQuick','numFileQuick','numProductQuick','numArchive','numFeatured','numRandom','numLast3','qrForNumber','qrForAccount','qrForRegistry','qrForFeatured'] },
-    { label:'التصميم',      keys:['bgActionsDesign','logoCoverDesign','textActionsDesign','iconActionsDesign','colors','iconStyleDesign'] },
+    { label:'التصميم',      keys:['aiPageDesign','bgActionsDesign','logoCoverDesign','textActionsDesign','iconActionsDesign','colors','iconStyleDesign'] },
     { label:'التواصل',      keys:['contactAccountsAct','contactNumbersAct','contactEmailsAct','contactIconsAct','contactWebsiteAct','contactLocationAct'] },
     { label:'ملفي',         keys:['techSupport','sendSuggestion','goToProfile','usageGuide'] },
     { label:'الإحصائيات',   keys:['topSearched','printMonthLog','printWeekLog','print3MonthsLog','printStatsPdf','printStatsExcel','importExportData'] },
@@ -2514,6 +2591,9 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(key === 'usageGuide'){
       return `<div class="qa-tile qa-tile-action qa-action-btn" onclick="window.openUsageGuide()"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div><span class="qa-btn-hover-ic">${item.icon}</span></div>`;
     }
+    if(key === 'aiPageDesign'){
+      return `<div class="qa-tile qa-tile-action qa-action-btn" onclick="window.openAiDesignModal()" style="background:linear-gradient(135deg, rgba(23,50,178,.12), rgba(0,105,253,.06));"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div><span class="qa-btn-hover-ic">${item.icon}</span></div>`;
+    }
 
     // مسار عام: أي إجراء معرَّف بخاصية nav ينتقل داخلياً للتبويب/القسم المطابق مباشرة
     if(item.nav){
@@ -2688,7 +2768,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       const raw = snap.exists() && Array.isArray(snap.data().links) ? snap.data().links : [];
       const sorted = [...raw].sort((a,b) => new Date(b.createdAt||0) - new Date(a.createdAt||0)).slice(0,3);
       if(!sorted.length){ el.textContent = 'لا توجد أرقام بعد'; return; }
-      el.innerHTML = sorted.map(l => `<div class="qa-tile-action qa-action-btn" style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:9px;background:var(--bg);margin-bottom:5px;text-align:right;justify-content:flex-start;" onclick="window.qaOpenNumber('${l.number??l.num}')"><span class="qa-square-txt" style="font-weight:800;color:var(--primary);">#${l.number??l.num}</span><span class="qa-square-txt" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${l.title||l.label||''}</span></div>`).join('');
+      el.innerHTML = sorted.map(l => `<div class="qa-tile-action qa-action-btn" style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:10px;margin-bottom:5px;text-align:right;justify-content:flex-start;background:var(--glass-bg);backdrop-filter:blur(10px) saturate(180%);-webkit-backdrop-filter:blur(10px) saturate(180%);border:1px solid var(--glass-border);box-shadow:0 4px 10px rgba(23,50,178,.08);" onclick="window.qaOpenNumber('${l.number??l.num}')"><span class="qa-square-txt" style="font-weight:800;color:var(--primary);">#${l.number??l.num}</span><span class="qa-square-txt" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${l.title||l.label||''}</span></div>`).join('');
     }catch(e){ el.textContent = 'تعذر الجلب'; }
   }
 
@@ -2700,7 +2780,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       const links = await fetchAllLinks();
       const top = [...links].sort((a,b) => (b.views||0)-(a.views||0)).slice(0,5);
       if(!top.length){ el.textContent = 'لا توجد بيانات بعد'; return; }
-      el.innerHTML = top.map(l => `<div class="qa-tile-action qa-action-btn" style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:9px;background:var(--bg);margin-bottom:5px;text-align:right;justify-content:flex-start;" onclick="window.qaOpenNumber('${l.number}')"><span class="qa-square-txt" style="font-weight:800;color:var(--primary);">#${l.number}</span><span class="qa-square-txt" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${l.title||''}</span><span class="qa-square-txt" style="color:var(--muted);font-size:0.68rem;">${l.views||0} 👁</span></div>`).join('');
+      el.innerHTML = top.map(l => `<div class="qa-tile-action qa-action-btn" style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:10px;margin-bottom:5px;text-align:right;justify-content:flex-start;background:var(--glass-bg);backdrop-filter:blur(10px) saturate(180%);-webkit-backdrop-filter:blur(10px) saturate(180%);border:1px solid var(--glass-border);box-shadow:0 4px 10px rgba(23,50,178,.08);" onclick="window.qaOpenNumber('${l.number}')"><span class="qa-square-txt" style="font-weight:800;color:var(--primary);">#${l.number}</span><span class="qa-square-txt" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${l.title||''}</span><span class="qa-square-txt" style="color:var(--muted);font-size:0.68rem;">${l.views||0} 👁</span></div>`).join('');
     }catch(e){ el.textContent = 'تعذر الجلب'; }
   }
 
@@ -2789,6 +2869,154 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   };
   window.toggleGuideCard = function(i){
     document.getElementById('guideCard'+i)?.classList.toggle('open');
+  };
+
+  // ===== توليد AI لصفحتك: مكتبة ألوان (٢٠ نمطاً) ومجالات (٣٢ مجالاً) لاقتراح تصميم متكامل =====
+  const AI_PALETTES = [
+    { name:'أزرق ملكي',    primary:'#3d5af1', accent:'#8a5cf6', neutralLight:'#ffffff', neutralDark:'#0f1535', moods:['tech','professional','modern'] },
+    { name:'أخضر زمردي',   primary:'#0ab87a', accent:'#0f1535', neutralLight:'#eafbf3', neutralDark:'#06281d', moods:['fresh','health','natural'] },
+    { name:'ذهبي فاخر',    primary:'#BB3E03', accent:'#EE9A00', neutralLight:'#FEFAE0', neutralDark:'#3d2b1f', moods:['luxury','warm','food'] },
+    { name:'أزرق هادئ',    primary:'#0D21A1', accent:'#4d5cc9', neutralLight:'#EEF0F2', neutralDark:'#0a1550', moods:['calm','professional','medical'] },
+    { name:'ترابي دافئ',   primary:'#7C4A03', accent:'#C97D34', neutralLight:'#FDF6EC', neutralDark:'#3d2b1f', moods:['rustic','warm','earthy'] },
+    { name:'فيروزي منعش',  primary:'#2A9D8F', accent:'#5cbcaf', neutralLight:'#E6F4F1', neutralDark:'#0B4F4A', moods:['fresh','spa','natural'] },
+    { name:'وردي عصري',    primary:'#e8436a', accent:'#ff8fab', neutralLight:'#fff0f4', neutralDark:'#3d0f1f', moods:['playful','beauty','romantic'] },
+    { name:'بنفسجي ملكي',  primary:'#7b2ff7', accent:'#b98cff', neutralLight:'#f6f0ff', neutralDark:'#1e0a3c', moods:['luxury','creative','elegant'] },
+    { name:'كهرماني دافئ', primary:'#d97706', accent:'#fbbf24', neutralLight:'#fffbeb', neutralDark:'#3d2b06', moods:['warm','food','energetic'] },
+    { name:'أسود أنيق',    primary:'#111827', accent:'#6b7280', neutralLight:'#f9fafb', neutralDark:'#0a0a0a', moods:['minimal','luxury','professional'] },
+    { name:'أحمر جريء',    primary:'#dc2626', accent:'#f87171', neutralLight:'#fef2f2', neutralDark:'#3d0a0a', moods:['bold','energetic','sports'] },
+    { name:'نيلي داكن',    primary:'#4338ca', accent:'#818cf8', neutralLight:'#eef2ff', neutralDark:'#1e1b4b', moods:['tech','professional','modern'] },
+    { name:'زيتوني طبيعي', primary:'#588157', accent:'#7fa876', neutralLight:'#DAD7CD', neutralDark:'#344E41', moods:['natural','rustic','calm'] },
+    { name:'وردي باستيل',  primary:'#f472b6', accent:'#fbcfe8', neutralLight:'#fdf2f8', neutralDark:'#500724', moods:['playful','beauty','romantic'] },
+    { name:'أزرق سماوي',   primary:'#0ea5e9', accent:'#7dd3fc', neutralLight:'#f0f9ff', neutralDark:'#0c4a6e', moods:['fresh','travel','tech'] },
+    { name:'برتقالي حيوي', primary:'#ea580c', accent:'#fb923c', neutralLight:'#fff7ed', neutralDark:'#431407', moods:['energetic','food','playful'] },
+    { name:'رمادي احترافي',primary:'#475569', accent:'#94a3b8', neutralLight:'#f8fafc', neutralDark:'#0f172a', moods:['professional','minimal','tech'] },
+    { name:'نحاسي دافئ',   primary:'#9a3412', accent:'#c2410c', neutralLight:'#fef3ec', neutralDark:'#431407', moods:['rustic','luxury','warm'] },
+    { name:'أخضر داكن فخم',primary:'#14532d', accent:'#22c55e', neutralLight:'#f0fdf4', neutralDark:'#052e16', moods:['luxury','natural','calm'] },
+    { name:'ليلكي ناعم',   primary:'#8b5cf6', accent:'#c4b5fd', neutralLight:'#f5f3ff', neutralDark:'#2e1065', moods:['elegant','creative','romantic'] }
+  ];
+  const AI_DOMAINS = [
+    { kw:/مطعم|أكل|طعام/, names:['مطبخ الأصالة','بيت المذاق','ركن الطعم'], bios:['أطباق تُطهى بشغف وتُقدَّم بحب','نكهات أصيلة تعيدك لذكريات البيت'], moods:['warm','food','luxury'] },
+    { kw:/كافيه|مقهى|قهوة/, names:['ركن القهوة','بن وحكاية','قهوة الصباح'], bios:['فنجان قهوة يستحق التوقف عنده','أجواء دافئة ونكهات مختارة بعناية'], moods:['warm','calm','food'] },
+    { kw:/مخبز|حلويات|كيك/, names:['فرن الحي','حلا ولذة','خبز البيت'], bios:['حلويات طازجة تُصنع يومياً بحب','طعم يذكّرك بحلويات الجدّة'], moods:['warm','playful','food'] },
+    { kw:/عطور|عطر/, names:['رائحة الشرق','عبق الزمان','مسك وعنبر'], bios:['عطور فاخرة تحكي قصتك الخاصة','روائح مستوحاة من التراث العربي الأصيل'], moods:['luxury','elegant','warm'] },
+    { kw:/أزياء|ملابس|موضة/, names:['ستايل هاوس','لمسة أناقة','خزانة الموضة'], bios:['أزياء تعكس شخصيتك بثقة','قطع مختارة بعناية لكل مناسبة'], moods:['elegant','playful','luxury'] },
+    { kw:/تجميل|مكياج/, names:['لمسة جمال','استوديو المكياج','بيوتي كورنر'], bios:['جمالك يستحق لمسة احترافية','خبرة تُبرز جمالك الطبيعي'], moods:['beauty','elegant','playful'] },
+    { kw:/حلاق|صالون رجالي|barber/, names:['صالون الرجال','قص وحلاقة','ستايل الرجال'], bios:['إطلالة أنيقة تبدأ من هنا','حلاقة احترافية بلمسة عصرية'], moods:['minimal','bold','professional'] },
+    { kw:/سبا|مساج|استرخاء/, names:['واحة الاسترخاء','سبا الهدوء','لمسة راحة'], bios:['استراحة تستحقها لجسدك وروحك','رحلة استرخاء بعيداً عن ضغوط اليوم'], moods:['calm','spa','natural'] },
+    { kw:/نادي رياضي|جيم|gym/, names:['فيت زون','نادي القوة','جيم الطاقة'], bios:['ابنِ جسمك وقوتك خطوة بخطوة','مساحتك لتحقيق أهدافك الرياضية'], moods:['energetic','bold','sports'] },
+    { kw:/مدرب لياقة|كوتش|تدريب شخصي/, names:['كوتش اللياقة','مدرّبك الشخصي','خطوة نحو القوة'], bios:['برامج تدريب تبني جسمك وثقتك','مرافقتك بكل خطوة نحو هدفك'], moods:['energetic','professional','sports'] },
+    { kw:/يوغا|تأمل/, names:['نفس هادئ','استوديو اليوغا','توازن وسكينة'], bios:['توازن الجسد والروح بحركة واعية','مساحتك للهدوء والتأمل اليومي'], moods:['calm','natural','spa'] },
+    { kw:/تغذية|حمية|دايت/, names:['عيادة التغذية','خطة صحية','توازن غذائي'], bios:['خطط غذائية تناسب نمط حياتك','صحتك تبدأ من طبقك'], moods:['fresh','health','professional'] },
+    { kw:/أسنان|طبيب أسنان/, names:['عيادة الابتسامة','مركز الأسنان','ابتسامة صحية'], bios:['ابتسامتك أمانة بأيدٍ خبيرة','رعاية أسنان بأحدث التقنيات'], moods:['professional','calm','medical'] },
+    { kw:/جلدية|بشرة|dermatology/, names:['عيادة الجلدية','مركز العناية بالبشرة'], bios:['بشرتك تستحق عناية متخصصة','حلول جلدية بإشراف طبي دقيق'], moods:['medical','calm','beauty'] },
+    { kw:/طبيب عام|عيادة|clinic/, names:['العيادة الطبية','مركز الرعاية الصحية'], bios:['رعاية طبية شاملة تضعك أولاً','فريق طبي موثوق لكل أفراد العائلة'], moods:['medical','professional','calm'] },
+    { kw:/صيدلية|دواء/, names:['صيدلية الشفاء','ركن الدواء'], bios:['رعايتك الصحية أولويتنا دائماً','أدوية ومستلزمات بجودة موثوقة'], moods:['medical','professional','fresh'] },
+    { kw:/محاماة|محامي|قانون/, names:['مكتب المحاماة','استشارات قانونية'], bios:['حقوقك بأيدٍ قانونية موثوقة','خبرة قانونية تحفظ مصالحك'], moods:['professional','minimal','luxury'] },
+    { kw:/محاسبة|مالية|استشارات مالية/, names:['مكتب المحاسبة','استشارات مالية'], bios:['أرقامك بأمان معنا','حلول مالية ومحاسبية احترافية'], moods:['professional','minimal','tech'] },
+    { kw:/عقار|عقارات|سمسار/, names:['بيت العقار','مكتب العقارات'], bios:['نساعدك تجد بيت أحلامك','فرص عقارية موثوقة بخبرة سوقية'], moods:['luxury','professional','modern'] },
+    { kw:/ديكور|تصميم داخلي|مقاول/, names:['استوديو الديكور','لمسة تصميم'], bios:['نحوّل مساحتك لتحفة فنية','تصاميم داخلية تعكس ذوقك الخاص'], moods:['elegant','creative','luxury'] },
+    { kw:/تصوير|فوتوغراف|photography/, names:['عدسة إبداع','استوديو التصوير'], bios:['نوثّق لحظاتك بأسلوب فني مميز','كل صورة تحكي قصة تستحق الحفظ'], moods:['creative','elegant','minimal'] },
+    { kw:/جرافيك|تصميم/, names:['استوديو لمسة','مصمم الهوية'], bios:['تصاميم بصرية تحكي هويتك بأسلوب عصري','هوية بصرية تميّزك عن الجميع'], moods:['creative','modern','tech'] },
+    { kw:/مطور|برمجة|تطبيقات|مبرمج/, names:['استوديو البرمجة','مطوّر تطبيقات'], bios:['نبني حلولك التقنية من الفكرة للتطبيق','برمجة احترافية تخدم أهداف عملك'], moods:['tech','professional','modern'] },
+    { kw:/منشئ محتوى|يوتيوبر|مؤثر/, names:['منشئ المحتوى','قناة الإبداع'], bios:['محتوى يلامس اهتماماتك بأسلوب مختلف','رحلتي بالمحتوى تبدأ من هنا'], moods:['playful','bold','creative'] },
+    { kw:/بودكاست|podcast/, names:['ستوديو البودكاست','حلقات وأصوات'], bios:['أحاديث تستحق الاستماع في كل حلقة','صوتك يصل لجمهورك من هنا'], moods:['modern','creative','minimal'] },
+    { kw:/سفر|سياحة|رحلات/, names:['وكالة السفر','رحلات ومغامرات'], bios:['وجهتك القادمة تبدأ من هنا','رحلات مصمّمة لتناسب أحلامك'], moods:['fresh','travel','energetic'] },
+    { kw:/فندق|منتجع|hotel/, names:['منتجع الفخامة','فندق الضيافة'], bios:['إقامة فاخرة تليق بك','ضيافة راقية وتجربة لا تُنسى'], moods:['luxury','calm','elegant'] },
+    { kw:/متجر ملابس أطفال|أطفال/, names:['عالم الأطفال','متجر الصغار'], bios:['ملابس مريحة وأنيقة لأطفالك','كل ما يحتاجه طفلك بمكان واحد'], moods:['playful','fresh','beauty'] },
+    { kw:/زهور|ورد|flower/, names:['بستان الورود','محل الزهور'], bios:['باقات تُعبّر عن مشاعرك بأجمل صورة','زهور طازجة لكل مناسبة'], moods:['romantic','fresh','elegant'] },
+    { kw:/هدايا|gift/, names:['ركن الهدايا','هدية مميزة'], bios:['هدايا تُخلّد لحظاتك الجميلة','اختيارات مميزة لكل من تحب'], moods:['playful','romantic','warm'] },
+    { kw:/مجوهرات|ذهب|jewelry/, names:['دار المجوهرات','لمسة ذهبية'], bios:['قطع مجوهرات تعكس فخامتك','تصاميم أنيقة تدوم للأبد'], moods:['luxury','elegant','warm'] },
+    { kw:/بيطري|حيوانات أليفة|عيادة بيطرية/, names:['عيادة بيطرية','رفيقك الأليف'], bios:['رعاية بيطرية بحب واهتمام','صحة صديقك الأليف أولويتنا'], moods:['natural','fresh','professional'] }
+  ];
+  const AI_DEFAULT_DOMAIN = { names:['صفحتي','هويتي الرقمية'], bios:['وصف قصير يعرّف بنشاطك بأسلوب واضح وجذاب'], moods:[] };
+  function aiPick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  window.aiUseExample = function(){
+    const sample = aiPick(AI_DOMAINS);
+    document.getElementById('aiDescInput').value = 'مثال: ' + sample.names[0] + ' — ' + sample.bios[0];
+  };
+  function aiPickDesign(text){
+    const matched = AI_DOMAINS.filter(d => d.kw && d.kw.test(text));
+    const domain = matched.length ? aiPick(matched) : AI_DEFAULT_DOMAIN;
+    let candidates = AI_PALETTES.filter(p => domain.moods.some(m => p.moods.includes(m)));
+    if(!candidates.length) candidates = AI_PALETTES;
+    const pal = aiPick(candidates);
+    const isDark = Math.random() < 0.3;
+    const bg = isDark ? pal.neutralDark : pal.neutralLight;
+    const textColor = isDark ? pal.neutralLight : pal.neutralDark;
+    const iconShape = Math.random() < 0.5 ? 'circle' : 'rect';
+    return { p1: pal.primary, p2: pal.accent, bg, text: textColor, iconShape, name: aiPick(domain.names), bio: aiPick(domain.bios), paletteName: pal.name };
+  }
+  function aiSetDot(n){
+    [1,2,3].forEach(i => document.getElementById('aiDot'+i)?.classList.toggle('active', i<=n));
+    [1,2,3].forEach(i => {
+      const el = document.getElementById('aiDot'+i);
+      if(!el) return;
+      el.style.background = i<=n ? 'var(--primary)' : 'var(--border)';
+      el.style.width = i<=n && i===n ? '22px' : '8px';
+      el.style.borderRadius = i<=n && i===n ? '5px' : '50%';
+    });
+  }
+  window.aiGoStep = function(n){
+    [1,2,3].forEach(i => { const el = document.getElementById('aiStep'+i); if(el) el.style.display = i===n ? 'block' : 'none'; });
+    aiSetDot(n);
+  };
+  let aiLastDesign = null, aiLastText = '';
+  function aiRenderPreview(d){
+    aiLastDesign = d;
+    const card = document.getElementById('aiPreviewCard');
+    card.style.background = d.bg;
+    const av = document.getElementById('aiPreviewAvatar');
+    av.style.background = `linear-gradient(135deg,${d.p1},${d.p2})`;
+    av.style.borderRadius = d.iconShape==='rect' ? '14px' : '50%';
+    const nm = document.getElementById('aiPreviewName');
+    nm.style.color = d.text; nm.textContent = d.name;
+    const i1 = document.getElementById('aiPreviewIcon1'), i2 = document.getElementById('aiPreviewIcon2');
+    i1.style.background = d.p1; i2.style.background = d.p2;
+    i1.style.borderRadius = i2.style.borderRadius = d.iconShape==='rect' ? '8px' : '50%';
+    document.getElementById('aiPreviewBio').textContent = d.bio;
+    document.getElementById('aiPreviewBio').style.color = d.text === d.bg ? 'var(--muted)' : '';
+    document.getElementById('aiPaletteTag').textContent = 'نمط الألوان: ' + d.paletteName;
+  }
+  window.aiRunDemo = function(){
+    const text = document.getElementById('aiDescInput').value.trim();
+    if(!text){ document.getElementById('aiDescInput').focus(); document.getElementById('aiDescInput').style.borderColor = 'var(--error)'; return; }
+    document.getElementById('aiDescInput').style.borderColor = '';
+    aiLastText = text;
+    const btn = document.getElementById('aiGoBtn'), btnText = document.getElementById('aiGoBtnText');
+    btn.disabled = true; btnText.textContent = 'جاري التوليد...';
+    setTimeout(() => {
+      aiRenderPreview(aiPickDesign(text));
+      btn.disabled = false; btnText.textContent = 'توليد التصميم · Generate';
+      window.aiGoStep(2);
+    }, 900);
+  };
+  window.aiRegenerate = function(){ aiRenderPreview(aiPickDesign(aiLastText)); };
+  window.aiApplyDesign = async function(){
+    const d = aiLastDesign || aiPickDesign(aiLastText);
+    try{
+      document.getElementById('colorPicker').value = d.p1;
+      document.getElementById('colorPicker2').value = d.p2;
+      document.getElementById('textColorPicker').value = d.text;
+      document.getElementById('bgColorPicker').value = d.bg;
+      window.onColorPick(d.p1); window.onColor2Pick(d.p2);
+      window.onTextColorPick(d.text); window.onBgColorPick(d.bg);
+      if(d.iconShape) await window.setIconShape(d.iconShape);
+      const nameEl = document.getElementById('pfName'), bioEl = document.getElementById('pfBio');
+      if(nameEl && !nameEl.value.trim()) nameEl.value = d.name;
+      if(bioEl && !bioEl.value.trim()) bioEl.value = d.bio;
+      await window.saveDesign();
+      if(typeof window.saveProfile === 'function') await window.saveProfile();
+      window.aiGoStep(3);
+    }catch(e){ window.showToast("تعذر تطبيق التصميم: " + (e.message||'')); }
+  };
+  window.openAiDesignModal = function(){
+    aiLastDesign = null; aiLastText = '';
+    document.getElementById('aiDescInput').value = '';
+    window.aiGoStep(1);
+    document.getElementById('aiDesignModal').style.display = 'flex';
+  };
+  window.closeAiDesignModal = function(){
+    document.getElementById('aiDesignModal').style.display = 'none';
   };
 
   window.qaQuickColorPreview = function(){
