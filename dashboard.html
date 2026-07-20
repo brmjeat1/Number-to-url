@@ -69,25 +69,25 @@ body::after{width:300px;height:300px;background:#FFFF52;opacity:.18;bottom:-80px
 .export-pill.pill-json{background:linear-gradient(135deg,#2b2f3a,#4a5164);--pill-shadow:rgba(30,35,45,.35);}
 .export-pill.pill-pdf{background:linear-gradient(135deg,#e2231a,#ff6b5c);--pill-shadow:rgba(226,35,26,.35);}
 .export-pill.pill-excel{background:linear-gradient(135deg,#1d6f42,#3fbf7f);--pill-shadow:rgba(29,111,66,.35);}
-.container{max-width:900px;margin:0 auto;padding:24px 112px 24px 20px;transition:padding .25s ease;}
-body.rail-collapsed .container{padding-right:20px;}
+.container{max-width:900px;margin:0 auto;padding:24px 20px 100px 20px;transition:padding .25s ease;}
+body.rail-collapsed .container{padding-bottom:24px;}
 
-/* NAV TABS — عمود مربعات زجاجي ثابت باليمين */
+/* NAV TABS — شريط مربعات زجاجي ثابت بالأسفل، يتحرك معك أثناء التمرير */
 .rail-wrap{
-  position:fixed; top:50%; right:10px; z-index:41; transform:translateY(-50%);
-  display:flex; flex-direction:column; align-items:center; gap:10px;
+  position:fixed; bottom:14px; left:50%; z-index:41; transform:translateX(-50%);
+  display:flex; flex-direction:row; align-items:center; gap:10px;
 }
 .nav-tabs{
-  display:flex; flex-direction:column; gap:7px;
-  width:84px; max-height:560px; padding:10px 8px; box-sizing:border-box;
-  background:rgba(255,255,255,.24);
+  display:flex; flex-direction:row; gap:7px;
+  max-width:92vw; overflow-x:auto; padding:9px 10px; box-sizing:border-box;
+  background:rgba(255,255,255,.28);
   backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);
   border:1px solid rgba(255,255,255,.42);
   border-radius:22px;
-  box-shadow:0 14px 30px rgba(23,50,178,.14), inset 0 1px 0 rgba(255,255,255,.5);
-  transition:max-height .3s ease, opacity .25s ease;
+  box-shadow:0 14px 30px rgba(23,50,178,.16), inset 0 1px 0 rgba(255,255,255,.5);
+  transition:max-width .3s ease, opacity .25s ease, padding .3s ease;
 }
-.nav-tabs.collapsed{ max-height:0; opacity:0; pointer-events:none; gap:0; }
+.nav-tabs.collapsed{ max-width:0; opacity:0; pointer-events:none; padding:9px 0; }
 .rail-toggle{
   width:34px;height:34px;border-radius:50%;
   background:var(--glass-bg);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
@@ -96,13 +96,13 @@ body.rail-collapsed .container{padding-right:20px;}
   color:var(--primary);flex-shrink:0;
 }
 .rail-toggle svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s ease;}
-.nav-tabs::-webkit-scrollbar{ width:0; }
+.nav-tabs::-webkit-scrollbar{ display:none; }
 .nav-tab{
   background:rgba(255,255,255,.4);
   border:1px solid var(--glass-border);
   color:var(--text2);
-  width:100%;height:46px;border-radius:13px;flex-shrink:0;
-  display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:8px;padding:0 10px;
+  width:auto;height:46px;border-radius:13px;flex-shrink:0;
+  display:flex;flex-direction:row;align-items:center;justify-content:center;gap:7px;padding:0 13px;
   font-weight:700;cursor:pointer;transition:all .25s cubic-bezier(.34,1.56,.64,1);font-size:0.68rem;
   white-space:nowrap;box-shadow:0 3px 8px rgba(23,50,178,.06);
 }
@@ -116,22 +116,29 @@ body.rail-collapsed .container{padding-right:20px;}
   box-shadow:0 8px 16px rgba(0,105,253,.3), inset 0 1px 0 rgba(255,255,255,.5);
 }
 
-/* الفروع المنسدلة تحت كل قسم بالرف */
+/* الفروع تظهر كلوحة عائمة فوق الشريط السفلي مباشرة (مش تحته، لأن تحته حافة الشاشة) */
 .tab-branches-inline{
-  display:flex;flex-direction:column;gap:6px;width:100%;
-  max-height:0;overflow:hidden;opacity:0;
-  transition:max-height .32s ease, opacity .28s ease;
+  position:fixed; bottom:82px; left:50%; z-index:41;
+  display:flex; flex-direction:row; gap:8px; max-width:94vw; overflow-x:auto;
+  padding:10px; border-radius:18px; box-sizing:border-box;
+  background:rgba(255,255,255,.3);
+  backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);
+  border:1px solid rgba(255,255,255,.45);
+  box-shadow:0 14px 30px rgba(23,50,178,.16);
+  opacity:0; pointer-events:none;
+  transform:translateX(-50%) translateY(10px);
+  transition:opacity .28s ease, transform .28s ease;
 }
-.tab-branches-inline.open{max-height:420px;opacity:1;margin-bottom:2px;}
+.tab-branches-inline.open{ opacity:1; pointer-events:auto; transform:translateX(-50%) translateY(0); }
 .tab-branch-btn{
-  background:rgba(255,255,255,.3);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  background:rgba(255,255,255,.35);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   border:1px solid var(--glass-border);border-radius:10px;
-  padding:8px 8px;font-size:.62rem;font-weight:700;color:var(--text2);
-  cursor:pointer;text-align:center;width:100%;
-  opacity:0;transform:translateX(8px);
+  padding:9px 12px;font-size:.66rem;font-weight:700;color:var(--text2);
+  cursor:pointer;text-align:center;white-space:nowrap;flex-shrink:0;
+  opacity:0;transform:translateY(8px);
   transition:opacity .25s ease, transform .25s ease, background .2s ease;
 }
-.tab-branches-inline.open .tab-branch-btn{opacity:1;transform:translateX(0);}
+.tab-branches-inline.open .tab-branch-btn{opacity:1;transform:translateY(0);}
 .tab-branch-btn:active{transform:scale(.95);}
 .tab-branch-btn:hover{background:rgba(0,105,253,.14);}
 
@@ -293,8 +300,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 .mockup-tpl-name{font-size:0.62rem;font-weight:700;margin-top:4px;opacity:0.8;}
 
 /* ===== ويدجت الإجراءات السريعة (نمط iOS Widget) ===== */
-.qa-widget{max-width:420px;margin:14px auto;padding:0 112px 0 20px;box-sizing:border-box;transition:padding .25s ease;}
-body.rail-collapsed .qa-widget{padding-right:20px;}
+.qa-widget{max-width:420px;margin:14px auto;padding:0 20px;box-sizing:border-box;}
 .qa-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
 .qa-title{font-weight:800;font-size:0.88rem;color:var(--text);}
 .qa-add-btn{
@@ -1594,10 +1600,12 @@ body.rail-collapsed .qa-widget{padding-right:20px;}
       b.addEventListener('click', (e) => {
         e.stopPropagation();
         window.qaGoToSection(pageId, it.title, tabIdx, it.after);
+        box.classList.remove('open');
+        setTimeout(() => box.remove(), 280);
       });
       box.appendChild(b);
     });
-    btnEl.insertAdjacentElement('afterend', box);
+    document.body.appendChild(box);
     requestAnimationFrame(() => requestAnimationFrame(() => box.classList.add('open')));
   };
 
