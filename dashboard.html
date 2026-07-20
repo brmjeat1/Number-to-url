@@ -310,22 +310,28 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 .qa-square-row{display:flex;gap:9px;overflow-x:auto;padding:4px 2px 10px;-webkit-overflow-scrolling:touch;}
 .qa-square-row::-webkit-scrollbar{display:none;}
 .qa-square{
-  flex-shrink:0;min-width:72px;max-width:96px;height:54px;border-radius:15px;padding:6px 8px;
+  position:relative; overflow:hidden;
+  flex-shrink:0;min-width:84px;max-width:120px;height:46px;border-radius:13px;padding:0 10px;
   background:var(--glass-bg);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
   border:1px solid var(--glass-border);box-shadow:0 6px 14px rgba(23,50,178,.10);
-  display:flex;align-items:center;justify-content:center;text-align:center;
-  font-size:.68rem;font-weight:700;color:var(--text2);line-height:1.25;cursor:pointer;
-  transition:transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease, background .2s ease;
+  display:flex;align-items:center;justify-content:flex-start;gap:7px;text-align:right;
+  font-size:.68rem;font-weight:700;color:var(--text2);line-height:1.2;cursor:pointer;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease;
 }
-.qa-square:active{transform:scale(.93);}
-.qa-square.active{
-  background:linear-gradient(135deg, rgba(23,50,178,.6), rgba(0,105,253,.5));
-  border-color:rgba(255,255,255,.5); color:#fff;
-  box-shadow:0 10px 20px rgba(0,105,253,.32), inset 0 1px 0 rgba(255,255,255,.5);
-  transform:translateY(-2px) scale(1.05);
+.qa-square:active{transform:scale(.95);}
+.qa-square-shell{
+  position:absolute; inset:0; border-radius:inherit; z-index:0;
+  background:linear-gradient(135deg, rgba(23,50,178,.65), rgba(0,105,253,.55));
+  clip-path:circle(0% at 18% 50%);
+  transition:clip-path .48s cubic-bezier(.65,0,.35,1);
 }
+.qa-square.active .qa-square-shell{ clip-path:circle(120% at 18% 50%); }
+.qa-square.active{ border-color:rgba(255,255,255,.5); box-shadow:0 10px 20px rgba(0,105,253,.32); transform:translateY(-1px); }
+.qa-square-ic{ position:relative; z-index:1; display:flex; flex-shrink:0; }
+.qa-square-txt{ position:relative; z-index:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.qa-square.active .qa-square-ic, .qa-square.active .qa-square-txt{ color:#fff; transition:color .2s ease .1s; }
 .qa-square-plus{
-  flex-shrink:0;width:54px;height:54px;border-radius:15px;
+  flex-shrink:0;width:46px;height:46px;border-radius:13px;
   background:rgba(255,255,255,.18);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   border:1.5px dashed var(--primary-light);color:var(--primary);
   display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;cursor:pointer;
@@ -361,15 +367,17 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
 /* ===== معالج "أضف رقم" — ثلاث خطوات بحركة انزلاق مثل الفيديو ===== */
 @keyframes qaStepIn{
-  from{ opacity:0; transform:translateX(14px); }
-  to{ opacity:1; transform:translateX(0); }
+  0%{ opacity:0; clip-path:inset(0 0 100% 0 round 14px); transform:scale(.98); }
+  60%{ opacity:1; }
+  100%{ opacity:1; clip-path:inset(0 0 0% 0 round 14px); transform:scale(1); }
 }
 .qa-wizard-step{
   display:flex; flex-direction:column; gap:8px; height:100%;
-  animation:qaStepIn .28s cubic-bezier(.34,1.1,.64,1);
+  animation:qaStepIn .38s cubic-bezier(.65,0,.35,1);
 }
 .qa-wizard-choose-grid{ display:flex; gap:8px; flex:1; }
 .qa-choose-btn{
+  position:relative; overflow:hidden;
   flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
   padding:14px 6px; border-radius:12px; border:1.5px solid var(--border); background:var(--bg2);
   cursor:pointer; font-family:inherit; font-size:1.3rem; color:var(--text);
@@ -1417,6 +1425,16 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   // 1. فحص الجلسة ومنع طرد السفاري (آيفون)
   async function checkAuth() {
     await auth.authStateReady();
+    // شبكة أمان: لو تعليق (Hang) بدون خطأ صريح ولا انتهاء طبيعي، لا يبقى المستخدم عالق بشاشة التحميل للأبد
+    setTimeout(() => {
+      const stuckOverlay = document.getElementById('dashLoadOverlay');
+      if(stuckOverlay && stuckOverlay.style.display !== 'none'){
+        stuckOverlay.style.display = 'none';
+        console.warn('انتهت مهلة التحميل (12 ثانية) — تم إخفاء الشاشة تحسباً لتعليق غير متوقع.');
+        try { window.showToast('التحميل استغرق وقتاً أطول من المعتاد — تحقق من اتصالك أو أعد تحميل الصفحة'); } catch(e){}
+      }
+    }, 12000);
+
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         currentUser = user;
@@ -1461,6 +1479,18 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
   // 2. تهيئة وتنزيل البيانات الكلية للمستخدم من الـ Database
   async function initDashboard() {
+    try {
+      await initDashboardInner();
+    } catch(e) {
+      console.error('initDashboard failed:', e);
+      try { window.showToast('حدث خطأ أثناء تحميل اللوحة: ' + (e.message||'راجع الكونسول')); } catch(e2){}
+    } finally {
+      const overlaySafety = document.getElementById('dashLoadOverlay');
+      if(overlaySafety) overlaySafety.style.display = 'none';
+    }
+  }
+
+  async function initDashboardInner() {
     const userDocRef = doc(db, "users", currentUser.uid);
     const userDoc = await getDoc(userDocRef);
     let username = currentUser.email.split('@')[0];
@@ -1560,9 +1590,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     // سجّل الحساب الحالي (أو حدّث بياناته) بقائمة "أكثر من حساب" — يشمل هذا الحساب الأصلي تلقائياً
     upsertSavedAccount({ uid: currentUser.uid, email: currentUser.email, username, appName: activeAppName });
     renderAccountsList();
-
-    const loadOverlay = document.getElementById('dashLoadOverlay');
-    if(loadOverlay) loadOverlay.style.display = 'none';
   }
 
   // 3. ربط الوظائف البرمجية الأساسية بـ واجهة المستخدم (Window Object Mapping)
@@ -2102,22 +2129,44 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
   // ===== مكتبة الإجراءات السريعة =====
   // الثلاثة الأساسية (لكل منها زر ••• لتخصيصه)، + مكتبة موسّعة اختيارية عبر "+"
+  function qaIconSvg(id){
+    const s = 'width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"';
+    const icons = {
+      paperclip: `<svg ${s}><path d="M8 12l7-7a4 4 0 015.5 5.5l-9 9a2.5 2.5 0 01-3.5-3.5l8-8"/></svg>`,
+      printer: `<svg ${s}><rect x="5" y="8" width="14" height="7" rx="1"/><path d="M7 8V4h10v4"/><path d="M7 15v5h10v-5"/></svg>`,
+      palette: `<svg ${s}><path d="M12 3a9 9 0 100 18c1.4 0 2-.9 2-1.9s-.5-1.4-.5-2.4c0-1 .9-1.5 1.9-1.5H17A3.5 3.5 0 0020.5 11.5C20.5 6.8 16.7 3 12 3z"/><circle cx="8" cy="10" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="16" cy="10" r="1"/><circle cx="9" cy="14.3" r="1"/></svg>`,
+      link: `<svg ${s}><rect x="2.5" y="9.5" width="9" height="5" rx="2.5" transform="rotate(-45 7 12)"/><rect x="12.5" y="9.5" width="9" height="5" rx="2.5" transform="rotate(-45 17 12)"/></svg>`,
+      qr: `<svg ${s}><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="3" height="3"/><rect x="18" y="18" width="3" height="3"/></svg>`,
+      star: `<svg ${s}><path d="M12 3l2.6 5.7 6.2.6-4.7 4.2 1.4 6.1L12 16.7 6.5 19.6l1.4-6.1L3.2 9.3l6.2-.6L12 3z"/></svg>`,
+      lock: `<svg ${s}><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>`,
+      broadcast: `<svg ${s}><circle cx="12" cy="12" r="2.5"/><path d="M7 9a6 6 0 000 6M17 9a6 6 0 010 6M4 5a11 11 0 000 14M20 5a11 11 0 010 14"/></svg>`,
+      shape: `<svg ${s}><circle cx="9" cy="9" r="5"/><rect x="12" y="12" width="9" height="9" rx="2"/></svg>`,
+      edit: `<svg ${s}><path d="M4 20l1-4 11-11 3 3-11 11-4 1z"/><path d="M13 6l3 3"/></svg>`,
+      image: `<svg ${s}><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.8"/><path d="M21 16l-5.5-5.5-4 4-2.5-2.5-5 5"/></svg>`,
+      banner: `<svg ${s}><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 15l5-4 4 3 5-5 4 3"/></svg>`,
+      download: `<svg ${s}><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>`,
+      template: `<svg ${s}><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="9" x2="9" y2="21"/></svg>`,
+      chart: `<svg ${s}><rect x="4" y="10" width="3.2" height="10"/><rect x="10.4" y="4" width="3.2" height="16"/><rect x="16.8" y="14" width="3.2" height="6"/></svg>`,
+    };
+    return icons[id] || '';
+  }
+
   const QA_LIBRARY = {
-    addNum:     { name: 'أضف رقم',        icon: '📎', tab: 'الأرقام' },
-    printStats: { name: 'طباعة إحصائيات',  icon: '🖨️', tab: 'إحصائيات' },
-    colors:     { name: 'ألوان التصميم',   icon: '🎨', tab: 'التصميم' },
-    copyLink:   { name: 'نسخ الرابط',      icon: '🔗', tab: 'ملفي' },
-    qrCode:     { name: 'رمز QR',          icon: '▦', tab: 'ملفي' },
-    featuredToggle: { name: 'تمييز رقم بأرقام مختارة', icon: '⭐', tab: 'الأرقام' },
-    hideToggle: { name: 'إخفاء رقم عن الجمهور',        icon: '🔒', tab: 'الأرقام' },
-    socialQuickAdd: { name: 'أضف حساب تواصل',           icon: '📡', tab: 'تواصل' },
-    iconShapeSwitch: { name: 'تبديل شكل الأيقونات',      icon: '▭', tab: 'تواصل' },
-    bioQuickEdit: { name: 'تعديل النبذة',                icon: '📝', tab: 'ملفي' },
-    avatarQuickUpload: { name: 'رفع صورة الشعار',        icon: '🖼️', tab: 'التصميم' },
-    bannerQuickUpload: { name: 'رفع صورة الغلاف',        icon: '🌄', tab: 'التصميم' },
-    exportJson: { name: 'تصدير JSON',                    icon: '⬇️', tab: 'إحصائيات' },
-    templateQuickApply: { name: 'تطبيق قالب سريع',        icon: '◧', tab: 'التصميم' },
-    viewsSummary: { name: 'ملخص المشاهدات',               icon: '📊', tab: 'إحصائيات' }
+    addNum:     { name: 'أضف رقم',        icon: qaIconSvg('paperclip'), tab: 'الأرقام' },
+    printStats: { name: 'طباعة إحصائيات',  icon: qaIconSvg('printer'), tab: 'إحصائيات' },
+    colors:     { name: 'ألوان التصميم',   icon: qaIconSvg('palette'), tab: 'التصميم' },
+    copyLink:   { name: 'نسخ الرابط',      icon: qaIconSvg('link'), tab: 'ملفي' },
+    qrCode:     { name: 'رمز QR',          icon: qaIconSvg('qr'), tab: 'ملفي' },
+    featuredToggle: { name: 'تمييز رقم بأرقام مختارة', icon: qaIconSvg('star'), tab: 'الأرقام' },
+    hideToggle: { name: 'إخفاء رقم عن الجمهور',        icon: qaIconSvg('lock'), tab: 'الأرقام' },
+    socialQuickAdd: { name: 'أضف حساب تواصل',           icon: qaIconSvg('broadcast'), tab: 'تواصل' },
+    iconShapeSwitch: { name: 'تبديل شكل الأيقونات',      icon: qaIconSvg('shape'), tab: 'تواصل' },
+    bioQuickEdit: { name: 'تعديل النبذة',                icon: qaIconSvg('edit'), tab: 'ملفي' },
+    avatarQuickUpload: { name: 'رفع صورة الشعار',        icon: qaIconSvg('image'), tab: 'التصميم' },
+    bannerQuickUpload: { name: 'رفع صورة الغلاف',        icon: qaIconSvg('banner'), tab: 'التصميم' },
+    exportJson: { name: 'تصدير JSON',                    icon: qaIconSvg('download'), tab: 'إحصائيات' },
+    templateQuickApply: { name: 'تطبيق قالب سريع',        icon: qaIconSvg('template'), tab: 'التصميم' },
+    viewsSummary: { name: 'ملخص المشاهدات',               icon: qaIconSvg('chart'), tab: 'إحصائيات' }
   };
   const QA_DEFAULT = ['addNum','printStats','colors','copyLink','qrCode'];
   let qaCurrentIndex = 0;
@@ -2180,9 +2229,9 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
           <div class="qa-wizard-step" key="choose">
             <div class="qa-tile-title" style="margin:0 0 10px;">${item.name}</div>
             <div class="qa-wizard-choose-grid">
-              <button type="button" class="qa-choose-btn" onclick="window.qaWizardChoose('link')">🔗<span>رابط</span></button>
-              <button type="button" class="qa-choose-btn" onclick="window.qaWizardChoose('text')">📝<span>نص</span></button>
-              <button type="button" class="qa-choose-btn" onclick="window.qaWizardChoose('article')">📰<span>مقالة</span></button>
+              <button type="button" class="qa-choose-btn" onclick="window.qaWizardChoose('link')"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="9.5" width="9" height="5" rx="2.5" transform="rotate(-45 7 12)"/><rect x="12.5" y="9.5" width="9" height="5" rx="2.5" transform="rotate(-45 17 12)"/></svg><span>رابط</span></button>
+              <button type="button" class="qa-choose-btn" onclick="window.qaWizardChoose('text')"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg><span>نص</span></button>
+              <button type="button" class="qa-choose-btn" onclick="window.qaWizardChoose('article')"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><rect x="14" y="12" width="4" height="4"/><line x1="7" y1="9" x2="11" y2="9"/><line x1="7" y1="12" x2="11" y2="12"/><line x1="7" y1="15" x2="11" y2="15"/><line x1="14" y1="9" x2="18" y2="9"/></svg><span>مقالة</span></button>
             </div>
           </div>
         </div>`;
@@ -2279,7 +2328,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     row.innerHTML = qaConfig.map((key,i) => {
       const libItem = QA_LIBRARY[key];
       if(!libItem) return '';
-      return `<div class="qa-square ${i===qaCurrentIndex?'active':''}" data-i="${i}" onclick="window.qaSelectSquare(${i})" title="${libItem.name}">${libItem.name}</div>`;
+      return `<div class="qa-square ${i===qaCurrentIndex?'active':''}" data-i="${i}" onclick="window.qaSelectSquare(${i})" title="${libItem.name}"><span class="qa-square-shell"></span><span class="qa-square-ic">${libItem.icon}</span><span class="qa-square-txt">${libItem.name}</span></div>`;
     }).join('') + `<div class="qa-square-plus" onclick="openQaCustomize()" title="إضافة/تخصيص">+</div>`;
 
     if(!qaConfig.length){
