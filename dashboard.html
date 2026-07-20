@@ -310,16 +310,17 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 .qa-square-row{display:flex;gap:9px;overflow-x:auto;padding:4px 2px 10px;-webkit-overflow-scrolling:touch;}
 .qa-square-row::-webkit-scrollbar{display:none;}
 .qa-square{
-  flex-shrink:0;width:54px;height:54px;border-radius:15px;
+  flex-shrink:0;min-width:72px;max-width:96px;height:54px;border-radius:15px;padding:6px 8px;
   background:var(--glass-bg);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
   border:1px solid var(--glass-border);box-shadow:0 6px 14px rgba(23,50,178,.10);
-  display:flex;align-items:center;justify-content:center;font-size:1.3rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  font-size:.68rem;font-weight:700;color:var(--text2);line-height:1.25;cursor:pointer;
   transition:transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease, background .2s ease;
 }
 .qa-square:active{transform:scale(.93);}
 .qa-square.active{
   background:linear-gradient(135deg, rgba(23,50,178,.6), rgba(0,105,253,.5));
-  border-color:rgba(255,255,255,.5);
+  border-color:rgba(255,255,255,.5); color:#fff;
   box-shadow:0 10px 20px rgba(0,105,253,.32), inset 0 1px 0 rgba(255,255,255,.5);
   transform:translateY(-2px) scale(1.05);
 }
@@ -354,9 +355,42 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   font-family:inherit;font-size:0.7rem;margin-bottom:5px;background:var(--bg);color:var(--text);outline:none;
 }
 .qa-submit-btn{
-  margin-top:auto;padding:7px;border:none;border-radius:7px;background:var(--primary);color:#fff;
-  font-weight:700;font-size:0.7rem;cursor:pointer;font-family:inherit;
+  margin-top:auto;padding:9px;border:none;border-radius:9px;background:var(--primary);color:#fff;
+  font-weight:700;font-size:0.75rem;cursor:pointer;font-family:inherit;
 }
+
+/* ===== معالج "أضف رقم" — ثلاث خطوات بحركة انزلاق مثل الفيديو ===== */
+@keyframes qaStepIn{
+  from{ opacity:0; transform:translateX(14px); }
+  to{ opacity:1; transform:translateX(0); }
+}
+.qa-wizard-step{
+  display:flex; flex-direction:column; gap:8px; height:100%;
+  animation:qaStepIn .28s cubic-bezier(.34,1.1,.64,1);
+}
+.qa-wizard-choose-grid{ display:flex; gap:8px; flex:1; }
+.qa-choose-btn{
+  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+  padding:14px 6px; border-radius:12px; border:1.5px solid var(--border); background:var(--bg2);
+  cursor:pointer; font-family:inherit; font-size:1.3rem; color:var(--text);
+  transition:transform .2s cubic-bezier(.34,1.56,.64,1), border-color .2s ease, background .2s ease;
+}
+.qa-choose-btn span{ font-size:0.72rem; font-weight:700; color:var(--text2); }
+.qa-choose-btn:active{ transform:scale(.94); }
+.qa-choose-btn:hover{ border-color:var(--primary); background:#eef0fb; }
+.qa-back-btn{
+  background:none; border:none; color:var(--primary); font-weight:700; font-size:0.78rem;
+  cursor:pointer; font-family:inherit; padding:2px 0; margin-bottom:2px; text-align:right;
+}
+.qa-wizard-result-icon{
+  width:44px; height:44px; border-radius:50%; background:var(--success); color:#fff;
+  display:flex; align-items:center; justify-content:center; font-size:1.3rem; font-weight:900;
+  margin:4px auto 2px;
+}
+.qa-wizard-result-title{ text-align:center; font-weight:800; font-size:0.85rem; }
+.qa-wizard-result-sub{ text-align:center; font-size:0.72rem; color:var(--muted); margin-bottom:4px; }
+.qa-wizard-qr{ display:flex; align-items:center; justify-content:center; padding:6px; }
+.qa-wizard-qr img, .qa-wizard-qr canvas{ border-radius:8px; }
 .qa-color-mini{width:100%;height:26px;border-radius:6px;border:1px solid var(--border);cursor:pointer;padding:1px;}
 .qa-empty{text-align:center;padding:16px;color:var(--muted);font-size:0.78rem;}
 .qa-option-row{display:flex;align-items:center;gap:10px;padding:12px;border:1.5px solid var(--border);border-radius:12px;background:var(--bg2);}
@@ -424,9 +458,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     <button class="btn btn-white" onclick="openAccountsModal()" title="أكثر من حساب · Accounts" style="display:flex;align-items:center;justify-content:center;padding:10px;">
       <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
     </button>
-    <button class="btn btn-white" onclick="window.openQrCard()" title="رمز QR · QR Code" style="display:flex;align-items:center;justify-content:center;padding:10px;">
-      <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v2h-3v-2zm0 4h3v4h-2v-2h-1v-2zm-5-4h3v3h-2v-1h-1v-2zm0 5h2v2h-2v-2z"></path></svg>
-    </button>
+    <!-- QR الصفحة انتقل إلى داخل قسم "حسابات التواصل" -->
     <button class="btn btn-white" id="viewPageBtn" onclick="openMyPage()" title="صفحتك · My Page" style="display:flex;align-items:center;justify-content:center;padding:10px;">
       <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
     </button>
@@ -650,6 +682,14 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content open">
+        <div style="margin-bottom:16px;">
+          <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">دائماً هنا · Always here</div>
+          <div id="alwaysVisibleGrid" style="display:flex;flex-wrap:wrap;gap:7px;"></div>
+          <button onclick="window.openQrCard()" style="margin-top:7px;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--primary);font-weight:700;font-family:inherit;cursor:pointer;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v2h-3v-2zm0 4h3v4h-2v-2h-1v-2zm-5-4h3v3h-2v-1h-1v-2zm0 5h2v2h-2v-2z"></path></svg>
+            QR صفحتك · Your Page QR
+          </button>
+        </div>
         <div style="margin-bottom:16px;">
           <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">ألصق رابط حسابك · Paste your account URL</div>
           <div style="display:flex;gap:8px;">
@@ -1271,7 +1311,10 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     { id: 'reddit', name: 'Reddit', color: '#FF4500', prefix: 'https://reddit.com/user/' },
     { id: 'vimeo', name: 'Vimeo', color: '#1AB7EA', prefix: 'https://vimeo.com/' },
     { id: 'medium', name: 'Medium', color: '#000000', prefix: 'https://medium.com/@' },
-    { id: 'email', name: 'Email', color: '#6b7280', prefix: 'mailto:' }
+    { id: 'email', name: 'Email', color: '#6b7280', prefix: 'mailto:' },
+    { id: 'website', name: 'موقع ويب', color: '#3d5af1', prefix: '' },
+    { id: 'phone', name: 'رقم', color: '#16a34a', prefix: 'tel:' },
+    { id: 'map', name: 'خارطة', color: '#ea4335', prefix: '' }
   ];
   let showAllPlatforms = false;
   function detectPlatformFromUrl(url){
@@ -1286,6 +1329,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       if(p.id==='imessage'&&(u.startsWith('sms:')||u.includes('imessage')))return p;
       if(p.id==='pinterest'&&u.includes('pin.it'))return p;
       if(p.id==='threads'&&u.includes('threads.com'))return p;
+      if(p.id==='map'&&(u.includes('maps.google')||u.includes('maps.apple')||u.includes('goo.gl/maps')))return p;
     }
     return null;
   }
@@ -1497,6 +1541,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     document.getElementById('myFullLink').textContent = `electrwni.link/${username}`;
 
     initQuickAddGrid();
+    initAlwaysVisibleRow();
     initColorPalettes();
     updateLivePreview();
     const lpName=document.getElementById('lpName');
@@ -2078,6 +2123,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   let qaCurrentIndex = 0;
   let qaConfig = QA_DEFAULT.slice();
   let qaAddNumMode = 'link';   // link | text | article
+  let qaWizardStep = 'choose'; // choose | form | result — لخطوات "أضف رقم"
+  let qaLastAdded = null;      // آخر رقم أُضيف (للشاشة النتيجة + QR)
   let qaStatsMode = 'top';     // top | all
   let qaMenuOpenFor = null;
 
@@ -2086,28 +2133,58 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(!item) return '';
 
     if(key === 'addNum'){
-      const modeLabel = { link:'رقم لرابط', text:'رقم لنص', article:'رقم لمقالة' }[qaAddNumMode];
-      const contentField = qaAddNumMode === 'link'
-        ? `<input type="url" id="qaLinkUrl" class="qa-input-sm" placeholder="الرابط" dir="ltr">`
-        : `<textarea id="qaTextContent" class="qa-input-sm" placeholder="${qaAddNumMode==='article'?'نص المقالة':'النص'}" style="min-height:44px;resize:vertical;"></textarea>`;
+      if(qaWizardStep === 'result' && qaLastAdded){
+        setTimeout(() => {
+          const holder = document.getElementById('qaResultQr');
+          if(holder && window.QRCode){
+            holder.innerHTML = '';
+            const uname = (document.getElementById('pfUser')?.value || '').trim();
+            const target = qaLastAdded.mode === 'link' ? qaLastAdded.url : `https://electrwni.link/${uname}`;
+            new QRCode(holder, { text: target, width: 150, height: 150, colorDark:'#0f1535', colorLight:'#ffffff', correctLevel: QRCode.CorrectLevel.H });
+          }
+        }, 30);
+        return `
+          <div class="qa-tile">
+            <div class="qa-wizard-step" key="result">
+              <div class="qa-wizard-result-icon">✓</div>
+              <div class="qa-wizard-result-title">تمت الإضافة بنجاح</div>
+              <div class="qa-wizard-result-sub">[${qaLastAdded.num}] ${qaLastAdded.title}</div>
+              <div id="qaResultQr" class="qa-wizard-qr"></div>
+              <button type="button" class="qa-submit-btn" onclick="window.qaWizardBack()">‹ رجوع لإضافة رقم آخر</button>
+            </div>
+          </div>`;
+      }
+
+      if(qaWizardStep === 'form'){
+        const modeLabel = { link:'رابط', text:'نص', article:'مقالة' }[qaAddNumMode];
+        const contentField = qaAddNumMode === 'link'
+          ? `<input type="url" id="qaLinkUrl" class="qa-input-sm" placeholder="الرابط" dir="ltr">`
+          : `<textarea id="qaTextContent" class="qa-input-sm" placeholder="${qaAddNumMode==='article'?'نص المقالة':'النص'}" style="min-height:44px;resize:vertical;"></textarea>`;
+        return `
+          <div class="qa-tile">
+            <div class="qa-wizard-step" key="form">
+              <div class="qa-tile-header-row">
+                <button type="button" class="qa-back-btn" onclick="window.qaWizardBack()">‹ ${modeLabel}</button>
+              </div>
+              <input type="number" id="qaNum" class="qa-input-sm" placeholder="الرقم #">
+              <input type="text" id="qaTitle" class="qa-input-sm" placeholder="العنوان">
+              ${contentField}
+              <button type="button" class="qa-submit-btn" onclick="qaQuickAddNumber()">إضافة</button>
+            </div>
+          </div>`;
+      }
+
+      // qaWizardStep === 'choose' (الحالة الافتراضية)
       return `
         <div class="qa-tile">
-          <div class="qa-tile-header-row">
-            <div class="qa-tile-title" style="margin:0;">${item.icon} ${item.name}</div>
-            <button type="button" class="qa-dots-btn" onclick="qaToggleMenu('addNum')">•••</button>
+          <div class="qa-wizard-step" key="choose">
+            <div class="qa-tile-title" style="margin:0 0 10px;">${item.name}</div>
+            <div class="qa-wizard-choose-grid">
+              <button type="button" class="qa-choose-btn" onclick="window.qaWizardChoose('link')">🔗<span>رابط</span></button>
+              <button type="button" class="qa-choose-btn" onclick="window.qaWizardChoose('text')">📝<span>نص</span></button>
+              <button type="button" class="qa-choose-btn" onclick="window.qaWizardChoose('article')">📰<span>مقالة</span></button>
+            </div>
           </div>
-          <div class="qa-mode-label">${modeLabel}</div>
-          ${qaMenuOpenFor==='addNum' ? `
-            <div class="qa-inline-menu">
-              <button type="button" onclick="qaSetAddNumMode('link')" class="${qaAddNumMode==='link'?'active':''}">🔗 رقم لرابط</button>
-              <button type="button" onclick="qaSetAddNumMode('text')" class="${qaAddNumMode==='text'?'active':''}">📝 رقم لنص</button>
-              <button type="button" onclick="qaSetAddNumMode('article')" class="${qaAddNumMode==='article'?'active':''}">📰 رقم لمقالة</button>
-            </div>` : `
-            <input type="number" id="qaNum" class="qa-input-sm" placeholder="الرقم #">
-            <input type="text" id="qaTitle" class="qa-input-sm" placeholder="العنوان">
-            ${contentField}
-            <button type="button" class="qa-submit-btn" onclick="qaQuickAddNumber()">إضافة</button>
-          `}
         </div>`;
     }
 
@@ -2202,7 +2279,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     row.innerHTML = qaConfig.map((key,i) => {
       const libItem = QA_LIBRARY[key];
       if(!libItem) return '';
-      return `<div class="qa-square ${i===qaCurrentIndex?'active':''}" data-i="${i}" onclick="window.qaSelectSquare(${i})" title="${libItem.name}">${libItem.icon}</div>`;
+      return `<div class="qa-square ${i===qaCurrentIndex?'active':''}" data-i="${i}" onclick="window.qaSelectSquare(${i})" title="${libItem.name}">${libItem.name}</div>`;
     }).join('') + `<div class="qa-square-plus" onclick="openQaCustomize()" title="إضافة/تخصيص">+</div>`;
 
     if(!qaConfig.length){
@@ -2251,6 +2328,17 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     try{ await setDoc(doc(db, "users", currentUser.uid), { qaStatsMode: mode }, { merge: true }); }catch(e){}
   };
 
+  window.qaWizardChoose = function(mode){
+    qaAddNumMode = mode;
+    qaWizardStep = 'form';
+    renderQaWidget();
+  };
+  window.qaWizardBack = function(){
+    qaWizardStep = 'choose';
+    qaLastAdded = null;
+    renderQaWidget();
+  };
+
   window.qaQuickAddNumber = async function(){
     const num = document.getElementById('qaNum').value;
     const title = document.getElementById('qaTitle').value.trim();
@@ -2276,10 +2364,9 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       });
       await setDoc(userRef, { links }, { merge: true });
       window.showToast("تمت الإضافة ✓");
-      document.getElementById('qaNum').value='';
-      document.getElementById('qaTitle').value='';
-      if(document.getElementById('qaLinkUrl')) document.getElementById('qaLinkUrl').value='';
-      if(document.getElementById('qaTextContent')) document.getElementById('qaTextContent').value='';
+      qaLastAdded = { num: numInt, title, mode: qaAddNumMode, url };
+      qaWizardStep = 'result';
+      renderQaWidget();
       if(typeof loadLinks==='function') loadLinks();
     }catch(e){ window.showToast("تعذر الحفظ: " + (e.message||'')); }
   };
@@ -3335,35 +3422,64 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   };
 
   // 5. محرك التواصل الاجتماعي والشبكات (Socials Accounts)
+  window.selectPlatformTile = function(p){
+    selectedSocialPlatform = p;
+    document.getElementById('socialFormBox').style.display = 'block';
+    document.getElementById('socUrlLabel').innerHTML = `حساب ${p.name} <span class="lbl-sub">/ ${p.id} account</span>`;
+    const socUrlEl = document.getElementById('socUrl');
+    if(p.id === 'whatsapp'){
+      socUrlEl.value = '';
+      socUrlEl.placeholder = 'رقم الجوال أو يوزر أو رابط واتساب · Phone, username, or link';
+    } else if(p.id === 'phone'){
+      socUrlEl.value = '';
+      socUrlEl.placeholder = 'رقم الهاتف · Phone number';
+    } else if(p.id === 'map'){
+      socUrlEl.value = '';
+      socUrlEl.placeholder = 'رابط الموقع على الخريطة · Maps link';
+    } else if(p.id === 'website'){
+      socUrlEl.value = '';
+      socUrlEl.placeholder = 'https://yoursite.com';
+    } else {
+      socUrlEl.value = p.prefix;
+      socUrlEl.placeholder = 'https://instagram.com/username أو @username';
+    }
+    document.getElementById('socColorModeGroup').style.display = 'block';
+    setSocColorMode('brand');
+    detectNow();
+  };
+
   function initQuickAddGrid() {
     const grid = document.getElementById('quickAddGrid');
     grid.innerHTML = '';
-    const visible = showAllPlatforms ? platforms : platforms.slice(0,5);
+    const gridPlatforms = platforms.filter(p => !ALWAYS_VISIBLE_IDS.includes(p.id));
+    const visible = showAllPlatforms ? gridPlatforms : gridPlatforms.slice(0,5);
     visible.forEach(p => {
       const btn = document.createElement('button');
       const txtColor = p.id==='snapchat' ? '#000' : '#fff';
       btn.style.cssText = `padding: 8px 12px; background: ${p.color}; color: ${txtColor}; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; font-family:'Tajawal';`;
       btn.innerHTML = `<span style="display:flex;width:18px;height:18px;">${platSvg(p.id)}</span> ${p.name}`;
-      btn.onclick = () => {
-        selectedSocialPlatform = p;
-        document.getElementById('socialFormBox').style.display = 'block';
-        document.getElementById('socUrlLabel').innerHTML = `حساب ${p.name} <span class="lbl-sub">/ ${p.id} account</span>`;
-        const socUrlEl = document.getElementById('socUrl');
-        if(p.id === 'whatsapp'){
-          socUrlEl.value = '';
-          socUrlEl.placeholder = 'رقم الجوال أو يوزر أو رابط واتساب · Phone, username, or link';
-        } else {
-          socUrlEl.value = p.prefix;
-          socUrlEl.placeholder = 'https://instagram.com/username أو @username';
-        }
-        document.getElementById('socColorModeGroup').style.display = 'block';
-        setSocColorMode('brand');
-        detectNow();
-      };
+      btn.onclick = () => window.selectPlatformTile(p);
       grid.appendChild(btn);
     });
     const moreBtn = document.getElementById('moreBtn');
     if(moreBtn) moreBtn.innerHTML = showAllPlatforms ? 'أقل · Less' : 'المزيد · More';
+  }
+
+  // صف دائم الظهور (بدون حاجة لضغط "المزيد"): بريد إلكتروني / رقم / خارطة / موقع ويب
+  const ALWAYS_VISIBLE_IDS = ['email','phone','map','website'];
+  function initAlwaysVisibleRow(){
+    const row = document.getElementById('alwaysVisibleGrid');
+    if(!row) return;
+    row.innerHTML = '';
+    ALWAYS_VISIBLE_IDS.forEach(id => {
+      const p = platforms.find(x => x.id === id);
+      if(!p) return;
+      const btn = document.createElement('button');
+      btn.style.cssText = `padding: 8px 12px; background: ${p.color}; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; font-family:'Tajawal';`;
+      btn.innerHTML = `<span style="display:flex;width:18px;height:18px;">${platSvg(id)}</span> ${p.name}`;
+      btn.onclick = () => window.selectPlatformTile(p);
+      row.appendChild(btn);
+    });
   }
 
   window.toggleMorePlatforms = function() {
