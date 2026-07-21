@@ -351,7 +351,7 @@ nav{
 
 /* ========== FOOTER ========== */
 .footer{
-  background:transparent;
+  background:#ffffff;
   text-align:center;padding:22px 16px 28px;margin-top:30px;
   margin-left:-24px;margin-right:-24px;margin-bottom:-30px;
 }
@@ -860,10 +860,6 @@ function render(user){
     // نبقي --bg كخلفية احتياطية خلف الصورة (لحظة التحميل) بنفس لون الطبقة إن وجد
     document.documentElement.style.setProperty('--bg', overlayColor);
     document.documentElement.style.setProperty('--surface', overlayColor);
-    // خلفية موحّدة: نشفّف البانر العلوي (منطقة الأفتار) طالما ما فيه صورة غلاف مرفوعة خصيصاً،
-    // بحيث خلفية الصفحة تمتد من أعلى نقطة للصفحة (خلف البانر والأفتار) لآخرها بلا فاصل أو تصادم بين طبقتين
-    const heroBannerEl = document.getElementById('heroBanner');
-    if(heroBannerEl && !user.bannerImage) heroBannerEl.style.background = 'transparent';
   } else if(chosenBg){
     if(themedWrap) themedWrap.style.background = '';
     document.documentElement.style.setProperty('--bg', chosenBg);
@@ -888,19 +884,23 @@ function render(user){
     applyAutoTextContrast();
   }
 
+  const avatarHtml=user.avatar?`<img src="${user.avatar}">`:(user.displayName?user.displayName[0].toUpperCase():'-');
   const avatarEl=document.getElementById('avatar');
-  if(user.showAvatar === false){
-    avatarEl.style.display = 'none';
+  const avatarContainerEl=document.querySelector('.avatar-container');
+  if(user.avatarHidden){
+    if(avatarContainerEl) avatarContainerEl.style.display='none';
   } else {
-    avatarEl.style.display = '';
-    const avatarHtml=user.avatar?`<img src="${user.avatar}">`:(user.displayName?user.displayName[0].toUpperCase():'-');
+    if(avatarContainerEl) avatarContainerEl.style.display='';
     avatarEl.innerHTML=avatarHtml;
     avatarEl.classList.remove('skeleton-shimmer');
     avatarEl.classList.toggle('shape-rect', user.avatarShape === 'rect'); // افتار مستطيل بدل الدائري لو اختاره صاحب الصفحة
   }
 
-  if(user.bannerImage){
-    document.getElementById('heroBanner').style.backgroundImage=`url(${user.bannerImage})`;
+  const heroBannerEl=document.getElementById('heroBanner');
+  if(user.bannerHidden){
+    if(heroBannerEl) heroBannerEl.style.display='none';
+  } else if(user.bannerImage){
+    if(heroBannerEl){ heroBannerEl.style.display=''; heroBannerEl.style.backgroundImage=`url(${user.bannerImage})`; }
   }
 
   // حسابات التواصل الاجتماعي (دائرية أو مستطيلة حسب اختيار صاحب الصفحة)
@@ -1003,12 +1003,10 @@ function render(user){
     }
     if(iconShape === 'rect'){
       socialsHtml=`
-        <div class="section-title">تابعنا <span style="font-size:0.7rem;font-weight:400;color:var(--muted);display:block;">Follow Us</span></div>
         <div class="socials-row-rect">${qrBtn}${btns}</div>
       `;
     } else {
       socialsHtml=`
-        <div class="section-title">تابعنا <span style="font-size:0.7rem;font-weight:400;color:var(--muted);display:block;">Follow Us</span></div>
         <div class="socials-row">${qrBtn}${btns}</div>
       `;
     }
@@ -1055,9 +1053,6 @@ function render(user){
 
     ${user.bio?`<div class="profile-bio">${user.bio}</div>`:''}
 
-    ${socialsHtml}
-    ${contactsHtml}
-
     <div class="main-search-row">
       <div class="main-search-box">
         <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -1069,6 +1064,9 @@ function render(user){
       </div>
     </div>
     <div class="error-msg" id="errMsg">الرقم غير موجود · Number not found</div>
+
+    ${socialsHtml}
+    ${contactsHtml}
   `;
 
   // تخزين رابط الصفحة للـ QR المنبثق
