@@ -268,21 +268,25 @@ window.addEventListener('error', function(e){
   b.textContent = '⚠️ خطأ بالسكربت: ' + e.message + ' (سطر ' + e.lineno + ')';
   b.classList.add('show');
 });
-let auth = null, db = null, firebaseReady = false;
+let auth = null, db = null, storage = null, firebaseReady = false;
 let fbDoc=null, fbGetDoc=null, fbSetDoc=null, fbUpdateDoc=null, fbGetDocs=null, fbCollection=null, fbQuery=null, fbOrderBy=null, fbLimit=null, fbStartAfter=null;
 let fbSignIn=null, fbSignOut=null, fbOnAuthStateChanged=null;
+let fbStorageRef=null, fbUploadString=null, fbGetDownloadURL=null, fbDeleteObject=null;
 (async function initFirebase(){
   try{
     const cfg={apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",authDomain:"electrwni-link.firebaseapp.com",projectId:"electrwni-link",storageBucket:"electrwni-link.firebasestorage.app",messagingSenderId:"712490301263",appId:"1:712490301263:web:2084210da3f687285ab73a"};
     const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js");
     const { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
     const { getFirestore, doc, getDoc, setDoc, updateDoc, getDocs, collection, query, orderBy, limit, startAfter } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+    const { getStorage, ref, uploadString, getDownloadURL, deleteObject } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js");
     const app = initializeApp(cfg);
     auth = getAuth(app);
     db = getFirestore(app);
+    storage = getStorage(app);
     fbDoc=doc; fbGetDoc=getDoc; fbSetDoc=setDoc; fbUpdateDoc=updateDoc; fbGetDocs=getDocs;
     fbCollection=collection; fbQuery=query; fbOrderBy=orderBy; fbLimit=limit; fbStartAfter=startAfter;
     fbSignIn=signInWithEmailAndPassword; fbSignOut=signOut; fbOnAuthStateChanged=onAuthStateChanged;
+    fbStorageRef=ref; fbUploadString=uploadString; fbGetDownloadURL=getDownloadURL; fbDeleteObject=deleteObject;
     firebaseReady = true;
     attachAuthListener();
   }catch(e){
@@ -292,6 +296,12 @@ let fbSignIn=null, fbSignOut=null, fbOnAuthStateChanged=null;
     b.classList.add('show');
   }
 })();
+// يرفع صورة (data URL) فعلياً لـ Storage ويرجّع رابط تحميل دائم — بدل حشرها base64 داخل وثيقة القوالب المشتركة
+async function uploadTplImageToStorage(dataUrl, path){
+  const fileRef = fbStorageRef(storage, path);
+  await fbUploadString(fileRef, dataUrl, 'data_url');
+  return await fbGetDownloadURL(fileRef);
+}
 
 // ⚠️ عدّل هذا البريد ليكون بريدك الحقيقي المسجّل بالموقع — هذا هو مفتاح الوصول للوحة الإدارة
 const ADMIN_EMAIL = "brmjeat1@gmail.com";
@@ -1087,10 +1097,13 @@ function openSocialsPopover(key){
 function setField(key, field, value){ templatesData[key][field] = value; }
 function setFieldAndRerender(key, field, value){ setField(key, field, value); renderTplExpanded(); }
 
-function deleteTemplate(key){
+async function deleteTemplate(key){
   if(!confirm(`حذف قالب "${templatesData[key].name}"؟ سيختفي من تبويب القوالب لكل المستخدمين.`)) return;
   delete templatesData[key];
   closeTplExpanded();
+  renderTemplatesEditor();
+  // الحذف من الذاكرة وحده لا يكفي — لازم يُحفظ فوراً بقاعدة البيانات وإلا يرجع القالب عند إعادة تحميل الصفحة
+  await saveTemplatesConfig();
 }
 function addNewTemplate(){
   const id = 'custom_' + Date.now();
@@ -1102,10 +1115,23 @@ async function saveTemplatesConfig(){
   if(isSaving) return;
   if(!firebaseReady){ alert('تعذر الاتصال بالخادم، أعد تحميل الصفحة'); return; }
 
-  // فحص الحجم مسبقًا — مستندات Firestore محدودة بـ1 ميجابايت تقريبًا
+  // فحص الحجم مسبقًا — مستندات Firestore محدودة فعلياً بـ1 ميجابايت، والتجاوز يُفشل كل عملية حفظ (بما فيها الحذف والتعديلات الأخرى)
   const approxSize = new Blob([JSON.stringify(templatesData)]).size;
   if(approxSize > 900000){
-    alert('⚠️ حجم بيانات القوالب كبير جدًا (' + Math.round(approxSize/1024) + ' كيلوبايت) وقد يفشل الحفظ. قلّل عدد الصور المرفوعة يدويًا (الخلفيات/الشعارات) بالقوالب.');
+    // نحدد بالضبط أي قالب/حقل لسه فيه صورة base64 قديمة (من قبل تفعيل الرفع لـ Storage) بدل رسالة عامة
+    const offenders = [];
+    Object.entries(templatesData).forEach(([key, t]) => {
+      ['avatarImg','logoImg','bgImage'].forEach(f => {
+        if(typeof t[f] === 'string' && t[f].startsWith('data:')){
+          offenders.push(`«${t.name}» — ${f==='avatarImg'?'الأفتار':f==='logoImg'?'الشعار':'الخلفية'}`);
+        }
+      });
+    });
+    const detail = offenders.length
+      ? '\n\nالصور التالية لسه محفوظة بالطريقة القديمة (قبل تفعيل الرفع لـ Storage)، أعد رفعها من نفس المكان لتصغير الحجم تلقائياً:\n• ' + offenders.join('\n• ')
+      : '';
+    alert('⚠️ حجم بيانات القوالب كبير جدًا (' + Math.round(approxSize/1024) + ' كيلوبايت من حد 1024 تقريبًا) — تم إيقاف الحفظ لأنه سيفشل بأي حال.' + detail);
+    return; // لا نكمل الحفظ — كان الخطأ سابقًا أنه يحذّر ثم يحاول الحفظ رغم ذلك فيفشل بصمت (وهذا سبب عدم حفظ التعديلات/الحذف/إخفاء الخلفية)
   }
 
   const btns = document.querySelectorAll('[data-action="save-all"], [data-action="save-and-close"]');
@@ -1181,16 +1207,37 @@ document.addEventListener('change', function(e){
   const el = e.target;
 
   if(el.dataset.action === 'avatar-file' && el.files && el.files[0]){
-    fileToBase64(el.files[0], (dataUrl) => { setField(el.dataset.key, 'avatarImg', dataUrl); renderTplExpanded(); closeTplPopover(); });
+    const key = el.dataset.key;
+    fileToBase64(el.files[0], async (dataUrl) => {
+      setField(key, 'avatarImg', dataUrl); renderTplExpanded(); closeTplPopover(); // معاينة فورية محلية بينما الرفع يجري
+      try{
+        const url = await uploadTplImageToStorage(dataUrl, `template-assets/${key}/avatar.jpg`);
+        setField(key, 'avatarImg', url); refreshMockupOnly(key);
+      }catch(err){ alert('تعذر رفع صورة الأفتار: ' + err.message); }
+    });
     return;
   }
   if(el.dataset.action === 'logo-file' && el.files && el.files[0]){
-    fileToBase64(el.files[0], (dataUrl) => { setField(el.dataset.key, 'logoImg', dataUrl); renderTplExpanded(); closeTplPopover(); });
+    const key = el.dataset.key;
+    fileToBase64(el.files[0], async (dataUrl) => {
+      setField(key, 'logoImg', dataUrl); renderTplExpanded(); closeTplPopover();
+      try{
+        const url = await uploadTplImageToStorage(dataUrl, `template-assets/${key}/logo.jpg`);
+        setField(key, 'logoImg', url); refreshMockupOnly(key);
+      }catch(err){ alert('تعذر رفع صورة الشعار: ' + err.message); }
+    });
     return;
   }
   if(el.dataset.action === 'bg-file' && el.files && el.files[0]){
+    const key = el.dataset.key;
     // خلفية كاملة الصفحة تحتاج دقة أعلى من الأفتار/الشعار (480px تصير مموّهة لو تمددت على الشاشة كاملة)
-    fileToBase64(el.files[0], (dataUrl) => { setField(el.dataset.key, 'bgImage', dataUrl); renderTplExpanded(); closeTplPopover(); }, 1080, 0.75);
+    fileToBase64(el.files[0], async (dataUrl) => {
+      setField(key, 'bgImage', dataUrl); renderTplExpanded(); closeTplPopover();
+      try{
+        const url = await uploadTplImageToStorage(dataUrl, `template-assets/${key}/bg.jpg`);
+        setField(key, 'bgImage', url); refreshMockupOnly(key);
+      }catch(err){ alert('تعذر رفع صورة الخلفية: ' + err.message); }
+    }, 1080, 0.75);
     return;
   }
 
