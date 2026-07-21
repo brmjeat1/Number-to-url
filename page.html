@@ -167,9 +167,10 @@ nav{
 .registry-search-empty{text-align:center;padding:16px;color:var(--muted);font-size:0.8rem;}
 
 .avatar-container{
-  position:relative;z-index:10;margin-top:-60px;margin-bottom:10px;
+  position:relative;z-index:10;margin-top:-48px;margin-bottom:10px;
   display:flex;justify-content:center;
 }
+.avatar-container.no-banner{margin-top:22px;}
 .avatar-circle{
   width:120px;height:120px;border-radius:50%;background:var(--surface);
   border:6px solid transparent;display:flex;align-items:center;justify-content:center;
@@ -351,7 +352,7 @@ nav{
 
 /* ========== FOOTER ========== */
 .footer{
-  background:#ffffff;
+  background:transparent;
   text-align:center;padding:22px 16px 28px;margin-top:30px;
   margin-left:-24px;margin-right:-24px;margin-bottom:-30px;
 }
@@ -550,6 +551,7 @@ const PAGE_SVG={
   phone:'<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M6.62 10.79a15.15 15.15 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24 11.36 11.36 0 003.56.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z"/></svg>',
   website:'<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm6.93 6h-2.95a15.65 15.65 0 00-1.38-3.56A8.03 8.03 0 0118.93 8zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14a7.96 7.96 0 010-4h3.38a16.5 16.5 0 000 4H4.26zm.81 2h2.95c.3 1.26.77 2.46 1.38 3.56A7.99 7.99 0 015.07 16zm2.95-8H5.07a7.99 7.99 0 014.33-3.56C8.8 5.54 8.33 6.74 8.02 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66a14.6 14.6 0 010-4h4.68a14.6 14.6 0 010 4zm.25 5.56c.61-1.1 1.08-2.3 1.38-3.56h2.95a7.99 7.99 0 01-4.33 3.56zM16.36 14a16.5 16.5 0 000-4h3.38a7.96 7.96 0 010 4h-3.38z"/></svg>',
   map:'<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2a7 7 0 00-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 00-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>',
+  email:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M4 6.5l8 6 8-6"/></svg>',
   instagram:'<svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.15 3.23-1.66 4.77-4.92 4.92-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85C2.38 3.92 3.9 2.38 7.15 2.23 8.42 2.17 8.8 2.16 12 2.16zm0-2.16C8.74 0 8.33.01 7.05.07 2.7.27.27 2.69.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.2 4.36 2.62 6.78 6.98 6.98C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c4.35-.2 6.78-2.62 6.98-6.98.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.2-4.35-2.62-6.78-6.98-6.98C15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 100 12.32 6.16 6.16 0 000-12.32zM12 16a4 4 0 110-8 4 4 0 010 8zm6.41-10.85a1.44 1.44 0 100 2.88 1.44 1.44 0 000-2.88z"/></svg>',
   twitter:'<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.41l-5.8-7.58-6.64 7.58H.46l8.6-9.83L0 1.15h7.59l5.24 6.93 6.07-6.93zm-1.29 19.5h2.04L6.49 3.24H4.3L17.61 20.65z"/></svg>',
   snapchat:'<svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor"><path d="M12.013 1.5c2.317.01 4.288 1.62 4.886 3.756.146.523.13 1.31.116 2.005l-.003.158c-.005.193.003.31.024.388.046.012.144.027.32.01.27-.052.62-.198.92-.39.16-.1.35-.16.56-.16.5 0 .9.4.9.9 0 .39-.25.73-.66.88-.05.02-.13.05-.23.08-.32.11-.86.29-1 .61-.07.16-.04.37.08.62.01.02 1.02 2.4 3.28 2.77.27.04.47.28.45.55-.01.07-.02.13-.05.2-.18.42-.93.73-2.28.95-.05.08-.1.32-.14.5-.04.16-.08.33-.14.5-.06.18-.2.27-.4.27h-.04c-.13 0-.3-.03-.52-.07-.3-.06-.7-.13-1.2-.13-.3 0-.6.02-.9.07-.6.1-1.1.46-1.67.86-.8.57-1.7 1.2-3.13 1.2h-.13c-1.43 0-2.33-.63-3.13-1.2-.57-.4-1.07-.76-1.67-.86-.3-.05-.6-.07-.9-.07-.5 0-.9.07-1.2.13-.22.04-.4.07-.52.07-.26 0-.37-.16-.42-.28-.06-.17-.1-.34-.14-.5-.04-.18-.09-.42-.14-.5-1.35-.22-2.1-.53-2.28-.95-.03-.07-.05-.13-.05-.2-.02-.27.18-.51.45-.55 2.26-.37 3.27-2.75 3.28-2.77.12-.25.15-.46.08-.62-.14-.32-.68-.5-1-.61-.1-.03-.18-.06-.23-.08-.5-.2-.7-.55-.66-.92.04-.48.43-.84.9-.84.2 0 .37.05.52.13.32.2.68.35.96.4.18.03.28.01.33-.01.02-.08.03-.2.02-.4l-.003-.14c-.014-.696-.03-1.484.116-2.008C7.7 3.12 9.687 1.5 12.013 1.5z"/></svg>',
@@ -564,6 +566,7 @@ const PAGE_SVG={
 };
 function detectPlat(url){
   const u=(url||'').toLowerCase();
+  if(u.startsWith('mailto:'))return 'email';
   if(u.includes('instagram'))return 'instagram';
   if(u.includes('x.com')||u.includes('twitter'))return 'twitter';
   if(u.includes('snapchat'))return 'snapchat';
@@ -578,7 +581,7 @@ function detectPlat(url){
   return null;
 }
 function platColor(id){
-  return {instagram:'#E1306C',twitter:'#000000',snapchat:'#FFC400',tiktok:'#000000',whatsapp:'#25D366',telegram:'#229ED9',youtube:'#FF0000',facebook:'#1877F2',linkedin:'#0A66C2',wechat:'#07C160',imessage:'#34DA50'}[id]||'var(--accent)';
+  return {instagram:'#E1306C',twitter:'#000000',snapchat:'#FFC400',tiktok:'#000000',whatsapp:'#25D366',telegram:'#229ED9',youtube:'#FF0000',facebook:'#1877F2',linkedin:'#0A66C2',wechat:'#07C160',imessage:'#34DA50',email:'#0A84FF',phone:'#34C759',map:'#FF3B30',website:'#5856D6'}[id]||'var(--accent)';
 }
 
 let userLinks=[];
@@ -756,56 +759,47 @@ function applyAutoTextContrast(){
   }
 }
 
-function buildContactsHtml(user){
+function buildContactsHtml(user, iconShape, rectStyle, iconPalette){
   const phones=user.phones||[];
   const website=user.website||'';
   const mapUrl=user.mapUrl||'';
 
-  let html='';
-
   if(!phones.length&&!website&&!mapUrl)return '';
 
-  html+=`<div class="section-title">تواصل <span style="font-size:0.7rem;font-weight:400;color:var(--muted);display:block;">Contact</span></div>`;
-  html+=`<div class="contacts-list">`;
+  iconShape = iconShape || 'circle';
+  rectStyle = rectStyle || 'rounded';
 
+  // نبني كل عنصر تواصل (هاتف/موقع/خريطة) بنفس هيكل زر حساب التواصل تماماً — دائري أو مستطيل حسب اختيار صاحب الصفحة
+  const items = [];
   phones.forEach(p=>{
-    const label=p.label||'هاتف / Phone';
-    const num=p.number||'';
-    if(!num)return;
-    html+=`
-      <a href="tel:${num}" class="contact-card">
-        <div class="cc-icon">${PAGE_SVG.phone}</div>
-        <div class="cc-body">
-          <div class="cc-label">${label}</div>
-          <div class="cc-value">${num}</div>
-        </div>
-      </a>`;
+    const num=p.number||''; if(!num) return;
+    items.push({ href:`tel:${num}`, label:p.label||num, plat:'phone', svg:PAGE_SVG.phone });
   });
-
   if(website){
-    html+=`
-      <a href="${website}" target="_blank" class="contact-card">
-        <div class="cc-icon">${PAGE_SVG.website}</div>
-        <div class="cc-body">
-          <div class="cc-label">موقع إلكتروني / Website</div>
-          <div class="cc-value">${website.replace(/^https?:\/\//,'')}</div>
-        </div>
-      </a>`;
+    items.push({ href:website, label:website.replace(/^https?:\/\//,''), plat:'website', svg:PAGE_SVG.website, external:true });
   }
-
   if(mapUrl){
-    const mapTitle=user.mapTitle||'خريطة موقعنا / Our Location';
-    html+=`
-      <a href="${mapUrl}" target="_blank" class="contact-card">
-        <div class="cc-icon">${PAGE_SVG.map}</div>
-        <div class="cc-body">
-          <div class="cc-label">${mapTitle}</div>
-          <div class="cc-value">افتح الخريطة · Open Map</div>
-        </div>
-      </a>`;
+    items.push({ href:mapUrl, label:user.mapTitle||'الموقع على الخريطة', plat:'map', svg:PAGE_SVG.map, external:true });
   }
+  if(!items.length) return '';
 
-  html+=`</div>`;
+  const btns = items.map((it, idx)=>{
+    const circleBg = platColor(it.plat);
+    const borderCol = 'var(--accent-light)';
+    if(iconShape === 'rect'){
+      const rectClass = rectStyle === 'sharp' ? 'social-rect social-rect-sharp' : 'social-rect';
+      const smallInner = it.svg.replace('width="20"','width="20"').replace('height="20"','height="20"');
+      return `<a href="${it.href}" ${it.external?'target="_blank"':''} class="${rectClass}" title="${it.label}" style="border-color:${borderCol};background:#fff;color:${circleBg};">
+        <span class="social-rect-icon" style="background:${circleBg};color:#fff;">${smallInner}</span>
+        <span class="social-rect-divider"></span>
+        <span class="social-rect-label" style="background:#fff;color:${circleBg};">${it.label}</span>
+      </a>`;
+    }
+    return `<a href="${it.href}" ${it.external?'target="_blank"':''} class="social-btn" title="${it.label}" style="background:${circleBg};border-color:${borderCol};color:#fff;">${it.svg}</a>`;
+  }).join('');
+
+  let html = `<div class="section-title">تواصل <span style="font-size:0.7rem;font-weight:400;color:var(--muted);display:block;">Contact</span></div>`;
+  html += iconShape === 'rect' ? `<div class="socials-row-rect">${btns}</div>` : `<div class="socials-row">${btns}</div>`;
   return html;
 }
 
@@ -841,6 +835,7 @@ function render(user){
   // نصفّر أي خلفية-صورة سابقة قبل نعيد تطبيقها حسب الوضع الحالي (يمنع بقايا صورة قديمة عند التبديل للون فقط)
   document.body.style.backgroundImage = '';
   document.documentElement.style.backgroundImage = '';
+  document.body.style.background = '';
   if((bgMode === 'image' || bgMode === 'imageColor') && user.bgImage){
     const overlayColor = chosenBg || '#ffffff';
     const op = (typeof user.bgOverlayOpacity === 'number') ? user.bgOverlayOpacity : 0.55;
@@ -865,16 +860,19 @@ function render(user){
     document.documentElement.style.setProperty('--bg', chosenBg);
     document.documentElement.style.setProperty('--surface', chosenBg);
     document.documentElement.style.background = chosenBg; // يمنع نفس مشكلة شريط اللون عند الارتداد حتى بوضع "لون فقط"
+    document.body.style.background = chosenBg; // لازم تُطبَّق على body أيضاً وإلا يبان أبيض أسفل الصفحة وقت ارتداد التمرير بالجوال
   } else if(prefersDark){
     if(themedWrap) themedWrap.style.background = '';
     document.documentElement.style.setProperty('--bg', '#15171c');
     document.documentElement.style.setProperty('--surface', '#1e2128');
     document.documentElement.style.setProperty('--border', '#2a2e37');
     document.documentElement.style.background = '#15171c';
+    document.body.style.background = '#15171c';
   } else {
     if(themedWrap) themedWrap.style.background = '';
     document.documentElement.style.setProperty('--bg', '#ffffff');
     document.documentElement.style.setProperty('--surface', '#f9f9f9');
+    document.body.style.background = '#ffffff';
   }
   // لون النص: صريح من اختيار المستخدم، وإلا تباين تلقائي مع الخلفية
   if(user.textColor && /^#[0-9A-Fa-f]{6}$/.test(user.textColor)){
@@ -899,8 +897,12 @@ function render(user){
   const heroBannerEl=document.getElementById('heroBanner');
   if(user.bannerHidden){
     if(heroBannerEl) heroBannerEl.style.display='none';
+    if(avatarContainerEl) avatarContainerEl.classList.add('no-banner');
   } else if(user.bannerImage){
     if(heroBannerEl){ heroBannerEl.style.display=''; heroBannerEl.style.backgroundImage=`url(${user.bannerImage})`; }
+    if(avatarContainerEl) avatarContainerEl.classList.remove('no-banner');
+  } else {
+    if(avatarContainerEl) avatarContainerEl.classList.remove('no-banner');
   }
 
   // حسابات التواصل الاجتماعي (دائرية أو مستطيلة حسب اختيار صاحب الصفحة)
@@ -1025,7 +1027,7 @@ function render(user){
   }
 
   // بطاقات التواصل (أرقام/موقع/خريطة)
-  const contactsHtml=buildContactsHtml(user);
+  const contactsHtml=buildContactsHtml(user, iconShape, rectStyle, iconPalette);
 
   let signYear=new Date().getFullYear();
   if(user.createdAt){
