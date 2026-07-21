@@ -499,13 +499,24 @@ nav{
   </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-
 <script>
 const cfg={apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",authDomain:"electrwni-link.firebaseapp.com",projectId:"electrwni-link",storageBucket:"electrwni-link.firebasestorage.app",messagingSenderId:"712490301263",appId:"1:712490301263:web:2084210da3f687285ab73a"};
-if(!firebase.apps.length)firebase.initializeApp(cfg);
-const db=firebase.firestore();
+
+// SDK حديث (v9 modular) عبر استيراد ديناميكي — أخف من compat SDK القديم بكثير على هذي الصفحة الأكثر زيارة بالموقع،
+// وبدون تحويلها لـ type="module" حتى لا تنكسر معالجات onclick المضمّنة بكل الصفحة
+let db, fbDoc, fbGetDoc, fbUpdateDoc, fbRunTransaction, fbIncrement, fbOnSnapshot;
+let fbReadyResolve;
+const fbReady = new Promise(r => { fbReadyResolve = r; });
+(async function initFirebase(){
+  try{
+    const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js");
+    const { getFirestore, doc, getDoc, updateDoc, runTransaction, increment, onSnapshot } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+    const app = initializeApp(cfg);
+    db = getFirestore(app);
+    fbDoc = doc; fbGetDoc = getDoc; fbUpdateDoc = updateDoc; fbRunTransaction = runTransaction; fbIncrement = increment; fbOnSnapshot = onSnapshot;
+  }catch(e){ console.error('Firebase init failed:', e); }
+  fbReadyResolve();
+})();
 
 function getUsername(){
   let h=window.location.hash.substring(1);
@@ -593,8 +604,8 @@ let pageUsername=null;
 async function trackPageView(uid){
   if(!uid) return;
   try{
-    await db.collection('users').doc(uid).update({
-      pageViews: firebase.firestore.FieldValue.increment(1)
+    await fbUpdateDoc(fbDoc(db,'users',uid), {
+      pageViews: fbIncrement(1)
     });
   }catch(e){ console.error('trackPageView failed:', e.code || e.message || e); }
 }
@@ -603,10 +614,10 @@ async function trackPageView(uid){
 async function trackSocialClick(socialId){
   if(!pageUid || !socialId) return;
   try{
-    await db.runTransaction(async (tx) => {
-      const ref = db.collection('users').doc(pageUid);
+    await fbRunTransaction(db, async (tx) => {
+      const ref = fbDoc(db,'users',pageUid);
       const snap = await tx.get(ref);
-      if(!snap.exists) return;
+      if(!snap.exists()) return;
       const data = snap.data();
       const socials = Array.isArray(data.socials) ? data.socials : [];
       const idx = socials.findIndex(s => s.id === socialId);
@@ -623,10 +634,10 @@ window.trackSocialClick = trackSocialClick;
 async function trackLinkClick(num){
   if(!pageUid || num==null) return;
   try{
-    await db.runTransaction(async (tx) => {
-      const ref = db.collection('users').doc(pageUid);
+    await fbRunTransaction(db, async (tx) => {
+      const ref = fbDoc(db,'users',pageUid);
       const snap = await tx.get(ref);
-      if(!snap.exists) return;
+      if(!snap.exists()) return;
       const data = snap.data();
       const links = Array.isArray(data.links) ? data.links : [];
       const idx = links.findIndex(l => (l.num??l.number) === num);
@@ -651,29 +662,30 @@ async function init(){
   let done=false;
   const safety=setTimeout(()=>{ if(!done) show404('تعذّر الاتصال بالخادم. تحقق من الإنترنت ثم أعد المحاولة.'); }, 15000);
 
-  // تأكد أن Firebase حُمّل
-  if(typeof firebase==='undefined' || !firebase.firestore){
+  // ننتظر جاهزية Firebase (الاستيراد الديناميكي قد يكون لسه جارٍ)
+  await fbReady;
+  if(!db){
     clearTimeout(safety);
     show404('تعذّر تحميل مكونات الموقع. أعد تحميل الصفحة.');
     return;
   }
 
   try{
-    const idxDoc=await db.collection('usernames').doc(username).get();
-    if(!idxDoc.exists){ done=true; clearTimeout(safety); show404('الحساب "'+username+'" غير مسجّل في النظام. تأكد من اسم المستخدم.');return; }
+    const idxDoc=await fbGetDoc(fbDoc(db,'usernames',username));
+    if(!idxDoc.exists()){ done=true; clearTimeout(safety); show404('الحساب "'+username+'" غير مسجّل في النظام. تأكد من اسم المستخدم.');return; }
     const uid=idxDoc.data().uid;
     pageUid=uid;
     setupSmartNav(uid);
     trackPageView(uid);
-    const ref=db.collection('users').doc(uid);
-    const docSnap=await ref.get();
+    const ref=fbDoc(db,'users',uid);
+    const docSnap=await fbGetDoc(ref);
     done=true; clearTimeout(safety);
-    if(!docSnap.exists){show404('بيانات الحساب "'+username+'" غير موجودة.');return;}
+    if(!docSnap.exists()){show404('بيانات الحساب "'+username+'" غير موجودة.');return;}
     const user=docSnap.data();
     userLinks=(user.links||[]).filter(l=>!l.hidden).map(l=>({...l,num:l.num??l.number,label:l.label??l.title})).sort((a,b)=>(a.num||0)-(b.num||0));
     render(user);
-    ref.onSnapshot(d=>{
-      if(d.exists){
+    fbOnSnapshot(ref, d=>{
+      if(d.exists()){
         const updated=d.data();
         userLinks=(updated.links||[]).filter(l=>!l.hidden).map(l=>({...l,num:l.num??l.number,label:l.label??l.title})).sort((a,b)=>(a.num||0)-(b.num||0));
         render(updated);
@@ -685,22 +697,20 @@ async function init(){
 // الزر الذكي: يُحمّل auth بشكل مؤجّل (لا يحجب عرض الصفحة)
 function setupSmartNav(pageUid){
   // الافتراضي "ابدأ الآن" ظاهر فوراً — نؤجّل تحميل مكتبة المصادقة (غير حرجة لأغلب الزوّار) لحين خمول المتصفح
-  const loadAuthCheck = function(){
-    const s=document.createElement('script');
-    s.src='https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js';
-    s.onload=function(){
-      try{
-        firebase.auth().onAuthStateChanged(authUser=>{
-          const cta=document.getElementById('navCta');
-          if(!cta)return;
-          if(authUser && authUser.uid===pageUid){
-            cta.innerHTML='لوحة التحكم<span class="nav-cta-sub">Dashboard</span>';
-            cta.setAttribute('href','dashboard.html');
-          }
-        });
-      }catch(e){}
-    };
-    document.body.appendChild(s);
+  const loadAuthCheck = async function(){
+    try{
+      const { initializeApp, getApps, getApp } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js");
+      const { getAuth, onAuthStateChanged } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
+      const app = getApps().length ? getApp() : initializeApp(cfg);
+      onAuthStateChanged(getAuth(app), authUser=>{
+        const cta=document.getElementById('navCta');
+        if(!cta)return;
+        if(authUser && authUser.uid===pageUid){
+          cta.innerHTML='لوحة التحكم<span class="nav-cta-sub">Dashboard</span>';
+          cta.setAttribute('href','dashboard.html');
+        }
+      });
+    }catch(e){}
   };
   if('requestIdleCallback' in window){ requestIdleCallback(loadAuthCheck, {timeout:2000}); }
   else { setTimeout(loadAuthCheck, 800); }
