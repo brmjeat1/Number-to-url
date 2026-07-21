@@ -201,9 +201,9 @@ nav{
   flex-shrink:0;padding:0 20px;height:38px;border:none;border-radius:999px;background:var(--accent,#3d5af1);
   color:#fff;font-weight:700;font-size:0.8rem;cursor:pointer;font-family:inherit;
 }
-.profile-name{font-size:1.6rem;font-weight:700;margin-bottom:6px;}
+.profile-name{display:inline-block;font-size:1.6rem;font-weight:700;margin-bottom:6px;}
 .profile-handle{font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-size:0.8rem;color:var(--text2);direction:ltr;margin-bottom:10px;}
-.profile-bio{font-size:0.9rem;color:var(--text2);line-height:1.6;text-align:center;margin-bottom:24px;}
+.profile-bio{display:inline-block;font-size:0.9rem;color:var(--text2);line-height:1.6;text-align:center;margin-bottom:24px;}
 
 /* ========== INPUT SECTION ========== */
 .input-section{
@@ -232,36 +232,52 @@ nav{
 /* الوضع الدائري: تقارب أكبر بين الأيقونات */
 .socials-row{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-bottom:28px;}
 
-/* أيقونات المنصات الاجتماعية - دائرية */
+/* أيقونات المنصات الاجتماعية - دائرية (زجاجية: شفافة + ضبابية + لمعان علوي + ظل) */
 .social-btn{
   display:flex;align-items:center;justify-content:center;width:58px;height:58px;
-  border-radius:50%;background:var(--accent);border:2.5px solid var(--accent-light);
-  text-decoration:none;transition:transform .15s;overflow:hidden;
+  border-radius:50%;background:var(--accent);border:1.5px solid rgba(255,255,255,.55);
+  text-decoration:none;transition:transform .15s;overflow:hidden;position:relative;
+  backdrop-filter:blur(14px) saturate(180%);-webkit-backdrop-filter:blur(14px) saturate(180%);
+  box-shadow:0 10px 22px rgba(0,0,0,.16), inset 0 1.5px 0 rgba(255,255,255,.5);
+}
+.social-btn::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:1;
+  background:linear-gradient(180deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 55%);
+  mix-blend-mode:overlay;
 }
 .social-btn:active{transform:scale(0.92);}
-.social-btn img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
-.social-btn svg{width:25px;height:25px;}
+.social-btn img{width:100%;height:100%;object-fit:cover;border-radius:50%;position:relative;z-index:2;}
+.social-btn svg{width:25px;height:25px;position:relative;z-index:2;filter:drop-shadow(0 1px 2px rgba(0,0,0,.2));}
 
-/* أيقونات المنصات الاجتماعية - مستطيلة (أيقونة + يوزر) */
+/* أيقونات المنصات الاجتماعية - مستطيلة (أيقونة + يوزر) — نفس المعالجة الزجاجية على الشارتين */
 .social-rect{
   position:relative;display:flex;flex-direction:row-reverse;align-items:stretch;
-  height:50px;border-radius:14px;border:2px solid;overflow:hidden;
+  height:50px;border-radius:14px;border:1.5px solid rgba(255,255,255,.5);overflow:hidden;
   text-decoration:none;width:100%;transition:transform .15s;
+  backdrop-filter:blur(10px) saturate(180%);-webkit-backdrop-filter:blur(10px) saturate(180%);
+  box-shadow:0 8px 20px rgba(0,0,0,.12);
 }
 .social-rect:active{transform:scale(0.98);}
 .social-rect-icon{
   display:flex;align-items:center;justify-content:center;
-  width:50px;flex-shrink:0;position:relative;z-index:1;
+  width:50px;flex-shrink:0;position:relative;z-index:2;
+  backdrop-filter:blur(12px) saturate(180%);-webkit-backdrop-filter:blur(12px) saturate(180%);
 }
-.social-rect-icon svg{width:20px;height:20px;}
-.social-rect-icon img{width:100%;height:100%;object-fit:cover;}
+.social-rect-icon::before{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:linear-gradient(180deg, rgba(255,255,255,.5) 0%, rgba(255,255,255,0) 55%);
+  mix-blend-mode:overlay;
+}
+.social-rect-icon svg{width:20px;height:20px;position:relative;z-index:2;}
+.social-rect-icon img{width:100%;height:100%;object-fit:cover;position:relative;z-index:2;}
 .social-rect-label{
   display:flex;align-items:center;flex:1;
   padding:0 14px;font-size:0.8rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  position:relative;z-index:1;direction:ltr;
+  position:relative;z-index:2;direction:ltr;
+  backdrop-filter:blur(10px) saturate(180%);-webkit-backdrop-filter:blur(10px) saturate(180%);
 }
 .social-rect-divider{
-  position:absolute;top:0;bottom:0;left:50px;width:1.5px;background:currentColor;opacity:0.35;z-index:2;
+  position:absolute;top:0;bottom:0;left:50px;width:1.5px;background:currentColor;opacity:0.35;z-index:3;
 }
 .social-rect-sharp{border-radius:5px;}
 .social-rect-sharp .social-rect-divider{transform:skewX(-18deg);}
@@ -725,6 +741,11 @@ function hexToRgba(hex, alpha){
   const b = parseInt(h.substring(4,6),16) || 0;
   return `rgba(${r},${g},${b},${alpha})`;
 }
+// نفس الفكرة لكن آمنة مع قيم CSS var() أو أي لون مو hex — تُرجعه كما هو بدل ما تكسره
+function glassTint(color, alpha){
+  if(!color) return `rgba(255,255,255,${alpha})`;
+  return /^#[0-9A-Fa-f]{3,6}$/.test(color) ? hexToRgba(color, alpha) : color;
+}
 function applyThemeColor(hex){
   if(!/^#[0-9A-Fa-f]{6}$/.test(hex))return;
   document.documentElement.style.setProperty('--accent',hex);
@@ -795,17 +816,18 @@ function buildContactsHtml(user, iconShape, rectStyle, iconPalette){
 
   const btns = items.map((it, idx)=>{
     const circleBg = platColor(it.plat);
+    const glassTint = hexToRgba(circleBg, 0.5);
     const borderCol = 'var(--accent-light)';
     if(iconShape === 'rect'){
       const rectClass = rectStyle === 'sharp' ? 'social-rect social-rect-sharp' : 'social-rect';
       const smallInner = it.svg.replace('width="20"','width="20"').replace('height="20"','height="20"');
-      return `<a href="${it.href}" ${it.external?'target="_blank"':''} class="${rectClass}" title="${it.label}" style="border-color:${borderCol};background:#fff;color:${circleBg};">
-        <span class="social-rect-icon" style="background:${circleBg};color:#fff;">${smallInner}</span>
+      return `<a href="${it.href}" ${it.external?'target="_blank"':''} class="${rectClass}" title="${it.label}" style="border-color:${borderCol};background:${hexToRgba('#ffffff',0.35)};color:${circleBg};">
+        <span class="social-rect-icon" style="background:${glassTint};color:#fff;">${smallInner}</span>
         <span class="social-rect-divider"></span>
-        <span class="social-rect-label" style="background:#fff;color:${circleBg};">${it.label}</span>
+        <span class="social-rect-label" style="background:${hexToRgba('#ffffff',0.35)};color:${circleBg};">${it.label}</span>
       </a>`;
     }
-    return `<a href="${it.href}" ${it.external?'target="_blank"':''} class="social-btn" title="${it.label}" style="background:${circleBg};border-color:${borderCol};color:#fff;">${it.svg}</a>`;
+    return `<a href="${it.href}" ${it.external?'target="_blank"':''} class="social-btn" title="${it.label}" style="background:${glassTint};border-color:${borderCol};color:#fff;">${it.svg}</a>`;
   }).join('');
 
   let html = `<div class="section-title">تواصل <span style="font-size:0.7rem;font-weight:400;color:var(--muted);display:block;">Contact</span></div>`;
@@ -981,6 +1003,7 @@ function render(user){
         // لون التطبيق الرسمي
         circleBg=s.brandColor||platColor(pid); borderCol='var(--accent-light)'; iconColor='#ffffff';
       }
+      const glassBg = glassTint(circleBg, 0.5); // نفس اللون لكن شفاف — يسمح لتأثير الزجاج (blur) يظهر فعلياً
       const inner = svg ? svg : `<span style="font-weight:700;font-size:1.4rem;">${(s.name||'?')[0].toUpperCase()}</span>`;
 
       // ===== الشكل المستطيل: أيقونة + يوزر، بخط فاصل مستقيم أو مائل =====
@@ -988,30 +1011,30 @@ function render(user){
       if(iconShape === 'rect'){
         const rectClass = rectStyle === 'sharp' ? 'social-rect social-rect-sharp' : 'social-rect';
         const smallInner = svg ? svg.replace('width="28"','width="20"').replace('height="28"','height="20"') : inner;
-        return `<a href="${s.url}" target="_blank" class="${rectClass}" title="${s.name||pid}" style="border-color:${borderCol};background:${iconColor};color:${circleBg};" onclick="trackSocialClick('${s.id}')">
-          <span class="social-rect-icon" style="background:${circleBg};color:${iconColor};">${smallInner}</span>
+        return `<a href="${s.url}" target="_blank" class="${rectClass}" title="${s.name||pid}" style="border-color:${borderCol};background:${glassTint(iconColor,0.35)};color:${circleBg};" onclick="trackSocialClick('${s.id}')">
+          <span class="social-rect-icon" style="background:${glassBg};color:${iconColor};">${smallInner}</span>
           <span class="social-rect-divider"></span>
-          <span class="social-rect-label" style="background:${iconColor};color:${circleBg};">${extractHandle(s.url)||s.name||pid}</span>
+          <span class="social-rect-label" style="background:${glassTint(iconColor,0.35)};color:${circleBg};">${extractHandle(s.url)||s.name||pid}</span>
         </a>`;
       }
 
       // ===== الشكل الدائري (الافتراضي) =====
       if(mode==='custom' && containerBg!=='transparent'){
-        return `<a href="${s.url}" target="_blank" class="social-btn-wrap" title="${s.name||pid}" style="background:${containerBg};border-radius:20px;padding:4px;display:inline-flex;" onclick="trackSocialClick('${s.id}')"><span class="social-btn" style="background:${circleBg};border-color:${borderCol};color:${iconColor};">${inner}</span></a>`;
+        return `<a href="${s.url}" target="_blank" class="social-btn-wrap" title="${s.name||pid}" style="background:${glassTint(containerBg,0.4)};border-radius:20px;padding:4px;display:inline-flex;" onclick="trackSocialClick('${s.id}')"><span class="social-btn" style="background:${glassBg};border-color:${borderCol};color:${iconColor};">${inner}</span></a>`;
       }
-      return `<a href="${s.url}" target="_blank" class="social-btn" title="${s.name||pid}" style="background:${circleBg};border-color:${borderCol};color:${iconColor};" onclick="trackSocialClick('${s.id}')">${inner}</a>`;
+      return `<a href="${s.url}" target="_blank" class="social-btn" title="${s.name||pid}" style="background:${glassBg};border-color:${borderCol};color:${iconColor};" onclick="trackSocialClick('${s.id}')">${inner}</a>`;
     }).join('');
     // أيقونة QR تتبع نفس شكل وألوان أيقونات التواصل (مو استثناء دائري ثابت)
     let qrBtn;
     if(iconShape === 'rect'){
       const qrRectClass = rectStyle === 'sharp' ? 'social-rect social-rect-sharp' : 'social-rect';
-      qrBtn = `<button type="button" class="${qrRectClass}" title="رمز QR" onclick="openPageQr()" style="border-color:var(--accent-light);background:var(--accent);color:#fff;cursor:pointer;">
-        <span class="social-rect-icon" style="background:var(--accent);color:#fff;">${PAGE_SVG.qr}</span>
+      qrBtn = `<button type="button" class="${qrRectClass}" title="رمز QR" onclick="openPageQr()" style="border-color:var(--accent-light);background:${glassTint('var(--accent)',0.5)};color:#fff;cursor:pointer;">
+        <span class="social-rect-icon" style="background:${glassTint('var(--accent)',0.5)};color:#fff;">${PAGE_SVG.qr}</span>
         <span class="social-rect-divider"></span>
-        <span class="social-rect-label" style="background:#fff;color:var(--accent);">رمز QR</span>
+        <span class="social-rect-label" style="background:${glassTint('#ffffff',0.35)};color:var(--accent);">رمز QR</span>
       </button>`;
     } else {
-      qrBtn = `<button class="social-btn" title="رمز QR" onclick="openPageQr()" style="background:var(--accent);color:var(--text);border-color:var(--accent-light);cursor:pointer;">${PAGE_SVG.qr}</button>`;
+      qrBtn = `<button class="social-btn" title="رمز QR" onclick="openPageQr()" style="background:${glassTint('var(--accent)',0.5)};color:var(--text);border-color:var(--accent-light);cursor:pointer;">${PAGE_SVG.qr}</button>`;
     }
     if(iconShape === 'rect'){
       socialsHtml=`
@@ -1026,13 +1049,13 @@ function render(user){
     // حتى لو لا سوشيال، نعرض أيقونة QR وحدها (بنفس الشكل المختار)
     if(iconShape === 'rect'){
       const qrRectClass = rectStyle === 'sharp' ? 'social-rect social-rect-sharp' : 'social-rect';
-      socialsHtml=`<div class="socials-row-rect"><button type="button" class="${qrRectClass}" title="رمز QR" onclick="openPageQr()" style="border-color:var(--accent-light);background:var(--accent);color:#fff;cursor:pointer;">
-        <span class="social-rect-icon" style="background:var(--accent);color:#fff;">${PAGE_SVG.qr}</span>
+      socialsHtml=`<div class="socials-row-rect"><button type="button" class="${qrRectClass}" title="رمز QR" onclick="openPageQr()" style="border-color:var(--accent-light);background:${glassTint('var(--accent)',0.5)};color:#fff;cursor:pointer;">
+        <span class="social-rect-icon" style="background:${glassTint('var(--accent)',0.5)};color:#fff;">${PAGE_SVG.qr}</span>
         <span class="social-rect-divider"></span>
-        <span class="social-rect-label" style="background:#fff;color:var(--accent);">رمز QR</span>
+        <span class="social-rect-label" style="background:${glassTint('#ffffff',0.35)};color:var(--accent);">رمز QR</span>
       </button></div>`;
     } else {
-      socialsHtml=`<div class="socials-row"><button class="social-btn" title="رمز QR" onclick="openPageQr()" style="background:var(--accent);color:var(--text);border-color:var(--accent-light);cursor:pointer;">${PAGE_SVG.qr}</button></div>`;
+      socialsHtml=`<div class="socials-row"><button class="social-btn" title="رمز QR" onclick="openPageQr()" style="background:${glassTint('var(--accent)',0.5)};color:var(--text);border-color:var(--accent-light);cursor:pointer;">${PAGE_SVG.qr}</button></div>`;
     }
   }
 
@@ -1057,13 +1080,22 @@ function render(user){
   const recentLinks=[...reservedPublicEntries, ...[...userLinks].slice(-5).reverse()];
   window.__pageData={featuredLinks:allFeatured,recentLinks,allLinks:userLinks};
 
+  const nameOp = (typeof user.nameBoxOpacity === 'number') ? user.nameBoxOpacity : 0;
+  const bioOp = (typeof user.bioBoxOpacity === 'number') ? user.bioBoxOpacity : 0;
+  const nameBoxStyle = nameOp > 0
+    ? `display:inline-block;padding:6px 18px;border-radius:12px;background:rgba(255,255,255,${nameOp});backdrop-filter:blur(${Math.round(nameOp*20)}px);-webkit-backdrop-filter:blur(${Math.round(nameOp*20)}px);box-shadow:0 6px 18px rgba(0,0,0,.10);`
+    : '';
+  const bioBoxStyle = bioOp > 0
+    ? `display:inline-block;padding:7px 16px;border-radius:12px;background:rgba(255,255,255,${bioOp});backdrop-filter:blur(${Math.round(bioOp*20)}px);-webkit-backdrop-filter:blur(${Math.round(bioOp*20)}px);box-shadow:0 6px 16px rgba(0,0,0,.08);`
+    : '';
+
   document.getElementById('content').innerHTML=`
     <div class="profile-info">
-      <div class="profile-name">${user.displayName||user.username}</div>
+      <div style="text-align:center;${nameOp>0?'margin-bottom:8px;':''}"><span class="profile-name" style="${nameBoxStyle}">${user.displayName||user.username}</span></div>
       <div class="profile-handle">electrwni.link/${user.username}</div>
     </div>
 
-    ${user.bio?`<div class="profile-bio">${user.bio}</div>`:''}
+    ${user.bio?`<div style="text-align:center;"><span class="profile-bio" style="${bioBoxStyle}">${user.bio}</span></div>`:''}
 
     <div class="main-search-row">
       <div class="main-search-box">
