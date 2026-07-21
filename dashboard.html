@@ -1206,6 +1206,25 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
           <div style="font-size:0.72rem;color:var(--muted);margin-top:4px;">مفعّل = تحذف صورة الخلفية وتعود الصفحة للون صافٍ بلا صورة</div>
         </div>
 
+        <div class="form-group">
+          <label>وضوح الاسم والوصف <span class="lbl-sub">/ Name &amp; Bio Readability</span></label>
+          <div style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;line-height:1.6;">صندوق زجاجي خلف كل منهما لتحسين القراءة فوق خلفية صورة — كل صندوق له شريحته المستقلة</div>
+          <div style="margin-bottom:10px;">
+            <label style="font-size:0.78rem;">شدة صندوق الاسم <span class="lbl-sub">/ Name Box</span></label>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <input type="range" id="nameBoxOpacitySlider" min="0" max="100" value="0" oninput="window.onNameBoxOpacityInput(this.value)" style="flex:1;">
+              <span id="nameBoxOpacityVal" style="font-size:0.78rem;color:var(--muted);min-width:34px;">0%</span>
+            </div>
+          </div>
+          <div>
+            <label style="font-size:0.78rem;">شدة صندوق الوصف <span class="lbl-sub">/ Bio Box</span></label>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <input type="range" id="bioBoxOpacitySlider" min="0" max="100" value="0" oninput="window.onBioBoxOpacityInput(this.value)" style="flex:1;">
+              <span id="bioBoxOpacityVal" style="font-size:0.78rem;color:var(--muted);min-width:34px;">0%</span>
+            </div>
+          </div>
+        </div>
+
         <!-- معاينة حية لشكل الصفحة بالألوان المختارة -->
         <div class="form-group">
           <label>معاينة مباشرة <span class="lbl-sub">/ Live Preview</span></label>
@@ -1488,6 +1507,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   let currentBgMode = 'color';       // color | image | imageColor
   let currentBgImage = null;         // رابط/base64 صورة الخلفية الحالية المحفوظة
   let currentBgOverlayOpacity = 0.55;
+  let currentNameBoxOpacity = 0, currentBioBoxOpacity = 0;
   let currentIconPaletteRect = null;   // [4 ألوان] للأيقونات المستطيلة
   let currentIconPaletteCircle = null; // [4 ألوان] للأيقونات الدائرية
   let currentAvatarShape = 'circle';   // circle | rect — شكل الأفتار/الشعار
@@ -1767,6 +1787,12 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       currentBgOverlayOpacity = (typeof data.bgOverlayOpacity === 'number') ? data.bgOverlayOpacity : 0.55;
       const opSlider = document.getElementById('bgOverlayOpacitySlider');
       if(opSlider){ opSlider.value = Math.round(currentBgOverlayOpacity*100); document.getElementById('bgOverlayOpacityVal').textContent = opSlider.value + '%'; }
+      currentNameBoxOpacity = (typeof data.nameBoxOpacity === 'number') ? data.nameBoxOpacity : 0;
+      currentBioBoxOpacity = (typeof data.bioBoxOpacity === 'number') ? data.bioBoxOpacity : 0;
+      const nameOpSlider = document.getElementById('nameBoxOpacitySlider');
+      if(nameOpSlider){ nameOpSlider.value = Math.round(currentNameBoxOpacity*100); document.getElementById('nameBoxOpacityVal').textContent = nameOpSlider.value + '%'; }
+      const bioOpSlider = document.getElementById('bioBoxOpacitySlider');
+      if(bioOpSlider){ bioOpSlider.value = Math.round(currentBioBoxOpacity*100); document.getElementById('bioBoxOpacityVal').textContent = bioOpSlider.value + '%'; }
       if(typeof refreshBgModeUI === 'function') refreshBgModeUI();
       // لوحتا ألوان الأيقونات (٤ ألوان مستطيلة + ٤ ألوان دائرية) — تُملأ عند تطبيق قالب من لوحة الإدارة
       currentIconPaletteRect = Array.isArray(data.iconPaletteRect) ? data.iconPaletteRect : null;
@@ -2210,6 +2236,24 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     currentBgOverlayOpacity = (typeof t.bgOverlayOpacity === 'number') ? t.bgOverlayOpacity : 0.55;
     const opSlider = document.getElementById('bgOverlayOpacitySlider');
     if(opSlider){ opSlider.value = Math.round(currentBgOverlayOpacity*100); document.getElementById('bgOverlayOpacityVal').textContent = opSlider.value + '%'; }
+
+    // وضوح صندوقي الاسم والوصف — من إعدادات القالب بالأدمن، افتراضي 0 (بلا صندوق) لو غير محدد بالقالب
+    currentNameBoxOpacity = (typeof t.nameBoxOpacity === 'number') ? t.nameBoxOpacity : 0;
+    currentBioBoxOpacity = (typeof t.bioBoxOpacity === 'number') ? t.bioBoxOpacity : 0;
+    const nameOpSlider = document.getElementById('nameBoxOpacitySlider');
+    if(nameOpSlider){ nameOpSlider.value = Math.round(currentNameBoxOpacity*100); document.getElementById('nameBoxOpacityVal').textContent = nameOpSlider.value + '%'; }
+    const bioOpSlider = document.getElementById('bioBoxOpacitySlider');
+    if(bioOpSlider){ bioOpSlider.value = Math.round(currentBioBoxOpacity*100); document.getElementById('bioBoxOpacityVal').textContent = bioOpSlider.value + '%'; }
+
+    // إظهار/إخفاء الشعار والغلاف — من إعدادات القالب بالأدمن (لو القالب حدّد إخفاء أحدهما صراحة)
+    avatarHidden = (t.showAvatar === false);
+    bannerHidden = (t.showBanner === false);
+    const rAv = document.getElementById('removeAvatarToggle'), rBn = document.getElementById('removeBannerToggle');
+    if(rAv) rAv.checked = avatarHidden;
+    if(rBn) rBn.checked = bannerHidden;
+    const avPrev = document.getElementById('avatarPreview'), bnPrev = document.getElementById('bannerPreview');
+    if(avPrev){ avPrev.style.opacity = avatarHidden ? '.2' : ''; avPrev.style.filter = avatarHidden ? 'grayscale(1)' : ''; }
+    if(bnPrev){ bnPrev.style.opacity = bannerHidden ? '.2' : ''; bnPrev.style.filter = bannerHidden ? 'grayscale(1)' : ''; }
     if(typeof refreshBgModeUI === 'function') refreshBgModeUI();
 
     // ٤ ألوان للأيقونات المستطيلة + ٤ ألوان للأيقونات الدائرية من القالب (إن وُجدت)
@@ -4772,6 +4816,14 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     currentBgOverlayOpacity = (+val) / 100;
     refreshBgModeUI();
   };
+  window.onNameBoxOpacityInput = function(val){
+    currentNameBoxOpacity = (+val) / 100;
+    document.getElementById('nameBoxOpacityVal').textContent = val + '%';
+  };
+  window.onBioBoxOpacityInput = function(val){
+    currentBioBoxOpacity = (+val) / 100;
+    document.getElementById('bioBoxOpacityVal').textContent = val + '%';
+  };
   // ===== شكل الأفتار: دائري (افتراضي) أو مستطيل =====
   window.onAvatarShapeToggle = function(checked){
     currentAvatarShape = checked ? 'rect' : 'circle';
@@ -4937,6 +4989,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         bgColor: bg,                 // لون الخلفية (أو لون الطبقة أمام الصورة بوضع "خلفية + ألوان")
         bgMode: currentBgMode,       // color | image | imageColor
         bgOverlayOpacity: currentBgOverlayOpacity,
+        nameBoxOpacity: currentNameBoxOpacity,  // صندوق زجاجي خلف الاسم لتحسين الوضوح فوق خلفية صورة — 0 = بلا صندوق
+        bioBoxOpacity: currentBioBoxOpacity,    // نفس الفكرة لصندوق الوصف، مستقل تماماً عن صندوق الاسم
         avatarShape: currentAvatarShape,  // circle | rect
         avatarHidden: avatarHidden,   // مفعّل = الشعار مخفي نهائياً عن الصفحة العامة
         bannerHidden: bannerHidden,   // مفعّل = الغلاف مخفي نهائياً عن الصفحة العامة
