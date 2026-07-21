@@ -312,33 +312,60 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 .qa-square-row::-webkit-scrollbar{display:none;}
 .qa-square{
   position:relative; overflow:hidden;
-  flex-shrink:0;min-width:84px;max-width:120px;height:46px;border-radius:13px;padding:0 10px;
-  background:var(--glass-bg);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  border:1px solid var(--glass-border);box-shadow:0 6px 14px rgba(23,50,178,.10);
+  flex-shrink:0;min-width:88px;max-width:130px;height:48px;border-radius:999px;padding:0 14px;
+  background:var(--glass-bg);backdrop-filter:blur(16px) saturate(200%);-webkit-backdrop-filter:blur(16px) saturate(200%);
+  border:1px solid var(--glass-border);
+  box-shadow:0 10px 22px rgba(23,50,178,.18), inset 0 1.5px 0 rgba(255,255,255,.65), inset 0 -8px 16px rgba(23,50,178,.10);
   display:flex;align-items:center;justify-content:flex-start;gap:7px;text-align:right;
   font-size:.68rem;font-weight:700;color:var(--text2);line-height:1.2;cursor:pointer;
   transition:transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease;
 }
+.qa-square::before{
+  content:''; position:absolute; inset:0; z-index:2; pointer-events:none; border-radius:inherit;
+  background:linear-gradient(180deg, rgba(255,255,255,.6) 0%, rgba(255,255,255,0) 58%);
+  mix-blend-mode:overlay;
+}
+.qa-square::after{
+  content:''; position:absolute; top:5px; left:14px; width:9px; height:9px; border-radius:50%; z-index:2; pointer-events:none;
+  background:radial-gradient(circle, rgba(255,255,255,.95), rgba(255,255,255,0) 75%);
+}
 .qa-square:active{transform:scale(.95);}
-.qa-square:not(.active):hover{border-color:rgba(0,105,253,.5);box-shadow:0 10px 20px rgba(23,50,178,.18);transform:translateY(-1px);}
+.qa-square:not(.active):hover{border-color:rgba(0,105,253,.5);box-shadow:0 14px 26px rgba(23,50,178,.24), inset 0 1.5px 0 rgba(255,255,255,.65);transform:translateY(-1px);}
 .qa-square-shell{
   position:absolute; inset:0; border-radius:inherit; z-index:0;
-  background:linear-gradient(135deg, rgba(23,50,178,.65), rgba(0,105,253,.55));
+  background:linear-gradient(135deg, rgba(23,50,178,.85), rgba(0,105,253,.72));
   clip-path:circle(0% at 18% 50%);
   transition:clip-path .48s cubic-bezier(.65,0,.35,1);
 }
 .qa-square.active .qa-square-shell{ clip-path:circle(120% at 18% 50%); }
-.qa-square.active{ border-color:rgba(255,255,255,.5); box-shadow:0 10px 20px rgba(0,105,253,.32); transform:translateY(-1px); }
+.qa-square.active{ border-color:rgba(255,255,255,.6); box-shadow:0 14px 28px rgba(0,105,253,.38), inset 0 1.5px 0 rgba(255,255,255,.55); transform:translateY(-1px); }
 .qa-square-ic{ position:relative; z-index:1; display:flex; flex-shrink:0; }
 .qa-square-txt{ position:relative; z-index:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .qa-square.active .qa-square-ic, .qa-square.active .qa-square-txt{ color:#fff; transition:color .2s ease .1s; }
 .qa-square-plus{
-  flex-shrink:0;width:46px;height:46px;border-radius:13px;
-  background:rgba(255,255,255,.18);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  position:relative; overflow:hidden;
+  flex-shrink:0;width:48px;height:48px;border-radius:50%;
+  background:var(--glass-bg);backdrop-filter:blur(14px) saturate(200%);-webkit-backdrop-filter:blur(14px) saturate(200%);
   border:1.5px dashed var(--primary-light);color:var(--primary);
+  box-shadow:0 10px 22px rgba(23,50,178,.16), inset 0 1.5px 0 rgba(255,255,255,.6);
   display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;cursor:pointer;
 }
-.qa-panel{border-radius:18px;padding:14px;min-height:150px;}
+.qa-square-plus::before{
+  content:''; position:absolute; inset:0; z-index:0; pointer-events:none; border-radius:inherit;
+  background:linear-gradient(180deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 58%);
+  mix-blend-mode:overlay;
+}
+.qa-panel{position:relative;overflow:hidden;border-radius:26px;padding:16px;min-height:150px;}
+.qa-panel.glass{box-shadow:0 20px 45px rgba(23,50,178,.22), inset 0 1.5px 0 rgba(255,255,255,.65), inset 0 -12px 26px rgba(23,50,178,.10);}
+.qa-panel::before{
+  content:''; position:absolute; inset:0; z-index:0; pointer-events:none; border-radius:inherit;
+  background:linear-gradient(160deg, rgba(255,255,255,.5) 0%, rgba(255,255,255,0) 42%);
+}
+.qa-panel::after{
+  content:''; position:absolute; top:14px; left:18px; width:22px; height:22px; border-radius:50%; z-index:0; pointer-events:none;
+  background:radial-gradient(circle, rgba(255,255,255,.95), rgba(255,255,255,0) 72%); filter:blur(.5px);
+}
+.qa-panel > *{position:relative;z-index:1;}
 .qa-empty{font-size:0.8rem;color:var(--muted);text-align:center;padding:20px 10px;}
 
 .qa-source-tab{
@@ -1039,14 +1066,23 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   <div class="page active" id="page-design">
     <div class="expandable">
       <div class="expandable-header open" onclick="toggleExpand(this)">
-        <div class="expandable-title"><div class="expandable-icon">◧</div><span>قوالب جاهزة<span class="title-sub">Ready Templates</span></span></div>
+        <div class="expandable-title"><div class="expandable-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg></div><span>صمم AI لصفحتك<span class="title-sub">AI Page Designer</span></span></div>
         <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content open">
-        <button type="button" onclick="window.openAiDesignModal()" class="qa-action-btn" style="width:100%;margin-bottom:14px;padding:14px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;font-weight:800;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 10px 22px rgba(0,105,253,.28);">
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:14px;line-height:1.7;">صف مجالك وطابعك المفضّل بجملة أو جملتين، ودع الذكاء الاصطناعي يجهّز لك ألوان وشعار ونبذة متكاملة خلال ثوانٍ.</div>
+        <button type="button" onclick="window.openAiDesignModal()" class="qa-action-btn" style="width:100%;padding:15px;border:none;border-radius:16px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;font-weight:800;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 12px 24px rgba(0,105,253,.30);">
           <span class="qa-btn-ic" style="display:flex;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg></span>
-          <span class="qa-btn-txt">توليد AI لصفحتك · دع الذكاء الاصطناعي يصمم لك</span>
+          <span class="qa-btn-txt">توليد التصميم بالذكاء الاصطناعي · Generate</span>
         </button>
+      </div>
+    </div>
+    <div class="expandable">
+      <div class="expandable-header" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon">◧</div><span>قوالب جاهزة<span class="title-sub">Ready Templates</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content">
         <div class="form-group" style="margin-bottom:0;">
           <div style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;">هذا شكل صفحتك تقريباً بكل قالب — اضغط على أي واحدة لتطبيقها · This is roughly how your page will look with each template</div>
           <div id="pageMockupCarousel" style="display:flex;gap:12px;overflow-x:auto;padding:4px 4px 10px;-webkit-overflow-scrolling:touch;"></div>
