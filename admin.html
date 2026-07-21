@@ -7,25 +7,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Tajawal',sans-serif;color:#0f1535;min-height:100vh;
-  background:linear-gradient(160deg,#f5f8fd,#dfe6f5) fixed;position:relative;
-}
-body::before,body::after{content:'';position:fixed;border-radius:50%;filter:blur(70px);z-index:-1;pointer-events:none;}
-body::before{width:340px;height:340px;background:#0069FD;opacity:.14;top:-90px;right:-60px;}
-body::after{width:300px;height:300px;background:#f5c518;opacity:.16;bottom:-80px;left:-60px;}
-.glass{
-  background:rgba(255,255,255,.35);
-  backdrop-filter:blur(18px) saturate(170%);-webkit-backdrop-filter:blur(18px) saturate(170%);
-  border:1px solid rgba(255,255,255,.55);
-  box-shadow:0 10px 24px rgba(15,21,53,.10), inset 0 1px 0 rgba(255,255,255,.6);
-}
-nav{
-  display:flex;align-items:center;justify-content:space-between;padding:14px 20px;color:#fff;
-  background:linear-gradient(135deg, rgba(15,21,53,.85), rgba(61,90,241,.75));
-  backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);
-  box-shadow:0 8px 20px rgba(15,21,53,.18);border-bottom:1px solid rgba(255,255,255,.15);
-}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Tajawal',sans-serif;background:#f4f5f9;color:#0f1535;min-height:100vh;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:#0f1535;color:#fff;}
 .nav-logo{font-family:'Space Mono',monospace;font-weight:700;font-size:1rem;color:#fff;}
 .nav-logo em{color:#f5c518;font-style:normal;}
 .nav-badge{background:#e2231a;padding:3px 10px;border-radius:20px;font-size:0.68rem;font-weight:700;}
@@ -44,33 +27,17 @@ nav{
 /* ===== لوحة الإدارة ===== */
 .container{max-width:760px;margin:0 auto;padding:20px;display:none;}
 .container.show{display:block;}
-.tabs{display:flex;gap:8px;overflow-x:auto;margin-bottom:20px;padding:4px 2px 8px;}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:20px;padding-bottom:4px;}
 .tab-btn{
-  flex-shrink:0;padding:10px 16px;border-radius:100px;
-  background:rgba(255,255,255,.35);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  border:1px solid rgba(255,255,255,.55);
+  flex-shrink:0;padding:10px 16px;border-radius:10px;border:1.5px solid #e0e0e0;background:#fff;
   font-family:inherit;font-weight:700;font-size:0.84rem;cursor:pointer;color:#0f1535;
-  box-shadow:0 4px 12px rgba(15,21,53,.06);transition:all .2s ease;
 }
-.tab-btn.active{
-  background:linear-gradient(135deg, rgba(15,21,53,.85), rgba(61,90,241,.75));
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  color:#fff;border-color:rgba(255,255,255,.5);
-  box-shadow:0 8px 18px rgba(61,90,241,.32), inset 0 1px 0 rgba(255,255,255,.4);
-}
+.tab-btn.active{background:#0f1535;color:#fff;border-color:#0f1535;}
 .section{display:none;}
 .section.active{display:block;}
-.card{
-  background:rgba(255,255,255,.4);backdrop-filter:blur(16px) saturate(170%);-webkit-backdrop-filter:blur(16px) saturate(170%);
-  border:1px solid rgba(255,255,255,.55);border-radius:16px;padding:16px;margin-bottom:12px;
-  box-shadow:0 8px 20px rgba(15,21,53,.08);
-}
+.card{background:#fff;border:1px solid #e8ecf5;border-radius:14px;padding:16px;margin-bottom:12px;}
 .stat-row{display:flex;gap:10px;margin-bottom:16px;}
-.stat-box{
-  flex:1;background:rgba(255,255,255,.4);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  border:1px solid rgba(255,255,255,.55);border-radius:16px;padding:16px;text-align:center;
-  box-shadow:0 8px 20px rgba(15,21,53,.08);
-}
+.stat-box{flex:1;background:#fff;border:1px solid #e8ecf5;border-radius:14px;padding:16px;text-align:center;}
 .stat-num{font-size:1.6rem;font-weight:900;color:#3d5af1;}
 .stat-label{font-size:0.75rem;color:#6b7280;margin-top:4px;}
 .user-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f0f0f0;}
@@ -87,14 +54,12 @@ nav{
 .tpl-edit-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;align-items:center;}
 .tpl-edit-row input[type=color]{width:100%;height:34px;border-radius:6px;border:1px solid #e0e0e0;padding:2px;}
 .tpl-edit-row input[type=text]{padding:8px;border:1px solid #e0e0e0;border-radius:6px;font-family:inherit;font-size:0.78rem;}
-.note-box{background:rgba(255,249,230,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(245,217,122,.7);border-radius:10px;padding:12px;font-size:0.78rem;color:#7a5c00;margin-bottom:14px;line-height:1.7;}
+.note-box{background:#fff9e6;border:1px solid #f5d97a;border-radius:10px;padding:12px;font-size:0.78rem;color:#7a5c00;margin-bottom:14px;line-height:1.7;}
 
 /* معاينة صفحة مصغّرة لكل قالب — نفس أسلوب تبويب "قوالب" بلوحة المستخدم */
 .tpl-card-row{display:flex;gap:14px;align-items:flex-start;}
 .tpl-mockup{
-  flex-shrink:0;width:110px;border:1.5px solid rgba(255,255,255,.6);border-radius:16px;
-  background:rgba(255,255,255,.25);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  box-shadow:0 6px 16px rgba(15,21,53,.08);
+  flex-shrink:0;width:110px;border:2px solid #e8ecf5;border-radius:16px;
   padding:14px 8px 10px;display:flex;flex-direction:column;align-items:center;
 }
 .tpl-mockup-avatar{width:32px;height:32px;border-radius:50%;margin-bottom:6px;}
@@ -103,7 +68,7 @@ nav{
 .tpl-mockup-bio.short{width:42%;margin-bottom:8px;}
 .tpl-mockup-link{width:100%;height:11px;border-radius:4px;border:1.2px solid;margin-bottom:5px;}
 .tpl-delete-btn{background:#fdecea;color:#c33;border:none;padding:6px 10px;border-radius:7px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px;}
-.tpl-add-btn{width:100%;padding:12px;border:2px dashed rgba(61,90,241,.5);background:rgba(255,255,255,.35);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:14px;color:#3d5af1;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:12px;}
+.tpl-add-btn{width:100%;padding:12px;border:2px dashed #c7cee0;background:#fff;border-radius:14px;color:#3d5af1;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:12px;}
 #errBanner{display:none;position:fixed;top:0;left:0;right:0;z-index:99999;background:#c0392b;color:#fff;padding:10px 16px;font-size:0.75rem;font-weight:700;line-height:1.6;white-space:pre-wrap;}
 #errBanner.show{display:block;}
 
@@ -115,21 +80,19 @@ nav{
 /* ===== مساحة عمل المحرر الموسّع — تخطيط أدوات تصميم: قماشة + رف أيقونات أقصى اليمين ===== */
 .editor-workspace{display:flex;flex:1;overflow:hidden;min-height:0;}
 .editor-rail{
-  flex:0 0 64px;
-  background:rgba(255,255,255,.35);backdrop-filter:blur(16px) saturate(170%);-webkit-backdrop-filter:blur(16px) saturate(170%);
-  border-left:1px solid rgba(255,255,255,.5);box-shadow:0 8px 20px rgba(15,21,53,.08);
+  flex:0 0 64px;background:#fff;border-left:1px solid #e8ecf5;
   display:flex;flex-direction:column;align-items:stretch;gap:6px;padding:12px 7px;overflow-y:auto;
 }
 .editor-rail-btn{
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
   padding:9px 2px;border-radius:12px;border:1.5px solid transparent;background:transparent;
-  font-family:inherit;cursor:pointer;color:#6b7280;transition:all .2s ease;
+  font-family:inherit;cursor:pointer;color:#6b7280;
 }
 .editor-rail-btn .ico{font-size:1.15rem;line-height:1;}
 .editor-rail-btn .lbl{font-size:0.6rem;font-weight:700;line-height:1.1;text-align:center;}
-.editor-rail-btn.active{background:rgba(61,90,241,.16);border-color:rgba(61,90,241,.5);color:#3d5af1;box-shadow:0 4px 12px rgba(61,90,241,.2);}
+.editor-rail-btn.active{background:#eef0fb;border-color:#3d5af1;color:#3d5af1;}
 .editor-rail-btn.danger{color:#c33;margin-top:auto;}
-.editor-rail-btn.danger.active{background:rgba(255,84,84,.14);border-color:#c33;color:#c33;}
+.editor-rail-btn.danger.active{background:#fdecea;border-color:#c33;color:#c33;}
 
 .editor-main{flex:1;overflow-y:auto;padding:20px;min-width:0;}
 
@@ -137,9 +100,7 @@ nav{
 .editor-canvas-wrap{display:flex;justify-content:center;}
 .tpl-mockup-lg{
   width:100%;max-width:420px;min-height:calc(100vh - 220px);
-  border:1px solid rgba(255,255,255,.55);border-radius:16px;
-  background:rgba(255,255,255,.25);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  box-shadow:0 12px 40px -14px rgba(15,21,53,0.25);
+  border:1px solid #e8ecf5;border-radius:16px;box-shadow:0 12px 40px -14px rgba(15,21,53,0.18);
   padding:36px 22px 30px;display:flex;flex-direction:column;align-items:center;
 }
 
@@ -151,8 +112,7 @@ nav{
 
 /* أقسام المحرر الموسّع بأسلوب الحدود المتقطعة */
 .tpl-dash-section{
-  border:2px dashed rgba(199,206,224,.8);border-radius:16px;padding:18px;margin-bottom:14px;
-  background:rgba(255,255,255,.3);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:2px dashed #c7cee0;border-radius:16px;padding:18px;margin-bottom:14px;background:#fff;
 }
 .tpl-dash-label{font-size:0.78rem;font-weight:800;color:#6b7280;margin-bottom:10px;}
 .tpl-expanded-input{
@@ -234,6 +194,11 @@ nav{
       <div class="stat-box"><div class="stat-num" id="statOpenFeedback">—</div><div class="stat-label">ملاحظات بانتظار الرد</div></div>
     </div>
     <div class="card">
+      <b>مصادر التسجيل <span style="font-weight:400;color:#6b7280;font-size:0.78rem;">Signup Sources</span></b>
+      <p style="font-size:0.74rem;color:#6b7280;margin:4px 0 10px;">قِس قبل ما تصرف — كل رابط تسويق (فليّر، شراكة، إعلان) يوسم بـ <code dir="ltr">?ref=اسم_المصدر</code> برابط التسجيل، ويظهر هنا كم حساب فعلي جا من كل مصدر.</p>
+      <div id="sourceBreakdown"><div class="empty-note">جاري التحميل...</div></div>
+    </div>
+    <div class="card">
       <b>حسابك الحالي</b>
       <p style="font-size:0.8rem;color:#6b7280;margin-top:6px;" id="currentAdminEmail" dir="ltr"></p>
       <button onclick="adminLogout()" class="btn-sm" style="background:#e2231a;">تسجيل خروج · Logout</button>
@@ -290,9 +255,6 @@ nav{
   </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 <script>
 window.addEventListener('error', function(e){
   const b = document.getElementById('errBanner');
@@ -300,19 +262,29 @@ window.addEventListener('error', function(e){
   b.classList.add('show');
 });
 let auth = null, db = null, firebaseReady = false;
-try{
-  const cfg={apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",authDomain:"electrwni-link.firebaseapp.com",projectId:"electrwni-link",storageBucket:"electrwni-link.firebasestorage.app",messagingSenderId:"712490301263",appId:"1:712490301263:web:2084210da3f687285ab73a"};
-  if(typeof firebase === 'undefined') throw new Error('تعذر تحميل مكتبة Firebase (تحقق من الاتصال بالإنترنت أو حاجب الإعلانات)');
-  if(!firebase.apps.length) firebase.initializeApp(cfg);
-  auth = firebase.auth();
-  db = firebase.firestore();
-  firebaseReady = true;
-}catch(e){
-  console.error('Firebase init failed:', e);
-  const b = document.getElementById('errBanner');
-  b.textContent = '⚠️ تعذر الاتصال بالخادم: ' + e.message + ' — أعد تحميل الصفحة أو تحقق من الاتصال';
-  b.classList.add('show');
-}
+let fbDoc=null, fbGetDoc=null, fbSetDoc=null, fbUpdateDoc=null, fbGetDocs=null, fbCollection=null, fbQuery=null, fbOrderBy=null, fbLimit=null, fbStartAfter=null;
+let fbSignIn=null, fbSignOut=null, fbOnAuthStateChanged=null;
+(async function initFirebase(){
+  try{
+    const cfg={apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",authDomain:"electrwni-link.firebaseapp.com",projectId:"electrwni-link",storageBucket:"electrwni-link.firebasestorage.app",messagingSenderId:"712490301263",appId:"1:712490301263:web:2084210da3f687285ab73a"};
+    const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js");
+    const { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
+    const { getFirestore, doc, getDoc, setDoc, updateDoc, getDocs, collection, query, orderBy, limit, startAfter } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+    const app = initializeApp(cfg);
+    auth = getAuth(app);
+    db = getFirestore(app);
+    fbDoc=doc; fbGetDoc=getDoc; fbSetDoc=setDoc; fbUpdateDoc=updateDoc; fbGetDocs=getDocs;
+    fbCollection=collection; fbQuery=query; fbOrderBy=orderBy; fbLimit=limit; fbStartAfter=startAfter;
+    fbSignIn=signInWithEmailAndPassword; fbSignOut=signOut; fbOnAuthStateChanged=onAuthStateChanged;
+    firebaseReady = true;
+    attachAuthListener();
+  }catch(e){
+    console.error('Firebase init failed:', e);
+    const b = document.getElementById('errBanner');
+    b.textContent = '⚠️ تعذر الاتصال بالخادم: ' + e.message + ' — أعد تحميل الصفحة أو تحقق من الاتصال';
+    b.classList.add('show');
+  }
+})();
 
 // ⚠️ عدّل هذا البريد ليكون بريدك الحقيقي المسجّل بالموقع — هذا هو مفتاح الوصول للوحة الإدارة
 const ADMIN_EMAIL = "brmjeat1@gmail.com";
@@ -360,7 +332,7 @@ async function adminLogin(){
   if(!email || !password){ errEl.textContent='عبّئ البريد وكلمة المرور'; errEl.classList.add('show'); return; }
   document.getElementById('loginBtn').textContent = 'جاري الدخول...';
   try{
-    await auth.signInWithEmailAndPassword(email, password);
+    await fbSignIn(auth, email, password);
     // onAuthStateChanged يتولى الباقي
   }catch(e){
     errEl.textContent = 'بيانات الدخول غير صحيحة';
@@ -372,12 +344,12 @@ window.adminLogin = adminLogin;
 
 function adminLogout(){
   if(!firebaseReady){ window.location.reload(); return; }
-  auth.signOut().then(()=>window.location.reload());
+  fbSignOut(auth).then(()=>window.location.reload());
 }
 window.adminLogout = adminLogout;
 
-if(firebaseReady){
-  auth.onAuthStateChanged(async (user) => {
+function attachAuthListener(){
+  fbOnAuthStateChanged(auth, async (user) => {
     if(!user){
       document.getElementById('gateScreen').style.display='block';
       document.getElementById('deniedScreen').style.display='none';
@@ -397,6 +369,7 @@ if(firebaseReady){
     loadUsersData();
     loadFeedbackData();
     loadTemplates();
+    loadSourceBreakdown();
   });
 }
 
@@ -405,6 +378,40 @@ const USERS_PAGE_SIZE = 100;
 let usersLastDoc = null;
 let usersAllLoaded = false;
 let usersRowsHtml = [];
+
+// تجميع مصادر التسجيل (referralSource) على كل المستخدمين — قياس فعلي قبل أي صرف تسويقي جديد
+async function loadSourceBreakdown(){
+  const el = document.getElementById('sourceBreakdown');
+  if(!el) return;
+  try{
+    const snap = await fbGetDocs(fbCollection(db,'users'));
+    const counts = {}; // { 'بدون مصدر': N, 'cafe1': N, ... }
+    let total = 0;
+    snap.forEach(d => {
+      const src = (d.data().referralSource || '').trim() || 'بدون مصدر · Direct';
+      counts[src] = (counts[src] || 0) + 1;
+      total++;
+    });
+    if(!total){ el.innerHTML = '<div class="empty-note">لا يوجد مستخدمون بعد</div>'; return; }
+    const rows = Object.entries(counts).sort((a,b) => b[1]-a[1]);
+    const max = rows[0][1];
+    el.innerHTML = rows.map(([src, n]) => {
+      const pct = Math.round((n/total)*100);
+      const barPct = Math.max(6, Math.round((n/max)*100));
+      return `<div style="margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;font-size:0.78rem;font-weight:700;margin-bottom:4px;">
+          <span dir="ltr">${escapeHtml(src)}</span><span>${n} · ${pct}%</span>
+        </div>
+        <div style="height:7px;border-radius:4px;background:#eef0f7;overflow:hidden;">
+          <div style="height:100%;width:${barPct}%;border-radius:4px;background:#3d5af1;"></div>
+        </div>
+      </div>`;
+    }).join('');
+  }catch(e){
+    console.error(e);
+    el.innerHTML = `<div class="empty-note">تعذر التحميل: ${escapeHtml(e.message)}</div>`;
+  }
+}
 
 async function loadUsersData(){
   // إعادة تصفير عند أول تحميل (تسجيل دخول جديد)
@@ -420,9 +427,9 @@ async function loadMoreUsers(){
   const listEl = document.getElementById('usersList');
   if(usersAllLoaded) return;
   try{
-    let q = db.collection('users').orderBy('createdAt','desc').limit(USERS_PAGE_SIZE);
-    if(usersLastDoc) q = q.startAfter(usersLastDoc);
-    const snap = await q.get();
+    let q = fbQuery(fbCollection(db,'users'), fbOrderBy('createdAt','desc'), fbLimit(USERS_PAGE_SIZE));
+    if(usersLastDoc) q = fbQuery(fbCollection(db,'users'), fbOrderBy('createdAt','desc'), fbLimit(USERS_PAGE_SIZE), fbStartAfter(usersLastDoc));
+    const snap = await fbGetDocs(q);
 
     if(snap.empty && !usersRowsHtml.length){
       listEl.innerHTML = '<div class="empty-note">لا يوجد مستخدمون بعد</div>';
@@ -433,12 +440,14 @@ async function loadMoreUsers(){
     snap.forEach(d => {
       const u = d.data();
       const joined = u.createdAt ? new Date(u.createdAt).toLocaleDateString('ar-SA') : '—';
+      const srcTag = u.referralSource ? `<span style="display:inline-block;margin-top:2px;padding:1px 7px;border-radius:20px;background:#eef0fb;color:#3d5af1;font-size:0.66rem;font-weight:700;" dir="ltr">${escapeHtml(u.referralSource)}</span>` : '';
       usersRowsHtml.push(`
         <div class="user-row">
           <div class="user-avatar">${escapeHtml((u.displayName||u.username||'?')[0].toUpperCase())}</div>
           <div class="user-info">
             <div class="user-name">${escapeHtml(u.displayName||u.username||'—')}</div>
             <div class="user-meta" dir="ltr">@${escapeHtml(u.username||'—')} · ${escapeHtml(u.email||'—')}</div>
+            ${srcTag}
           </div>
           <div class="user-meta">${joined}</div>
         </div>
@@ -465,7 +474,7 @@ async function loadFeedbackData(){
   const badgeEl = document.getElementById('feedbackBadge');
   const listEl = document.getElementById('feedbackList');
   try{
-    const snap = await db.collection('feedback').orderBy('createdAt','desc').get();
+    const snap = await fbGetDocs(fbQuery(fbCollection(db,'feedback'), fbOrderBy('createdAt','desc')));
     feedbackCache = [];
     snap.forEach(d => feedbackCache.push({id:d.id, ...d.data()}));
     const openCount = feedbackCache.filter(it => it.status === 'open').length;
@@ -501,7 +510,7 @@ async function sendReply(id){
   if(!reply){ alert('اكتب رداً أولاً'); return; }
   if(btn){ btn.disabled = true; btn.textContent = 'جاري الإرسال...'; }
   try{
-    await db.collection('feedback').doc(id).update({ adminReply: reply, status: 'closed' });
+    await fbUpdateDoc(fbDoc(db,'feedback',id), { adminReply: reply, status: 'closed' });
     await loadFeedbackData();
   }catch(e){
     alert('تعذر الحفظ: '+e.message);
@@ -522,10 +531,8 @@ async function loadTemplates(){
     return;
   }
   try{
-    const snap = await db.collection('siteConfig').doc('templates').get();
-    // ⚠️ إصلاح: exists خاصية منطقية (true/false) وليست دالة بمكتبة Firestore compat —
-    // استدعاؤها كـ snap.exists() كان يرمي خطأً يُمسَك بصمت، فتُهمَل كل القوالب المحفوظة وترجع الافتراضية دائمًا.
-    templatesData = snap.exists ? snap.data() : {};
+    const snap = await fbGetDoc(fbDoc(db,'siteConfig','templates'));
+    templatesData = snap.exists() ? snap.data() : {};
   }catch(e){
     console.error('loadTemplates failed:', e);
     templatesData = {};
@@ -1026,7 +1033,7 @@ async function saveTemplatesConfig(){
   isSaving = true;
   btns.forEach(b => { b.dataset.origText = b.textContent; b.disabled = true; if(b.dataset.action==='save-all') b.textContent = 'جاري الحفظ...'; });
   try{
-    await db.collection('siteConfig').doc('templates').set(templatesData);
+    await fbSetDoc(fbDoc(db,'siteConfig','templates'), templatesData);
     alert('تم الحفظ ✓');
   }catch(e){
     alert('تعذر الحفظ: '+e.message);
