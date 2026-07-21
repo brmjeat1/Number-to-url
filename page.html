@@ -136,7 +136,7 @@ nav{
   color:var(--muted);box-shadow:0 2px 8px rgba(0,0,0,0.04);
 }
 .numbers-panel-search-input{
-  flex:1;border:none;background:none;outline:none;color:var(--text);min-width:0;
+  flex:1;border:none;background:none;outline:none;color:#0f1535;min-width:0;
   font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-size:0.85rem;font-weight:700;
   direction:ltr;text-align:right;
 }
@@ -192,7 +192,7 @@ nav{
   color:var(--muted);box-shadow:0 2px 10px rgba(0,0,0,0.04);
 }
 .main-search-input{
-  flex:1;border:none;background:none;outline:none;color:var(--text);min-width:0;
+  flex:1;border:none;background:none;outline:none;color:#0f1535;min-width:0;
   font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-size:0.88rem;font-weight:700;
   direction:ltr;text-align:right;
 }
@@ -746,6 +746,18 @@ function glassTint(color, alpha){
   if(!color) return `rgba(255,255,255,${alpha})`;
   return /^#[0-9A-Fa-f]{3,6}$/.test(color) ? hexToRgba(color, alpha) : color;
 }
+// يحسب مدى إضاءة لون (0 غامق تماماً — 1 فاتح تماماً) لتحديد تباين مناسب تلقائياً
+function colorLuminance(color){
+  let h = (color || '').replace('#','');
+  if(h.length === 3) h = h.split('').map(c => c+c).join('');
+  if(!/^[0-9A-Fa-f]{6}$/.test(h)) return 0.15; // قيمة افتراضية غامقة آمنة لو اللون CSS var() أو غير صالح
+  const r = parseInt(h.substring(0,2),16), g = parseInt(h.substring(2,4),16), b = parseInt(h.substring(4,6),16);
+  return (0.299*r + 0.587*g + 0.114*b) / 255;
+}
+// يُرجع أبيض أو غامق تلقائياً — أياً كان اللون الأضمن قراءةً فوق اللون المُعطى
+function autoContrastText(bgColor, darkColor){
+  return colorLuminance(bgColor) > 0.6 ? (darkColor || '#0f1535') : '#ffffff';
+}
 function applyThemeColor(hex){
   if(!/^#[0-9A-Fa-f]{6}$/.test(hex))return;
   document.documentElement.style.setProperty('--accent',hex);
@@ -998,7 +1010,8 @@ function render(user){
         containerBg = s.customContainer || 'transparent';
       } else if(mode==='site'){
         circleBg = iconPalette ? iconPalette[idx % iconPalette.length] : 'var(--accent)';
-        borderCol='var(--accent-light)'; iconColor='var(--text)';
+        borderCol='var(--accent-light)';
+        iconColor = autoContrastText(circleBg, user.textColor); // يضمن ظهور الأيقونة دائماً، أياً كان لون الخلفية المختار
       } else {
         // لون التطبيق الرسمي
         circleBg=s.brandColor||platColor(pid); borderCol='var(--accent-light)'; iconColor='#ffffff';
@@ -1082,11 +1095,14 @@ function render(user){
 
   const nameOp = (typeof user.nameBoxOpacity === 'number') ? user.nameBoxOpacity : 0;
   const bioOp = (typeof user.bioBoxOpacity === 'number') ? user.bioBoxOpacity : 0;
+  // الصندوق يُلوَّن بعكس لون النص تلقائياً — نص فاتح فوق صندوق غامق، نص غامق فوق صندوق فاتح، بلا أي تعارض
+  const boxIsDark = colorLuminance(user.textColor) > 0.6;
+  const boxRgb = boxIsDark ? '15,21,53' : '255,255,255';
   const nameBoxStyle = nameOp > 0
-    ? `display:inline-block;padding:6px 18px;border-radius:12px;background:rgba(255,255,255,${nameOp});backdrop-filter:blur(${Math.round(nameOp*20)}px);-webkit-backdrop-filter:blur(${Math.round(nameOp*20)}px);box-shadow:0 6px 18px rgba(0,0,0,.10);`
+    ? `display:inline-block;padding:6px 18px;border-radius:12px;background:rgba(${boxRgb},${nameOp});backdrop-filter:blur(${Math.round(nameOp*20)}px);-webkit-backdrop-filter:blur(${Math.round(nameOp*20)}px);box-shadow:0 6px 18px rgba(0,0,0,.10);`
     : '';
   const bioBoxStyle = bioOp > 0
-    ? `display:inline-block;padding:7px 16px;border-radius:12px;background:rgba(255,255,255,${bioOp});backdrop-filter:blur(${Math.round(bioOp*20)}px);-webkit-backdrop-filter:blur(${Math.round(bioOp*20)}px);box-shadow:0 6px 16px rgba(0,0,0,.08);`
+    ? `display:inline-block;padding:7px 16px;border-radius:12px;background:rgba(${boxRgb},${bioOp});backdrop-filter:blur(${Math.round(bioOp*20)}px);-webkit-backdrop-filter:blur(${Math.round(bioOp*20)}px);box-shadow:0 6px 16px rgba(0,0,0,.08);`
     : '';
 
   document.getElementById('content').innerHTML=`
