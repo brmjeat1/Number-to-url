@@ -149,6 +149,13 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:14px 2
 .tpl-color-mini-row:last-child{margin-bottom:0;}
 .tpl-color-mini-row span{font-size:0.85rem;flex:1;}
 .tpl-color-mini-row input[type=color]{width:54px;height:38px;border-radius:8px;border:1px solid #e0e0e0;padding:2px;}
+/* شبكة ألوان مدمجة — مربعات صغيرة بدل صفوف طويلة مكدّسة، أسلوب "شدة الظل" المرجعي */
+.tpl-color-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:4px;}
+.tpl-color-swatch{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.tpl-color-swatch input[type=color]{
+  width:100%;aspect-ratio:1;border-radius:12px;border:1.5px solid #e0e0e0;padding:0;cursor:pointer;
+}
+.tpl-color-swatch-label{font-size:0.64rem;font-weight:700;color:#6b7280;text-align:center;line-height:1.3;}
 </style>
 </head>
 <body>
@@ -770,14 +777,34 @@ function buildPanelBody(id, key, t, flags){
       </div>`;
   }
   if(id === 'colors'){
+    const bgLabel = t.bgMode==='imageColor' ? 'لون الطبقة' : 'لون الموقع';
+    const bgNote = (t.bgMode||'color')==='image' ? `<div style="font-size:0.68rem;color:#9aa2c8;margin-top:8px;">وضع الخلفية الحالي «صورة فقط» — هذا اللون غير مستخدم إلا لو فعّلت "خلفية+ألوان".</div>` : '';
     return `
       <div class="tpl-dash-section">
-        <div class="tpl-dash-label">لوحة الألوان الكاملة</div>
-        <div class="tpl-color-mini-row"><span>اللون الأساسي</span><input type="color" value="${t.p1}" data-field="p1" data-key="${key}" data-live="fast"></div>
-        <div class="tpl-color-mini-row"><span>اللون الثانوي</span><input type="color" value="${t.p2}" data-field="p2" data-key="${key}" data-live="fast"></div>
-        <div class="tpl-color-mini-row"><span>لون النص</span><input type="color" value="${t.text}" data-field="text" data-key="${key}" data-live="fast"></div>
+        <div class="tpl-dash-label">الألوان الأساسية</div>
+        <div class="tpl-color-grid">
+          <div class="tpl-color-swatch">
+            <input type="color" value="${t.p1}" data-field="p1" data-key="${key}" data-live="fast">
+            <span class="tpl-color-swatch-label">أساسي</span>
+          </div>
+          <div class="tpl-color-swatch">
+            <input type="color" value="${t.p2}" data-field="p2" data-key="${key}" data-live="fast">
+            <span class="tpl-color-swatch-label">ثانوي</span>
+          </div>
+          <div class="tpl-color-swatch">
+            <input type="color" value="${t.text}" data-field="text" data-key="${key}" data-live="fast">
+            <span class="tpl-color-swatch-label">النص</span>
+          </div>
+          <div class="tpl-color-swatch">
+            <input type="color" value="${t.bg}" data-field="bg" data-key="${key}" data-live="fast">
+            <span class="tpl-color-swatch-label">${bgLabel}</span>
+          </div>
+        </div>
+        ${bgNote}
+      </div>
+      <div class="tpl-dash-section">
+        <div class="tpl-dash-label">ألوان إضافية</div>
         <div class="tpl-color-mini-row"><span>لون نص الأزرار</span><input type="color" value="${t.linkText}" data-field="linkText" data-key="${key}" data-live="fast"></div>
-        ${(t.bgMode || 'color') !== 'image' ? `<div class="tpl-color-mini-row"><span>${t.bgMode==='imageColor' ? 'لون الطبقة أمام الخلفية' : 'لون الخلفية'}</span><input type="color" value="${t.bg}" data-field="bg" data-key="${key}" data-live="fast"></div>` : `<div style="font-size:0.78rem;color:#9aa2c8;">وضع الخلفية الحالي «خلفية فقط» — غيّر الوضع من زر "+" الخلفية بالمعاينة لإظهار لون.</div>`}
       </div>`;
   }
   if(id === 'fonts'){
@@ -1009,19 +1036,47 @@ function openSocialsPopover(key){
     </div>
 
     <div class="tpl-dash-section">
-      <div class="tpl-dash-label">🔲 ألوان الأيقونات المستطيلة (٤ ألوان)</div>
-      <div class="tpl-color-mini-row"><span>اللون الأول</span><input type="color" value="${t.rectColor1}" data-field="rectColor1" data-key="${key}" data-live="fast"></div>
-      <div class="tpl-color-mini-row"><span>اللون الثاني</span><input type="color" value="${t.rectColor2}" data-field="rectColor2" data-key="${key}" data-live="fast"></div>
-      <div class="tpl-color-mini-row"><span>اللون الثالث</span><input type="color" value="${t.rectColor3}" data-field="rectColor3" data-key="${key}" data-live="fast"></div>
-      <div class="tpl-color-mini-row"><span>اللون الرابع</span><input type="color" value="${t.rectColor4}" data-field="rectColor4" data-key="${key}" data-live="fast"></div>
+      <div class="tpl-dash-label">🔲 ألوان الأيقونات المستطيلة (تتكرر بالدوران على الحسابات)</div>
+      <div class="tpl-color-grid">
+        <div class="tpl-color-swatch">
+          <input type="color" value="${t.rectColor1}" data-field="rectColor1" data-key="${key}" data-live="fast">
+          <span class="tpl-color-swatch-label">حساب 1</span>
+        </div>
+        <div class="tpl-color-swatch">
+          <input type="color" value="${t.rectColor2}" data-field="rectColor2" data-key="${key}" data-live="fast">
+          <span class="tpl-color-swatch-label">حساب 2</span>
+        </div>
+        <div class="tpl-color-swatch">
+          <input type="color" value="${t.rectColor3}" data-field="rectColor3" data-key="${key}" data-live="fast">
+          <span class="tpl-color-swatch-label">حساب 3</span>
+        </div>
+        <div class="tpl-color-swatch">
+          <input type="color" value="${t.rectColor4}" data-field="rectColor4" data-key="${key}" data-live="fast">
+          <span class="tpl-color-swatch-label">حساب 4</span>
+        </div>
+      </div>
     </div>
 
     <div class="tpl-dash-section">
-      <div class="tpl-dash-label">⚪ ألوان الأيقونات الدائرية (٤ ألوان)</div>
-      <div class="tpl-color-mini-row"><span>اللون الأول</span><input type="color" value="${t.circleColor1}" data-field="circleColor1" data-key="${key}" data-live="fast"></div>
-      <div class="tpl-color-mini-row"><span>اللون الثاني</span><input type="color" value="${t.circleColor2}" data-field="circleColor2" data-key="${key}" data-live="fast"></div>
-      <div class="tpl-color-mini-row"><span>اللون الثالث</span><input type="color" value="${t.circleColor3}" data-field="circleColor3" data-key="${key}" data-live="fast"></div>
-      <div class="tpl-color-mini-row"><span>اللون الرابع</span><input type="color" value="${t.circleColor4}" data-field="circleColor4" data-key="${key}" data-live="fast"></div>
+      <div class="tpl-dash-label">⚪ ألوان الأيقونات الدائرية (تتكرر بالدوران على الحسابات)</div>
+      <div class="tpl-color-grid">
+        <div class="tpl-color-swatch">
+          <input type="color" value="${t.circleColor1}" data-field="circleColor1" data-key="${key}" data-live="fast">
+          <span class="tpl-color-swatch-label">حساب 1</span>
+        </div>
+        <div class="tpl-color-swatch">
+          <input type="color" value="${t.circleColor2}" data-field="circleColor2" data-key="${key}" data-live="fast">
+          <span class="tpl-color-swatch-label">حساب 2</span>
+        </div>
+        <div class="tpl-color-swatch">
+          <input type="color" value="${t.circleColor3}" data-field="circleColor3" data-key="${key}" data-live="fast">
+          <span class="tpl-color-swatch-label">حساب 3</span>
+        </div>
+        <div class="tpl-color-swatch">
+          <input type="color" value="${t.circleColor4}" data-field="circleColor4" data-key="${key}" data-live="fast">
+          <span class="tpl-color-swatch-label">حساب 4</span>
+        </div>
+      </div>
     </div>
 
     <div style="font-size:0.72rem;color:#9aa2c8;">⋮⋮ هذا تصميم افتراضي للعرض — يظهر لكل مستخدم بحساباته الفعلية وأسمائها الحقيقية. لوحة المستطيلة ولوحة الدائرية مستقلتان عن بعض؛ التبديل بين الشكلين يحافظ على ألوان كل شكل.</div>
