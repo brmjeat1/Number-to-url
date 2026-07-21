@@ -149,9 +149,7 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
   </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
 <script>
 (function(){
   // ===== 1) عناصر DOM وربط الأحداث أولاً — يعمل دائماً بغض النظر عن حالة Firebase =====
@@ -188,9 +186,15 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
   // نقل اليوزر المفحوص والمتاح إلى صفحة إنشاء الحساب الكاملة، توفيراً للوقت
   if(createAccountBtn){
     createAccountBtn.addEventListener('click', ()=>{
+      // مرّر معامل المصدر التسويقي (?ref=) لصفحة التسجيل لو الزائر جا من رابط حملة (فليّر/شراكة)
+      let refQ='';
+      try{
+        const ref=new URLSearchParams(window.location.search).get('ref');
+        if(ref) refQ='&ref='+encodeURIComponent(ref);
+      }catch(e){}
       const target = availableUsername
-        ? ('signup.html?u=' + encodeURIComponent(availableUsername))
-        : 'signup.html';
+        ? ('signup.html?u=' + encodeURIComponent(availableUsername) + refQ)
+        : ('signup.html' + (refQ ? '?'+refQ.slice(1) : ''));
       window.location.href = target;
     });
   }
@@ -240,17 +244,23 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
   }
 
   // ===== 2) تهيئة Firebase بأمان تام — أي خطأ هنا لا يعطّل الأزرار أعلاه =====
-  let auth=null, db=null, firebaseReady=false;
-  try{
-    const cfg={apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",authDomain:"electrwni-link.firebaseapp.com",projectId:"electrwni-link",storageBucket:"electrwni-link.firebasestorage.app",messagingSenderId:"712490301263",appId:"1:712490301263:web:2084210da3f687285ab73a"};
-    if(typeof firebase==='undefined') throw new Error('Firebase SDK لم يتم تحميله');
-    if(!firebase.apps.length)firebase.initializeApp(cfg);
-    auth=firebase.auth();
-    db=firebase.firestore();
-    firebaseReady=true;
-  }catch(e){
-    console.error('Firebase init failed:', e);
-  }
+  let auth=null, db=null, firebaseReady=false, fbDoc=null, fbGetDoc=null, fbSetDoc=null, fbCreateUser=null, fbSendVerification=null;
+  (async function initFirebase(){
+    try{
+      const cfg={apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",authDomain:"electrwni-link.firebaseapp.com",projectId:"electrwni-link",storageBucket:"electrwni-link.firebasestorage.app",messagingSenderId:"712490301263",appId:"1:712490301263:web:2084210da3f687285ab73a"};
+      const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js");
+      const { getAuth, createUserWithEmailAndPassword, sendEmailVerification } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
+      const { getFirestore, doc, getDoc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+      const app = initializeApp(cfg);
+      auth = getAuth(app);
+      db = getFirestore(app);
+      fbDoc = doc; fbGetDoc = getDoc; fbSetDoc = setDoc;
+      fbCreateUser = createUserWithEmailAndPassword; fbSendVerification = sendEmailVerification;
+      firebaseReady=true;
+    }catch(e){
+      console.error('Firebase init failed:', e);
+    }
+  })();
 
   // ===== 3) المنطق الفعلي =====
   window.verifyUsername = verifyUsername; // إتاحة عامة احتياطية
@@ -268,8 +278,8 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
     finderBtn.classList.add('loading');
     hideFinderMsg();
     try{
-      const doc=await db.collection('usernames').doc(username).get();
-      if(doc.exists){
+      const docSnap=await fbGetDoc(fbDoc(db,'usernames',username));
+      if(docSnap.exists()){
         showFinderMsg('هذا الاسم محجوز، جرّب اسماً آخر · Username already taken','error');
       }else{
         availableUsername=username;
@@ -299,22 +309,22 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
     setQsLoading(true);
     showQsMsg('','');
     try{
-      const idx=await db.collection('usernames').doc(availableUsername).get();
-      if(idx.exists){
+      const idx=await fbGetDoc(fbDoc(db,'usernames',availableUsername));
+      if(idx.exists()){
         showQsMsg('للأسف تم حجز هذا الاسم للتو، جرّب اسماً آخر · Just got taken, try another','error');
         setQsLoading(false);
         hideQuickSignup();
         return;
       }
-      const cred=await auth.createUserWithEmailAndPassword(email,password);
+      const cred=await fbCreateUser(auth,email,password);
       const uid=cred.user.uid;
-      await db.collection('users').doc(uid).set({
+      await fbSetDoc(fbDoc(db,'users',uid),{
         uid, username:availableUsername, email, displayName:availableUsername,
         bio:'', avatar:'', bannerImage:'', links:[], socials:[], phones:[], website:'', mapUrl:'',
         createdAt:new Date().toISOString()
       },{merge:true});
-      await db.collection('usernames').doc(availableUsername).set({uid});
-      try{ await cred.user.sendEmailVerification(); }catch(e){}
+      await fbSetDoc(fbDoc(db,'usernames',availableUsername),{uid});
+      try{ await fbSendVerification(cred.user); }catch(e){}
       try{ localStorage.setItem('elUserUsername',availableUsername); }catch(e){}
       showQsMsg('تم إنشاء حسابك! جاري الدخول... · Account created!','success');
       setTimeout(()=>{window.location.href='dashboard.html';},600);
