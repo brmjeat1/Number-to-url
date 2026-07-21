@@ -144,7 +144,7 @@ body.rail-collapsed .container{padding-bottom:24px;}
 .tab-branch-btn:hover{background:rgba(0,105,253,.14);}
 
 /* PAGES */
-.page{display:none;}
+.page{display:none;padding-bottom:156px;}
 .page.active{display:block;}
 
 /* EXPANDABLE */
@@ -333,15 +333,15 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 .qa-square:not(.active):hover{border-color:rgba(0,105,253,.5);box-shadow:0 14px 26px rgba(23,50,178,.24), inset 0 1.5px 0 rgba(255,255,255,.65);transform:translateY(-1px);}
 .qa-square-shell{
   position:absolute; inset:0; border-radius:inherit; z-index:0;
-  background:linear-gradient(135deg, rgba(23,50,178,.85), rgba(0,105,253,.72));
+  background:linear-gradient(135deg, rgba(23,50,178,.10), rgba(0,105,253,.06));
   clip-path:circle(0% at 18% 50%);
   transition:clip-path .48s cubic-bezier(.65,0,.35,1);
 }
 .qa-square.active .qa-square-shell{ clip-path:circle(120% at 18% 50%); }
-.qa-square.active{ border-color:rgba(255,255,255,.6); box-shadow:0 14px 28px rgba(0,105,253,.38), inset 0 1.5px 0 rgba(255,255,255,.55); transform:translateY(-1px); }
-.qa-square-ic{ position:relative; z-index:1; display:flex; flex-shrink:0; }
+.qa-square.active{ border-color:var(--primary); box-shadow:0 14px 26px rgba(23,50,178,.20), inset 0 1.5px 0 rgba(255,255,255,.7); transform:translateY(-1px); }
+.qa-square-ic{ position:relative; z-index:1; display:flex; flex-shrink:0; color:var(--primary); }
 .qa-square-txt{ position:relative; z-index:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.qa-square.active .qa-square-ic, .qa-square.active .qa-square-txt{ color:#fff; transition:color .2s ease .1s; }
+.qa-square.active .qa-square-ic, .qa-square.active .qa-square-txt{ color:var(--text); font-weight:800; transition:color .2s ease .1s; }
 .qa-square-plus{
   position:relative; overflow:hidden;
   flex-shrink:0;width:48px;height:48px;border-radius:50%;
@@ -466,10 +466,10 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   position:relative; overflow:hidden; z-index:0;
   transition:transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .35s ease, border-color .35s ease;
 }
-.qa-action-btn::before, .qa-choose-btn::before, .qa-submit-btn::before{
+.qa-action-btn:not(.qa-choose-btn):not(.qa-submit-btn)::before{
   content:''; position:absolute; inset:0; z-index:0; border-radius:inherit; pointer-events:none;
   background:linear-gradient(100deg, var(--primary) 0%, var(--primary-light) 100%);
-  clip-path:inset(0 100% 0 0 round inherit);
+  clip-path:inset(0 100% 0 0);
   transition:clip-path .5s cubic-bezier(.65,0,.35,1);
 }
 .qa-action-btn::after{
@@ -482,7 +482,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   box-shadow:0 12px 26px rgba(0,105,253,.30), inset 0 1px 0 rgba(255,255,255,.35);
   border-color:transparent; transform:translateY(-2px);
 }
-.qa-action-btn:hover::before, .qa-action-btn:focus-visible::before{ clip-path:inset(0 0 0 0 round inherit); }
+.qa-action-btn:not(.qa-choose-btn):not(.qa-submit-btn):hover::before,
+.qa-action-btn:not(.qa-choose-btn):not(.qa-submit-btn):focus-visible::before{ clip-path:inset(0 0 0 0); }
 .qa-action-btn:hover::after, .qa-action-btn:focus-visible::after{ opacity:.85; right:calc(100% - 22px); }
 .qa-action-btn:active{ transform:translateY(0) scale(.96); }
 .qa-action-btn .qa-tile-icon, .qa-action-btn .qa-btn-ic{
@@ -491,8 +492,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 .qa-action-btn .qa-tile-title, .qa-action-btn .qa-btn-txt{
   position:relative; z-index:2; transition:opacity .22s ease, transform .22s ease, color .3s ease;
 }
-.qa-action-btn:hover .qa-tile-title, .qa-action-btn:focus-visible .qa-tile-title,
-.qa-action-btn:hover .qa-btn-txt, .qa-action-btn:focus-visible .qa-btn-txt{ opacity:0; transform:translateY(6px); }
+.qa-tile-action.qa-action-btn:hover .qa-tile-title, .qa-tile-action.qa-action-btn:focus-visible .qa-tile-title,
+.qa-tile-action.qa-action-btn:hover .qa-btn-txt, .qa-tile-action.qa-action-btn:focus-visible .qa-btn-txt{ opacity:0; transform:translateY(6px); }
 .qa-action-btn:hover .qa-tile-icon, .qa-action-btn:focus-visible .qa-tile-icon,
 .qa-action-btn:hover .qa-btn-ic, .qa-action-btn:focus-visible .qa-btn-ic{ color:#fff; transform:scale(1.22); }
 .qa-action-btn .qa-btn-hover-ic{
@@ -500,7 +501,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   color:#fff; opacity:0; transform:scale(.5); pointer-events:none;
   transition:opacity .25s ease .05s, transform .3s cubic-bezier(.34,1.56,.64,1) .05s;
 }
-.qa-action-btn:hover .qa-btn-hover-ic, .qa-action-btn:focus-visible .qa-btn-hover-ic{ opacity:1; transform:scale(1); }
+.qa-tile-action.qa-action-btn:hover .qa-btn-hover-ic, .qa-tile-action.qa-action-btn:focus-visible .qa-btn-hover-ic{ opacity:1; transform:scale(1); }
+.qa-choose-btn.qa-action-btn:hover, .qa-choose-btn.qa-action-btn:focus-visible,
+.qa-submit-btn.qa-action-btn:hover, .qa-submit-btn.qa-action-btn:focus-visible{
+  color:var(--text); /* النص يبقى ظاهراً دوماً بهذه الأزرار — التعبئة تكون خلفية فقط دون إخفاء المحتوى */
+}
+.qa-choose-btn.qa-action-btn .qa-tile-icon, .qa-choose-btn.qa-action-btn .qa-btn-ic,
+.qa-choose-btn.qa-action-btn span{ position:relative; z-index:2; }
 
 /* ===== قوائم الأدلة والتلميحات (دليل الاستخدام) ===== */
 .guide-card{
@@ -608,7 +615,10 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 015 0c0 1.7-2.5 2-2.5 4"/><circle cx="12" cy="16.5" r=".6" fill="currentColor" stroke="none"/></svg>
     </button>
   </div>
-  <div class="qa-square-row" id="qaSquareRow"></div>
+  <div style="display:flex;align-items:center;gap:9px;">
+    <div class="qa-square-row" id="qaSquareRow" style="flex:1;min-width:0;"></div>
+    <div class="qa-square-plus" onclick="openQaCustomize()" title="إضافة/تخصيص">+</div>
+  </div>
   <div class="qa-panel glass" id="qaGrid"></div>
 </div>
 
@@ -1104,10 +1114,20 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         <div class="form-group">
           <label>صورة الغلاف <span class="lbl-sub">/ Cover Image</span></label>
           <input type="file" id="bannerInput" accept="image/*" onchange="selectBanner(this)">
+          <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-top:8px;" onclick="document.getElementById('removeBannerToggle').click()">
+            <span style="font-size:0.78rem;">إزالة الغلاف نهائياً <span class="lbl-sub">/ Remove Cover</span></span>
+            <input type="checkbox" id="removeBannerToggle" onclick="event.stopPropagation();window.onRemoveBanner(this.checked)" style="width:20px;height:20px;accent-color:var(--primary);cursor:pointer;">
+          </label>
+          <div style="font-size:0.72rem;color:var(--muted);margin-top:4px;">مفعّل = يختفي الغلاف نهائياً من صفحتك العامة</div>
         </div>
         <div class="form-group">
           <label>صورة الشعار <span class="lbl-sub">/ Logo Image</span></label>
           <input type="file" id="avatarInput" accept="image/*" onchange="selectAvatar(this)">
+          <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-top:8px;" onclick="document.getElementById('removeAvatarToggle').click()">
+            <span style="font-size:0.78rem;">إزالة الشعار نهائياً <span class="lbl-sub">/ Remove Logo</span></span>
+            <input type="checkbox" id="removeAvatarToggle" onclick="event.stopPropagation();window.onRemoveAvatar(this.checked)" style="width:20px;height:20px;accent-color:var(--primary);cursor:pointer;">
+          </label>
+          <div style="font-size:0.72rem;color:var(--muted);margin-top:4px;">مفعّل = يختفي الشعار نهائياً من صفحتك العامة</div>
         </div>
         <div class="form-group">
           <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="document.getElementById('avatarShapeToggle').click()">
@@ -1179,6 +1199,11 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
               <span id="bgOverlayOpacityVal" style="font-size:0.78rem;color:var(--muted);min-width:34px;">55%</span>
             </div>
           </div>
+          <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-top:10px;" onclick="document.getElementById('removeBgToggle').click()">
+            <span style="font-size:0.78rem;">إزالة الخلفية نهائياً <span class="lbl-sub">/ Remove Background</span></span>
+            <input type="checkbox" id="removeBgToggle" onclick="event.stopPropagation();window.onRemoveBg(this.checked)" style="width:20px;height:20px;accent-color:var(--primary);cursor:pointer;">
+          </label>
+          <div style="font-size:0.72rem;color:var(--muted);margin-top:4px;">مفعّل = تحذف صورة الخلفية وتعود الصفحة للون صافٍ بلا صورة</div>
         </div>
 
         <!-- معاينة حية لشكل الصفحة بالألوان المختارة -->
@@ -1464,6 +1489,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   let currentIconPaletteRect = null;   // [4 ألوان] للأيقونات المستطيلة
   let currentIconPaletteCircle = null; // [4 ألوان] للأيقونات الدائرية
   let currentAvatarShape = 'circle';   // circle | rect — شكل الأفتار/الشعار
+  let avatarHidden = false, bannerHidden = false, bgImageHidden = false;
   let customSocialIconBase64 = null;
 
   // مكتبة أيقونات SVG للمنصات (بدل الإيموجي)
@@ -1753,6 +1779,14 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       // الصور (base64 من Firestore) — أسماء موحّدة مع page.html
       if (data.avatar) { document.getElementById('avatarPreview').innerHTML = `<img src="${data.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`; window.__currentAvatarUrl = data.avatar; }
       if (data.bannerImage) document.getElementById('bannerPreview').style.backgroundImage = `url(${data.bannerImage})`;
+      // حالة إزالة الشعار / الغلاف / الخلفية
+      avatarHidden = !!data.avatarHidden; bannerHidden = !!data.bannerHidden; bgImageHidden = !!data.bgImageHidden;
+      const rAv = document.getElementById('removeAvatarToggle'), rBn = document.getElementById('removeBannerToggle'), rBg = document.getElementById('removeBgToggle');
+      if(rAv) rAv.checked = avatarHidden;
+      if(rBn) rBn.checked = bannerHidden;
+      if(rBg) rBg.checked = bgImageHidden;
+      if(avatarHidden){ const p=document.getElementById('avatarPreview'); if(p){p.style.opacity='.2';p.style.filter='grayscale(1)';} }
+      if(bannerHidden){ const p=document.getElementById('bannerPreview'); if(p){p.style.opacity='.2';p.style.filter='grayscale(1)';} }
     } else {
       await setDoc(userDocRef, { username, email: currentUser.email, createdAt: new Date() }, { merge: true });
     }
@@ -2642,7 +2676,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     return '';
   }
 
-  function renderQaWidget(){
+  function renderQaWidget(enterDir){
     const row = document.getElementById('qaSquareRow');
     const panel = document.getElementById('qaGrid');
     if(!row || !panel) return;
@@ -2654,7 +2688,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       const libItem = QA_LIBRARY[key];
       if(!libItem) return '';
       return `<div class="qa-square ${i===qaCurrentIndex?'active':''}" data-i="${i}" onclick="window.qaSelectSquare(${i})" title="${libItem.name}"><span class="qa-square-shell"></span><span class="qa-square-ic">${libItem.icon}</span><span class="qa-square-txt">${libItem.name}</span></div>`;
-    }).join('') + `<div class="qa-square-plus" onclick="openQaCustomize()" title="إضافة/تخصيص">+</div>`;
+    }).join('');
 
     if(!qaConfig.length){
       panel.innerHTML = '<div class="qa-empty">ما فيه إجراءات مفعّلة — اضغط + لإضافة · No active actions, tap + to add</div>';
@@ -2662,7 +2696,20 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       const key = qaConfig[qaCurrentIndex];
       const libItem = QA_LIBRARY[key];
       const tabLabel = libItem?.tab ? `<div class="qa-source-tab">${libItem.tab}</div>` : '';
-      panel.innerHTML = `${tabLabel}${qaTileHtml(key)}`;
+      panel.innerHTML = `<div class="qa-panel-inner" id="qaPanelInner">${tabLabel}${qaTileHtml(key)}</div>`;
+      const inner = document.getElementById('qaPanelInner');
+      if(inner && enterDir){
+        inner.style.transition = 'none';
+        inner.style.opacity = '0';
+        inner.style.transform = `translateX(${-enterDir*14}px) scale(.97)`;
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            inner.style.transition = 'opacity .3s ease, transform .32s cubic-bezier(.34,1.56,.64,1)';
+            inner.style.opacity = '1';
+            inner.style.transform = 'translateX(0) scale(1)';
+          });
+        });
+      }
     }
 
     const p1 = document.getElementById('colorPicker')?.value;
@@ -2682,11 +2729,25 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(curKey === 'qrForNumber') qaPopulateQrNumSelect();
   }
 
-  // اختيار مربع من صف الإجراءات السريعة — يعرض محتواه بالوحة أسفل الصف
+  // اختيار مربع من صف الإجراءات السريعة — يعرض محتواه بالوحة أسفل الصف بحركة انسيابية سلسة
   window.qaSelectSquare = function(i){
-    qaCurrentIndex = i;
-    qaMenuOpenFor = null;
-    renderQaWidget();
+    if(i === qaCurrentIndex){ qaCurrentIndex = i; qaMenuOpenFor = null; renderQaWidget(); return; }
+    const dir = i > qaCurrentIndex ? 1 : -1;
+    const inner = document.getElementById('qaPanelInner');
+    if(inner){
+      inner.style.transition = 'opacity .18s ease, transform .18s cubic-bezier(.4,0,1,1)';
+      inner.style.opacity = '0';
+      inner.style.transform = `translateX(${dir*14}px) scale(.97)`;
+      setTimeout(() => {
+        qaCurrentIndex = i;
+        qaMenuOpenFor = null;
+        renderQaWidget(dir);
+      }, 170);
+    } else {
+      qaCurrentIndex = i;
+      qaMenuOpenFor = null;
+      renderQaWidget();
+    }
   };
 
   window.qaToggleMenu = function(key){
@@ -4809,6 +4870,33 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     window.showToast("تمت معالجة الصورة، يرجى حفظ التصميم");
   };
 
+  window.onRemoveAvatar = function(checked){
+    avatarHidden = checked;
+    const p = document.getElementById('avatarPreview');
+    if(checked){
+      croppedAvatarBase64 = null; window.__currentAvatarUrl = null;
+      if(p){ p.style.opacity = '.2'; p.style.filter = 'grayscale(1)'; }
+      window.showToast("سيختفي الشعار من صفحتك عند الحفظ");
+    } else if(p){ p.style.opacity=''; p.style.filter=''; }
+  };
+  window.onRemoveBanner = function(checked){
+    bannerHidden = checked;
+    const p = document.getElementById('bannerPreview');
+    if(checked){
+      croppedBannerBase64 = null;
+      if(p){ p.style.opacity = '.2'; p.style.filter = 'grayscale(1)'; }
+      window.showToast("سيختفي الغلاف من صفحتك عند الحفظ");
+    } else if(p){ p.style.opacity=''; p.style.filter=''; }
+  };
+  window.onRemoveBg = function(checked){
+    bgImageHidden = checked;
+    if(checked){
+      croppedBgImageBase64 = null; currentBgImage = null;
+      if(typeof window.setBgMode === 'function') window.setBgMode('color');
+      window.showToast("ستُحذف صورة الخلفية وتعود الصفحة للون صافٍ عند الحفظ");
+    }
+  };
+
   window.saveDesign = async function() {
     window.showToast("جاري حفظ التصميم...");
     try {
@@ -4824,11 +4912,17 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         bgColor: bg,                 // لون الخلفية (أو لون الطبقة أمام الصورة بوضع "خلفية + ألوان")
         bgMode: currentBgMode,       // color | image | imageColor
         bgOverlayOpacity: currentBgOverlayOpacity,
-        avatarShape: currentAvatarShape  // circle | rect
+        avatarShape: currentAvatarShape,  // circle | rect
+        avatarHidden: avatarHidden,   // مفعّل = الشعار مخفي نهائياً عن الصفحة العامة
+        bannerHidden: bannerHidden,   // مفعّل = الغلاف مخفي نهائياً عن الصفحة العامة
+        bgImageHidden: bgImageHidden  // مفعّل = صورة الخلفية محذوفة نهائياً
       };
-      if(croppedAvatarBase64) upData.avatar = croppedAvatarBase64;
-      if(croppedBannerBase64) upData.bannerImage = croppedBannerBase64;
-      if(croppedBgImageBase64) upData.bgImage = croppedBgImageBase64; // صورة خلفية جديدة مرفوعة هالجلسة
+      if(avatarHidden) upData.avatar = null;
+      else if(croppedAvatarBase64) upData.avatar = croppedAvatarBase64;
+      if(bannerHidden) upData.bannerImage = null;
+      else if(croppedBannerBase64) upData.bannerImage = croppedBannerBase64;
+      if(bgImageHidden) upData.bgImage = null;
+      else if(croppedBgImageBase64) upData.bgImage = croppedBgImageBase64; // صورة خلفية جديدة مرفوعة هالجلسة
       else if(currentBgImage) upData.bgImage = currentBgImage;         // صورة خلفية محفوظة سابقاً بدون تغيير
       if(currentIconPaletteRect) upData.iconPaletteRect = currentIconPaletteRect;
       if(currentIconPaletteCircle) upData.iconPaletteCircle = currentIconPaletteCircle;
