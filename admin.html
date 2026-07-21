@@ -297,6 +297,8 @@ const TPL_DESIGN_DEFAULTS = {
   socialLabel1:'حساب 1', socialLabel2:'حساب 2', socialLabel3:'حساب 3', socialLabel4:'حساب 4',
   // خلفية الصفحة: image = صورة فقط | imageColor = صورة + طبقة لون أمامها | color = لون فقط
   bgMode:'color', bgOverlayOpacity:0.55,
+  // صندوق زجاجي خلف الاسم والوصف لتحسين الوضوح فوق خلفية صورة — 0 يعني بلا صندوق (سلوك الموقع الحالي، افتراضي آمن)
+  nameBoxOpacity:0, bioBoxOpacity:0,
   // ٤ ألوان مخصصة للأيقونات المستطيلة، و٤ ألوان مخصصة للأيقونات الدائرية (مستقلة عن بعض)
   rectColor1:'#3d5af1', rectColor2:'#6c8fff', rectColor3:'#0f1535', rectColor4:'#9aa2c8',
   circleColor1:'#3d5af1', circleColor2:'#6c8fff', circleColor3:'#0f1535', circleColor4:'#9aa2c8'
@@ -630,6 +632,7 @@ function buildMockupHtml(key){
   const rectStyle = t.rectStyle || 'rounded';
   const showAvatar = t.showAvatar !== false;
   const showLogo = t.showLogo !== false;
+  const showBanner = t.showBanner !== false;
   const showSocials = t.showSocials !== false;
   const showLinks = t.showLinks !== false;
   // وضع الخلفية: image = صورة كاملة فقط | imageColor = صورة + طبقة لون أمامها | color = لون فقط
@@ -648,9 +651,14 @@ function buildMockupHtml(key){
   const linkFillStyle = t.linkFill ? `background:${t.p1};color:${t.linkText};` : `background:transparent;color:${t.linkText};`;
   const linkShadowStyle = t.linkShadow ? `box-shadow:0 6px 14px -4px rgba(0,0,0,.35);` : '';
   const socialsHtml = buildSocialsPreview(t, isRect, rectStyle);
+  const nameOp = t.nameBoxOpacity ?? 0;
+  const bioOp = t.bioBoxOpacity ?? 0;
+  const nameBoxStyle = nameOp > 0 ? `display:inline-block;padding:5px 16px;border-radius:10px;background:rgba(255,255,255,${nameOp});backdrop-filter:blur(${Math.round(nameOp*16)}px);` : '';
+  const bioBoxStyle = bioOp > 0 ? `display:inline-block;padding:5px 14px;border-radius:10px;background:rgba(255,255,255,${bioOp});backdrop-filter:blur(${Math.round(bioOp*16)}px);` : '';
 
   return `
-    <div class="tpl-mockup-lg" id="tplMockupLg" style="${bgStyle}position:relative;font-family:'${t.fontFamily}',sans-serif;padding-top:${28+t.gap}px;">
+    <div class="tpl-mockup-lg" id="tplMockupLg" style="${bgStyle}position:relative;font-family:'${t.fontFamily}',sans-serif;padding-top:${28+t.gap}px;overflow:hidden;">
+      ${showBanner ? `<div style="position:absolute;top:0;left:0;right:0;height:70px;background:linear-gradient(135deg,${t.p1}55,${t.p2}55);"></div>` : ''}
       <!-- + الخلفية: أعلى يسار -->
       <button type="button" class="tpl-plus-badge" style="top:8px;left:8px;" data-action="open-bg-popover" data-key="${key}" title="الخلفية">+</button>
 
@@ -661,15 +669,19 @@ function buildMockupHtml(key){
       ` : ''}
 
       ${showAvatar ? `
-        <div style="position:relative;display:inline-block;margin-bottom:${t.gap}px;">
-          <div style="width:${t.avatarSize}px;height:${t.avatarSize}px;border-radius:${avatarRadius};${t.avatarImg ? `background-image:url(${t.avatarImg});background-size:cover;background-position:center;` : `background:linear-gradient(135deg,${t.p1},${t.p2});`}"></div>
+        <div style="position:relative;display:inline-block;margin-bottom:${t.gap}px;z-index:1;">
+          <div style="width:${t.avatarSize}px;height:${t.avatarSize}px;border-radius:${avatarRadius};border:3px solid #fff;${t.avatarImg ? `background-image:url(${t.avatarImg});background-size:cover;background-position:center;` : `background:linear-gradient(135deg,${t.p1},${t.p2});`}"></div>
           <!-- + الأفتار (صورة المستخدم الشخصية): مركّز أفقيًا تحت الدائرة تمامًا مهما كان حجمها — منفصل عن الشعار -->
           <button type="button" class="tpl-plus-badge" style="bottom:-8px;left:50%;transform:translateX(-50%);" data-action="open-avatar-popover" data-key="${key}" title="الأفتار">+</button>
         </div>
       ` : ''}
-      <div style="color:${t.text};font-size:${t.nameSize}px;font-weight:${t.nameWeight};margin-bottom:${Math.max(6,t.gap*0.4)}px;">${escapeHtml(t.sampleName || 'اسمك هنا')}</div>
-      <div style="height:${t.bioSize*0.35}px;width:70%;border-radius:3px;opacity:.35;background:${t.text};margin-bottom:6px;"></div>
-      <div style="height:${t.bioSize*0.35}px;width:45%;border-radius:3px;opacity:.35;background:${t.text};margin-bottom:${t.gap}px;"></div>
+      <div style="${nameBoxStyle}margin-bottom:${Math.max(6,t.gap*0.4)}px;">
+        <span style="color:${t.text};font-size:${t.nameSize}px;font-weight:${t.nameWeight};">${escapeHtml(t.sampleName || 'اسمك هنا')}</span>
+      </div>
+      <div style="${bioBoxStyle}margin-bottom:${t.gap}px;">
+        <div style="height:${t.bioSize*0.35}px;width:120px;border-radius:3px;opacity:.35;background:${t.text};margin-bottom:6px;"></div>
+        <div style="height:${t.bioSize*0.35}px;width:75px;border-radius:3px;opacity:.35;background:${t.text};"></div>
+      </div>
 
       <div style="position:relative;width:100%;">
         <button type="button" class="tpl-plus-badge" style="top:-6px;left:8px;" data-action="open-socials-popover" data-key="${key}" title="التواصل">+</button>
@@ -705,6 +717,7 @@ function renderTplExpanded(){
   if(!t) return;
   const showAvatar = t.showAvatar !== false;
   const showLogo = t.showLogo !== false;
+  const showBanner = t.showBanner !== false;
   const showSocials = t.showSocials !== false;
   const showLinks = t.showLinks !== false;
   const activeId = currentTplSubTab;
@@ -735,7 +748,7 @@ function renderTplExpanded(){
           <button type="button" class="back-btn" data-action="sub-tab" data-tab="preview">→ رجوع للمعاينة</button>
           <div class="title">${activeLabel}</div>
         </div>
-        ${buildPanelBody(activeId, key, t, {showAvatar, showLogo, showSocials, showLinks})}
+        ${buildPanelBody(activeId, key, t, {showAvatar, showLogo, showBanner, showSocials, showLinks})}
       </div>
     `;
   }
@@ -786,6 +799,16 @@ function buildPanelBody(id, key, t, flags){
         <div class="tpl-field"><span class="tpl-field-label">حجم سطور الوصف</span>
           <div class="tpl-range-row"><input type="range" min="8" max="20" value="${t.bioSize}" data-field="bioSize" data-key="${key}" data-live="fast" data-unit="px"><span class="tpl-range-val">${t.bioSize}px</span></div>
         </div>
+      </div>
+      <div class="tpl-dash-section">
+        <div class="tpl-dash-label">وضوح فوق خلفية صورة</div>
+        <div style="font-size:0.74rem;color:#9aa2c8;margin-bottom:12px;line-height:1.6;">صندوق زجاجي خلف الاسم والوصف — مفيد لو الخلفية صورة تُصعّب قراءتهما. اضبط كل صندوق لحاله.</div>
+        <div class="tpl-field"><span class="tpl-field-label">شدة صندوق الاسم</span>
+          <div class="tpl-range-row"><input type="range" min="0" max="100" value="${Math.round((t.nameBoxOpacity ?? 0)*100)}" data-field="nameBoxOpacity" data-percent="1" data-key="${key}" data-live="fast" data-unit="%"><span class="tpl-range-val">${Math.round((t.nameBoxOpacity ?? 0)*100)}%</span></div>
+        </div>
+        <div class="tpl-field"><span class="tpl-field-label">شدة صندوق الوصف</span>
+          <div class="tpl-range-row"><input type="range" min="0" max="100" value="${Math.round((t.bioBoxOpacity ?? 0)*100)}" data-field="bioBoxOpacity" data-percent="1" data-key="${key}" data-live="fast" data-unit="%"><span class="tpl-range-val">${Math.round((t.bioBoxOpacity ?? 0)*100)}%</span></div>
+        </div>
       </div>`;
   }
   if(id === 'buttons'){
@@ -831,6 +854,7 @@ function buildPanelBody(id, key, t, flags){
       <div class="tpl-dash-section">
         <label class="tpl-toggle-row"><input type="checkbox" ${flags.showAvatar?'checked':''} data-field="showAvatar" data-key="${key}" data-live="flag"><span>إظهار الأفتار (صورة المستخدم)</span></label>
         <label class="tpl-toggle-row"><input type="checkbox" ${flags.showLogo?'checked':''} data-field="showLogo" data-key="${key}" data-live="flag"><span>إظهار الشعار (البراند)</span></label>
+        <label class="tpl-toggle-row"><input type="checkbox" ${flags.showBanner?'checked':''} data-field="showBanner" data-key="${key}" data-live="flag"><span>إظهار الغلاف (صورة الخلفية العلوية)</span></label>
         <label class="tpl-toggle-row"><input type="checkbox" ${flags.showSocials?'checked':''} data-field="showSocials" data-key="${key}" data-live="flag"><span>إظهار حسابات التواصل</span></label>
         <label class="tpl-toggle-row"><input type="checkbox" ${flags.showLinks?'checked':''} data-field="showLinks" data-key="${key}" data-live="flag"><span>إظهار الروابط</span></label>
       </div>`;
@@ -1015,7 +1039,7 @@ function deleteTemplate(key){
 }
 function addNewTemplate(){
   const id = 'custom_' + Date.now();
-  templatesData[id] = { name: 'قالب جديد', p1:'#3d5af1', p2:'#6c8fff', text:'#0f1535', bg:'#ffffff', iconShape:'circle', showAvatar:true, showLogo:true, showSocials:true, showLinks:true, ...TPL_DESIGN_DEFAULTS };
+  templatesData[id] = { name: 'قالب جديد', p1:'#3d5af1', p2:'#6c8fff', text:'#0f1535', bg:'#ffffff', iconShape:'circle', showAvatar:true, showLogo:true, showBanner:true, showSocials:true, showLinks:true, ...TPL_DESIGN_DEFAULTS };
   renderTemplatesEditor();
 }
 let isSaving = false;
