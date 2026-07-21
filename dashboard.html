@@ -1430,6 +1430,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, deleteUser, updatePassword, reauthenticateWithCredential, EmailAuthProvider, setPersistence, browserLocalPersistence, indexedDBLocalPersistence, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, getDoc, collection, getDocs, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getStorage, ref as storageRef, uploadString, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
   // إعدادات Firebase الخاصة بمشروعك الحقيقي لحل مشكلة الآيفون
   const firebaseConfig = {
@@ -1471,6 +1472,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     }
   })();
   const db = getFirestore(app);
+  const storage = getStorage(app);
 
   // المتغيرات العامة لإدارة الحالة
   let currentUser = null;
@@ -4483,8 +4485,10 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
           const socials = (snap.exists() && Array.isArray(snap.data().socials)) ? snap.data().socials : [];
           const idx = socials.findIndex(s => s.id === id);
           if(idx<0) return;
+          window.showToast("جاري رفع الصورة...");
+          const url = await uploadImageToStorage(base64, `social-icons/${currentUser.uid}/${id}.jpg`);
           socials[idx].styleMode = 'upload';
-          socials[idx].icon = base64;
+          socials[idx].icon = url;
           await setDoc(userRef, { socials: socials }, { merge: true });
           window.showToast("تم رفع الصورة");
           loadSocials();
@@ -4753,9 +4757,12 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         canvas.width = w; canvas.height = h;
         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
         const base64 = canvas.toDataURL('image/jpeg', 0.72);
-        croppedBgImageBase64 = base64;
+        croppedBgImageBase64 = base64;   // معاينة فورية محلية بينما الرفع يجري بالخلفية
         refreshBgModeUI();
-        window.showToast('تمت معالجة الصورة — اضغط "حفظ" لتظهر بصفحتك');
+        window.showToast('جاري رفع الصورة...');
+        uploadImageToStorage(base64, `backgrounds/${currentUser.uid}.jpg`)
+          .then(url => { croppedBgImageBase64 = url; window.showToast('تم رفع الصورة — اضغط "حفظ" لتظهر بصفحتك'); })
+          .catch(err => window.showToast('تعذر رفع الصورة: ' + (err.message||'')));
       };
       img.src = e.target.result;
     };
@@ -4825,6 +4832,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     }
   }
 
+  // يرفع صورة (data URL) فعلياً لـ Firebase Storage ويرجّع رابط تحميل دائم — بدل حشرها base64 داخل وثيقة المستخدم
+  async function uploadImageToStorage(dataUrl, path){
+    const fileRef = storageRef(storage, path);
+    await uploadString(fileRef, dataUrl, 'data_url');
+    return await getDownloadURL(fileRef);
+  }
+
   window.selectAvatar = function(input) { if (input.files && input.files[0]) openCropModal(input.files[0], 'avatar', 1); };
   window.selectBanner = function(input) { if (input.files && input.files[0]) openCropModal(input.files[0], 'banner', 16/6); };
 
@@ -4850,24 +4864,32 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(cropper) cropper.destroy();
   };
 
-  window.confirmCrop = function() {
+  window.confirmCrop = async function() {
     if(!cropper) return;
-    // أبعاد محسوبة لإبقاء base64 صغيراً (حد وثيقة Firestore ~1MB)
     const widthByType = { avatar: 256, banner: 640 };
     const qualityByType = { avatar: 0.85, banner: 0.75 };
     const canvas = cropper.getCroppedCanvas({ width: widthByType[currentCropType] || 640 });
     const quality = qualityByType[currentCropType] || 0.75;
     const base64 = canvas.toDataURL('image/jpeg', quality);
+    const type = currentCropType;
+    window.cancelCrop();
 
-    if (currentCropType === 'avatar') {
-      croppedAvatarBase64 = base64;
+    // معاينة فورية بينما الرفع يجري بالخلفية — تجربة سريعة بدون انتظار
+    if (type === 'avatar') {
       document.getElementById('avatarPreview').innerHTML = `<img src="${base64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
     } else {
-      croppedBannerBase64 = base64;
       document.getElementById('bannerPreview').style.backgroundImage = `url(${base64})`;
     }
-    window.cancelCrop();
-    window.showToast("تمت معالجة الصورة، يرجى حفظ التصميم");
+    window.showToast("جاري رفع الصورة...");
+    try{
+      const path = `${type === 'avatar' ? 'avatars' : 'banners'}/${currentUser.uid}.jpg`;
+      const url = await uploadImageToStorage(base64, path);
+      if (type === 'avatar') croppedAvatarBase64 = url;
+      else croppedBannerBase64 = url;
+      window.showToast("تم رفع الصورة، يرجى حفظ التصميم");
+    }catch(e){
+      window.showToast("تعذر رفع الصورة: " + (e.message||''));
+    }
   };
 
   window.onRemoveAvatar = function(checked){
@@ -4876,6 +4898,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(checked){
       croppedAvatarBase64 = null; window.__currentAvatarUrl = null;
       if(p){ p.style.opacity = '.2'; p.style.filter = 'grayscale(1)'; }
+      deleteObject(storageRef(storage, `avatars/${currentUser.uid}.jpg`)).catch(()=>{});
       window.showToast("سيختفي الشعار من صفحتك عند الحفظ");
     } else if(p){ p.style.opacity=''; p.style.filter=''; }
   };
@@ -4885,6 +4908,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(checked){
       croppedBannerBase64 = null;
       if(p){ p.style.opacity = '.2'; p.style.filter = 'grayscale(1)'; }
+      deleteObject(storageRef(storage, `banners/${currentUser.uid}.jpg`)).catch(()=>{});
       window.showToast("سيختفي الغلاف من صفحتك عند الحفظ");
     } else if(p){ p.style.opacity=''; p.style.filter=''; }
   };
@@ -4893,6 +4917,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(checked){
       croppedBgImageBase64 = null; currentBgImage = null;
       if(typeof window.setBgMode === 'function') window.setBgMode('color');
+      deleteObject(storageRef(storage, `backgrounds/${currentUser.uid}.jpg`)).catch(()=>{});
       window.showToast("ستُحذف صورة الخلفية وتعود الصفحة للون صافٍ عند الحفظ");
     }
   };
