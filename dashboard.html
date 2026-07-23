@@ -273,6 +273,37 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 }
 .shape-opt.active{border-color:var(--primary);background:var(--bg);}
 
+/* ===== بطاقة "٣ مستطيلات عرضية" الموحّدة (نص + ٤ ألوان + معاينة) — تُستخدم لأيقونات التصميم وبطاقة QR ===== */
+.wbar-card{border:1.5px solid var(--border);border-radius:14px;overflow:hidden;background:var(--bg2);margin-bottom:14px;}
+.wbar{display:flex;align-items:center;gap:10px;padding:12px 14px;width:100%;box-sizing:border-box;}
+.wbar+.wbar{border-top:1px solid var(--border);}
+.wbar-label{background:var(--bg2);}
+.wbar-label input{border:none;background:transparent;outline:none;flex:1;font-weight:700;font-size:0.85rem;font-family:inherit;color:var(--text);}
+.wbar-label .wbar-ic{flex-shrink:0;display:flex;color:var(--primary);}
+.wbar-colors{justify-content:space-between;background:var(--surface,#fff);}
+.wbar-swatch{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;cursor:pointer;}
+.wbar-swatch input[type="color"]{width:100%;max-width:44px;height:34px;border-radius:9px;border:2px solid var(--border);cursor:pointer;padding:2px;background:none;}
+.wbar-swatch input[type="color"]::-webkit-color-swatch-wrapper{padding:0;}
+.wbar-swatch input[type="color"]::-webkit-color-swatch{border:none;border-radius:6px;}
+.wbar-swatch span{font-size:0.62rem;font-weight:700;color:var(--muted);}
+.wbar-preview{justify-content:center;padding:16px 14px;background:var(--bg);}
+
+/* ===== الألوان الذكية: شرائح اقتراح لونية ===== */
+.smart-color-target{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
+.smart-color-target button{flex:1;min-width:70px;padding:8px 6px;border:2px solid var(--border);border-radius:9px;background:var(--bg2);cursor:pointer;font-family:inherit;font-weight:700;font-size:0.72rem;color:var(--text2);}
+.smart-color-target button.active{border-color:var(--primary);background:var(--bg);color:var(--primary);}
+.smart-color-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;max-height:220px;overflow-y:auto;}
+.smart-color-chip{display:flex;align-items:center;gap:6px;padding:6px 10px 6px 6px;border-radius:100px;border:1.5px solid var(--border);background:var(--bg2);cursor:pointer;font-family:inherit;font-size:0.75rem;font-weight:700;color:var(--text2);}
+.smart-color-chip:active{transform:scale(0.96);}
+.smart-color-chip .swatch{width:18px;height:18px;border-radius:50%;flex-shrink:0;border:1.5px solid rgba(0,0,0,0.08);}
+
+/* ===== أزرار "ألوان التصميم" السريعة الأربعة (لون الموقع/لون التطبيق/رفع أيقونة/تخصيص الألوان) ===== */
+.qa-color-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.qa-color-act-btn{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 6px;border-radius:11px;border:1.5px solid var(--border);background:var(--surface,#fff);cursor:pointer;font-family:inherit;color:var(--text);}
+.qa-color-act-btn:active{transform:scale(0.96);background:var(--bg2);}
+.qa-color-act-btn svg{color:var(--primary);}
+.qa-color-act-btn span{font-size:0.7rem;font-weight:700;}
+
 .template-card{
   flex-shrink:0;width:90px;cursor:pointer;border:2px solid var(--border);border-radius:12px;
   overflow:hidden;background:var(--bg2);font-family:inherit;
@@ -952,74 +983,9 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       </div>
     </div>
 
-    <div class="expandable">
-      <div class="expandable-header open" onclick="toggleExpand(this)">
-        <div class="expandable-title"><div class="expandable-icon">▭</div><span>شكل الأيقونات<span class="title-sub">Icon Shape</span></span></div>
-        <div class="expandable-toggle">▼</div>
-      </div>
-      <div class="expandable-content open">
-        <div style="font-size:0.76rem;font-weight:700;color:var(--muted);margin-bottom:12px;">يُطبَّق على كل حسابات التواصل دفعة واحدة · Applies to all accounts at once</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;" id="iconShapeGrid">
-          <button type="button" class="shape-opt" id="shapeOptCircle" onclick="setIconShape('circle')">
-            <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-light));margin:0 auto 8px;"></div>
-            <div style="font-size:0.8rem;font-weight:700;">دائري <span class="lbl-sub" style="display:block;">Circle</span></div>
-          </button>
-          <button type="button" class="shape-opt" id="shapeOptRect" onclick="setIconShape('rect')">
-            <div style="width:76px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--primary-light));margin:0 auto 8px;"></div>
-            <div style="font-size:0.8rem;font-weight:700;">مستطيل <span class="lbl-sub" style="display:block;">Rectangle</span></div>
-          </button>
-        </div>
-        <div id="rectSubOptions" style="display:none;grid-template-columns:1fr 1fr;gap:10px;">
-          <button type="button" class="shape-opt" id="rectStyleRounded" onclick="setRectStyle('rounded')">
-            <div style="width:76px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--primary-light));margin:0 auto 8px;position:relative;overflow:hidden;">
-              <div style="position:absolute;right:36%;top:0;bottom:0;width:1.5px;background:rgba(255,255,255,0.6);"></div>
-            </div>
-            <div style="font-size:0.76rem;font-weight:700;">حواف دائرية<span class="lbl-sub" style="display:block;">خط مستقيم · Straight</span></div>
-          </button>
-          <button type="button" class="shape-opt" id="rectStyleSharp" onclick="setRectStyle('sharp')">
-            <div style="width:76px;height:36px;border-radius:2px;background:linear-gradient(135deg,var(--primary),var(--primary-light));margin:0 auto 8px;position:relative;overflow:hidden;">
-              <div style="position:absolute;right:32%;top:-14px;bottom:-14px;width:1.5px;background:rgba(255,255,255,0.6);transform:rotate(18deg);"></div>
-            </div>
-            <div style="font-size:0.76rem;font-weight:700;">حواف حادة<span class="lbl-sub" style="display:block;">خط مائل · Slanted</span></div>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="expandable">
-      <div class="expandable-header open" onclick="toggleExpand(this)">
-        <div class="expandable-title"><div class="expandable-icon">▦</div><span>تخصيص بطاقة QR<span class="title-sub">QR Card Style</span></span></div>
-        <div class="expandable-toggle">▼</div>
-      </div>
-      <div class="expandable-content open">
-        <div style="display:flex;gap:8px;margin-bottom:14px;">
-          <button type="button" id="qrModeBrand" onclick="setQrMode('brand')" style="flex:1;padding:10px;border:2px solid var(--primary);border-radius:9px;background:var(--bg2);color:var(--text);font-weight:700;font-family:inherit;cursor:pointer;font-size:0.82rem;">لون الموقع · Site</button>
-          <button type="button" id="qrModeCustom" onclick="setQrMode('custom')" style="flex:1;padding:10px;border:2px solid var(--border);border-radius:9px;background:transparent;color:var(--text);font-weight:700;font-family:inherit;cursor:pointer;font-size:0.82rem;">🎨 تخصيص · Custom</button>
-        </div>
-        <div id="qrCustomColors" style="display:none;grid-template-columns:1fr;gap:10px;margin-bottom:14px;">
-          <div>
-            <label style="font-size:0.72rem;display:block;margin-bottom:4px;">خلفية البطاقة · Card BG</label>
-            <input type="color" class="color-box-picker" id="qrBgColor" value="#3d5af1" oninput="updateQrPreview()">
-          </div>
-          <div>
-            <label style="font-size:0.72rem;display:block;margin-bottom:4px;">لون الرمز · QR Color</label>
-            <input type="color" class="color-box-picker" id="qrIconColor" value="#1a1d24" oninput="updateQrPreview()">
-          </div>
-          <div>
-            <label style="font-size:0.72rem;display:block;margin-bottom:4px;">لون الإطار · Ring</label>
-            <input type="color" class="color-box-picker" id="qrRingColor" value="#ffffff" oninput="updateQrPreview()">
-          </div>
-          <div>
-            <label style="font-size:0.72rem;display:block;margin-bottom:4px;">لون الحاوية · Container</label>
-            <input type="color" class="color-box-picker" id="qrContainerColor" value="#ffffff" oninput="updateQrPreview()">
-          </div>
-        </div>
-        <div style="font-size:0.75rem;font-weight:700;color:var(--muted);margin-bottom:8px;">معاينة مباشرة · Live Preview</div>
-        <div id="qrMiniPreview" style="border-radius:14px;padding:18px;text-align:center;background:linear-gradient(135deg,#3d5af1,#6c8fff);">
-          <div id="qrMiniLogo" style="width:36px;height:36px;border-radius:50%;background:#fff;margin:0 auto 8px;border:2px solid #fff;"></div>
-          <div id="qrMiniBox" style="width:60px;height:60px;background:#fff;border-radius:8px;margin:0 auto;"></div>
-        </div>
-      </div>
+    <div style="padding:12px 14px;margin-bottom:14px;background:var(--bg2);border-radius:12px;border:1.5px dashed var(--border);font-size:0.78rem;color:var(--text2);line-height:1.7;">
+      ▭ شكل الأيقونات وتخصيص بطاقة QR انتقلا إلى تبويب <b>التصميم</b> — كل ما يخص المظهر بمكان واحد. <span class="lbl-sub" style="display:block;">Icon shape &amp; QR styling moved to the Design tab</span>
+      <button type="button" onclick="showPage('design', document.querySelectorAll('.nav-tab')[0])" style="margin-top:8px;width:100%;padding:9px;border:none;border-radius:9px;background:var(--primary);color:#fff;font-weight:700;font-family:inherit;cursor:pointer;font-size:0.78rem;">الانتقال إلى التصميم ‹</button>
     </div>
 
     <div class="expandable">
@@ -1089,6 +1055,23 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     </div>
     <div class="expandable">
       <div class="expandable-header" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 000 20 14.5 14.5 0 000-20z"/><path d="M2 12h20"/></svg></div><span>الألوان الذكية<span class="title-sub">Smart Colors</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content">
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;line-height:1.7;">اكتب اسم دولة (تعطيك ألوان علمها) أو صف شيئاً (تعطيك لونه المعروف) — مثال: "السعودية"، "البحر"، "الذهب" · Type a country or describe something to get its color</div>
+        <div class="smart-color-target" id="smartColorTargetGrid">
+          <button type="button" class="active" data-t="p1" onclick="window.smartColorSetTarget('p1')">أساسي ١</button>
+          <button type="button" data-t="p2" onclick="window.smartColorSetTarget('p2')">أساسي ٢</button>
+          <button type="button" data-t="text" onclick="window.smartColorSetTarget('text')">النص</button>
+          <button type="button" data-t="bg" onclick="window.smartColorSetTarget('bg')">الخلفية</button>
+        </div>
+        <input type="text" id="smartColorInput" placeholder="مثال: مصر، السماء، الذهب..." oninput="window.smartColorSearch(this.value)">
+        <div class="smart-color-chips" id="smartColorChips"></div>
+      </div>
+    </div>
+    <div class="expandable">
+      <div class="expandable-header" onclick="toggleExpand(this)">
         <div class="expandable-title"><div class="expandable-icon">◧</div><span>قوالب جاهزة<span class="title-sub">Ready Templates</span></span></div>
         <div class="expandable-toggle">▼</div>
       </div>
@@ -1138,9 +1121,102 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         </div>
 
         <div class="form-group">
+          <label>تخصيص الألوان السريع <span class="lbl-sub">/ Quick Colors</span></label>
+          <div style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;">بطاقة موحّدة: اسم، ٤ ألوان بضغطة، ومعاينة فورية · One card — name, 4 colors, live preview</div>
+          <div class="wbar-card">
+            <div class="wbar wbar-label">
+              <span class="wbar-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></span>
+              <input type="text" id="quickColorLabel" value="الألوان الرئيسية" maxlength="30" placeholder="اسم مجموعة الألوان">
+            </div>
+            <div class="wbar wbar-colors">
+              <label class="wbar-swatch"><input type="color" id="quickColorP1" value="#3d5af1" oninput="window.onColorPick(this.value)"><span>أساسي ١</span></label>
+              <label class="wbar-swatch"><input type="color" id="quickColorP2" value="#6c8fff" oninput="window.onColor2Pick(this.value)"><span>أساسي ٢</span></label>
+              <label class="wbar-swatch"><input type="color" id="quickColorText" value="#1a1d24" oninput="window.onTextColorPick(this.value)"><span>النص</span></label>
+              <label class="wbar-swatch"><input type="color" id="quickColorBg" value="#ffffff" oninput="window.onBgColorPick(this.value)"><span>الخلفية</span></label>
+            </div>
+            <div class="wbar wbar-preview">
+              <div style="display:flex;align-items:center;gap:12px;width:100%;">
+                <div id="qcpAvatar" style="width:36px;height:36px;border-radius:50%;background:#3d5af1;border:2px solid #6c8fff;flex-shrink:0;"></div>
+                <div style="flex:1;min-width:0;">
+                  <div id="qcpName" style="font-weight:700;font-size:0.82rem;color:#1a1d24;">اسمك هنا</div>
+                  <div id="qcpBtn" style="margin-top:6px;background:#3d5af1;color:#fff;border-radius:7px;padding:6px 12px;font-size:0.72rem;font-weight:700;display:inline-block;">أذهب الآن</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
           <label>الألوان <span class="lbl-sub">/ Colors</span></label>
           <div style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;">اختر مجموعة ألوان جاهزة لتطبيقها فوراً، وتقدر تعدّل عليها بعدها بالحقول تحت · Pick a ready color set, then fine-tune below</div>
           <div id="templateCarousel" style="display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;"></div>
+        </div>
+
+        <div class="expandable" style="margin:0 0 14px;border-radius:12px;">
+          <div class="expandable-header" onclick="toggleExpand(this)">
+            <div class="expandable-title"><div class="expandable-icon">▭</div><span>شكل الأيقونات<span class="title-sub">Icon Shape</span></span></div>
+            <div class="expandable-toggle">▼</div>
+          </div>
+          <div class="expandable-content">
+            <div style="font-size:0.76rem;font-weight:700;color:var(--muted);margin-bottom:12px;">يُطبَّق على كل حسابات التواصل دفعة واحدة · Applies to all accounts at once</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;" id="iconShapeGrid">
+              <button type="button" class="shape-opt" id="shapeOptCircle" onclick="setIconShape('circle')">
+                <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-light));margin:0 auto 8px;"></div>
+                <div style="font-size:0.8rem;font-weight:700;">دائري <span class="lbl-sub" style="display:block;">Circle</span></div>
+              </button>
+              <button type="button" class="shape-opt" id="shapeOptRect" onclick="setIconShape('rect')">
+                <div style="width:76px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--primary-light));margin:0 auto 8px;"></div>
+                <div style="font-size:0.8rem;font-weight:700;">مستطيل <span class="lbl-sub" style="display:block;">Rectangle</span></div>
+              </button>
+            </div>
+            <div id="rectSubOptions" style="display:none;grid-template-columns:1fr 1fr;gap:10px;">
+              <button type="button" class="shape-opt" id="rectStyleRounded" onclick="setRectStyle('rounded')">
+                <div style="width:76px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--primary-light));margin:0 auto 8px;position:relative;overflow:hidden;">
+                  <div style="position:absolute;right:36%;top:0;bottom:0;width:1.5px;background:rgba(255,255,255,0.6);"></div>
+                </div>
+                <div style="font-size:0.76rem;font-weight:700;">حواف دائرية<span class="lbl-sub" style="display:block;">خط مستقيم · Straight</span></div>
+              </button>
+              <button type="button" class="shape-opt" id="rectStyleSharp" onclick="setRectStyle('sharp')">
+                <div style="width:76px;height:36px;border-radius:2px;background:linear-gradient(135deg,var(--primary),var(--primary-light));margin:0 auto 8px;position:relative;overflow:hidden;">
+                  <div style="position:absolute;right:32%;top:-14px;bottom:-14px;width:1.5px;background:rgba(255,255,255,0.6);transform:rotate(18deg);"></div>
+                </div>
+                <div style="font-size:0.76rem;font-weight:700;">حواف حادة<span class="lbl-sub" style="display:block;">خط مائل · Slanted</span></div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="expandable" style="margin:0 0 20px;border-radius:12px;">
+          <div class="expandable-header" onclick="toggleExpand(this)">
+            <div class="expandable-title"><div class="expandable-icon">▦</div><span>تخصيص بطاقة QR<span class="title-sub">QR Card Style</span></span></div>
+            <div class="expandable-toggle">▼</div>
+          </div>
+          <div class="expandable-content">
+            <div style="display:flex;gap:8px;margin-bottom:14px;">
+              <button type="button" id="qrModeBrand" onclick="setQrMode('brand')" style="flex:1;padding:10px;border:2px solid var(--primary);border-radius:9px;background:var(--bg2);color:var(--text);font-weight:700;font-family:inherit;cursor:pointer;font-size:0.82rem;">لون الموقع · Site</button>
+              <button type="button" id="qrModeCustom" onclick="setQrMode('custom')" style="flex:1;padding:10px;border:2px solid var(--border);border-radius:9px;background:transparent;color:var(--text);font-weight:700;font-family:inherit;cursor:pointer;font-size:0.82rem;">🎨 تخصيص · Custom</button>
+            </div>
+            <div id="qrCustomColors" style="display:none;">
+              <div class="wbar-card">
+                <div class="wbar wbar-label">
+                  <span class="wbar-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span>
+                  <span style="font-weight:700;font-size:0.85rem;">بطاقة QR</span>
+                </div>
+                <div class="wbar wbar-colors">
+                  <label class="wbar-swatch"><input type="color" class="color-box-picker" id="qrBgColor" value="#3d5af1" oninput="updateQrPreview()"><span>الخلفية</span></label>
+                  <label class="wbar-swatch"><input type="color" class="color-box-picker" id="qrIconColor" value="#1a1d24" oninput="updateQrPreview()"><span>الرمز</span></label>
+                  <label class="wbar-swatch"><input type="color" class="color-box-picker" id="qrRingColor" value="#ffffff" oninput="updateQrPreview()"><span>الإطار</span></label>
+                  <label class="wbar-swatch"><input type="color" class="color-box-picker" id="qrContainerColor" value="#ffffff" oninput="updateQrPreview()"><span>الحاوية</span></label>
+                </div>
+                <div class="wbar wbar-preview">
+                  <div id="qrMiniPreview" style="border-radius:14px;padding:14px;text-align:center;background:linear-gradient(135deg,#3d5af1,#6c8fff);width:100%;">
+                    <div id="qrMiniLogo" style="width:32px;height:32px;border-radius:50%;background:#fff;margin:0 auto 8px;border:2px solid #fff;"></div>
+                    <div id="qrMiniBox" style="width:52px;height:52px;background:#fff;border-radius:8px;margin:0 auto;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="form-group">
@@ -1895,8 +1971,11 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   // ===== فروع كل قسم تظهر منسدلة تحت مستطيل التبويب نفسه =====
   const TAB_BRANCHES = {
     design: [
+      { label:'الألوان الذكية', title:'الألوان الذكية' },
       { label:'قوالب جاهزة', title:'قوالب جاهزة' },
       { label:'تصميم صفحتك', title:'تصميم صفحتك' },
+      { label:'شكل الأيقونات', title:'شكل الأيقونات' },
+      { label:'تخصيص بطاقة QR', title:'تخصيص بطاقة QR' },
     ],
     links: [
       { label:'إضافة رابط', title:'أضف رابط', after:() => window.setEntryMode && window.setEntryMode('link') },
@@ -1906,8 +1985,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     ],
     socials: [
       { label:'حسابات ووسائل التواصل', title:'حسابات التواصل' },
-      { label:'شكل الأيقونات', title:'شكل الأيقونات' },
-      { label:'تخصيص بطاقة QR', title:'تخصيص بطاقة QR' },
     ],
     profile: [
       { label:'بيانات ملفي', title:'بيانات ملفي' },
@@ -2510,14 +2587,14 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     bgActionsDesign:   { name: 'إجراءات الخلفية', icon: qaIconSvg('image'),  tab: 'التصميم', nav:{pageId:'design', title:'تصميم صفحتك', tabIdx:0, after:'scrollBg'} },
     logoCoverDesign:   { name: 'الشعار والغلاف',  icon: qaIconSvg('banner'), tab: 'التصميم', nav:{pageId:'design', title:'تصميم صفحتك', tabIdx:0, after:'scrollLogo'} },
     textActionsDesign: { name: 'إجراءات النص',    icon: qaIconSvg('edit'),   tab: 'التصميم', nav:{pageId:'design', title:'تصميم صفحتك', tabIdx:0, after:'scrollText'} },
-    iconActionsDesign: { name: 'إجراءات الأيقونات', icon: qaIconSvg('shape'), tab: 'التصميم', nav:{pageId:'socials', title:'شكل الأيقونات', tabIdx:2} },
-    iconStyleDesign:   { name: 'تصميم الأيقونات',  icon: qaIconSvg('layers'), tab: 'التصميم', nav:{pageId:'socials', title:'شكل الأيقونات', tabIdx:2}, toast:'الشكل من هنا، ولون الأيقونة عند إضافة كل حساب' },
+    iconActionsDesign: { name: 'إجراءات الأيقونات', icon: qaIconSvg('shape'), tab: 'التصميم', nav:{pageId:'design', title:'شكل الأيقونات', tabIdx:0} },
+    iconStyleDesign:   { name: 'تصميم الأيقونات',  icon: qaIconSvg('layers'), tab: 'التصميم', nav:{pageId:'design', title:'شكل الأيقونات', tabIdx:0}, toast:'الشكل من هنا، ولون الأيقونة عند إضافة كل حساب' },
 
     // ===== قسم التواصل =====
     contactAccountsAct: { name: 'إجراءات حساباتك', icon: qaIconSvg('broadcast'), tab: 'تواصل', nav:{pageId:'socials', title:'حسابات التواصل', tabIdx:2} },
     contactNumbersAct:  { name: 'إجراءات أرقامك',   icon: qaIconSvg('phone'),     tab: 'تواصل', nav:{pageId:'socials', title:'أرقام التواصل', tabIdx:2} },
     contactEmailsAct:   { name: 'إجراءات إيميلاتك', icon: qaIconSvg('mail'),      tab: 'تواصل', nav:{pageId:'socials', title:'حسابات التواصل', tabIdx:2}, toast:'أضف بريدك كحساب تواصل من هنا' },
-    contactIconsAct:    { name: 'إجراءات أيقوناتك', icon: qaIconSvg('shape'),     tab: 'تواصل', nav:{pageId:'socials', title:'شكل الأيقونات', tabIdx:2} },
+    contactIconsAct:    { name: 'إجراءات أيقوناتك', icon: qaIconSvg('shape'),     tab: 'تواصل', nav:{pageId:'design', title:'شكل الأيقونات', tabIdx:0} },
     contactWebsiteAct:  { name: 'إجراءات موقعك',    icon: qaIconSvg('globe'),     tab: 'تواصل', nav:{pageId:'socials', title:'الموقع الإلكتروني', tabIdx:2} },
     contactLocationAct: { name: 'إجراءات مكانك',    icon: qaIconSvg('pin'),       tab: 'تواصل', nav:{pageId:'socials', title:'الموقع الملاحي', tabIdx:2} },
 
@@ -2645,25 +2722,30 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     }
 
     if(key === 'colors'){
+      const goDesign = (anchorJs) => `showPage('design', document.querySelectorAll('.nav-tab')[0]); window.closeQaPanel && window.closeQaPanel(); setTimeout(()=>{${anchorJs}}, 380);`;
       return `
         <div class="qa-tile">
           <div class="qa-tile-header-row">
             <div class="qa-tile-title" style="margin:0;">${item.icon} ${item.name}</div>
-            <button type="button" class="qa-dots-btn" onclick="qaToggleMenu('colors')">•••</button>
           </div>
-          ${qaMenuOpenFor==='colors' ? `
-            <div class="qa-inline-menu">
-              <button type="button" onclick="setIconShape('circle'); qaToggleMenu('colors');" class="${currentIconShape==='circle'?'active':''}">⚪ أيقونات دائرية</button>
-              <button type="button" onclick="setIconShape('rect'); qaToggleMenu('colors');" class="${currentIconShape==='rect'?'active':''}">▭ أيقونات مستطيلة</button>
-            </div>` : `
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px;">
-              <input type="color" class="qa-color-mini" id="qaColorP1" oninput="qaQuickColorPreview()" title="أساسي ١">
-              <input type="color" class="qa-color-mini" id="qaColorP2" oninput="qaQuickColorPreview()" title="أساسي ٢">
-              <input type="color" class="qa-color-mini" id="qaColorText" oninput="qaQuickColorPreview()" title="النص">
-              <input type="color" class="qa-color-mini" id="qaColorBg" oninput="qaQuickColorPreview()" title="الخلفية">
-            </div>
-            <button type="button" class="qa-submit-btn qa-action-btn" onclick="qaSaveQuickColors()">حفظ</button>
-          `}
+          <div class="qa-color-actions">
+            <button type="button" class="qa-color-act-btn" onclick="${goDesign(`document.getElementById('bgColorPicker')?.scrollIntoView({behavior:'smooth',block:'center'})`)}">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M3 15l4.5-4.5a2 2 0 012.8 0L15 15"/><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor" stroke="none"/></svg>
+              <span>لون الموقع</span>
+            </button>
+            <button type="button" class="qa-color-act-btn" onclick="${goDesign(`document.getElementById('colorPicker')?.scrollIntoView({behavior:'smooth',block:'center'})`)}">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>
+              <span>لون التطبيق</span>
+            </button>
+            <button type="button" class="qa-color-act-btn" onclick="${goDesign(`document.getElementById('avatarInput')?.click()`)}">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <span>رفع أيقونة</span>
+            </button>
+            <button type="button" class="qa-color-act-btn" onclick="${goDesign(`document.getElementById('quickColorLabel')?.scrollIntoView({behavior:'smooth',block:'center'})`)}">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              <span>تخصيص الألوان</span>
+            </button>
+          </div>
         </div>`;
     }
 
@@ -4735,6 +4817,51 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   // 7. محرك التصميم المتقدم واقتصاص الصور (Design UI & Cropper Engine)
 
 
+  // ===== الألوان الذكية: قاموس جاهز لأعلام الدول وألوان الأشياء الشائعة (فوري وبدون تكلفة) =====
+  const SMART_COLOR_MAP = {
+    // دول (اللون الأبرز بعلمها)
+    'السعودية':'#0B5F3C','مصر':'#CE1126','الإمارات':'#00732F','الكويت':'#007A3D','قطر':'#8D1B3D','البحرين':'#CE1126',
+    'عمان':'#DB161B','الأردن':'#007A3D','العراق':'#CE1126','سوريا':'#CE1126','لبنان':'#ED1C24','اليمن':'#CE1126',
+    'فلسطين':'#CE1126','ليبيا':'#E70013','تونس':'#E70013','الجزائر':'#006233','المغرب':'#C1272D','السودان':'#D21034',
+    'موريتانيا':'#00A651','الصومال':'#4189DD','جيبوتي':'#6AB2E7','تركيا':'#E30A17','إيران':'#239F40','باكستان':'#01411C',
+    'الهند':'#FF9933','الصين':'#DE2910','اليابان':'#BC002D','كوريا الجنوبية':'#003478','إندونيسيا':'#FF0000','ماليزيا':'#010066',
+    'أمريكا':'#3C3B6E','الولايات المتحدة':'#3C3B6E','بريطانيا':'#012169','فرنسا':'#0055A4','ألمانيا':'#FFCC00','إيطاليا':'#008C45',
+    'إسبانيا':'#AA151B','البرتغال':'#046A38','هولندا':'#AE1C28','بلجيكا':'#FDDA24','سويسرا':'#D52B1E','السويد':'#006AA7',
+    'النرويج':'#BA0C2F','الدنمارك':'#C60C30','فنلندا':'#003580','اليونان':'#0D5EAF','روسيا':'#0039A6','أوكرانيا':'#0057B7',
+    'البرازيل':'#009C3B','الأرجنتين':'#74ACDF','المكسيك':'#006847','كندا':'#FF0000','أستراليا':'#00008B','نيوزيلندا':'#00247D',
+    'جنوب أفريقيا':'#007749','نيجيريا':'#008751','كينيا':'#006600',
+    // ألوان أشياء وطبيعة شائعة
+    'الذهب':'#D4AF37','الفضة':'#C0C0C0','البرونز':'#CD7F32','النحاس':'#B87333','الماس':'#B9F2FF',
+    'السماء':'#4A90D9','البحر':'#006994','المحيط':'#1B4F72','الغروب':'#FF6B35','الشروق':'#FFB347',
+    'الدم':'#8A0303','الورد':'#E75480','الزهر':'#FFC0CB','الياسمين':'#F0EAD6','النعناع':'#98FF98',
+    'العشب':'#4CAF50','الغابة':'#228B22','الصحراء':'#EDC9AF','الرمل':'#C2B280','الليل':'#0B1026',
+    'الفحم':'#36454F','الثلج':'#FFFAFA','الحليب':'#FFFFF0','العاج':'#FFFFF0','اللؤلؤ':'#F0EAD6',
+    'الليمون':'#FFF700','البرتقال':'#FFA500','التفاح':'#D2122E','العنب':'#6F2DA8','الموز':'#FFE135',
+    'القهوة':'#6F4E37','الشوكولاتة':'#7B3F00','الكراميل':'#C68E17','العسل':'#FFB300','الزيتون':'#708238',
+    'النار':'#FF4500','الجليد':'#A5F2F3','الفولاذ':'#71797E','الخشب':'#8B5A2B','الجلد':'#A0522D'
+  };
+  let smartColorTarget = 'p1';
+  window.smartColorSetTarget = function(t){
+    smartColorTarget = t;
+    document.querySelectorAll('#smartColorTargetGrid button').forEach(b=>b.classList.toggle('active', b.getAttribute('data-t')===t));
+  };
+  window.smartColorApply = function(hex){
+    if(smartColorTarget==='p1') window.onColorPick(hex);
+    else if(smartColorTarget==='p2') window.onColor2Pick(hex);
+    else if(smartColorTarget==='text') window.onTextColorPick(hex);
+    else if(smartColorTarget==='bg') window.onBgColorPick(hex);
+    window.showToast && window.showToast('تم تطبيق اللون ✓');
+  };
+  window.smartColorSearch = function(q){
+    const box = document.getElementById('smartColorChips');
+    if(!box) return;
+    const query = (q||'').trim();
+    if(!query){ box.innerHTML=''; return; }
+    const matches = Object.keys(SMART_COLOR_MAP).filter(k => k.includes(query) || query.includes(k)).slice(0, 12);
+    if(!matches.length){ box.innerHTML = '<div style="font-size:0.75rem;color:var(--muted);">لا توجد نتيجة مطابقة — جرّب اسم دولة أو كلمة أخرى</div>'; return; }
+    box.innerHTML = matches.map(k => `<button type="button" class="smart-color-chip" onclick="window.smartColorApply('${SMART_COLOR_MAP[k]}')"><span class="swatch" style="background:${SMART_COLOR_MAP[k]};"></span>${k}</button>`).join('');
+  };
+
   window.onColorPick = function(color) {
     document.getElementById('colorHexInput').value = color;
     document.getElementById('colorPicker').value = color;
@@ -4758,6 +4885,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       const ic=s.querySelector('[data-lpicon]');
       if(ic){ const key=ic.getAttribute('data-lpicon'); ic.innerHTML=PLATFORM_SVG[key]||''; ic.style.color=textC; }
     });
+    // مزامنة بطاقة "تخصيص الألوان السريع" (المستطيلات الثلاثة) مع نفس القيم دائماً
+    const qp1=lp('quickColorP1'), qp2=lp('quickColorP2'), qtx=lp('quickColorText'), qbg=lp('quickColorBg');
+    if(qp1) qp1.value=primary; if(qp2) qp2.value=primary2; if(qtx) qtx.value=textC; if(qbg) qbg.value=bg;
+    const qcpAvatar=lp('qcpAvatar'), qcpName=lp('qcpName'), qcpBtn=lp('qcpBtn');
+    if(qcpAvatar){ qcpAvatar.style.background=primary; qcpAvatar.style.borderColor=primary2; }
+    if(qcpName) qcpName.style.color=textC;
+    if(qcpBtn){ qcpBtn.style.background=primary; }
   }
 
   window.onColorHexInput = function(hex) {
