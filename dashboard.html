@@ -1210,6 +1210,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         </div>
         </div>
 
+        <div style="display:none;" aria-hidden="true">
         <div class="form-group" style="margin-top:20px;">
           <label>لون النص <span class="lbl-sub">/ Text Color</span></label>
           <div id="textPalette" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;"></div>
@@ -1226,6 +1227,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
             <input type="color" id="bgColorPicker" value="#ffffff" onchange="onBgColorPick(this.value)" style="width:50px;height:40px;padding:2px;cursor:pointer;">
             <input type="text" id="bgHexInput" placeholder="#ffffff" maxlength="7" dir="ltr" onchange="onBgHexInput(this.value)" style="flex:1;font-family:ui-monospace,'SF Mono','Space Mono',monospace;">
           </div>
+        </div>
         </div>
 
         <!-- وضع خلفية الصفحة: لون فقط / خلفية فقط / خلفية + ألوان (طبقة لون شفافة أمام الصورة) -->
@@ -2702,11 +2704,11 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
             <div class="qa-tile-title" style="margin:0;">${item.icon} ${item.name}</div>
           </div>
           <div class="qa-color-actions">
-            <button type="button" class="qa-color-act-btn" onclick="${goDesign(`document.getElementById('bgColorPicker')?.scrollIntoView({behavior:'smooth',block:'center'})`)}">
+            <button type="button" class="qa-color-act-btn" onclick="${goDesign(`document.getElementById('quickColorBg')?.scrollIntoView({behavior:'smooth',block:'center'})`)}">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M3 15l4.5-4.5a2 2 0 012.8 0L15 15"/><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor" stroke="none"/></svg>
               <span>لون الموقع</span>
             </button>
-            <button type="button" class="qa-color-act-btn" onclick="${goDesign(`document.getElementById('colorPicker')?.scrollIntoView({behavior:'smooth',block:'center'})`)}">
+            <button type="button" class="qa-color-act-btn" onclick="${goDesign(`document.getElementById('quickColorP1')?.scrollIntoView({behavior:'smooth',block:'center'})`)}">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>
               <span>لون التطبيق</span>
             </button>
