@@ -910,75 +910,14 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content open">
-        <div style="margin-bottom:16px;">
-          <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">دائماً هنا · Always here</div>
-          <div id="alwaysVisibleGrid" style="display:flex;flex-wrap:wrap;gap:7px;"></div>
-          <button onclick="window.openQrCard()" style="margin-top:7px;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--primary);font-weight:700;font-family:inherit;cursor:pointer;">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v2h-3v-2zm0 4h3v4h-2v-2h-1v-2zm-5-4h3v3h-2v-1h-1v-2zm0 5h2v2h-2v-2z"></path></svg>
-            QR صفحتك · Your Page QR
-          </button>
-        </div>
-        <div style="margin-bottom:16px;">
-          <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">ألصق رابط حسابك · Paste your account URL</div>
-          <div style="display:flex;gap:8px;">
-            <input type="text" id="pasteUrlInput" placeholder="https://instagram.com/username" dir="ltr" style="flex:1;" oninput="onPasteUrl(this.value)">
-            <button onclick="detectFromPaste()" style="padding:0 14px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.85rem;white-space:nowrap;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;flex-shrink:0;">تعرّف</button>
-          </div>
-          <div id="pasteHint" style="font-size:0.72rem;color:var(--muted);margin-top:6px;min-height:16px;"></div>
-        </div>
-
-        <div style="display:flex;align-items:center;gap:10px;margin:14px 0;">
-          <div style="flex:1;height:1px;background:var(--border);"></div>
-          <span style="font-size:0.8rem;font-weight:700;color:var(--muted);">أو · OR</span>
-          <div style="flex:1;height:1px;background:var(--border);"></div>
-        </div>
-
-        <div style="margin-bottom:16px;">
-          <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">اختر منصة · Choose Platform</div>
-          <div id="quickAddGrid" style="display:flex;flex-wrap:wrap;gap:7px;"></div>
-          <button id="moreBtn" onclick="toggleMorePlatforms()" style="margin-top:8px;background:none;border:1.5px dashed var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;font-size:0.78rem;color:var(--text2);">المزيد · More</button>
-        </div>
-
-        <div id="socialFormBox" style="display:none;margin-bottom:16px;padding:16px;background:var(--bg2);border-radius:12px;border:1px solid var(--border);">
-          <div id="socDetectedPreview" style="display:none;align-items:center;gap:12px;padding:12px;background:#fff;border-radius:10px;border:1.5px solid var(--primary);margin-bottom:14px;">
-            <div id="socDetectedIcon" style="width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;overflow:hidden;"></div>
-            <div style="flex:1;min-width:0;">
-              <div id="socDetectedName" style="font-weight:700;font-size:0.95rem;"></div>
-              <div id="socDetectedUrl" style="font-size:0.72rem;color:var(--muted);direction:ltr;word-break:break-all;margin-top:2px;"></div>
-            </div>
-            <div id="socDetectedCheck" style="font-size:1.4rem;color:var(--success);flex-shrink:0;">✓</div>
-          </div>
-
-          <div class="form-group">
-            <label id="socUrlLabel">رابط الحساب <span class="lbl-sub">/ Account Link</span></label>
-            <div style="display:flex;gap:8px;">
-              <input type="text" id="socUrl" placeholder="https://instagram.com/username" dir="ltr" style="flex:1;" oninput="debounceDetect(this.value)">
-              <button onclick="detectNow()" style="padding:0 13px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.85rem;white-space:nowrap;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;flex-shrink:0;">فحص</button>
-            </div>
-            <div id="socDetectHint" style="font-size:0.72rem;color:var(--muted);margin-top:4px;min-height:16px;"></div>
-          </div>
-
-          <div id="socColorModeGroup" style="display:none;margin-bottom:14px;">
-            <label style="margin-bottom:8px;display:block;font-size:0.84rem;font-weight:700;color:var(--text2);">لون الأيقونة <span style="font-size:0.7rem;font-weight:400;color:var(--muted);">/ Icon Style</span></label>
-            <div style="display:flex;gap:7px;flex-wrap:wrap;">
-              <button onclick="setSocColorMode('brand')" id="cmBrand" style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">لون التطبيق</button>
-              <button onclick="setSocColorMode('site')" id="cmTheme" style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">لون موقعك</button>
-              <button onclick="setSocColorMode('upload')" id="cmUpload" style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">رفع صورة</button>
-            </div>
-            <div id="customIconUpload" style="display:none;margin-top:10px;">
-              <input type="file" id="socIconFile" accept="image/*" onchange="previewCustomIcon(this)">
-              <div id="socIconPreview" style="margin-top:8px;display:none;">
-                <img id="socIconImg" style="width:52px;height:52px;border-radius:12px;object-fit:cover;border:2px solid var(--border);">
-              </div>
-            </div>
-          </div>
-
-          <div style="display:flex;gap:8px;">
-            <button class="btn-add" onclick="saveSocial()">حفظ · Save</button>
-            <button class="btn-add" style="background:var(--muted);" onclick="closeSocialForm()">إلغاء · Cancel</button>
-          </div>
-        </div>
-
+        <button type="button" onclick="showPage('design', document.querySelectorAll('.nav-tab')[0]); setTimeout(()=>document.getElementById('socAddSection')?.scrollIntoView({behavior:'smooth',block:'start'}),380);" style="width:100%;margin-bottom:16px;padding:13px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;font-weight:800;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          إضافة حساب جديد · Add Account
+        </button>
+        <button onclick="window.openQrCard()" style="margin-bottom:16px;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--primary);font-weight:700;font-family:inherit;cursor:pointer;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v2h-3v-2zm0 4h3v4h-2v-2h-1v-2zm-5-4h3v3h-2v-1h-1v-2zm0 5h2v2h-2v-2z"></path></svg>
+          QR صفحتك · Your Page QR
+        </button>
         <div id="socialsRegistry"></div>
       </div>
     </div>
@@ -988,53 +927,9 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       <button type="button" onclick="showPage('design', document.querySelectorAll('.nav-tab')[0])" style="margin-top:8px;width:100%;padding:9px;border:none;border-radius:9px;background:var(--primary);color:#fff;font-weight:700;font-family:inherit;cursor:pointer;font-size:0.78rem;">الانتقال إلى التصميم ‹</button>
     </div>
 
-    <div class="expandable">
-      <div class="expandable-header open" onclick="toggleExpand(this)">
-        <div class="expandable-title"><div class="expandable-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M6.62 10.79a15.15 15.15 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24 11.36 11.36 0 003.56.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z"/></svg></div><span>أرقام التواصل<span class="title-sub">Phone Numbers</span></span></div>
-        <div class="expandable-toggle">▼</div>
-      </div>
-      <div class="expandable-content open">
-        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">تظهر في صفحتك العامة مع إمكانية الاتصال المباشر · Shown on your public page for direct calls</p>
-        <div id="phonesContainer"></div>
-        <button class="btn-add" onclick="addPhoneEntry()" style="background:var(--primary);margin-bottom:12px;">+ إضافة رقم · Add Number</button>
-        <button class="btn-add" onclick="savePhones()">حفظ الأرقام · Save Numbers</button>
-        <button class="btn-delete" onclick="deletePhones()" style="width:100%;margin-top:8px;">حذف كل الأرقام · Remove Numbers</button>
-      </div>
-    </div>
-
-    <div class="expandable">
-      <div class="expandable-header open" onclick="toggleExpand(this)">
-        <div class="expandable-title"><div class="expandable-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm6.93 6h-2.95a15.65 15.65 0 00-1.38-3.56A8.03 8.03 0 0118.93 8zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14a7.96 7.96 0 010-4h3.38a16.5 16.5 0 000 4H4.26zm.81 2h2.95c.3 1.26.77 2.46 1.38 3.56A7.99 7.99 0 015.07 16zm2.95-8H5.07a7.99 7.99 0 014.33-3.56C8.8 5.54 8.33 6.74 8.02 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66a14.6 14.6 0 010-4h4.68a14.6 14.6 0 010 4zm.25 5.56c.61-1.1 1.08-2.3 1.38-3.56h2.95a7.99 7.99 0 01-4.33 3.56zM16.36 14a16.5 16.5 0 000-4h3.38a7.96 7.96 0 010 4h-3.38z"/></svg></div><span>الموقع الإلكتروني<span class="title-sub">Website</span></span></div>
-        <div class="expandable-toggle">▼</div>
-      </div>
-      <div class="expandable-content open">
-        <div class="form-group">
-          <label>رابط موقعك أو متجرك <span class="lbl-sub">/ Your website or store URL</span></label>
-          <input type="url" id="websiteInput" placeholder="https://yoursite.com" dir="ltr">
-        </div>
-        <button class="btn-add" onclick="saveWebsite()">حفظ الموقع · Save Website</button>
-        <button class="btn-delete" onclick="deleteWebsite()" style="width:100%;margin-top:8px;">حذف الموقع · Remove Website</button>
-      </div>
-    </div>
-
-    <div class="expandable">
-      <div class="expandable-header open" onclick="toggleExpand(this)">
-        <div class="expandable-title"><div class="expandable-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M12 2a7 7 0 00-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 00-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg></div><span>الموقع الملاحي<span class="title-sub">Map Location</span></span></div>
-        <div class="expandable-toggle">▼</div>
-      </div>
-      <div class="expandable-content open">
-        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">يظهر في صفحتك كـ "خريطة موقعنا" مع رابط مباشر للخريطة · Shows as "Our Location" map link</p>
-        <div class="form-group">
-          <label>اسم الخريطة <span class="lbl-sub">/ Map Title</span></label>
-          <input type="text" id="mapTitleInput" placeholder="مثال: موقع متجرنا" maxlength="30">
-        </div>
-        <div class="form-group">
-          <label>رابط خرائط Google أو Apple Maps <span class="lbl-sub">/ Google or Apple Maps link</span></label>
-          <input type="url" id="mapInput" placeholder="https://maps.google.com/..." dir="ltr">
-        </div>
-        <button class="btn-add" onclick="saveMap()">حفظ الموقع الملاحي · Save Map</button>
-        <button class="btn-delete" onclick="deleteMap()" style="width:100%;margin-top:8px;">حذف الخريطة · Remove Map</button>
-      </div>
+    <div style="padding:12px 14px;margin-bottom:14px;background:var(--bg2);border-radius:12px;border:1.5px dashed var(--border);font-size:0.78rem;color:var(--text2);line-height:1.7;">
+      ▭ شكل الأيقونات وتخصيص بطاقة QR انتقلا إلى تبويب <b>التصميم</b> — كل ما يخص المظهر بمكان واحد. الأرقام والموقع الإلكتروني والخريطة والإيميل تُضاف الآن من نفس مكان "إضافة حساب جديد" أعلاه. <span class="lbl-sub" style="display:block;">Icon shape, QR styling, phone, website, map &amp; email are now all added from the unified Add Account flow</span>
+      <button type="button" onclick="showPage('design', document.querySelectorAll('.nav-tab')[0])" style="margin-top:8px;width:100%;padding:9px;border:none;border-radius:9px;background:var(--primary);color:#fff;font-weight:700;font-family:inherit;cursor:pointer;font-size:0.78rem;">الانتقال إلى التصميم ‹</button>
     </div>
   </div>
 
@@ -1214,6 +1109,82 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
                     <div id="qrMiniBox" style="width:52px;height:52px;background:#fff;border-radius:8px;margin:0 auto;"></div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="expandable" id="socAddSection" style="margin:0 0 20px;border-radius:12px;">
+          <div class="expandable-header open" onclick="toggleExpand(this)">
+            <div class="expandable-title"><div class="expandable-icon">ح</div><span>إضافة حساب تواصل<span class="title-sub">Add Contact Account</span></span></div>
+            <div class="expandable-toggle">▼</div>
+          </div>
+          <div class="expandable-content open">
+            <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">دائماً هنا · Always here</div>
+            <div id="alwaysVisibleGrid" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;"></div>
+
+            <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">ألصق رابط حسابك · Paste your account URL</div>
+            <div style="display:flex;gap:8px;margin-bottom:6px;">
+              <input type="text" id="pasteUrlInput" placeholder="https://instagram.com/username" dir="ltr" style="flex:1;" oninput="onPasteUrl(this.value)">
+              <button onclick="detectFromPaste()" style="padding:0 14px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.85rem;white-space:nowrap;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;flex-shrink:0;">تعرّف</button>
+            </div>
+            <div id="pasteHint" style="font-size:0.72rem;color:var(--muted);margin-bottom:14px;min-height:16px;"></div>
+
+            <div style="display:flex;align-items:center;gap:10px;margin:14px 0;">
+              <div style="flex:1;height:1px;background:var(--border);"></div>
+              <span style="font-size:0.8rem;font-weight:700;color:var(--muted);">أو · OR</span>
+              <div style="flex:1;height:1px;background:var(--border);"></div>
+            </div>
+
+            <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">اختر منصة · Choose Platform</div>
+            <div id="quickAddGrid" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px;"></div>
+            <button id="moreBtn" onclick="toggleMorePlatforms()" style="margin-bottom:14px;background:none;border:1.5px dashed var(--border);border-radius:8px;padding:6px 12px;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;font-size:0.74rem;color:var(--text2);">المزيد · More</button>
+
+            <div id="socialFormBox" style="display:none;">
+              <div id="socDetectedPreview" style="display:none;align-items:center;gap:12px;padding:12px;background:#fff;border-radius:10px;border:1.5px solid var(--primary);margin-bottom:14px;">
+                <div id="socDetectedIcon" style="width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;overflow:hidden;"></div>
+                <div style="flex:1;min-width:0;">
+                  <div id="socDetectedName" style="font-weight:700;font-size:0.95rem;"></div>
+                  <div id="socDetectedUrl" style="font-size:0.72rem;color:var(--muted);direction:ltr;word-break:break-all;margin-top:2px;"></div>
+                </div>
+                <div id="socDetectedCheck" style="font-size:1.4rem;color:var(--success);flex-shrink:0;">✓</div>
+              </div>
+
+              <div class="wbar-card">
+                <div class="wbar wbar-label">
+                  <span class="wbar-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.07 0l2.83-2.83a5 5 0 00-7.07-7.07l-1.5 1.5"/><path d="M14 11a5 5 0 00-7.07 0L4.1 13.83a5 5 0 007.07 7.07l1.5-1.5"/></svg></span>
+                  <input type="text" id="socUrl" placeholder="اليوزر أو رابط الحساب" dir="ltr" oninput="debounceDetect(this.value)">
+                  <button type="button" onclick="detectNow()" style="flex-shrink:0;padding:6px 12px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.76rem;font-family:inherit;">فحص</button>
+                </div>
+                <div class="wbar" style="flex-wrap:wrap;gap:6px;background:var(--surface,#fff);" id="socColorModeGroup">
+                  <button type="button" onclick="setSocColorMode('upload')" id="cmUpload" style="flex:1;min-width:64px;padding:8px 4px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:inherit;font-weight:700;font-size:0.7rem;">📤 رفع</button>
+                  <button type="button" onclick="setSocColorMode('site')" id="cmTheme" style="flex:1;min-width:64px;padding:8px 4px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:inherit;font-weight:700;font-size:0.7rem;">لون الموقع</button>
+                  <button type="button" onclick="setSocColorMode('brand')" id="cmBrand" style="flex:1;min-width:64px;padding:8px 4px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:inherit;font-weight:700;font-size:0.7rem;">لون التطبيق</button>
+                  <button type="button" onclick="setSocColorMode('custom')" id="cmCustom" style="flex:1;min-width:64px;padding:8px 4px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:inherit;font-weight:700;font-size:0.7rem;">🎨 تخصيص</button>
+                </div>
+                <div class="wbar wbar-colors" id="socCustomColorsRow" style="display:none;">
+                  <label class="wbar-swatch"><input type="color" id="socCustomBg" value="#3d5af1" oninput="updateSocLivePreview()"><span>الخلفية</span></label>
+                  <label class="wbar-swatch"><input type="color" id="socCustomIconColor" value="#ffffff" oninput="updateSocLivePreview()"><span>الأيقونة</span></label>
+                  <label class="wbar-swatch"><input type="color" id="socCustomRing" value="#ffffff" oninput="updateSocLivePreview()"><span>الإطار</span></label>
+                  <label class="wbar-swatch"><input type="color" id="socCustomContainer" value="#ffffff" oninput="updateSocLivePreview()"><span>الحاوية</span></label>
+                </div>
+                <div id="customIconUpload" style="display:none;padding:12px 14px;border-top:1px solid var(--border);">
+                  <input type="file" id="socIconFile" accept="image/*" onchange="previewCustomIcon(this)">
+                  <div id="socIconPreview" style="margin-top:8px;display:none;">
+                    <img id="socIconImg" style="width:52px;height:52px;border-radius:12px;object-fit:cover;border:2px solid var(--border);">
+                  </div>
+                </div>
+                <div class="wbar wbar-preview">
+                  <div id="socLivePreviewBox" style="display:flex;align-items:center;gap:10px;width:100%;justify-content:center;">
+                    <div id="socLivePreviewIcon" style="width:44px;height:44px;border-radius:50%;background:var(--primary);border:2px solid transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;"></div>
+                    <span style="font-size:0.74rem;color:var(--muted);font-weight:700;">معاينة الشكل النهائي · Live Preview</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display:flex;gap:8px;margin-top:12px;">
+                <button class="btn-add" onclick="saveSocial()">حفظ · Save</button>
+                <button class="btn-add" style="background:var(--muted);" onclick="closeSocialForm()">إلغاء · Cancel</button>
               </div>
             </div>
           </div>
@@ -1862,11 +1833,11 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       if(topbarBrandEl) topbarBrandEl.textContent = `electrwni.link/${username}`;
       document.getElementById('pfName').value = data.fullName || '';
       document.getElementById('pfBio').value = data.bio || '';
-      document.getElementById('websiteInput').value = data.website || '';
-      document.getElementById('mapInput').value = data.mapUrl || data.mapLocation || '';
+      if(document.getElementById('websiteInput')) document.getElementById('websiteInput').value = data.website || '';
+      if(document.getElementById('mapInput')) document.getElementById('mapInput').value = data.mapUrl || data.mapLocation || '';
       if(document.getElementById('mapTitleInput')) document.getElementById('mapTitleInput').value = data.mapTitle || '';
       
-      if (data.phones && Array.isArray(data.phones)) {
+      if (data.phones && Array.isArray(data.phones) && document.getElementById('phonesContainer')) {
         document.getElementById('phonesContainer').innerHTML = '';
         data.phones.forEach(p => addPhoneFieldHTML(p.label, p.number));
       }
@@ -4320,7 +4291,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   window.selectPlatformTile = function(p){
     selectedSocialPlatform = p;
     document.getElementById('socialFormBox').style.display = 'block';
-    document.getElementById('socUrlLabel').innerHTML = `حساب ${p.name} <span class="lbl-sub">/ ${p.id} account</span>`;
+    if(document.getElementById('socUrlLabel')) document.getElementById('socUrlLabel').innerHTML = `حساب ${p.name} <span class="lbl-sub">/ ${p.id} account</span>`;
     const socUrlEl = document.getElementById('socUrl');
     if(p.id === 'whatsapp'){
       socUrlEl.value = '';
@@ -4351,8 +4322,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     visible.forEach(p => {
       const btn = document.createElement('button');
       const txtColor = p.id==='snapchat' ? '#000' : '#fff';
-      btn.style.cssText = `padding: 8px 12px; background: ${p.color}; color: ${txtColor}; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; font-family:'Tajawal';`;
-      btn.innerHTML = `<span style="display:flex;width:18px;height:18px;">${platSvg(p.id)}</span> ${p.name}`;
+      btn.style.cssText = `padding: 5px 9px; background: ${p.color}; color: ${txtColor}; border: none; border-radius: 7px; cursor: pointer; font-weight: 700; font-size: 0.68rem; display: flex; align-items: center; gap: 4px; font-family:'Tajawal';`;
+      btn.innerHTML = `<span style="display:flex;width:13px;height:13px;">${platSvg(p.id)}</span> ${p.name}`;
       btn.onclick = () => window.selectPlatformTile(p);
       grid.appendChild(btn);
     });
@@ -4370,8 +4341,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       const p = platforms.find(x => x.id === id);
       if(!p) return;
       const btn = document.createElement('button');
-      btn.style.cssText = `padding: 8px 12px; background: ${p.color}; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; font-family:'Tajawal';`;
-      btn.innerHTML = `<span style="display:flex;width:18px;height:18px;">${platSvg(id)}</span> ${p.name}`;
+      btn.style.cssText = `padding: 5px 9px; background: ${p.color}; color: #fff; border: none; border-radius: 7px; cursor: pointer; font-weight: 700; font-size: 0.68rem; display: flex; align-items: center; gap: 4px; font-family:'Tajawal';`;
+      btn.innerHTML = `<span style="display:flex;width:13px;height:13px;">${platSvg(id)}</span> ${p.name}`;
       btn.onclick = () => window.selectPlatformTile(p);
       row.appendChild(btn);
     });
@@ -4398,7 +4369,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     const p = detected || { id:'website', name:'موقع', color:'#3d5af1', prefix:'' };
     selectedSocialPlatform = p;
     document.getElementById('socialFormBox').style.display = 'block';
-    document.getElementById('socUrlLabel').innerHTML = `حساب ${p.name}`;
+    if(document.getElementById('socUrlLabel')) document.getElementById('socUrlLabel').innerHTML = `حساب ${p.name}`;
     document.getElementById('socUrl').value = val;
     document.getElementById('socColorModeGroup').style.display = 'block';
     setSocColorMode('brand');
@@ -4408,18 +4379,42 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     }
   };
 
-  window.closeSocialForm = function() {
-    document.getElementById('socialFormBox').style.display = 'none';
-    document.getElementById('socDetectedPreview').style.display = 'none';
-  };
-
   window.setSocColorMode = function(mode) {
     socialColorMode = mode;
     document.querySelectorAll('#socColorModeGroup button').forEach(b => b.style.borderColor = 'var(--border)');
     if(mode === 'brand') document.getElementById('cmBrand').style.borderColor = 'var(--primary)';
     if(mode === 'site') document.getElementById('cmTheme').style.borderColor = 'var(--primary)';
     if(mode === 'upload') document.getElementById('cmUpload').style.borderColor = 'var(--primary)';
+    if(mode === 'custom') document.getElementById('cmCustom').style.borderColor = 'var(--primary)';
     document.getElementById('customIconUpload').style.display = mode === 'upload' ? 'block' : 'none';
+    const customRow = document.getElementById('socCustomColorsRow');
+    if(customRow) customRow.style.display = mode === 'custom' ? 'flex' : 'none';
+    window.updateSocLivePreview && window.updateSocLivePreview();
+  };
+
+  // معاينة مباشرة لشكل الأيقونة النهائي أثناء إضافة حساب جديد (قبل الحفظ)
+  window.updateSocLivePreview = function(){
+    const box = document.getElementById('socLivePreviewIcon');
+    if(!box) return;
+    const isRect = currentIconShape === 'rect';
+    box.style.borderRadius = isRect ? (currentRectStyle==='sharp' ? '4px' : '10px') : '50%';
+    box.style.width = isRect ? '76px' : '44px';
+    let bg = 'var(--primary)', ring = 'transparent', glyph = '#ffffff';
+    if(socialColorMode === 'custom'){
+      bg = document.getElementById('socCustomBg')?.value || '#3d5af1';
+      ring = document.getElementById('socCustomRing')?.value || '#ffffff';
+      glyph = document.getElementById('socCustomIconColor')?.value || '#ffffff';
+    } else if(selectedSocialPlatform && socialColorMode === 'brand'){
+      bg = selectedSocialPlatform.color || 'var(--primary)';
+    }
+    box.style.background = bg;
+    box.style.border = '2px solid ' + ring;
+    box.innerHTML = selectedSocialPlatform ? `<span style="display:flex;width:18px;height:18px;color:${glyph};">${platSvg(selectedSocialPlatform.id)||''}</span>` : '';
+  };
+
+  window.closeSocialForm = function() {
+    document.getElementById('socialFormBox').style.display = 'none';
+    document.getElementById('socDetectedPreview').style.display = 'none';
   };
 
   let detectTimeout;
@@ -4441,6 +4436,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     document.getElementById('socDetectHint').textContent = selectedSocialPlatform.id === 'website'
       ? "⚠️ ما تعرّفنا على منصة معروفة — سيُحفظ كرابط موقع عام"
       : "تم فحص البنية اللغوية وصيغة الحساب جاهزة ✓";
+    window.updateSocLivePreview && window.updateSocLivePreview();
   };
 
   window.previewCustomIcon = function(input) {
@@ -4481,6 +4477,12 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         icon: (socialColorMode === 'upload' && customSocialIconBase64) ? customSocialIconBase64 : null,
         views: 0
       };
+      if(socialColorMode === 'custom'){
+        entry.customBg = document.getElementById('socCustomBg')?.value || '#3d5af1';
+        entry.customIconColor = document.getElementById('socCustomIconColor')?.value || '#ffffff';
+        entry.customRing = document.getElementById('socCustomRing')?.value || '#ffffff';
+        entry.customContainer = document.getElementById('socCustomContainer')?.value || '#ffffff';
+      }
       socials.push(entry);
       // setDoc merge: ينشئ الوثيقة إن لم توجد، ويحدّثها إن وُجدت (أأمن من updateDoc)
       await setDoc(userRef, { socials: socials }, { merge: true });
@@ -4752,6 +4754,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   // 6. محرك الأرقام والموقع والخرائط المخصصة (Phone Numbers & Location)
   function addPhoneFieldHTML(label = '', number = '') {
     const container = document.getElementById('phonesContainer');
+    if(!container) return;
     const entry = document.createElement('div');
     entry.className = 'phone-entry';
     entry.innerHTML = `
