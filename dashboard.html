@@ -1500,8 +1500,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
   // ===== دعم أكثر من حساب: كل حساب يُربط بتطبيق Firebase منفصل بالاسم، فتُحفظ جلسته باستقلالية =====
   // ولا يؤثر هذا على المستخدمين الحاليين إطلاقاً: الحساب الأول يبقى دائماً بالتطبيق الافتراضي [DEFAULT]
-  const ACCOUNTS_KEY = 'electrwni_saved_accounts';
-  const ACTIVE_ACCOUNT_KEY = 'electrwni_active_account';
+  const ACCOUNTS_KEY = 'elSavedAccounts';
+  const ACTIVE_ACCOUNT_KEY = 'elActiveAccountApp';
   function getSavedAccounts(){ try{ return JSON.parse(localStorage.getItem(ACCOUNTS_KEY) || '[]'); }catch(e){ return []; } }
   function setSavedAccounts(list){ try{ localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(list)); }catch(e){} }
   function upsertSavedAccount(acc){
