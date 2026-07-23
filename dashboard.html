@@ -910,10 +910,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content open">
-        <button type="button" onclick="showPage('design', document.querySelectorAll('.nav-tab')[0]); setTimeout(()=>document.getElementById('socAddSection')?.scrollIntoView({behavior:'smooth',block:'start'}),380);" style="width:100%;margin-bottom:16px;padding:13px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;font-weight:800;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          إضافة حساب جديد · Add Account
-        </button>
         <button onclick="window.openQrCard()" style="margin-bottom:16px;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--primary);font-weight:700;font-family:inherit;cursor:pointer;">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v2h-3v-2zm0 4h3v4h-2v-2h-1v-2zm-5-4h3v3h-2v-1h-1v-2zm0 5h2v2h-2v-2z"></path></svg>
           QR صفحتك · Your Page QR
@@ -922,14 +918,83 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       </div>
     </div>
 
-    <div style="padding:12px 14px;margin-bottom:14px;background:var(--bg2);border-radius:12px;border:1.5px dashed var(--border);font-size:0.78rem;color:var(--text2);line-height:1.7;">
-      ▭ شكل الأيقونات وتخصيص بطاقة QR انتقلا إلى تبويب <b>التصميم</b> — كل ما يخص المظهر بمكان واحد. <span class="lbl-sub" style="display:block;">Icon shape &amp; QR styling moved to the Design tab</span>
-      <button type="button" onclick="showPage('design', document.querySelectorAll('.nav-tab')[0])" style="margin-top:8px;width:100%;padding:9px;border:none;border-radius:9px;background:var(--primary);color:#fff;font-weight:700;font-family:inherit;cursor:pointer;font-size:0.78rem;">الانتقال إلى التصميم ‹</button>
-    </div>
+    <div class="expandable" id="socAddSection">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M12 4v16m-8-8h16" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg></div><span>إضافة حساب جديد<span class="title-sub">Add New Account</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content open">
+        <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">دائماً هنا · Always here</div>
+        <div id="alwaysVisibleGrid" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;"></div>
 
-    <div style="padding:12px 14px;margin-bottom:14px;background:var(--bg2);border-radius:12px;border:1.5px dashed var(--border);font-size:0.78rem;color:var(--text2);line-height:1.7;">
-      ▭ شكل الأيقونات وتخصيص بطاقة QR انتقلا إلى تبويب <b>التصميم</b> — كل ما يخص المظهر بمكان واحد. الأرقام والموقع الإلكتروني والخريطة والإيميل تُضاف الآن من نفس مكان "إضافة حساب جديد" أعلاه. <span class="lbl-sub" style="display:block;">Icon shape, QR styling, phone, website, map &amp; email are now all added from the unified Add Account flow</span>
-      <button type="button" onclick="showPage('design', document.querySelectorAll('.nav-tab')[0])" style="margin-top:8px;width:100%;padding:9px;border:none;border-radius:9px;background:var(--primary);color:#fff;font-weight:700;font-family:inherit;cursor:pointer;font-size:0.78rem;">الانتقال إلى التصميم ‹</button>
+        <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">ألصق رابط حسابك · Paste your account URL</div>
+        <div style="display:flex;gap:8px;margin-bottom:6px;">
+          <input type="text" id="pasteUrlInput" placeholder="https://instagram.com/username" dir="ltr" style="flex:1;" oninput="onPasteUrl(this.value)">
+          <button onclick="detectFromPaste()" style="padding:0 14px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.85rem;white-space:nowrap;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;flex-shrink:0;">تعرّف</button>
+        </div>
+        <div id="pasteHint" style="font-size:0.72rem;color:var(--muted);margin-bottom:14px;min-height:16px;"></div>
+
+        <div style="display:flex;align-items:center;gap:10px;margin:14px 0;">
+          <div style="flex:1;height:1px;background:var(--border);"></div>
+          <span style="font-size:0.8rem;font-weight:700;color:var(--muted);">أو · OR</span>
+          <div style="flex:1;height:1px;background:var(--border);"></div>
+        </div>
+
+        <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">اختر منصة · Choose Platform</div>
+        <div id="quickAddGrid" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;"></div>
+        <button id="moreBtn" onclick="toggleMorePlatforms()" style="margin-bottom:14px;background:none;border:1.5px dashed var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;font-size:0.78rem;color:var(--text2);">المزيد · More</button>
+
+        <div id="socialFormBox" style="display:none;">
+          <div class="wbar-card">
+            <!-- ١) اسم الحساب وأيقونته -->
+            <div class="wbar wbar-label">
+              <div id="socDetectedIcon" style="width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;overflow:hidden;background:var(--bg2);color:var(--primary);"></div>
+              <input type="text" id="socUrl" placeholder="اسم الحساب أو رابطه" dir="ltr" oninput="debounceDetect(this.value)">
+              <button type="button" onclick="detectNow()" style="flex-shrink:0;padding:6px 12px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.76rem;font-family:inherit;">فحص</button>
+            </div>
+            <div id="socDetectedUrlRow" style="padding:0 14px 10px;font-size:0.7rem;color:var(--muted);direction:ltr;word-break:break-all;display:none;background:var(--surface,#fff);"></div>
+
+            <!-- ٢) لون الموقع / لون التطبيق / رفع صورة / تخصيص -->
+            <div class="wbar" style="flex-wrap:wrap;gap:6px;background:var(--surface,#fff);" id="socColorModeGroup">
+              <button type="button" onclick="setSocColorMode('site')" id="cmTheme" style="flex:1;min-width:64px;padding:8px 4px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:inherit;font-weight:700;font-size:0.7rem;">لون الموقع</button>
+              <button type="button" onclick="setSocColorMode('brand')" id="cmBrand" style="flex:1;min-width:64px;padding:8px 4px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:inherit;font-weight:700;font-size:0.7rem;">لون التطبيق</button>
+              <button type="button" onclick="setSocColorMode('upload')" id="cmUpload" style="flex:1;min-width:64px;padding:8px 4px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:inherit;font-weight:700;font-size:0.7rem;">📤 رفع صورة</button>
+              <button type="button" onclick="setSocColorMode('custom')" id="cmCustom" style="flex:1;min-width:64px;padding:8px 4px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:inherit;font-weight:700;font-size:0.7rem;">🎨 تخصيص</button>
+            </div>
+
+            <!-- تنبيه عند اختيار "لون الموقع" -->
+            <div id="socSiteWarning" style="display:none;padding:10px 14px;background:#FFF7E6;border-top:1px solid var(--border);font-size:0.7rem;color:#8a6414;line-height:1.6;">
+              ⚠️ لون خلفية الأيقونة سيكون نفس لون تطبيقك، وقد يتشابه مع لون النص عندك — تأكد من وضوح التباين.
+            </div>
+
+            <!-- تنبيه + ٤ ألوان عند اختيار "تخصيص" -->
+            <div class="wbar wbar-colors" id="socCustomColorsRow" style="display:none;">
+              <label class="wbar-swatch"><input type="color" id="socCustomBg" value="#3d5af1" oninput="updateSocLivePreview()"><span>الخلفية</span></label>
+              <label class="wbar-swatch"><input type="color" id="socCustomIconColor" value="#ffffff" oninput="updateSocLivePreview()"><span>الأيقونة</span></label>
+              <label class="wbar-swatch"><input type="color" id="socCustomRing" value="#ffffff" oninput="updateSocLivePreview()"><span>الإطار</span></label>
+              <label class="wbar-swatch"><input type="color" id="socCustomContainer" value="#ffffff" oninput="updateSocLivePreview()"><span>الحاوية</span></label>
+            </div>
+            <div id="customIconUpload" style="display:none;padding:12px 14px;border-top:1px solid var(--border);">
+              <input type="file" id="socIconFile" accept="image/*" onchange="previewCustomIcon(this)">
+              <div id="socIconPreview" style="margin-top:8px;display:none;">
+                <img id="socIconImg" style="width:52px;height:52px;border-radius:12px;object-fit:cover;border:2px solid var(--border);">
+              </div>
+            </div>
+
+            <div class="wbar wbar-preview">
+              <div id="socLivePreviewBox" style="display:flex;align-items:center;gap:10px;width:100%;justify-content:center;">
+                <div id="socLivePreviewIcon" style="width:44px;height:44px;border-radius:50%;background:var(--primary);border:2px solid transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;"></div>
+                <span style="font-size:0.74rem;color:var(--muted);font-weight:700;">معاينة الشكل النهائي · Live Preview</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-top:12px;">
+            <button class="btn-add" onclick="saveSocial()">حفظ · Save</button>
+            <button class="btn-add" style="background:var(--muted);" onclick="closeSocialForm()">إلغاء · Cancel</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1047,40 +1112,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
           <div id="templateCarousel" style="display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;"></div>
         </div>
 
-        <div class="expandable" style="margin:0 0 14px;border-radius:12px;">
-          <div class="expandable-header" onclick="toggleExpand(this)">
-            <div class="expandable-title"><div class="expandable-icon">▭</div><span>شكل الأيقونات<span class="title-sub">Icon Shape</span></span></div>
-            <div class="expandable-toggle">▼</div>
-          </div>
-          <div class="expandable-content">
-            <div style="font-size:0.76rem;font-weight:700;color:var(--muted);margin-bottom:12px;">يُطبَّق على كل حسابات التواصل دفعة واحدة · Applies to all accounts at once</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;" id="iconShapeGrid">
-              <button type="button" class="shape-opt" id="shapeOptCircle" onclick="setIconShape('circle')">
-                <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-light));margin:0 auto 8px;"></div>
-                <div style="font-size:0.8rem;font-weight:700;">دائري <span class="lbl-sub" style="display:block;">Circle</span></div>
-              </button>
-              <button type="button" class="shape-opt" id="shapeOptRect" onclick="setIconShape('rect')">
-                <div style="width:76px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--primary-light));margin:0 auto 8px;"></div>
-                <div style="font-size:0.8rem;font-weight:700;">مستطيل <span class="lbl-sub" style="display:block;">Rectangle</span></div>
-              </button>
-            </div>
-            <div id="rectSubOptions" style="display:none;grid-template-columns:1fr 1fr;gap:10px;">
-              <button type="button" class="shape-opt" id="rectStyleRounded" onclick="setRectStyle('rounded')">
-                <div style="width:76px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--primary-light));margin:0 auto 8px;position:relative;overflow:hidden;">
-                  <div style="position:absolute;right:36%;top:0;bottom:0;width:1.5px;background:rgba(255,255,255,0.6);"></div>
-                </div>
-                <div style="font-size:0.76rem;font-weight:700;">حواف دائرية<span class="lbl-sub" style="display:block;">خط مستقيم · Straight</span></div>
-              </button>
-              <button type="button" class="shape-opt" id="rectStyleSharp" onclick="setRectStyle('sharp')">
-                <div style="width:76px;height:36px;border-radius:2px;background:linear-gradient(135deg,var(--primary),var(--primary-light));margin:0 auto 8px;position:relative;overflow:hidden;">
-                  <div style="position:absolute;right:32%;top:-14px;bottom:-14px;width:1.5px;background:rgba(255,255,255,0.6);transform:rotate(18deg);"></div>
-                </div>
-                <div style="font-size:0.76rem;font-weight:700;">حواف حادة<span class="lbl-sub" style="display:block;">خط مائل · Slanted</span></div>
-              </button>
-            </div>
-          </div>
-        </div>
-
         <div class="expandable" style="margin:0 0 20px;border-radius:12px;">
           <div class="expandable-header" onclick="toggleExpand(this)">
             <div class="expandable-title"><div class="expandable-icon">▦</div><span>تخصيص بطاقة QR<span class="title-sub">QR Card Style</span></span></div>
@@ -1109,82 +1140,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
                     <div id="qrMiniBox" style="width:52px;height:52px;background:#fff;border-radius:8px;margin:0 auto;"></div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="expandable" id="socAddSection" style="margin:0 0 20px;border-radius:12px;">
-          <div class="expandable-header open" onclick="toggleExpand(this)">
-            <div class="expandable-title"><div class="expandable-icon">ح</div><span>إضافة حساب تواصل<span class="title-sub">Add Contact Account</span></span></div>
-            <div class="expandable-toggle">▼</div>
-          </div>
-          <div class="expandable-content open">
-            <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">دائماً هنا · Always here</div>
-            <div id="alwaysVisibleGrid" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;"></div>
-
-            <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">ألصق رابط حسابك · Paste your account URL</div>
-            <div style="display:flex;gap:8px;margin-bottom:6px;">
-              <input type="text" id="pasteUrlInput" placeholder="https://instagram.com/username" dir="ltr" style="flex:1;" oninput="onPasteUrl(this.value)">
-              <button onclick="detectFromPaste()" style="padding:0 14px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.85rem;white-space:nowrap;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;flex-shrink:0;">تعرّف</button>
-            </div>
-            <div id="pasteHint" style="font-size:0.72rem;color:var(--muted);margin-bottom:14px;min-height:16px;"></div>
-
-            <div style="display:flex;align-items:center;gap:10px;margin:14px 0;">
-              <div style="flex:1;height:1px;background:var(--border);"></div>
-              <span style="font-size:0.8rem;font-weight:700;color:var(--muted);">أو · OR</span>
-              <div style="flex:1;height:1px;background:var(--border);"></div>
-            </div>
-
-            <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">اختر منصة · Choose Platform</div>
-            <div id="quickAddGrid" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px;"></div>
-            <button id="moreBtn" onclick="toggleMorePlatforms()" style="margin-bottom:14px;background:none;border:1.5px dashed var(--border);border-radius:8px;padding:6px 12px;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;font-size:0.74rem;color:var(--text2);">المزيد · More</button>
-
-            <div id="socialFormBox" style="display:none;">
-              <div id="socDetectedPreview" style="display:none;align-items:center;gap:12px;padding:12px;background:#fff;border-radius:10px;border:1.5px solid var(--primary);margin-bottom:14px;">
-                <div id="socDetectedIcon" style="width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;overflow:hidden;"></div>
-                <div style="flex:1;min-width:0;">
-                  <div id="socDetectedName" style="font-weight:700;font-size:0.95rem;"></div>
-                  <div id="socDetectedUrl" style="font-size:0.72rem;color:var(--muted);direction:ltr;word-break:break-all;margin-top:2px;"></div>
-                </div>
-                <div id="socDetectedCheck" style="font-size:1.4rem;color:var(--success);flex-shrink:0;">✓</div>
-              </div>
-
-              <div class="wbar-card">
-                <div class="wbar wbar-label">
-                  <span class="wbar-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.07 0l2.83-2.83a5 5 0 00-7.07-7.07l-1.5 1.5"/><path d="M14 11a5 5 0 00-7.07 0L4.1 13.83a5 5 0 007.07 7.07l1.5-1.5"/></svg></span>
-                  <input type="text" id="socUrl" placeholder="اليوزر أو رابط الحساب" dir="ltr" oninput="debounceDetect(this.value)">
-                  <button type="button" onclick="detectNow()" style="flex-shrink:0;padding:6px 12px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.76rem;font-family:inherit;">فحص</button>
-                </div>
-                <div class="wbar" style="flex-wrap:wrap;gap:6px;background:var(--surface,#fff);" id="socColorModeGroup">
-                  <button type="button" onclick="setSocColorMode('upload')" id="cmUpload" style="flex:1;min-width:64px;padding:8px 4px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:inherit;font-weight:700;font-size:0.7rem;">📤 رفع</button>
-                  <button type="button" onclick="setSocColorMode('site')" id="cmTheme" style="flex:1;min-width:64px;padding:8px 4px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:inherit;font-weight:700;font-size:0.7rem;">لون الموقع</button>
-                  <button type="button" onclick="setSocColorMode('brand')" id="cmBrand" style="flex:1;min-width:64px;padding:8px 4px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:inherit;font-weight:700;font-size:0.7rem;">لون التطبيق</button>
-                  <button type="button" onclick="setSocColorMode('custom')" id="cmCustom" style="flex:1;min-width:64px;padding:8px 4px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:inherit;font-weight:700;font-size:0.7rem;">🎨 تخصيص</button>
-                </div>
-                <div class="wbar wbar-colors" id="socCustomColorsRow" style="display:none;">
-                  <label class="wbar-swatch"><input type="color" id="socCustomBg" value="#3d5af1" oninput="updateSocLivePreview()"><span>الخلفية</span></label>
-                  <label class="wbar-swatch"><input type="color" id="socCustomIconColor" value="#ffffff" oninput="updateSocLivePreview()"><span>الأيقونة</span></label>
-                  <label class="wbar-swatch"><input type="color" id="socCustomRing" value="#ffffff" oninput="updateSocLivePreview()"><span>الإطار</span></label>
-                  <label class="wbar-swatch"><input type="color" id="socCustomContainer" value="#ffffff" oninput="updateSocLivePreview()"><span>الحاوية</span></label>
-                </div>
-                <div id="customIconUpload" style="display:none;padding:12px 14px;border-top:1px solid var(--border);">
-                  <input type="file" id="socIconFile" accept="image/*" onchange="previewCustomIcon(this)">
-                  <div id="socIconPreview" style="margin-top:8px;display:none;">
-                    <img id="socIconImg" style="width:52px;height:52px;border-radius:12px;object-fit:cover;border:2px solid var(--border);">
-                  </div>
-                </div>
-                <div class="wbar wbar-preview">
-                  <div id="socLivePreviewBox" style="display:flex;align-items:center;gap:10px;width:100%;justify-content:center;">
-                    <div id="socLivePreviewIcon" style="width:44px;height:44px;border-radius:50%;background:var(--primary);border:2px solid transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;"></div>
-                    <span style="font-size:0.74rem;color:var(--muted);font-weight:700;">معاينة الشكل النهائي · Live Preview</span>
-                  </div>
-                </div>
-              </div>
-
-              <div style="display:flex;gap:8px;margin-top:12px;">
-                <button class="btn-add" onclick="saveSocial()">حفظ · Save</button>
-                <button class="btn-add" style="background:var(--muted);" onclick="closeSocialForm()">إلغاء · Cancel</button>
               </div>
             </div>
           </div>
@@ -1949,7 +1904,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       { label:'الألوان الذكية', title:'الألوان الذكية' },
       { label:'قوالب جاهزة', title:'قوالب جاهزة' },
       { label:'تصميم صفحتك', title:'تصميم صفحتك' },
-      { label:'شكل الأيقونات', title:'شكل الأيقونات' },
       { label:'تخصيص بطاقة QR', title:'تخصيص بطاقة QR' },
     ],
     links: [
@@ -1960,6 +1914,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     ],
     socials: [
       { label:'حسابات ووسائل التواصل', title:'حسابات التواصل' },
+      { label:'إضافة حساب جديد', title:'إضافة حساب جديد' },
     ],
     profile: [
       { label:'بيانات ملفي', title:'بيانات ملفي' },
@@ -2105,9 +2060,9 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   let currentRectStyle = 'rounded';
   window.setIconShape = async function(shape){
     currentIconShape = shape;
-    document.getElementById('shapeOptCircle').classList.toggle('active', shape==='circle');
-    document.getElementById('shapeOptRect').classList.toggle('active', shape==='rect');
-    document.getElementById('rectSubOptions').style.display = shape==='rect' ? 'grid' : 'none';
+    if(document.getElementById('shapeOptCircle')) document.getElementById('shapeOptCircle').classList.toggle('active', shape==='circle');
+    if(document.getElementById('shapeOptRect')) document.getElementById('shapeOptRect').classList.toggle('active', shape==='rect');
+    if(document.getElementById('rectSubOptions')) document.getElementById('rectSubOptions').style.display = shape==='rect' ? 'grid' : 'none';
     try{
       await setDoc(doc(db, "users", currentUser.uid), { socialIconShape: shape }, { merge: true });
       window.showToast("تم تحديث شكل الأيقونات");
@@ -2116,8 +2071,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   };
   window.setRectStyle = async function(style){
     currentRectStyle = style;
-    document.getElementById('rectStyleRounded').classList.toggle('active', style==='rounded');
-    document.getElementById('rectStyleSharp').classList.toggle('active', style==='sharp');
+    if(document.getElementById('rectStyleRounded')) document.getElementById('rectStyleRounded').classList.toggle('active', style==='rounded');
+    if(document.getElementById('rectStyleSharp')) document.getElementById('rectStyleSharp').classList.toggle('active', style==='sharp');
     try{
       await setDoc(doc(db, "users", currentUser.uid), { socialRectStyle: style }, { merge: true });
       window.showToast("تم تحديث نمط المستطيل");
@@ -2128,11 +2083,11 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     data = data || {};
     currentIconShape = data.socialIconShape || 'circle';
     currentRectStyle = data.socialRectStyle || 'rounded';
-    document.getElementById('shapeOptCircle').classList.toggle('active', currentIconShape==='circle');
-    document.getElementById('shapeOptRect').classList.toggle('active', currentIconShape==='rect');
-    document.getElementById('rectSubOptions').style.display = currentIconShape==='rect' ? 'grid' : 'none';
-    document.getElementById('rectStyleRounded').classList.toggle('active', currentRectStyle==='rounded');
-    document.getElementById('rectStyleSharp').classList.toggle('active', currentRectStyle==='sharp');
+    if(document.getElementById('shapeOptCircle')) document.getElementById('shapeOptCircle').classList.toggle('active', currentIconShape==='circle');
+    if(document.getElementById('shapeOptRect')) document.getElementById('shapeOptRect').classList.toggle('active', currentIconShape==='rect');
+    if(document.getElementById('rectSubOptions')) document.getElementById('rectSubOptions').style.display = currentIconShape==='rect' ? 'grid' : 'none';
+    if(document.getElementById('rectStyleRounded')) document.getElementById('rectStyleRounded').classList.toggle('active', currentRectStyle==='rounded');
+    if(document.getElementById('rectStyleSharp')) document.getElementById('rectStyleSharp').classList.toggle('active', currentRectStyle==='sharp');
   }
 
   // ===== تخصيص بطاقة QR: نفس مبدأ تخصيص أيقونات التواصل (٤ ألوان) =====
@@ -2562,14 +2517,14 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     bgActionsDesign:   { name: 'إجراءات الخلفية', icon: qaIconSvg('image'),  tab: 'التصميم', nav:{pageId:'design', title:'تصميم صفحتك', tabIdx:0, after:'scrollBg'} },
     logoCoverDesign:   { name: 'الشعار والغلاف',  icon: qaIconSvg('banner'), tab: 'التصميم', nav:{pageId:'design', title:'تصميم صفحتك', tabIdx:0, after:'scrollLogo'} },
     textActionsDesign: { name: 'إجراءات النص',    icon: qaIconSvg('edit'),   tab: 'التصميم', nav:{pageId:'design', title:'تصميم صفحتك', tabIdx:0, after:'scrollText'} },
-    iconActionsDesign: { name: 'إجراءات الأيقونات', icon: qaIconSvg('shape'), tab: 'التصميم', nav:{pageId:'design', title:'شكل الأيقونات', tabIdx:0} },
-    iconStyleDesign:   { name: 'تصميم الأيقونات',  icon: qaIconSvg('layers'), tab: 'التصميم', nav:{pageId:'design', title:'شكل الأيقونات', tabIdx:0}, toast:'الشكل من هنا، ولون الأيقونة عند إضافة كل حساب' },
+    iconActionsDesign: { name: 'إجراءات الأيقونات', icon: qaIconSvg('shape'), tab: 'التصميم', nav:{pageId:'socials', title:'إضافة حساب جديد', tabIdx:2} },
+    iconStyleDesign:   { name: 'تصميم الأيقونات',  icon: qaIconSvg('layers'), tab: 'التصميم', nav:{pageId:'socials', title:'إضافة حساب جديد', tabIdx:2}, toast:'لون كل أيقونة يُختار عند إضافتها' },
 
     // ===== قسم التواصل =====
     contactAccountsAct: { name: 'إجراءات حساباتك', icon: qaIconSvg('broadcast'), tab: 'تواصل', nav:{pageId:'socials', title:'حسابات التواصل', tabIdx:2} },
     contactNumbersAct:  { name: 'إجراءات أرقامك',   icon: qaIconSvg('phone'),     tab: 'تواصل', nav:{pageId:'socials', title:'أرقام التواصل', tabIdx:2} },
     contactEmailsAct:   { name: 'إجراءات إيميلاتك', icon: qaIconSvg('mail'),      tab: 'تواصل', nav:{pageId:'socials', title:'حسابات التواصل', tabIdx:2}, toast:'أضف بريدك كحساب تواصل من هنا' },
-    contactIconsAct:    { name: 'إجراءات أيقوناتك', icon: qaIconSvg('shape'),     tab: 'تواصل', nav:{pageId:'design', title:'شكل الأيقونات', tabIdx:0} },
+    contactIconsAct:    { name: 'إجراءات أيقوناتك', icon: qaIconSvg('shape'),     tab: 'تواصل', nav:{pageId:'socials', title:'إضافة حساب جديد', tabIdx:2} },
     contactWebsiteAct:  { name: 'إجراءات موقعك',    icon: qaIconSvg('globe'),     tab: 'تواصل', nav:{pageId:'socials', title:'الموقع الإلكتروني', tabIdx:2} },
     contactLocationAct: { name: 'إجراءات مكانك',    icon: qaIconSvg('pin'),       tab: 'تواصل', nav:{pageId:'socials', title:'الموقع الملاحي', tabIdx:2} },
 
@@ -4393,6 +4348,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     document.getElementById('customIconUpload').style.display = mode === 'upload' ? 'block' : 'none';
     const customRow = document.getElementById('socCustomColorsRow');
     if(customRow) customRow.style.display = mode === 'custom' ? 'flex' : 'none';
+    const siteWarn = document.getElementById('socSiteWarning');
+    if(siteWarn) siteWarn.style.display = mode === 'site' ? 'block' : 'none';
     window.updateSocLivePreview && window.updateSocLivePreview();
   };
 
@@ -4418,7 +4375,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
   window.closeSocialForm = function() {
     document.getElementById('socialFormBox').style.display = 'none';
-    document.getElementById('socDetectedPreview').style.display = 'none';
   };
 
   let detectTimeout;
@@ -4431,15 +4387,14 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     const raw = document.getElementById('socUrl').value.trim();
     if(!raw || !selectedSocialPlatform) return;
     const val = (selectedSocialPlatform.id === 'whatsapp') ? normalizeWhatsApp(raw) : raw;
-    document.getElementById('socDetectedPreview').style.display = 'flex';
     const iconEl = document.getElementById('socDetectedIcon');
-    iconEl.innerHTML = `<span style="display:flex;width:24px;height:24px;color:#fff;">${platSvg(selectedSocialPlatform.id)}</span>`;
+    iconEl.innerHTML = `<span style="display:flex;width:18px;height:18px;color:#fff;">${platSvg(selectedSocialPlatform.id)}</span>`;
     iconEl.style.background = selectedSocialPlatform.color;
-    document.getElementById('socDetectedName').textContent = selectedSocialPlatform.name;
-    document.getElementById('socDetectedUrl').textContent = val;
-    document.getElementById('socDetectHint').textContent = selectedSocialPlatform.id === 'website'
+    const urlRow = document.getElementById('socDetectedUrlRow');
+    urlRow.style.display = 'block';
+    urlRow.textContent = selectedSocialPlatform.id === 'website'
       ? "⚠️ ما تعرّفنا على منصة معروفة — سيُحفظ كرابط موقع عام"
-      : "تم فحص البنية اللغوية وصيغة الحساب جاهزة ✓";
+      : `حساب ${selectedSocialPlatform.name} · ${val}`;
     window.updateSocLivePreview && window.updateSocLivePreview();
   };
 
