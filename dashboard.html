@@ -622,17 +622,31 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       <div style="font-weight:800;font-size:1.05rem;">حساباتك <span class="lbl-sub" style="font-weight:400;">Accounts</span></div>
       <button type="button" onclick="closeAccountsModal()" style="background:var(--surface,#f4f5f9);border:none;width:28px;height:28px;border-radius:50%;font-size:0.9rem;cursor:pointer;">✕</button>
     </div>
-    <div style="font-size:0.76rem;color:var(--muted);margin-bottom:16px;">بدّل بين حساباتك بضغطة وحدة، أو أضف حساب جديد · Switch instantly, or add another account</div>
-    <div id="accountsList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div>
+    <div style="font-size:0.76rem;color:var(--muted);margin-bottom:16px;">بدّل بين حساباتك أو صفحاتك بضغطة واحدة، أو أضف جديدًا · Switch instantly, or add another</div>
+    <div id="accountsList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;"></div>
 
-    <div id="addAccountForm" style="display:none;border-top:1px solid var(--border,#e8ecf5);padding-top:14px;margin-top:4px;">
-      <div style="font-weight:700;font-size:0.85rem;margin-bottom:10px;">إضافة حساب آخر <span class="lbl-sub" style="font-weight:400;">Add Account</span></div>
-      <input type="email" id="addAcctEmail" placeholder="البريد الإلكتروني · Email" dir="ltr" style="width:100%;margin-bottom:8px;">
-      <input type="password" id="addAcctPassword" placeholder="كلمة المرور · Password" dir="ltr" style="width:100%;margin-bottom:8px;">
-      <div id="addAcctErr" style="display:none;color:#c33;font-size:0.76rem;margin-bottom:8px;"></div>
-      <button type="button" class="btn-add" id="addAcctSubmitBtn" onclick="submitAddAccount()" style="margin:0;width:100%;">دخول وإضافة · Sign in & Add</button>
+    <div style="font-size:0.72rem;font-weight:800;color:var(--muted);margin:14px 0 8px;">صفحاتك على هذا البريد <span style="font-weight:400;">Pages on this email</span></div>
+    <div id="pagesList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div>
+
+    <div id="addPageForm" style="display:none;border-top:1px solid var(--border,#e8ecf5);padding-top:14px;margin-top:4px;margin-bottom:14px;">
+      <div style="font-weight:700;font-size:0.85rem;margin-bottom:10px;">صفحة جديدة على نفس بريدك <span class="lbl-sub" style="font-weight:400;">New page, same email</span></div>
+      <input type="text" id="addPageLabel" placeholder="اسم تعريفي للصفحة (مثال: فرع جدة)" style="width:100%;margin-bottom:8px;">
+      <input type="text" id="addPageUsername" placeholder="اسم مستخدم الصفحة (إنجليزي) · page-username" dir="ltr" style="width:100%;margin-bottom:8px;">
+      <div id="addPageErr" style="display:none;color:#c33;font-size:0.76rem;margin-bottom:8px;"></div>
+      <button type="button" class="btn-add" id="addPageSubmitBtn" onclick="submitAddPage()" style="margin:0;width:100%;">إنشاء الصفحة · Create Page</button>
     </div>
-    <button type="button" class="btn-add" id="addAccountToggleBtn" onclick="toggleAddAccountForm()" style="margin:0;width:100%;background:var(--surface,#f4f5f9);color:var(--text,#1a1d24);border:1.5px dashed var(--border,#c7cee0);">+ إضافة حساب آخر · Add Account</button>
+    <button type="button" class="btn-add" id="addPageToggleBtn" onclick="toggleAddPageForm()" style="margin:0 0 10px;width:100%;background:var(--surface,#f4f5f9);color:var(--text,#1a1d24);border:1.5px dashed var(--border,#c7cee0);">+ إضافة صفحة على نفس البريد · Add Page</button>
+
+    <div style="border-top:1px solid var(--border,#e8ecf5);padding-top:14px;">
+      <div id="addAccountForm" style="display:none;padding-bottom:4px;">
+        <div style="font-weight:700;font-size:0.85rem;margin-bottom:10px;">إضافة حساب ببريد مختلف <span class="lbl-sub" style="font-weight:400;">Different email</span></div>
+        <input type="email" id="addAcctEmail" placeholder="البريد الإلكتروني · Email" dir="ltr" style="width:100%;margin-bottom:8px;">
+        <input type="password" id="addAcctPassword" placeholder="كلمة المرور · Password" dir="ltr" style="width:100%;margin-bottom:8px;">
+        <div id="addAcctErr" style="display:none;color:#c33;font-size:0.76rem;margin-bottom:8px;"></div>
+        <button type="button" class="btn-add" id="addAcctSubmitBtn" onclick="submitAddAccount()" style="margin:0;width:100%;">دخول وإضافة · Sign in & Add</button>
+      </div>
+      <button type="button" class="btn-add" id="addAccountToggleBtn" onclick="toggleAddAccountForm()" style="margin:0;width:100%;background:var(--surface,#f4f5f9);color:var(--text,#1a1d24);border:1.5px dashed var(--border,#c7cee0);">+ إضافة حساب ببريد مختلف · Different Email</button>
+    </div>
   </div>
 </div>
 
@@ -1369,11 +1383,27 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
             <span class="pill-badge">XLS</span>
             <span class="pill-text"><b>Excel</b><small>جدول بيانات (CSV)</small></span>
           </button>
+          <button onclick="exportLinks('backup')" class="export-pill" style="background:linear-gradient(135deg,#0f172a,#1e293b);--pill-shadow:rgba(15,23,42,.35);">
+            <span class="pill-badge" style="background:rgba(255,255,255,.16);">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+            </span>
+            <span class="pill-text"><b>نسخة كاملة للصفحة</b><small>التصميم + الألوان + القالب + كل البيانات</small></span>
+          </button>
         </div>
         <div style="height:1px;background:var(--border);margin:18px 0;"></div>
         <p style="font-size:0.82rem;color:var(--muted);margin-bottom:12px;">استيراد روابط من ملف JSON · Import links from JSON</p>
-        <button onclick="document.getElementById('importFile').click()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border:1.5px dashed var(--primary);border-radius:12px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;color:var(--primary);">⬆ اختر ملف JSON للاستيراد</button>
+        <button onclick="document.getElementById('importFile').click()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border:1.5px dashed var(--primary);border-radius:12px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;color:var(--primary);margin-bottom:10px;">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          اختر ملف JSON للاستيراد
+        </button>
         <input type="file" id="importFile" accept=".json,application/json" style="display:none;" onchange="importLinks(this)">
+
+        <p style="font-size:0.82rem;color:var(--muted);margin:16px 0 12px;line-height:1.6;">استعادة نسخة كاملة (تُرجع التصميم والقالب وكل بيانات هذه الصفحة كما كانت وقت التصدير) · Restore full page backup</p>
+        <button onclick="document.getElementById('importBackupFile').click()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border:1.5px dashed #0f172a;border-radius:12px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Tajawal',sans-serif;font-weight:700;color:#0f172a;">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          اختر ملف النسخة الكاملة للاستعادة
+        </button>
+        <input type="file" id="importBackupFile" accept=".json,application/json" style="display:none;" onchange="importFullBackup(this)">
       </div>
     </div>
     <div class="expandable">
@@ -1538,6 +1568,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
   // المتغيرات العامة لإدارة الحالة
   let currentUser = null;
+  let activePageDocId = null;   // مُعرّف مستند الصفحة النشطة حالياً (قد يساوي currentUser.uid أو صفحة إضافية)
+  let myPages = [];             // فهرس كل الصفحات المملوكة لهذا البريد: [{id, username, label, createdAt}]
   // أرقام محجوزة للنظام: 205=رابط الصفحة، 206=أرقام مختارة، 210-216=حسابات التواصل تلقائياً
   const RESERVED_NUMBERS = [205, 206, 210, 211, 212, 213, 214, 215, 216];
   let cropper = null;
@@ -1774,8 +1806,20 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   }
 
   async function initDashboardInner() {
-    const userDocRef = doc(db, "users", currentUser.uid);
-    const userDoc = await getDoc(userDocRef);
+    // ===== تحديد الصفحة النشطة (تعدد الصفحات على نفس البريد) =====
+    const rootDocRef = doc(db, "users", activePageDocId);
+    const rootDoc = await getDoc(rootDocRef);
+    const rootData = rootDoc.exists() ? rootDoc.data() : {};
+    let savedActivePage = null;
+    try { savedActivePage = localStorage.getItem('el_active_page_' + currentUser.uid); } catch(e){}
+    myPages = (Array.isArray(rootData.myPages) && rootData.myPages.length)
+      ? rootData.myPages
+      : [{ id: currentUser.uid, username: rootData.username || currentUser.email.split('@')[0], label: 'الصفحة الرئيسية' }];
+    activePageDocId = savedActivePage || rootData.activePageId || currentUser.uid;
+    if(!myPages.some(p => p.id === activePageDocId)) activePageDocId = currentUser.uid;
+
+    const userDocRef = (activePageDocId === currentUser.uid) ? rootDocRef : doc(db, "users", activePageDocId);
+    const userDoc = (activePageDocId === currentUser.uid) ? rootDoc : await getDoc(userDocRef);
     let username = currentUser.email.split('@')[0];
 
     // ⚠️ نفس بريد الإدارة المستخدم بملف admin.html — عدّله ليطابق بريدك الحقيقي
@@ -1859,7 +1903,9 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       if(avatarHidden){ const p=document.getElementById('avatarPreview'); if(p){p.style.opacity='.2';p.style.filter='grayscale(1)';} }
       if(bannerHidden){ const p=document.getElementById('bannerPreview'); if(p){p.style.opacity='.2';p.style.filter='grayscale(1)';} }
     } else {
-      await setDoc(userDocRef, { username, email: currentUser.email, createdAt: new Date() }, { merge: true });
+      const initData = { username, email: currentUser.email, createdAt: new Date() };
+      if(activePageDocId !== currentUser.uid) initData.ownerUid = currentUser.uid;
+      await setDoc(userDocRef, initData, { merge: true });
     }
 
     document.getElementById('pfUser').value = username;
@@ -2040,9 +2086,9 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       const exists = await getDoc(doc(db, "usernames", newU));
       if(exists.exists()){ window.showToast("الاسم محجوز، اختر غيره"); input.value = oldU; return; }
       // 2) أنشئ فهرس الاسم الجديد → uid
-      await setDoc(doc(db, "usernames", newU), { uid: currentUser.uid });
+      await setDoc(doc(db, "usernames", newU), { uid: activePageDocId });
       // 3) حدّث وثيقة المستخدم
-      await setDoc(doc(db, "users", currentUser.uid), { username: newU }, { merge: true });
+      await setDoc(doc(db, "users", activePageDocId), { username: newU }, { merge: true });
       // 4) احذف فهرس الاسم القديم
       if(oldU){ try { await deleteDoc(doc(db, "usernames", oldU)); } catch(e){} }
       // 5) حدّث الواجهة
@@ -2064,7 +2110,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(document.getElementById('shapeOptRect')) document.getElementById('shapeOptRect').classList.toggle('active', shape==='rect');
     if(document.getElementById('rectSubOptions')) document.getElementById('rectSubOptions').style.display = shape==='rect' ? 'grid' : 'none';
     try{
-      await setDoc(doc(db, "users", currentUser.uid), { socialIconShape: shape }, { merge: true });
+      await setDoc(doc(db, "users", activePageDocId), { socialIconShape: shape }, { merge: true });
       window.showToast("تم تحديث شكل الأيقونات");
     }catch(e){ window.showToast("تعذر الحفظ: " + (e.message||'')); }
     loadSocials(); // أعد رسم المعاينات لتعكس الشكل الجديد فوراً
@@ -2074,7 +2120,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(document.getElementById('rectStyleRounded')) document.getElementById('rectStyleRounded').classList.toggle('active', style==='rounded');
     if(document.getElementById('rectStyleSharp')) document.getElementById('rectStyleSharp').classList.toggle('active', style==='sharp');
     try{
-      await setDoc(doc(db, "users", currentUser.uid), { socialRectStyle: style }, { merge: true });
+      await setDoc(doc(db, "users", activePageDocId), { socialRectStyle: style }, { merge: true });
       window.showToast("تم تحديث نمط المستطيل");
     }catch(e){ window.showToast("تعذر الحفظ: " + (e.message||'')); }
     loadSocials();
@@ -2105,7 +2151,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       colorsBox.style.display='none';
     }
     if(!skipSave){
-      try{ await setDoc(doc(db, "users", currentUser.uid), { qrStyleMode: mode }, { merge: true }); }catch(e){}
+      try{ await setDoc(doc(db, "users", activePageDocId), { qrStyleMode: mode }, { merge: true }); }catch(e){}
     }
     updateQrPreview();
   };
@@ -2127,7 +2173,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       clearTimeout(window.__qrSaveTimer);
       window.__qrSaveTimer = setTimeout(async () => {
         try{
-          await setDoc(doc(db, "users", currentUser.uid), {
+          await setDoc(doc(db, "users", activePageDocId), {
             qrCustomBg: bg, qrCustomIconColor: iconColor, qrCustomRing: ring, qrCustomContainer: container
           }, { merge: true });
         }catch(e){}
@@ -2366,13 +2412,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   window.onCategorySelect = async function(id){
     selectedCategory = id;
     renderCategoryGrid();
-    try{ await setDoc(doc(db, "users", currentUser.uid), { category: id }, { merge: true }); }catch(e){}
+    try{ await setDoc(doc(db, "users", activePageDocId), { category: id }, { merge: true }); }catch(e){}
     suggestTemplateFromSelection();
   };
   window.onGoalSelect = async function(id){
     selectedGoal = id;
     renderGoalGrid();
-    try{ await setDoc(doc(db, "users", currentUser.uid), { goal: id }, { merge: true }); }catch(e){}
+    try{ await setDoc(doc(db, "users", activePageDocId), { goal: id }, { merge: true }); }catch(e){}
     suggestTemplateFromSelection();
   };
   function suggestTemplateFromSelection(){
@@ -2853,13 +2899,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     qaAddNumMode = mode;
     qaMenuOpenFor = null;
     renderQaWidget();
-    try{ await setDoc(doc(db, "users", currentUser.uid), { qaAddNumMode: mode }, { merge: true }); }catch(e){}
+    try{ await setDoc(doc(db, "users", activePageDocId), { qaAddNumMode: mode }, { merge: true }); }catch(e){}
   };
   window.qaSetStatsMode = async function(mode){
     qaStatsMode = mode;
     qaMenuOpenFor = null;
     renderQaWidget();
-    try{ await setDoc(doc(db, "users", currentUser.uid), { qaStatsMode: mode }, { merge: true }); }catch(e){}
+    try{ await setDoc(doc(db, "users", activePageDocId), { qaStatsMode: mode }, { merge: true }); }catch(e){}
   };
 
   window.qaWizardChoose = function(mode){
@@ -2882,7 +2928,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(!num || !title || (isLink ? !url : !text)){ window.showToast("عبّئ كل الحقول المطلوبة"); return; }
     if(RESERVED_NUMBERS.includes(parseInt(num))){ window.showToast(`⚠️ الرقم ${num} محجوز للنظام`); return; }
     try{
-      const userRef = doc(db, "users", currentUser.uid);
+      const userRef = doc(db, "users", activePageDocId);
       const snap = await getDoc(userRef);
       const data = snap.exists() ? snap.data() : {};
       let links = Array.isArray(data.links) ? data.links : [];
@@ -2956,7 +3002,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     const el = document.getElementById('qaLast3Body');
     if(!el) return;
     try{
-      const snap = await getDoc(doc(db, "users", currentUser.uid));
+      const snap = await getDoc(doc(db, "users", activePageDocId));
       const raw = snap.exists() && Array.isArray(snap.data().links) ? snap.data().links : [];
       const sorted = [...raw].sort((a,b) => new Date(b.createdAt||0) - new Date(a.createdAt||0)).slice(0,3);
       if(!sorted.length){ el.textContent = 'لا توجد أرقام بعد'; return; }
@@ -3013,7 +3059,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   // ===== طباعة سجل حسب مدة زمنية (أسبوع / شهر / ٣ أشهر) =====
   async function fetchLinksByDateRange(days){
     try{
-      const snap = await getDoc(doc(db, "users", currentUser.uid));
+      const snap = await getDoc(doc(db, "users", activePageDocId));
       const raw = snap.exists() && Array.isArray(snap.data().links) ? snap.data().links : [];
       const cutoff = Date.now() - days*24*60*60*1000;
       return raw
@@ -3257,7 +3303,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(checked && !qaConfig.includes(key)) qaConfig.push(key);
     else if(!checked) qaConfig = qaConfig.filter(k => k!==key);
     renderQaWidget();
-    try{ await setDoc(doc(db, "users", currentUser.uid), { quickActionsConfig: qaConfig }, { merge: true }); }catch(e){}
+    try{ await setDoc(doc(db, "users", activePageDocId), { quickActionsConfig: qaConfig }, { merge: true }); }catch(e){}
   };
   function loadQaConfig(data){
     data = data || {};
@@ -3413,7 +3459,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     const avEl = document.getElementById('avatarPreview')?.querySelector('img');
     if(avEl) avatarSrc = avEl.src;
     try{
-      const snap = await getDoc(doc(db, "users", currentUser.uid));
+      const snap = await getDoc(doc(db, "users", activePageDocId));
       if(snap.exists()){
         const data = snap.data();
         if(!avatarSrc) avatarSrc = data.avatar || null;
@@ -3480,10 +3526,102 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       `;
     }).join('');
   }
+  // ===== تعدد الصفحات على نفس البريد (بدون تسجيل دخول جديد) =====
+  function renderPagesList(){
+    const el = document.getElementById('pagesList');
+    if(!el) return;
+    if(!myPages.length){ el.innerHTML = '<div style="font-size:0.78rem;color:var(--muted);">لا توجد صفحات إضافية بعد</div>'; return; }
+    el.innerHTML = myPages.map(p => {
+      const isActive = p.id === activePageDocId;
+      const canDelete = !isActive && p.id !== currentUser.uid;
+      return `
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;border:1.5px solid ${isActive?'var(--primary,#3d5af1)':'var(--border,#e8ecf5)'};background:${isActive?'rgba(61,90,241,.06)':'transparent'};">
+          <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#0f172a,#334155);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M3 9h18"></path></svg>
+          </div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-weight:700;font-size:0.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHTML(p.label || p.username || 'صفحة')}</div>
+            <div style="font-size:0.7rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" dir="ltr">electrwni.link/${escapeHTML(p.username||'')}</div>
+          </div>
+          ${isActive
+            ? `<span style="font-size:0.7rem;color:var(--primary,#3d5af1);font-weight:700;flex-shrink:0;">الحالية ✓</span>`
+            : `<button type="button" onclick="switchPage('${escapeInlineAttr(p.id)}')" style="flex-shrink:0;padding:7px 12px;border-radius:8px;border:none;background:var(--primary,#3d5af1);color:#fff;font-weight:700;font-size:0.72rem;cursor:pointer;">تبديل</button>`
+          }
+          ${canDelete ? `<button type="button" onclick="removeMyPage('${escapeInlineAttr(p.id)}')" title="حذف الصفحة" style="flex-shrink:0;padding:7px;border-radius:8px;border:1.5px solid var(--border,#e8ecf5);background:transparent;cursor:pointer;font-size:0.72rem;">🗑</button>` : ''}
+        </div>
+      `;
+    }).join('');
+  }
+
+  window.switchPage = function(pageId){
+    if(pageId === activePageDocId){ window.closeAccountsModal(); return; }
+    try { localStorage.setItem('el_active_page_' + currentUser.uid, pageId); } catch(e){}
+    window.showToast('جاري التبديل للصفحة...');
+    setTimeout(()=>location.reload(), 300);
+  };
+
+  window.toggleAddPageForm = function(){
+    document.getElementById('addPageForm').style.display = 'block';
+    document.getElementById('addPageToggleBtn').style.display = 'none';
+  };
+
+  window.submitAddPage = async function(){
+    const label = (document.getElementById('addPageLabel').value || '').trim();
+    let uname = (document.getElementById('addPageUsername').value || '').trim().toLowerCase();
+    const errEl = document.getElementById('addPageErr');
+    errEl.style.display = 'none';
+    if(!/^[a-z0-9_]{3,20}$/.test(uname)){
+      errEl.textContent = 'اسم مستخدم الصفحة: 3-20 حرفاً إنجليزياً/أرقام/_ فقط';
+      errEl.style.display = 'block'; return;
+    }
+    const btn = document.getElementById('addPageSubmitBtn');
+    btn.textContent = 'جاري الإنشاء...';
+    try {
+      // تحقق من توفر اسم المستخدم
+      const exists = await getDoc(doc(db, "usernames", uname));
+      if(exists.exists()){ errEl.textContent = 'اسم المستخدم محجوز، اختر غيره'; errEl.style.display = 'block'; btn.textContent = 'إنشاء الصفحة · Create Page'; return; }
+
+      const newPageId = 'pg_' + currentUser.uid.slice(0,6) + '_' + Date.now();
+      await setDoc(doc(db, "usernames", uname), { uid: newPageId });
+      await setDoc(doc(db, "users", newPageId), {
+        username: uname, email: currentUser.email, ownerUid: currentUser.uid, createdAt: new Date()
+      });
+
+      const newPageEntry = { id: newPageId, username: uname, label: label || uname, createdAt: new Date().toISOString() };
+      myPages.push(newPageEntry);
+      await setDoc(doc(db, "users", currentUser.uid), { myPages }, { merge: true });
+
+      try { localStorage.setItem('el_active_page_' + currentUser.uid, newPageId); } catch(e){}
+      window.showToast('تم إنشاء الصفحة — جاري الانتقال إليها...');
+      setTimeout(()=>location.reload(), 400);
+    } catch(e){
+      errEl.textContent = 'تعذر الإنشاء: ' + (e.message||'');
+      errEl.style.display = 'block';
+      btn.textContent = 'إنشاء الصفحة · Create Page';
+    }
+  };
+
+  window.removeMyPage = async function(pageId){
+    if(pageId === currentUser.uid){ window.showToast('لا يمكن حذف الصفحة الرئيسية من هنا — استخدم حذف الحساب'); return; }
+    const page = myPages.find(p => p.id === pageId);
+    if(!confirm(`حذف صفحة "${page ? (page.label||page.username) : ''}" نهائياً؟ لا يمكن التراجع.`)) return;
+    try {
+      if(page && page.username){ try { await deleteDoc(doc(db, "usernames", page.username)); } catch(e){} }
+      try { await deleteDoc(doc(db, "users", pageId)); } catch(e){}
+      myPages = myPages.filter(p => p.id !== pageId);
+      await setDoc(doc(db, "users", currentUser.uid), { myPages }, { merge: true });
+      renderPagesList();
+      window.showToast('تم حذف الصفحة');
+    } catch(e){ window.showToast('تعذر الحذف: ' + (e.message||'')); }
+  };
+
   window.openAccountsModal = function(){
     renderAccountsList();
+    renderPagesList();
     document.getElementById('addAccountForm').style.display = 'none';
     document.getElementById('addAccountToggleBtn').style.display = 'block';
+    document.getElementById('addPageForm').style.display = 'none';
+    document.getElementById('addPageToggleBtn').style.display = 'block';
     document.getElementById('accountsModal').style.display = 'flex';
   };
   window.closeAccountsModal = function(){
@@ -3688,7 +3826,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     }
 
     try {
-      const userRef = doc(db, "users", currentUser.uid);
+      const userRef = doc(db, "users", activePageDocId);
       const snap = await getDoc(userRef);
       const data = snap.exists() ? snap.data() : {};
       let links = Array.isArray(data.links) ? data.links : [];
@@ -3778,7 +3916,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         if(preloadedData){
           userData = preloadedData;
         } else {
-          const snap = await getDoc(doc(db, "users", currentUser.uid));
+          const snap = await getDoc(doc(db, "users", activePageDocId));
           if(snap.exists()) userData = snap.data();
         }
         if(Array.isArray(userData.links)) links = userData.links;
@@ -3797,7 +3935,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
           while(RESERVED_NUMBERS.includes(maxNum)) maxNum++;
           l.number = maxNum; l.num = maxNum;
         });
-        try{ await setDoc(doc(db, "users", currentUser.uid), { links }, { merge: true }); }catch(e){}
+        try{ await setDoc(doc(db, "users", activePageDocId), { links }, { merge: true }); }catch(e){}
         window.showToast(`⚠️ روابط بأرقام ${oldNums.join('، ')} تصادمت مع أرقام محجوزة — أعدنا ترقيمها تلقائياً`);
       }
 
@@ -3925,7 +4063,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   window.deleteLink = async function(ident) {
     if(confirm("هل أنت متأكد من حذف هذا الرابط؟")) {
       try {
-        const userRef = doc(db, "users", currentUser.uid);
+        const userRef = doc(db, "users", activePageDocId);
         const snap = await getDoc(userRef);
         const links = (snap.exists() && Array.isArray(snap.data().links) ? snap.data().links : []).filter(l => !matchIdent(l, ident));
         await setDoc(userRef, { links: links }, { merge: true });
@@ -3938,7 +4076,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   // تعديل رابط: يملأ نموذج الإضافة بالبيانات الحالية ويحوّله لوضع تعديل
   window.editLink = async function(ident) {
     try {
-      const userRef = doc(db, "users", currentUser.uid);
+      const userRef = doc(db, "users", activePageDocId);
       const snap = await getDoc(userRef);
       const links = snap.exists() && Array.isArray(snap.data().links) ? snap.data().links : [];
       const link = links.find(l => matchIdent(l, ident));
@@ -3972,7 +4110,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   async function fetchAllLinks(){
     let links = [];
     try {
-      const us = await getDoc(doc(db, "users", currentUser.uid));
+      const us = await getDoc(doc(db, "users", activePageDocId));
       if(us.exists() && Array.isArray(us.data().links)) links = us.data().links;
     } catch(e){ console.error('fetch links:', e); }
     const arr = links.map(l => ({
@@ -4019,7 +4157,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         // ندمج الأرقام المحجوزة (رابط الصفحة/أرقام مختارة/حسابات التواصل) لتتصدّر التقرير
         let userData = {};
         try {
-          const snap = await getDoc(doc(db, "users", currentUser.uid));
+          const snap = await getDoc(doc(db, "users", activePageDocId));
           if(snap.exists()) userData = snap.data();
         } catch(e){}
         const reservedEntries = buildReservedLinkEntries(userData, userData.username || uname);
@@ -4027,8 +4165,52 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         if(!allForPdf.length){ window.showToast("لا توجد روابط للتصدير"); return; }
         const ok = await exportLinksAsPdf(allForPdf, uname);
         if(ok) window.showToast("تم فتح التقرير للمعاينة");
+
+      } else if(format === 'backup'){
+        window.showToast("جاري تجهيز النسخة الكاملة...");
+        let pageData = {};
+        try {
+          const snap = await getDoc(doc(db, "users", activePageDocId));
+          if(snap.exists()) pageData = snap.data();
+        } catch(e){}
+        // استبعاد الحقول التقنية/الحساسة التي لا تخص شكل وتصميم الصفحة
+        const { ownerUid, myPages: _mp, activePageId: _ap, ...settings } = pageData;
+        const backup = {
+          type: 'electrwni-full-backup',
+          version: 1,
+          exportedAt: new Date().toISOString(),
+          pageDocId: activePageDocId,
+          username: uname,
+          settings,
+          links
+        };
+        downloadBlob(JSON.stringify(backup, null, 2), `electrwni-${uname}-backup-كامل.json`, 'application/json');
+        window.showToast("تم تصدير النسخة الكاملة");
       }
     } catch(e){ window.showToast("تعذر التصدير: " + (e.message||'')); }
+  };
+
+  // استعادة نسخة كاملة (تصميم + بيانات) على الصفحة النشطة حالياً
+  window.importFullBackup = function(input){
+    if(!input.files || !input.files[0]) return;
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const data = JSON.parse(e.target.result);
+        if(data.type !== 'electrwni-full-backup' || !data.settings){
+          window.showToast("هذا الملف ليس نسخة كاملة صالحة"); return;
+        }
+        if(!confirm("سيتم استبدال كل تصميم وبيانات هذه الصفحة الحالية بمحتوى الملف. هل تريد المتابعة؟")) return;
+        window.showToast("جاري الاستعادة...");
+        const userRef = doc(db, "users", activePageDocId);
+        const { username: _u, ...settingsNoUsername } = data.settings; // لا نغيّر اسم المستخدم/الرابط تلقائياً
+        const restoredLinks = Array.isArray(data.links) ? data.links : [];
+        await setDoc(userRef, { ...settingsNoUsername, links: restoredLinks }, { merge: true });
+        window.showToast("تمت الاستعادة بنجاح — يُعاد تحميل الصفحة");
+        setTimeout(() => location.reload(), 1200);
+      } catch(err){ window.showToast("ملف غير صالح: " + (err.message||'')); }
+    };
+    reader.readAsText(input.files[0]);
   };
 
   // ===== بناء تقرير PDF احترافي (معاينة داخل الصفحة نفسها — لا نوافذ منبثقة إطلاقاً) =====
@@ -4218,7 +4400,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         if(!imported.length){ window.showToast("الملف لا يحتوي روابط"); return; }
         if(!confirm(`استيراد ${imported.length} رابطاً وإضافتها لحسابك؟`)) return;
         window.showToast("جاري الاستيراد...");
-        const userRef = doc(db, "users", currentUser.uid);
+        const userRef = doc(db, "users", activePageDocId);
         const snap = await getDoc(userRef);
         const existing = (snap.exists() && Array.isArray(snap.data().links)) ? snap.data().links : [];
         let maxNum = existing.reduce((m,l)=>Math.max(m, parseInt(l.number??l.num)||0), 0);
@@ -4418,7 +4600,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(!url || !selectedSocialPlatform) { window.showToast("الرجاء إدخال الرابط واختيار منصة"); return; }
     if(!currentUser){ window.showToast("لم يتم تسجيل الدخول"); return; }
     try {
-      const userRef = doc(db, "users", currentUser.uid);
+      const userRef = doc(db, "users", activePageDocId);
       const snap = await getDoc(userRef);
       const data = snap.exists() ? snap.data() : {};
       const socials = Array.isArray(data.socials) ? data.socials : [];
@@ -4463,7 +4645,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       if(preloadedData){
         if(Array.isArray(preloadedData.socials)) socials = preloadedData.socials;
       } else {
-        const snap = await getDoc(doc(db, "users", currentUser.uid));
+        const snap = await getDoc(doc(db, "users", activePageDocId));
         if(snap.exists() && Array.isArray(snap.data().socials)) socials = snap.data().socials;
       }
     } catch(e){}
@@ -4559,7 +4741,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     clearTimeout(customColorSaveTimer);
     customColorSaveTimer = setTimeout(async () => {
       try {
-        const userRef = doc(db, "users", currentUser.uid);
+        const userRef = doc(db, "users", activePageDocId);
         const snap = await getDoc(userRef);
         const socials = (snap.exists() && Array.isArray(snap.data().socials)) ? snap.data().socials : [];
         const idx = socials.findIndex(s => s.id === id);
@@ -4573,7 +4755,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   // تعديل نمط أيقونة حساب محفوظ (لون التطبيق / لون موقعك)
   window.setEditMode = async function(id, mode) {
     try {
-      const userRef = doc(db, "users", currentUser.uid);
+      const userRef = doc(db, "users", activePageDocId);
       const snap = await getDoc(userRef);
       const socials = (snap.exists() && Array.isArray(snap.data().socials)) ? snap.data().socials : [];
       const idx = socials.findIndex(s => s.id === id);
@@ -4607,13 +4789,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, 128, 128);
           const base64 = canvas.toDataURL('image/jpeg', 0.8);
-          const userRef = doc(db, "users", currentUser.uid);
+          const userRef = doc(db, "users", activePageDocId);
           const snap = await getDoc(userRef);
           const socials = (snap.exists() && Array.isArray(snap.data().socials)) ? snap.data().socials : [];
           const idx = socials.findIndex(s => s.id === id);
           if(idx<0) return;
           window.showToast("جاري رفع الصورة...");
-          const url = await uploadImageToStorage(base64, `social-icons/${currentUser.uid}/${id}.jpg`);
+          const url = await uploadImageToStorage(base64, `social-icons/${activePageDocId}/${id}.jpg`);
           socials[idx].styleMode = 'upload';
           socials[idx].icon = url;
           await setDoc(userRef, { socials: socials }, { merge: true });
@@ -4629,7 +4811,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   window.deleteSocial = async function(id) {
     if(confirm("هل تريد إزالة هذا الحساب؟")) {
       try {
-        const userRef = doc(db, "users", currentUser.uid);
+        const userRef = doc(db, "users", activePageDocId);
         const snap = await getDoc(userRef);
         const socials = (snap.exists() && Array.isArray(snap.data().socials) ? snap.data().socials : []).filter(s => s.id !== id);
         await setDoc(userRef, { socials: socials }, { merge: true });
@@ -4646,7 +4828,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(old) old.remove();
     let social = null;
     try{
-      const snap = await getDoc(doc(db, "users", currentUser.uid));
+      const snap = await getDoc(doc(db, "users", activePageDocId));
       const socials = (snap.exists() && Array.isArray(snap.data().socials)) ? snap.data().socials : [];
       social = socials.find(s => s.id === socialId);
     }catch(e){}
@@ -4695,7 +4877,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       const featured = document.getElementById('seFeatured').checked;
       if(!title || !url){ window.showToast("العنوان والرابط إلزاميان"); return; }
       try{
-        const userRef = doc(db, "users", currentUser.uid);
+        const userRef = doc(db, "users", activePageDocId);
         const snap = await getDoc(userRef);
         const socials = (snap.exists() && Array.isArray(snap.data().socials)) ? snap.data().socials : [];
         const idx = socials.findIndex(s => s.id === socialId);
@@ -4736,7 +4918,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       if(num) phonesList.push({ label: lbl || 'اتصال', number: num });
     });
     try {
-      await setDoc(doc(db, "users", currentUser.uid), { phones: phonesList }, { merge: true });
+      await setDoc(doc(db, "users", activePageDocId), { phones: phonesList }, { merge: true });
       window.showToast("تم حفظ أرقامك بنجاح");
     } catch(e) { window.showToast("خطأ أثناء الحفظ"); }
   };
@@ -4744,27 +4926,27 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   window.deletePhones = async function() {
     if(!confirm("حذف كل الأرقام من صفحتك؟")) return;
     document.querySelectorAll('.phone-entry').forEach(e=>e.remove());
-    await setDoc(doc(db, "users", currentUser.uid), { phones: [] }, { merge: true });
+    await setDoc(doc(db, "users", activePageDocId), { phones: [] }, { merge: true });
     window.showToast("تم حذف الأرقام");
   };
 
   window.saveWebsite = async function() {
     const url = document.getElementById('websiteInput').value.trim();
-    await setDoc(doc(db, "users", currentUser.uid), { website: url }, { merge: true });
+    await setDoc(doc(db, "users", activePageDocId), { website: url }, { merge: true });
     window.showToast("تم حفظ الموقع الإلكتروني");
   };
 
   window.deleteWebsite = async function() {
     if(!confirm("حذف الموقع الإلكتروني؟")) return;
     document.getElementById('websiteInput').value = '';
-    await setDoc(doc(db, "users", currentUser.uid), { website: '' }, { merge: true });
+    await setDoc(doc(db, "users", activePageDocId), { website: '' }, { merge: true });
     window.showToast("تم حذف الموقع");
   };
 
   window.saveMap = async function() {
     const url = document.getElementById('mapInput').value.trim();
     const title = document.getElementById('mapTitleInput').value.trim();
-    await setDoc(doc(db, "users", currentUser.uid), { mapUrl: url, mapLocation: url, mapTitle: title }, { merge: true });
+    await setDoc(doc(db, "users", activePageDocId), { mapUrl: url, mapLocation: url, mapTitle: title }, { merge: true });
     window.showToast("تم حفظ الموقع الملاحي بنجاح");
   };
 
@@ -4772,7 +4954,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(!confirm("حذف الخريطة من صفحتك؟")) return;
     document.getElementById('mapInput').value = '';
     document.getElementById('mapTitleInput').value = '';
-    await setDoc(doc(db, "users", currentUser.uid), { mapUrl: '', mapLocation: '', mapTitle: '' }, { merge: true });
+    await setDoc(doc(db, "users", activePageDocId), { mapUrl: '', mapLocation: '', mapTitle: '' }, { merge: true });
     window.showToast("تم حذف الخريطة");
   };
 
@@ -4940,7 +5122,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         croppedBgImageBase64 = base64;   // معاينة فورية محلية بينما الرفع يجري بالخلفية
         refreshBgModeUI();
         window.showToast('جاري رفع الصورة...');
-        uploadImageToStorage(base64, `backgrounds/${currentUser.uid}.jpg`)
+        uploadImageToStorage(base64, `backgrounds/${activePageDocId}.jpg`)
           .then(url => { croppedBgImageBase64 = url; window.showToast('تم رفع الصورة — اضغط "حفظ" لتظهر بصفحتك'); })
           .catch(err => window.showToast('تعذر رفع الصورة: ' + (err.message||'')));
       };
@@ -5070,7 +5252,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     }
     window.showToast("جاري رفع الصورة...");
     try{
-      const path = `${type === 'avatar' ? 'avatars' : 'banners'}/${currentUser.uid}.jpg`;
+      const path = `${type === 'avatar' ? 'avatars' : 'banners'}/${activePageDocId}.jpg`;
       const url = await uploadImageToStorage(base64, path);
       if (type === 'avatar') croppedAvatarBase64 = url;
       else croppedBannerBase64 = url;
@@ -5086,7 +5268,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(checked){
       croppedAvatarBase64 = null; window.__currentAvatarUrl = null;
       if(p){ p.style.opacity = '.2'; p.style.filter = 'grayscale(1)'; }
-      deleteObject(storageRef(storage, `avatars/${currentUser.uid}.jpg`)).catch(()=>{});
+      deleteObject(storageRef(storage, `avatars/${activePageDocId}.jpg`)).catch(()=>{});
       window.showToast("سيختفي الشعار من صفحتك عند الحفظ");
     } else if(p){ p.style.opacity=''; p.style.filter=''; }
   };
@@ -5096,7 +5278,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(checked){
       croppedBannerBase64 = null;
       if(p){ p.style.opacity = '.2'; p.style.filter = 'grayscale(1)'; }
-      deleteObject(storageRef(storage, `banners/${currentUser.uid}.jpg`)).catch(()=>{});
+      deleteObject(storageRef(storage, `banners/${activePageDocId}.jpg`)).catch(()=>{});
       window.showToast("سيختفي الغلاف من صفحتك عند الحفظ");
     } else if(p){ p.style.opacity=''; p.style.filter=''; }
   };
@@ -5105,7 +5287,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(checked){
       croppedBgImageBase64 = null; currentBgImage = null;
       if(typeof window.setBgMode === 'function') window.setBgMode('color');
-      deleteObject(storageRef(storage, `backgrounds/${currentUser.uid}.jpg`)).catch(()=>{});
+      deleteObject(storageRef(storage, `backgrounds/${activePageDocId}.jpg`)).catch(()=>{});
       window.showToast("ستُحذف صورة الخلفية وتعود الصفحة للون صافٍ عند الحفظ");
     }
   };
@@ -5142,7 +5324,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       if(currentIconPaletteRect) upData.iconPaletteRect = currentIconPaletteRect;
       if(currentIconPaletteCircle) upData.iconPaletteCircle = currentIconPaletteCircle;
 
-      await setDoc(doc(db, "users", currentUser.uid), upData, { merge: true });
+      await setDoc(doc(db, "users", activePageDocId), upData, { merge: true });
       window.showToast("تم حفظ التصميم والصور بنجاح");
     } catch (e) {
       window.showToast("تعذر الحفظ: " + (e.message || e.code || ''));
@@ -5152,7 +5334,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   // 8. محرك الملف الشخصي وإتلاف الحسابات (Profile & Account Deletion)
   window.saveProfile = async function() {
     try {
-      await setDoc(doc(db, "users", currentUser.uid), {
+      await setDoc(doc(db, "users", activePageDocId), {
         fullName: document.getElementById('pfName').value.trim(),
         bio: document.getElementById('pfBio').value.trim()
       }, { merge: true });
@@ -5220,10 +5402,20 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       await reauthenticateWithCredential(currentUser, cred);
       // حذف بيانات Firestore ثم الحساب
       let uname = null;
+      let ownedPages = [];
       try {
         const usnap = await getDoc(doc(db, "users", currentUser.uid));
-        if(usnap.exists()) uname = (usnap.data().username || '').toLowerCase();
+        if(usnap.exists()){
+          uname = (usnap.data().username || '').toLowerCase();
+          ownedPages = Array.isArray(usnap.data().myPages) ? usnap.data().myPages : [];
+        }
       } catch(e){}
+      // حذف كل الصفحات الإضافية التابعة لهذا البريد (باستثناء الصفحة الرئيسية نفسها)
+      for(const p of ownedPages){
+        if(p.id === currentUser.uid) continue;
+        try { await deleteDoc(doc(db, "users", p.id)); } catch(e){}
+        if(p.username){ try { await deleteDoc(doc(db, "usernames", p.username)); } catch(e){} }
+      }
       try { await deleteDoc(doc(db, "users", currentUser.uid)); } catch(e){}
       // حذف فهرس اسم المستخدم حتى يتحرر للتسجيل من جديد
       if(uname){ try { await deleteDoc(doc(db, "usernames", uname)); } catch(e){} }
