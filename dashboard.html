@@ -1807,7 +1807,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
   async function initDashboardInner() {
     // ===== تحديد الصفحة النشطة (تعدد الصفحات على نفس البريد) =====
-    const rootDocRef = doc(db, "users", activePageDocId);
+    const rootDocRef = doc(db, "users", currentUser.uid);
     const rootDoc = await getDoc(rootDocRef);
     const rootData = rootDoc.exists() ? rootDoc.data() : {};
     let savedActivePage = null;
