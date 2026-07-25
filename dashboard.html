@@ -273,37 +273,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 }
 .shape-opt.active{border-color:var(--primary);background:var(--bg);}
 
-/* ===== بطاقة "٣ مستطيلات عرضية" الموحّدة (نص + ٤ ألوان + معاينة) — تُستخدم لأيقونات التصميم وبطاقة QR ===== */
-.wbar-card{border:1.5px solid var(--border);border-radius:14px;overflow:hidden;background:var(--bg2);margin-bottom:14px;}
-.wbar{display:flex;align-items:center;gap:10px;padding:12px 14px;width:100%;box-sizing:border-box;}
-.wbar+.wbar{border-top:1px solid var(--border);}
-.wbar-label{background:var(--bg2);}
-.wbar-label input{border:none;background:transparent;outline:none;flex:1;font-weight:700;font-size:0.85rem;font-family:inherit;color:var(--text);}
-.wbar-label .wbar-ic{flex-shrink:0;display:flex;color:var(--primary);}
-.wbar-colors{justify-content:space-between;background:var(--surface,#fff);}
-.wbar-swatch{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;cursor:pointer;}
-.wbar-swatch input[type="color"]{width:100%;max-width:44px;height:34px;border-radius:9px;border:2px solid var(--border);cursor:pointer;padding:2px;background:none;}
-.wbar-swatch input[type="color"]::-webkit-color-swatch-wrapper{padding:0;}
-.wbar-swatch input[type="color"]::-webkit-color-swatch{border:none;border-radius:6px;}
-.wbar-swatch span{font-size:0.62rem;font-weight:700;color:var(--muted);}
-.wbar-preview{justify-content:center;padding:16px 14px;background:var(--bg);}
-
-/* ===== الألوان الذكية: شرائح اقتراح لونية ===== */
-.smart-color-target{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
-.smart-color-target button{flex:1;min-width:70px;padding:8px 6px;border:2px solid var(--border);border-radius:9px;background:var(--bg2);cursor:pointer;font-family:inherit;font-weight:700;font-size:0.72rem;color:var(--text2);}
-.smart-color-target button.active{border-color:var(--primary);background:var(--bg);color:var(--primary);}
-.smart-color-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;max-height:220px;overflow-y:auto;}
-.smart-color-chip{display:flex;align-items:center;gap:6px;padding:6px 10px 6px 6px;border-radius:100px;border:1.5px solid var(--border);background:var(--bg2);cursor:pointer;font-family:inherit;font-size:0.75rem;font-weight:700;color:var(--text2);}
-.smart-color-chip:active{transform:scale(0.96);}
-.smart-color-chip .swatch{width:18px;height:18px;border-radius:50%;flex-shrink:0;border:1.5px solid rgba(0,0,0,0.08);}
-
-/* ===== أزرار "ألوان التصميم" السريعة الأربعة (لون الموقع/لون التطبيق/رفع أيقونة/تخصيص الألوان) ===== */
-.qa-color-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
-.qa-color-act-btn{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 6px;border-radius:11px;border:1.5px solid var(--border);background:var(--surface,#fff);cursor:pointer;font-family:inherit;color:var(--text);}
-.qa-color-act-btn:active{transform:scale(0.96);background:var(--bg2);}
-.qa-color-act-btn svg{color:var(--primary);}
-.qa-color-act-btn span{font-size:0.7rem;font-weight:700;}
-
 .template-card{
   flex-shrink:0;width:90px;cursor:pointer;border:2px solid var(--border);border-radius:12px;
   overflow:hidden;background:var(--bg2);font-family:inherit;
@@ -622,31 +591,17 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       <div style="font-weight:800;font-size:1.05rem;">حساباتك <span class="lbl-sub" style="font-weight:400;">Accounts</span></div>
       <button type="button" onclick="closeAccountsModal()" style="background:var(--surface,#f4f5f9);border:none;width:28px;height:28px;border-radius:50%;font-size:0.9rem;cursor:pointer;">✕</button>
     </div>
-    <div style="font-size:0.76rem;color:var(--muted);margin-bottom:16px;">بدّل بين حساباتك أو صفحاتك بضغطة واحدة، أو أضف جديدًا · Switch instantly, or add another</div>
-    <div id="accountsList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;"></div>
+    <div style="font-size:0.76rem;color:var(--muted);margin-bottom:16px;">بدّل بين حساباتك بضغطة وحدة، أو أضف حساب جديد · Switch instantly, or add another account</div>
+    <div id="accountsList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div>
 
-    <div style="font-size:0.72rem;font-weight:800;color:var(--muted);margin:14px 0 8px;">صفحاتك على هذا البريد <span style="font-weight:400;">Pages on this email</span></div>
-    <div id="pagesList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div>
-
-    <div id="addPageForm" style="display:none;border-top:1px solid var(--border,#e8ecf5);padding-top:14px;margin-top:4px;margin-bottom:14px;">
-      <div style="font-weight:700;font-size:0.85rem;margin-bottom:10px;">صفحة جديدة على نفس بريدك <span class="lbl-sub" style="font-weight:400;">New page, same email</span></div>
-      <input type="text" id="addPageLabel" placeholder="اسم تعريفي للصفحة (مثال: فرع جدة)" style="width:100%;margin-bottom:8px;">
-      <input type="text" id="addPageUsername" placeholder="اسم مستخدم الصفحة (إنجليزي) · page-username" dir="ltr" style="width:100%;margin-bottom:8px;">
-      <div id="addPageErr" style="display:none;color:#c33;font-size:0.76rem;margin-bottom:8px;"></div>
-      <button type="button" class="btn-add" id="addPageSubmitBtn" onclick="submitAddPage()" style="margin:0;width:100%;">إنشاء الصفحة · Create Page</button>
+    <div id="addAccountForm" style="display:none;border-top:1px solid var(--border,#e8ecf5);padding-top:14px;margin-top:4px;">
+      <div style="font-weight:700;font-size:0.85rem;margin-bottom:10px;">إضافة حساب آخر <span class="lbl-sub" style="font-weight:400;">Add Account</span></div>
+      <input type="email" id="addAcctEmail" placeholder="البريد الإلكتروني · Email" dir="ltr" style="width:100%;margin-bottom:8px;">
+      <input type="password" id="addAcctPassword" placeholder="كلمة المرور · Password" dir="ltr" style="width:100%;margin-bottom:8px;">
+      <div id="addAcctErr" style="display:none;color:#c33;font-size:0.76rem;margin-bottom:8px;"></div>
+      <button type="button" class="btn-add" id="addAcctSubmitBtn" onclick="submitAddAccount()" style="margin:0;width:100%;">دخول وإضافة · Sign in & Add</button>
     </div>
-    <button type="button" class="btn-add" id="addPageToggleBtn" onclick="toggleAddPageForm()" style="margin:0 0 10px;width:100%;background:var(--surface,#f4f5f9);color:var(--text,#1a1d24);border:1.5px dashed var(--border,#c7cee0);">+ إضافة صفحة على نفس البريد · Add Page</button>
-
-    <div style="border-top:1px solid var(--border,#e8ecf5);padding-top:14px;">
-      <div id="addAccountForm" style="display:none;padding-bottom:4px;">
-        <div style="font-weight:700;font-size:0.85rem;margin-bottom:10px;">إضافة حساب ببريد مختلف <span class="lbl-sub" style="font-weight:400;">Different email</span></div>
-        <input type="email" id="addAcctEmail" placeholder="البريد الإلكتروني · Email" dir="ltr" style="width:100%;margin-bottom:8px;">
-        <input type="password" id="addAcctPassword" placeholder="كلمة المرور · Password" dir="ltr" style="width:100%;margin-bottom:8px;">
-        <div id="addAcctErr" style="display:none;color:#c33;font-size:0.76rem;margin-bottom:8px;"></div>
-        <button type="button" class="btn-add" id="addAcctSubmitBtn" onclick="submitAddAccount()" style="margin:0;width:100%;">دخول وإضافة · Sign in & Add</button>
-      </div>
-      <button type="button" class="btn-add" id="addAccountToggleBtn" onclick="toggleAddAccountForm()" style="margin:0;width:100%;background:var(--surface,#f4f5f9);color:var(--text,#1a1d24);border:1.5px dashed var(--border,#c7cee0);">+ إضافة حساب ببريد مختلف · Different Email</button>
-    </div>
+    <button type="button" class="btn-add" id="addAccountToggleBtn" onclick="toggleAddAccountForm()" style="margin:0;width:100%;background:var(--surface,#f4f5f9);color:var(--text,#1a1d24);border:1.5px dashed var(--border,#c7cee0);">+ إضافة حساب آخر · Add Account</button>
   </div>
 </div>
 
@@ -924,29 +879,22 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content open">
-        <button onclick="window.openQrCard()" style="margin-bottom:16px;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--primary);font-weight:700;font-family:inherit;cursor:pointer;">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v2h-3v-2zm0 4h3v4h-2v-2h-1v-2zm-5-4h3v3h-2v-1h-1v-2zm0 5h2v2h-2v-2z"></path></svg>
-          QR صفحتك · Your Page QR
-        </button>
-        <div id="socialsRegistry"></div>
-      </div>
-    </div>
-
-    <div class="expandable" id="socAddSection">
-      <div class="expandable-header open" onclick="toggleExpand(this)">
-        <div class="expandable-title"><div class="expandable-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M12 4v16m-8-8h16" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg></div><span>إضافة حساب جديد<span class="title-sub">Add New Account</span></span></div>
-        <div class="expandable-toggle">▼</div>
-      </div>
-      <div class="expandable-content open">
-        <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">دائماً هنا · Always here</div>
-        <div id="alwaysVisibleGrid" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;"></div>
-
-        <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">ألصق رابط حسابك · Paste your account URL</div>
-        <div style="display:flex;gap:8px;margin-bottom:6px;">
-          <input type="text" id="pasteUrlInput" placeholder="https://instagram.com/username" dir="ltr" style="flex:1;" oninput="onPasteUrl(this.value)">
-          <button onclick="detectFromPaste()" style="padding:0 14px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.85rem;white-space:nowrap;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;flex-shrink:0;">تعرّف</button>
+        <div style="margin-bottom:16px;">
+          <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">دائماً هنا · Always here</div>
+          <div id="alwaysVisibleGrid" style="display:flex;flex-wrap:wrap;gap:7px;"></div>
+          <button onclick="window.openQrCard()" style="margin-top:7px;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--primary);font-weight:700;font-family:inherit;cursor:pointer;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v2h-3v-2zm0 4h3v4h-2v-2h-1v-2zm-5-4h3v3h-2v-1h-1v-2zm0 5h2v2h-2v-2z"></path></svg>
+            QR صفحتك · Your Page QR
+          </button>
         </div>
-        <div id="pasteHint" style="font-size:0.72rem;color:var(--muted);margin-bottom:14px;min-height:16px;"></div>
+        <div style="margin-bottom:16px;">
+          <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">ألصق رابط حسابك · Paste your account URL</div>
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="pasteUrlInput" placeholder="https://instagram.com/username" dir="ltr" style="flex:1;" oninput="onPasteUrl(this.value)">
+            <button onclick="detectFromPaste()" style="padding:0 14px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.85rem;white-space:nowrap;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;flex-shrink:0;">تعرّف</button>
+          </div>
+          <div id="pasteHint" style="font-size:0.72rem;color:var(--muted);margin-top:6px;min-height:16px;"></div>
+        </div>
 
         <div style="display:flex;align-items:center;gap:10px;margin:14px 0;">
           <div style="flex:1;height:1px;background:var(--border);"></div>
@@ -954,60 +902,172 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
           <div style="flex:1;height:1px;background:var(--border);"></div>
         </div>
 
-        <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">اختر منصة · Choose Platform</div>
-        <div id="quickAddGrid" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;"></div>
-        <button id="moreBtn" onclick="toggleMorePlatforms()" style="margin-bottom:14px;background:none;border:1.5px dashed var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;font-size:0.78rem;color:var(--text2);">المزيد · More</button>
+        <div style="margin-bottom:16px;">
+          <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">اختر منصة · Choose Platform</div>
+          <div id="quickAddGrid" style="display:flex;flex-wrap:wrap;gap:7px;"></div>
+          <button id="moreBtn" onclick="toggleMorePlatforms()" style="margin-top:8px;background:none;border:1.5px dashed var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;font-size:0.78rem;color:var(--text2);">المزيد · More</button>
+        </div>
 
-        <div id="socialFormBox" style="display:none;">
-          <div class="wbar-card">
-            <!-- ١) اسم الحساب وأيقونته -->
-            <div class="wbar wbar-label">
-              <div id="socDetectedIcon" style="width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;overflow:hidden;background:var(--bg2);color:var(--primary);"></div>
-              <input type="text" id="socUrl" placeholder="اسم الحساب أو رابطه" dir="ltr" oninput="debounceDetect(this.value)">
-              <button type="button" onclick="detectNow()" style="flex-shrink:0;padding:6px 12px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.76rem;font-family:inherit;">فحص</button>
+        <div id="socialFormBox" style="display:none;margin-bottom:16px;padding:16px;background:var(--bg2);border-radius:12px;border:1px solid var(--border);">
+          <div id="socDetectedPreview" style="display:none;align-items:center;gap:12px;padding:12px;background:#fff;border-radius:10px;border:1.5px solid var(--primary);margin-bottom:14px;">
+            <div id="socDetectedIcon" style="width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;overflow:hidden;"></div>
+            <div style="flex:1;min-width:0;">
+              <div id="socDetectedName" style="font-weight:700;font-size:0.95rem;"></div>
+              <div id="socDetectedUrl" style="font-size:0.72rem;color:var(--muted);direction:ltr;word-break:break-all;margin-top:2px;"></div>
             </div>
-            <div id="socDetectedUrlRow" style="padding:0 14px 10px;font-size:0.7rem;color:var(--muted);direction:ltr;word-break:break-all;display:none;background:var(--surface,#fff);"></div>
+            <div id="socDetectedCheck" style="font-size:1.4rem;color:var(--success);flex-shrink:0;">✓</div>
+          </div>
 
-            <!-- ٢) لون الموقع / لون التطبيق / رفع صورة / تخصيص -->
-            <div class="wbar" style="flex-wrap:wrap;gap:6px;background:var(--surface,#fff);" id="socColorModeGroup">
-              <button type="button" onclick="setSocColorMode('site')" id="cmTheme" style="flex:1;min-width:64px;padding:8px 4px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:inherit;font-weight:700;font-size:0.7rem;">لون الموقع</button>
-              <button type="button" onclick="setSocColorMode('brand')" id="cmBrand" style="flex:1;min-width:64px;padding:8px 4px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:inherit;font-weight:700;font-size:0.7rem;">لون التطبيق</button>
-              <button type="button" onclick="setSocColorMode('upload')" id="cmUpload" style="flex:1;min-width:64px;padding:8px 4px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:inherit;font-weight:700;font-size:0.7rem;">📤 رفع صورة</button>
-              <button type="button" onclick="setSocColorMode('custom')" id="cmCustom" style="flex:1;min-width:64px;padding:8px 4px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:inherit;font-weight:700;font-size:0.7rem;">🎨 تخصيص</button>
+          <div class="form-group">
+            <label id="socUrlLabel">رابط الحساب <span class="lbl-sub">/ Account Link</span></label>
+            <div style="display:flex;gap:8px;">
+              <input type="text" id="socUrl" placeholder="https://instagram.com/username" dir="ltr" style="flex:1;" oninput="debounceDetect(this.value)">
+              <button onclick="detectNow()" style="padding:0 13px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.85rem;white-space:nowrap;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;flex-shrink:0;">فحص</button>
             </div>
+            <div id="socDetectHint" style="font-size:0.72rem;color:var(--muted);margin-top:4px;min-height:16px;"></div>
+          </div>
 
-            <!-- تنبيه عند اختيار "لون الموقع" -->
-            <div id="socSiteWarning" style="display:none;padding:10px 14px;background:#FFF7E6;border-top:1px solid var(--border);font-size:0.7rem;color:#8a6414;line-height:1.6;">
-              ⚠️ لون خلفية الأيقونة سيكون نفس لون تطبيقك، وقد يتشابه مع لون النص عندك — تأكد من وضوح التباين.
+          <div id="socColorModeGroup" style="display:none;margin-bottom:14px;">
+            <label style="margin-bottom:8px;display:block;font-size:0.84rem;font-weight:700;color:var(--text2);">لون الأيقونة <span style="font-size:0.7rem;font-weight:400;color:var(--muted);">/ Icon Style</span></label>
+            <div style="display:flex;gap:7px;flex-wrap:wrap;">
+              <button onclick="setSocColorMode('brand')" id="cmBrand" style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">لون التطبيق</button>
+              <button onclick="setSocColorMode('site')" id="cmTheme" style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">لون موقعك</button>
+              <button onclick="setSocColorMode('upload')" id="cmUpload" style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">رفع صورة</button>
             </div>
-
-            <!-- تنبيه + ٤ ألوان عند اختيار "تخصيص" -->
-            <div class="wbar wbar-colors" id="socCustomColorsRow" style="display:none;">
-              <label class="wbar-swatch"><input type="color" id="socCustomBg" value="#3d5af1" oninput="updateSocLivePreview()"><span>الخلفية</span></label>
-              <label class="wbar-swatch"><input type="color" id="socCustomIconColor" value="#ffffff" oninput="updateSocLivePreview()"><span>الأيقونة</span></label>
-              <label class="wbar-swatch"><input type="color" id="socCustomRing" value="#ffffff" oninput="updateSocLivePreview()"><span>الإطار</span></label>
-              <label class="wbar-swatch"><input type="color" id="socCustomContainer" value="#ffffff" oninput="updateSocLivePreview()"><span>الحاوية</span></label>
-            </div>
-            <div id="customIconUpload" style="display:none;padding:12px 14px;border-top:1px solid var(--border);">
+            <div id="customIconUpload" style="display:none;margin-top:10px;">
               <input type="file" id="socIconFile" accept="image/*" onchange="previewCustomIcon(this)">
               <div id="socIconPreview" style="margin-top:8px;display:none;">
                 <img id="socIconImg" style="width:52px;height:52px;border-radius:12px;object-fit:cover;border:2px solid var(--border);">
               </div>
             </div>
-
-            <div class="wbar wbar-preview">
-              <div id="socLivePreviewBox" style="display:flex;align-items:center;gap:10px;width:100%;justify-content:center;">
-                <div id="socLivePreviewIcon" style="width:44px;height:44px;border-radius:50%;background:var(--primary);border:2px solid transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;"></div>
-                <span style="font-size:0.74rem;color:var(--muted);font-weight:700;">معاينة الشكل النهائي · Live Preview</span>
-              </div>
-            </div>
           </div>
 
-          <div style="display:flex;gap:8px;margin-top:12px;">
+          <div style="display:flex;gap:8px;">
             <button class="btn-add" onclick="saveSocial()">حفظ · Save</button>
             <button class="btn-add" style="background:var(--muted);" onclick="closeSocialForm()">إلغاء · Cancel</button>
           </div>
         </div>
+
+        <div id="socialsRegistry"></div>
+      </div>
+    </div>
+
+    <div class="expandable">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon">▭</div><span>شكل الأيقونات<span class="title-sub">Icon Shape</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content open">
+        <div style="font-size:0.76rem;font-weight:700;color:var(--muted);margin-bottom:12px;">يُطبَّق على كل حسابات التواصل دفعة واحدة · Applies to all accounts at once</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;" id="iconShapeGrid">
+          <button type="button" class="shape-opt" id="shapeOptCircle" onclick="setIconShape('circle')">
+            <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-light));margin:0 auto 8px;"></div>
+            <div style="font-size:0.8rem;font-weight:700;">دائري <span class="lbl-sub" style="display:block;">Circle</span></div>
+          </button>
+          <button type="button" class="shape-opt" id="shapeOptRect" onclick="setIconShape('rect')">
+            <div style="width:76px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--primary-light));margin:0 auto 8px;"></div>
+            <div style="font-size:0.8rem;font-weight:700;">مستطيل <span class="lbl-sub" style="display:block;">Rectangle</span></div>
+          </button>
+        </div>
+        <div id="rectSubOptions" style="display:none;grid-template-columns:1fr 1fr;gap:10px;">
+          <button type="button" class="shape-opt" id="rectStyleRounded" onclick="setRectStyle('rounded')">
+            <div style="width:76px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--primary-light));margin:0 auto 8px;position:relative;overflow:hidden;">
+              <div style="position:absolute;right:36%;top:0;bottom:0;width:1.5px;background:rgba(255,255,255,0.6);"></div>
+            </div>
+            <div style="font-size:0.76rem;font-weight:700;">حواف دائرية<span class="lbl-sub" style="display:block;">خط مستقيم · Straight</span></div>
+          </button>
+          <button type="button" class="shape-opt" id="rectStyleSharp" onclick="setRectStyle('sharp')">
+            <div style="width:76px;height:36px;border-radius:2px;background:linear-gradient(135deg,var(--primary),var(--primary-light));margin:0 auto 8px;position:relative;overflow:hidden;">
+              <div style="position:absolute;right:32%;top:-14px;bottom:-14px;width:1.5px;background:rgba(255,255,255,0.6);transform:rotate(18deg);"></div>
+            </div>
+            <div style="font-size:0.76rem;font-weight:700;">حواف حادة<span class="lbl-sub" style="display:block;">خط مائل · Slanted</span></div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="expandable">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon">▦</div><span>تخصيص بطاقة QR<span class="title-sub">QR Card Style</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content open">
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <button type="button" id="qrModeBrand" onclick="setQrMode('brand')" style="flex:1;padding:10px;border:2px solid var(--primary);border-radius:9px;background:var(--bg2);color:var(--text);font-weight:700;font-family:inherit;cursor:pointer;font-size:0.82rem;">لون الموقع · Site</button>
+          <button type="button" id="qrModeCustom" onclick="setQrMode('custom')" style="flex:1;padding:10px;border:2px solid var(--border);border-radius:9px;background:transparent;color:var(--text);font-weight:700;font-family:inherit;cursor:pointer;font-size:0.82rem;">🎨 تخصيص · Custom</button>
+        </div>
+        <div id="qrCustomColors" style="display:none;grid-template-columns:1fr;gap:10px;margin-bottom:14px;">
+          <div>
+            <label style="font-size:0.72rem;display:block;margin-bottom:4px;">خلفية البطاقة · Card BG</label>
+            <input type="color" class="color-box-picker" id="qrBgColor" value="#3d5af1" oninput="updateQrPreview()">
+          </div>
+          <div>
+            <label style="font-size:0.72rem;display:block;margin-bottom:4px;">لون الرمز · QR Color</label>
+            <input type="color" class="color-box-picker" id="qrIconColor" value="#1a1d24" oninput="updateQrPreview()">
+          </div>
+          <div>
+            <label style="font-size:0.72rem;display:block;margin-bottom:4px;">لون الإطار · Ring</label>
+            <input type="color" class="color-box-picker" id="qrRingColor" value="#ffffff" oninput="updateQrPreview()">
+          </div>
+          <div>
+            <label style="font-size:0.72rem;display:block;margin-bottom:4px;">لون الحاوية · Container</label>
+            <input type="color" class="color-box-picker" id="qrContainerColor" value="#ffffff" oninput="updateQrPreview()">
+          </div>
+        </div>
+        <div style="font-size:0.75rem;font-weight:700;color:var(--muted);margin-bottom:8px;">معاينة مباشرة · Live Preview</div>
+        <div id="qrMiniPreview" style="border-radius:14px;padding:18px;text-align:center;background:linear-gradient(135deg,#3d5af1,#6c8fff);">
+          <div id="qrMiniLogo" style="width:36px;height:36px;border-radius:50%;background:#fff;margin:0 auto 8px;border:2px solid #fff;"></div>
+          <div id="qrMiniBox" style="width:60px;height:60px;background:#fff;border-radius:8px;margin:0 auto;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="expandable">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M6.62 10.79a15.15 15.15 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24 11.36 11.36 0 003.56.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z"/></svg></div><span>أرقام التواصل<span class="title-sub">Phone Numbers</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content open">
+        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">تظهر في صفحتك العامة مع إمكانية الاتصال المباشر · Shown on your public page for direct calls</p>
+        <div id="phonesContainer"></div>
+        <button class="btn-add" onclick="addPhoneEntry()" style="background:var(--primary);margin-bottom:12px;">+ إضافة رقم · Add Number</button>
+        <button class="btn-add" onclick="savePhones()">حفظ الأرقام · Save Numbers</button>
+        <button class="btn-delete" onclick="deletePhones()" style="width:100%;margin-top:8px;">حذف كل الأرقام · Remove Numbers</button>
+      </div>
+    </div>
+
+    <div class="expandable">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm6.93 6h-2.95a15.65 15.65 0 00-1.38-3.56A8.03 8.03 0 0118.93 8zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14a7.96 7.96 0 010-4h3.38a16.5 16.5 0 000 4H4.26zm.81 2h2.95c.3 1.26.77 2.46 1.38 3.56A7.99 7.99 0 015.07 16zm2.95-8H5.07a7.99 7.99 0 014.33-3.56C8.8 5.54 8.33 6.74 8.02 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66a14.6 14.6 0 010-4h4.68a14.6 14.6 0 010 4zm.25 5.56c.61-1.1 1.08-2.3 1.38-3.56h2.95a7.99 7.99 0 01-4.33 3.56zM16.36 14a16.5 16.5 0 000-4h3.38a7.96 7.96 0 010 4h-3.38z"/></svg></div><span>الموقع الإلكتروني<span class="title-sub">Website</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content open">
+        <div class="form-group">
+          <label>رابط موقعك أو متجرك <span class="lbl-sub">/ Your website or store URL</span></label>
+          <input type="url" id="websiteInput" placeholder="https://yoursite.com" dir="ltr">
+        </div>
+        <button class="btn-add" onclick="saveWebsite()">حفظ الموقع · Save Website</button>
+        <button class="btn-delete" onclick="deleteWebsite()" style="width:100%;margin-top:8px;">حذف الموقع · Remove Website</button>
+      </div>
+    </div>
+
+    <div class="expandable">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M12 2a7 7 0 00-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 00-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg></div><span>الموقع الملاحي<span class="title-sub">Map Location</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content open">
+        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">يظهر في صفحتك كـ "خريطة موقعنا" مع رابط مباشر للخريطة · Shows as "Our Location" map link</p>
+        <div class="form-group">
+          <label>اسم الخريطة <span class="lbl-sub">/ Map Title</span></label>
+          <input type="text" id="mapTitleInput" placeholder="مثال: موقع متجرنا" maxlength="30">
+        </div>
+        <div class="form-group">
+          <label>رابط خرائط Google أو Apple Maps <span class="lbl-sub">/ Google or Apple Maps link</span></label>
+          <input type="url" id="mapInput" placeholder="https://maps.google.com/..." dir="ltr">
+        </div>
+        <button class="btn-add" onclick="saveMap()">حفظ الموقع الملاحي · Save Map</button>
+        <button class="btn-delete" onclick="deleteMap()" style="width:100%;margin-top:8px;">حذف الخريطة · Remove Map</button>
       </div>
     </div>
   </div>
@@ -1025,23 +1085,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
           <span class="qa-btn-ic" style="display:flex;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg></span>
           <span class="qa-btn-txt">توليد التصميم بالذكاء الاصطناعي · Generate</span>
         </button>
-      </div>
-    </div>
-    <div class="expandable">
-      <div class="expandable-header" onclick="toggleExpand(this)">
-        <div class="expandable-title"><div class="expandable-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 000 20 14.5 14.5 0 000-20z"/><path d="M2 12h20"/></svg></div><span>الألوان الذكية<span class="title-sub">Smart Colors</span></span></div>
-        <div class="expandable-toggle">▼</div>
-      </div>
-      <div class="expandable-content">
-        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;line-height:1.7;">اكتب اسم دولة (تعطيك ألوان علمها) أو صف شيئاً (تعطيك لونه المعروف) — مثال: "السعودية"، "الكويت"، "الذهب" · Type a country or describe something to get its color</div>
-        <div class="smart-color-target" id="smartColorTargetGrid">
-          <button type="button" class="active" data-t="p1" onclick="window.smartColorSetTarget('p1')">أساسي ١</button>
-          <button type="button" data-t="p2" onclick="window.smartColorSetTarget('p2')">أساسي ٢</button>
-          <button type="button" data-t="text" onclick="window.smartColorSetTarget('text')">النص</button>
-          <button type="button" data-t="bg" onclick="window.smartColorSetTarget('bg')">الخلفية</button>
-        </div>
-        <input type="text" id="smartColorInput" placeholder="مثال: السعودية، الكويت، الذهب..." oninput="window.smartColorSearch(this.value)">
-        <div class="smart-color-chips" id="smartColorChips"></div>
       </div>
     </div>
     <div class="expandable">
@@ -1095,71 +1138,11 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         </div>
 
         <div class="form-group">
-          <label>تخصيص الألوان السريع <span class="lbl-sub">/ Quick Colors</span></label>
-          <div style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;">بطاقة موحّدة: اسم، ٤ ألوان بضغطة، ومعاينة فورية · One card — name, 4 colors, live preview</div>
-          <div class="wbar-card">
-            <div class="wbar wbar-label">
-              <span class="wbar-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></span>
-              <input type="text" id="quickColorLabel" value="الألوان الرئيسية" maxlength="30" placeholder="اسم مجموعة الألوان">
-            </div>
-            <div class="wbar wbar-colors">
-              <label class="wbar-swatch"><input type="color" id="quickColorP1" value="#3d5af1" oninput="window.onColorPick(this.value)"><span>أساسي ١</span></label>
-              <label class="wbar-swatch"><input type="color" id="quickColorP2" value="#6c8fff" oninput="window.onColor2Pick(this.value)"><span>أساسي ٢</span></label>
-              <label class="wbar-swatch"><input type="color" id="quickColorText" value="#1a1d24" oninput="window.onTextColorPick(this.value)"><span>النص</span></label>
-              <label class="wbar-swatch"><input type="color" id="quickColorBg" value="#ffffff" oninput="window.onBgColorPick(this.value)"><span>الخلفية</span></label>
-            </div>
-            <div class="wbar wbar-preview">
-              <div style="display:flex;align-items:center;gap:12px;width:100%;">
-                <div id="qcpAvatar" style="width:36px;height:36px;border-radius:50%;background:#3d5af1;border:2px solid #6c8fff;flex-shrink:0;"></div>
-                <div style="flex:1;min-width:0;">
-                  <div id="qcpName" style="font-weight:700;font-size:0.82rem;color:#1a1d24;">اسمك هنا</div>
-                  <div id="qcpBtn" style="margin-top:6px;background:#3d5af1;color:#fff;border-radius:7px;padding:6px 12px;font-size:0.72rem;font-weight:700;display:inline-block;">أذهب الآن</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
           <label>الألوان <span class="lbl-sub">/ Colors</span></label>
           <div style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;">اختر مجموعة ألوان جاهزة لتطبيقها فوراً، وتقدر تعدّل عليها بعدها بالحقول تحت · Pick a ready color set, then fine-tune below</div>
           <div id="templateCarousel" style="display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;"></div>
         </div>
 
-        <div class="expandable" style="margin:0 0 20px;border-radius:12px;">
-          <div class="expandable-header" onclick="toggleExpand(this)">
-            <div class="expandable-title"><div class="expandable-icon">▦</div><span>تخصيص بطاقة QR<span class="title-sub">QR Card Style</span></span></div>
-            <div class="expandable-toggle">▼</div>
-          </div>
-          <div class="expandable-content">
-            <div style="display:flex;gap:8px;margin-bottom:14px;">
-              <button type="button" id="qrModeBrand" onclick="setQrMode('brand')" style="flex:1;padding:10px;border:2px solid var(--primary);border-radius:9px;background:var(--bg2);color:var(--text);font-weight:700;font-family:inherit;cursor:pointer;font-size:0.82rem;">لون الموقع · Site</button>
-              <button type="button" id="qrModeCustom" onclick="setQrMode('custom')" style="flex:1;padding:10px;border:2px solid var(--border);border-radius:9px;background:transparent;color:var(--text);font-weight:700;font-family:inherit;cursor:pointer;font-size:0.82rem;">🎨 تخصيص · Custom</button>
-            </div>
-            <div id="qrCustomColors" style="display:none;">
-              <div class="wbar-card">
-                <div class="wbar wbar-label">
-                  <span class="wbar-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span>
-                  <span style="font-weight:700;font-size:0.85rem;">بطاقة QR</span>
-                </div>
-                <div class="wbar wbar-colors">
-                  <label class="wbar-swatch"><input type="color" class="color-box-picker" id="qrBgColor" value="#3d5af1" oninput="updateQrPreview()"><span>الخلفية</span></label>
-                  <label class="wbar-swatch"><input type="color" class="color-box-picker" id="qrIconColor" value="#1a1d24" oninput="updateQrPreview()"><span>الرمز</span></label>
-                  <label class="wbar-swatch"><input type="color" class="color-box-picker" id="qrRingColor" value="#ffffff" oninput="updateQrPreview()"><span>الإطار</span></label>
-                  <label class="wbar-swatch"><input type="color" class="color-box-picker" id="qrContainerColor" value="#ffffff" oninput="updateQrPreview()"><span>الحاوية</span></label>
-                </div>
-                <div class="wbar wbar-preview">
-                  <div id="qrMiniPreview" style="border-radius:14px;padding:14px;text-align:center;background:linear-gradient(135deg,#3d5af1,#6c8fff);width:100%;">
-                    <div id="qrMiniLogo" style="width:32px;height:32px;border-radius:50%;background:#fff;margin:0 auto 8px;border:2px solid #fff;"></div>
-                    <div id="qrMiniBox" style="width:52px;height:52px;background:#fff;border-radius:8px;margin:0 auto;"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div style="display:none;" aria-hidden="true">
         <div class="form-group">
           <label>اللون الأساسي ١ <span class="lbl-sub">/ Primary 1</span></label>
           <div id="colorPalette" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;"></div>
@@ -1177,9 +1160,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
             <input type="text" id="colorHex2Input" placeholder="#6c8fff" maxlength="7" dir="ltr" onchange="onColor2HexInput(this.value)" style="flex:1;font-family:ui-monospace,'SF Mono','Space Mono',monospace;">
           </div>
         </div>
-        </div>
 
-        <div style="display:none;" aria-hidden="true">
         <div class="form-group" style="margin-top:20px;">
           <label>لون النص <span class="lbl-sub">/ Text Color</span></label>
           <div id="textPalette" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;"></div>
@@ -1196,7 +1177,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
             <input type="color" id="bgColorPicker" value="#ffffff" onchange="onBgColorPick(this.value)" style="width:50px;height:40px;padding:2px;cursor:pointer;">
             <input type="text" id="bgHexInput" placeholder="#ffffff" maxlength="7" dir="ltr" onchange="onBgHexInput(this.value)" style="flex:1;font-family:ui-monospace,'SF Mono','Space Mono',monospace;">
           </div>
-        </div>
         </div>
 
         <!-- وضع خلفية الصفحة: لون فقط / خلفية فقط / خلفية + ألوان (طبقة لون شفافة أمام الصورة) -->
@@ -1383,27 +1363,11 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
             <span class="pill-badge">XLS</span>
             <span class="pill-text"><b>Excel</b><small>جدول بيانات (CSV)</small></span>
           </button>
-          <button onclick="exportLinks('backup')" class="export-pill" style="background:linear-gradient(135deg,#0f172a,#1e293b);--pill-shadow:rgba(15,23,42,.35);">
-            <span class="pill-badge" style="background:rgba(255,255,255,.16);">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-            </span>
-            <span class="pill-text"><b>نسخة كاملة للصفحة</b><small>التصميم + الألوان + القالب + كل البيانات</small></span>
-          </button>
         </div>
         <div style="height:1px;background:var(--border);margin:18px 0;"></div>
         <p style="font-size:0.82rem;color:var(--muted);margin-bottom:12px;">استيراد روابط من ملف JSON · Import links from JSON</p>
-        <button onclick="document.getElementById('importFile').click()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border:1.5px dashed var(--primary);border-radius:12px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;color:var(--primary);margin-bottom:10px;">
-          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          اختر ملف JSON للاستيراد
-        </button>
+        <button onclick="document.getElementById('importFile').click()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border:1.5px dashed var(--primary);border-radius:12px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;color:var(--primary);">⬆ اختر ملف JSON للاستيراد</button>
         <input type="file" id="importFile" accept=".json,application/json" style="display:none;" onchange="importLinks(this)">
-
-        <p style="font-size:0.82rem;color:var(--muted);margin:16px 0 12px;line-height:1.6;">استعادة نسخة كاملة (تُرجع التصميم والقالب وكل بيانات هذه الصفحة كما كانت وقت التصدير) · Restore full page backup</p>
-        <button onclick="document.getElementById('importBackupFile').click()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border:1.5px dashed #0f172a;border-radius:12px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Tajawal',sans-serif;font-weight:700;color:#0f172a;">
-          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          اختر ملف النسخة الكاملة للاستعادة
-        </button>
-        <input type="file" id="importBackupFile" accept=".json,application/json" style="display:none;" onchange="importFullBackup(this)">
       </div>
     </div>
     <div class="expandable">
@@ -1497,47 +1461,10 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     appId: "1:712490301263:web:2084210da3f687285ab73a"
   };
 
-  // ===================================================================================
-  // ===== طبقة الأمان: تعقيم كل مُخرَج قبل حقنه في DOM (وقاية من XSS) ==================
-  // ===================================================================================
-  // أي نص مصدره المستخدم (عنوان رابط، وصف، اسم حساب تواصل...) يجب أن يمر من هنا
-  // قبل إدخاله داخل innerHTML. القاعدة: لا نص خام أبداً داخل HTML.
-  const HTML_ESCAPE_MAP = { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;', '`':'&#96;' };
-  function escapeHTML(str){
-    if(str === null || str === undefined) return '';
-    return String(str).replace(/[&<>"'`]/g, ch => HTML_ESCAPE_MAP[ch]);
-  }
-  // تعقيم الروابط: يمنع javascript:, data:text/html, vbscript: ...إلخ. يسمح فقط بـ http/https/mailto/tel أو روابط نسبية.
-  function sanitizeUrl(url){
-    const u = String(url||'').trim();
-    if(!u) return '';
-    if(/^(https?:|mailto:|tel:)/i.test(u)) return u;
-    if(/^[a-z][a-z0-9+.-]*:/i.test(u)) return ''; // أي بروتوكول آخر (javascript:, data:, vbscript:...) → مرفوض
-    return u; // رابط نسبي بلا بروتوكول
-  }
-  // تعقيم قيم الألوان القادمة من منتقي الألوان/تخصيص الأيقونات — يمنع الهروب من داخل attribute style="" أو تنفيذ CSS خبيث
-  function sanitizeColor(color, fallback){
-    const c = String(color||'').trim();
-    if(/^#[0-9a-fA-F]{3,8}$/.test(c)) return c;
-    if(/^rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*(,\s*(0|1|0?\.\d+)\s*)?\)$/.test(c)) return c;
-    if(/^[a-zA-Z]{3,20}$/.test(c)) return c; // اسم لون CSS بسيط (red, transparent...)
-    return fallback || 'transparent';
-  }
-  // كتابة نص خام كمحتوى نصي (Text Node) بدل innerHTML — الخيار الأكثر أماناً حين لا نحتاج وسوم HTML
-  function setText(el, value){
-    if(!el) return;
-    el.textContent = (value === null || value === undefined) ? '' : String(value);
-  }
-  // تعقيم أي نص يُدرج داخل onclick="...('${نص}')" — يمنع الهروب من الاقتباس الأحادي (JS) ومن سمة HTML معاً
-  function escapeInlineAttr(str){
-    return escapeHTML(String(str||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'"));
-  }
-  window.__security = { escapeHTML, sanitizeUrl, sanitizeColor, setText, escapeInlineAttr };
-
   // ===== دعم أكثر من حساب: كل حساب يُربط بتطبيق Firebase منفصل بالاسم، فتُحفظ جلسته باستقلالية =====
   // ولا يؤثر هذا على المستخدمين الحاليين إطلاقاً: الحساب الأول يبقى دائماً بالتطبيق الافتراضي [DEFAULT]
-  const ACCOUNTS_KEY = 'elSavedAccounts';
-  const ACTIVE_ACCOUNT_KEY = 'elActiveAccountApp';
+  const ACCOUNTS_KEY = 'electrwni_saved_accounts';
+  const ACTIVE_ACCOUNT_KEY = 'electrwni_active_account';
   function getSavedAccounts(){ try{ return JSON.parse(localStorage.getItem(ACCOUNTS_KEY) || '[]'); }catch(e){ return []; } }
   function setSavedAccounts(list){ try{ localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(list)); }catch(e){} }
   function upsertSavedAccount(acc){
@@ -1568,8 +1495,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
   // المتغيرات العامة لإدارة الحالة
   let currentUser = null;
-  let activePageDocId = null;   // مُعرّف مستند الصفحة النشطة حالياً (قد يساوي currentUser.uid أو صفحة إضافية)
-  let myPages = [];             // فهرس كل الصفحات المملوكة لهذا البريد: [{id, username, label, createdAt}]
   // أرقام محجوزة للنظام: 205=رابط الصفحة، 206=أرقام مختارة، 210-216=حسابات التواصل تلقائياً
   const RESERVED_NUMBERS = [205, 206, 210, 211, 212, 213, 214, 215, 216];
   let cropper = null;
@@ -1757,7 +1682,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         try { sessionStorage.removeItem('el_redirect_count'); } catch(e){}
         console.log("تمت استعادة الجلسة بنجاح:", user.uid);
 
-        if (!user.emailVerified) {
+        if (!user.emailVerified && !user.isAnonymous) {
           const createdMs = (user.metadata && user.metadata.creationTime) ? new Date(user.metadata.creationTime).getTime() : Date.now();
           const elapsed = Date.now() - createdMs;
           if (elapsed >= EMAIL_GRACE_MS) {
@@ -1776,6 +1701,9 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         }
 
         await initDashboard();
+        if (user.isAnonymous) {
+          try { window.showToast('أنت الآن بوضع التجربة · Demo Mode — أنشئ حسابك من الإعدادات لحفظ عملك بشكل دائم'); } catch(e){}
+        }
       } else {
         // حماية من الحلقة: لا نوجّه أكثر من مرة متتالية دون جلسة
         let count = 0;
@@ -1806,20 +1734,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   }
 
   async function initDashboardInner() {
-    // ===== تحديد الصفحة النشطة (تعدد الصفحات على نفس البريد) =====
-    const rootDocRef = doc(db, "users", currentUser.uid);
-    const rootDoc = await getDoc(rootDocRef);
-    const rootData = rootDoc.exists() ? rootDoc.data() : {};
-    let savedActivePage = null;
-    try { savedActivePage = localStorage.getItem('el_active_page_' + currentUser.uid); } catch(e){}
-    myPages = (Array.isArray(rootData.myPages) && rootData.myPages.length)
-      ? rootData.myPages
-      : [{ id: currentUser.uid, username: rootData.username || currentUser.email.split('@')[0], label: 'الصفحة الرئيسية' }];
-    activePageDocId = savedActivePage || rootData.activePageId || currentUser.uid;
-    if(!myPages.some(p => p.id === activePageDocId)) activePageDocId = currentUser.uid;
-
-    const userDocRef = (activePageDocId === currentUser.uid) ? rootDocRef : doc(db, "users", activePageDocId);
-    const userDoc = (activePageDocId === currentUser.uid) ? rootDoc : await getDoc(userDocRef);
+    const userDocRef = doc(db, "users", currentUser.uid);
+    const userDoc = await getDoc(userDocRef);
     let username = currentUser.email.split('@')[0];
 
     // ⚠️ نفس بريد الإدارة المستخدم بملف admin.html — عدّله ليطابق بريدك الحقيقي
@@ -1836,11 +1752,11 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       if(topbarBrandEl) topbarBrandEl.textContent = `electrwni.link/${username}`;
       document.getElementById('pfName').value = data.fullName || '';
       document.getElementById('pfBio').value = data.bio || '';
-      if(document.getElementById('websiteInput')) document.getElementById('websiteInput').value = data.website || '';
-      if(document.getElementById('mapInput')) document.getElementById('mapInput').value = data.mapUrl || data.mapLocation || '';
+      document.getElementById('websiteInput').value = data.website || '';
+      document.getElementById('mapInput').value = data.mapUrl || data.mapLocation || '';
       if(document.getElementById('mapTitleInput')) document.getElementById('mapTitleInput').value = data.mapTitle || '';
       
-      if (data.phones && Array.isArray(data.phones) && document.getElementById('phonesContainer')) {
+      if (data.phones && Array.isArray(data.phones)) {
         document.getElementById('phonesContainer').innerHTML = '';
         data.phones.forEach(p => addPhoneFieldHTML(p.label, p.number));
       }
@@ -1892,7 +1808,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         if(preview) preview.style.borderRadius = currentAvatarShape === 'rect' ? '18px' : '50%';
       }
       // الصور (base64 من Firestore) — أسماء موحّدة مع page.html
-      if (data.avatar) { document.getElementById('avatarPreview').innerHTML = `<img src="${escapeHTML(sanitizeUrl(data.avatar))}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`; window.__currentAvatarUrl = data.avatar; }
+      if (data.avatar) { document.getElementById('avatarPreview').innerHTML = `<img src="${data.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`; window.__currentAvatarUrl = data.avatar; }
       if (data.bannerImage) document.getElementById('bannerPreview').style.backgroundImage = `url(${data.bannerImage})`;
       // حالة إزالة الشعار / الغلاف / الخلفية
       avatarHidden = !!data.avatarHidden; bannerHidden = !!data.bannerHidden; bgImageHidden = !!data.bgImageHidden;
@@ -1903,9 +1819,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       if(avatarHidden){ const p=document.getElementById('avatarPreview'); if(p){p.style.opacity='.2';p.style.filter='grayscale(1)';} }
       if(bannerHidden){ const p=document.getElementById('bannerPreview'); if(p){p.style.opacity='.2';p.style.filter='grayscale(1)';} }
     } else {
-      const initData = { username, email: currentUser.email, createdAt: new Date() };
-      if(activePageDocId !== currentUser.uid) initData.ownerUid = currentUser.uid;
-      await setDoc(userDocRef, initData, { merge: true });
+      await setDoc(userDocRef, { username, email: currentUser.email, createdAt: new Date() }, { merge: true });
     }
 
     document.getElementById('pfUser').value = username;
@@ -1947,10 +1861,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   // ===== فروع كل قسم تظهر منسدلة تحت مستطيل التبويب نفسه =====
   const TAB_BRANCHES = {
     design: [
-      { label:'الألوان الذكية', title:'الألوان الذكية' },
       { label:'قوالب جاهزة', title:'قوالب جاهزة' },
       { label:'تصميم صفحتك', title:'تصميم صفحتك' },
-      { label:'تخصيص بطاقة QR', title:'تخصيص بطاقة QR' },
     ],
     links: [
       { label:'إضافة رابط', title:'أضف رابط', after:() => window.setEntryMode && window.setEntryMode('link') },
@@ -1960,7 +1872,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     ],
     socials: [
       { label:'حسابات ووسائل التواصل', title:'حسابات التواصل' },
-      { label:'إضافة حساب جديد', title:'إضافة حساب جديد' },
+      { label:'شكل الأيقونات', title:'شكل الأيقونات' },
+      { label:'تخصيص بطاقة QR', title:'تخصيص بطاقة QR' },
     ],
     profile: [
       { label:'بيانات ملفي', title:'بيانات ملفي' },
@@ -2086,9 +1999,9 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       const exists = await getDoc(doc(db, "usernames", newU));
       if(exists.exists()){ window.showToast("الاسم محجوز، اختر غيره"); input.value = oldU; return; }
       // 2) أنشئ فهرس الاسم الجديد → uid
-      await setDoc(doc(db, "usernames", newU), { uid: activePageDocId });
+      await setDoc(doc(db, "usernames", newU), { uid: currentUser.uid });
       // 3) حدّث وثيقة المستخدم
-      await setDoc(doc(db, "users", activePageDocId), { username: newU }, { merge: true });
+      await setDoc(doc(db, "users", currentUser.uid), { username: newU }, { merge: true });
       // 4) احذف فهرس الاسم القديم
       if(oldU){ try { await deleteDoc(doc(db, "usernames", oldU)); } catch(e){} }
       // 5) حدّث الواجهة
@@ -2106,21 +2019,21 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   let currentRectStyle = 'rounded';
   window.setIconShape = async function(shape){
     currentIconShape = shape;
-    if(document.getElementById('shapeOptCircle')) document.getElementById('shapeOptCircle').classList.toggle('active', shape==='circle');
-    if(document.getElementById('shapeOptRect')) document.getElementById('shapeOptRect').classList.toggle('active', shape==='rect');
-    if(document.getElementById('rectSubOptions')) document.getElementById('rectSubOptions').style.display = shape==='rect' ? 'grid' : 'none';
+    document.getElementById('shapeOptCircle').classList.toggle('active', shape==='circle');
+    document.getElementById('shapeOptRect').classList.toggle('active', shape==='rect');
+    document.getElementById('rectSubOptions').style.display = shape==='rect' ? 'grid' : 'none';
     try{
-      await setDoc(doc(db, "users", activePageDocId), { socialIconShape: shape }, { merge: true });
+      await setDoc(doc(db, "users", currentUser.uid), { socialIconShape: shape }, { merge: true });
       window.showToast("تم تحديث شكل الأيقونات");
     }catch(e){ window.showToast("تعذر الحفظ: " + (e.message||'')); }
     loadSocials(); // أعد رسم المعاينات لتعكس الشكل الجديد فوراً
   };
   window.setRectStyle = async function(style){
     currentRectStyle = style;
-    if(document.getElementById('rectStyleRounded')) document.getElementById('rectStyleRounded').classList.toggle('active', style==='rounded');
-    if(document.getElementById('rectStyleSharp')) document.getElementById('rectStyleSharp').classList.toggle('active', style==='sharp');
+    document.getElementById('rectStyleRounded').classList.toggle('active', style==='rounded');
+    document.getElementById('rectStyleSharp').classList.toggle('active', style==='sharp');
     try{
-      await setDoc(doc(db, "users", activePageDocId), { socialRectStyle: style }, { merge: true });
+      await setDoc(doc(db, "users", currentUser.uid), { socialRectStyle: style }, { merge: true });
       window.showToast("تم تحديث نمط المستطيل");
     }catch(e){ window.showToast("تعذر الحفظ: " + (e.message||'')); }
     loadSocials();
@@ -2129,11 +2042,11 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     data = data || {};
     currentIconShape = data.socialIconShape || 'circle';
     currentRectStyle = data.socialRectStyle || 'rounded';
-    if(document.getElementById('shapeOptCircle')) document.getElementById('shapeOptCircle').classList.toggle('active', currentIconShape==='circle');
-    if(document.getElementById('shapeOptRect')) document.getElementById('shapeOptRect').classList.toggle('active', currentIconShape==='rect');
-    if(document.getElementById('rectSubOptions')) document.getElementById('rectSubOptions').style.display = currentIconShape==='rect' ? 'grid' : 'none';
-    if(document.getElementById('rectStyleRounded')) document.getElementById('rectStyleRounded').classList.toggle('active', currentRectStyle==='rounded');
-    if(document.getElementById('rectStyleSharp')) document.getElementById('rectStyleSharp').classList.toggle('active', currentRectStyle==='sharp');
+    document.getElementById('shapeOptCircle').classList.toggle('active', currentIconShape==='circle');
+    document.getElementById('shapeOptRect').classList.toggle('active', currentIconShape==='rect');
+    document.getElementById('rectSubOptions').style.display = currentIconShape==='rect' ? 'grid' : 'none';
+    document.getElementById('rectStyleRounded').classList.toggle('active', currentRectStyle==='rounded');
+    document.getElementById('rectStyleSharp').classList.toggle('active', currentRectStyle==='sharp');
   }
 
   // ===== تخصيص بطاقة QR: نفس مبدأ تخصيص أيقونات التواصل (٤ ألوان) =====
@@ -2151,7 +2064,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       colorsBox.style.display='none';
     }
     if(!skipSave){
-      try{ await setDoc(doc(db, "users", activePageDocId), { qrStyleMode: mode }, { merge: true }); }catch(e){}
+      try{ await setDoc(doc(db, "users", currentUser.uid), { qrStyleMode: mode }, { merge: true }); }catch(e){}
     }
     updateQrPreview();
   };
@@ -2173,7 +2086,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       clearTimeout(window.__qrSaveTimer);
       window.__qrSaveTimer = setTimeout(async () => {
         try{
-          await setDoc(doc(db, "users", activePageDocId), {
+          await setDoc(doc(db, "users", currentUser.uid), {
             qrCustomBg: bg, qrCustomIconColor: iconColor, qrCustomRing: ring, qrCustomContainer: container
           }, { merge: true });
         }catch(e){}
@@ -2412,13 +2325,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   window.onCategorySelect = async function(id){
     selectedCategory = id;
     renderCategoryGrid();
-    try{ await setDoc(doc(db, "users", activePageDocId), { category: id }, { merge: true }); }catch(e){}
+    try{ await setDoc(doc(db, "users", currentUser.uid), { category: id }, { merge: true }); }catch(e){}
     suggestTemplateFromSelection();
   };
   window.onGoalSelect = async function(id){
     selectedGoal = id;
     renderGoalGrid();
-    try{ await setDoc(doc(db, "users", activePageDocId), { goal: id }, { merge: true }); }catch(e){}
+    try{ await setDoc(doc(db, "users", currentUser.uid), { goal: id }, { merge: true }); }catch(e){}
     suggestTemplateFromSelection();
   };
   function suggestTemplateFromSelection(){
@@ -2470,9 +2383,9 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       el.innerHTML = '<div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;">رسائلك السابقة · Your messages</div>' +
         items.map(it => `
           <div style="padding:10px 12px;border:1px solid var(--border);border-radius:10px;margin-bottom:8px;">
-            <div style="font-size:0.82rem;margin-bottom:6px;">${escapeHTML(it.message)}</div>
+            <div style="font-size:0.82rem;margin-bottom:6px;">${(it.message||'').replace(/</g,'&lt;')}</div>
             <div style="font-size:0.7rem;color:${it.status==='open'?'var(--muted)':'var(--primary)'};font-weight:700;">${it.status==='open'?'⏳ بانتظار الرد':'✅ تم الرد'}</div>
-            ${it.adminReply ? `<div style="margin-top:6px;padding:8px;background:var(--bg2);border-radius:8px;font-size:0.8rem;"><b>الرد:</b> ${escapeHTML(it.adminReply)}</div>` : ''}
+            ${it.adminReply ? `<div style="margin-top:6px;padding:8px;background:var(--bg2);border-radius:8px;font-size:0.8rem;"><b>الرد:</b> ${it.adminReply.replace(/</g,'&lt;')}</div>` : ''}
           </div>
         `).join('');
     }catch(e){ console.error('loadFeedbackHistory failed:', e); }
@@ -2563,14 +2476,14 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     bgActionsDesign:   { name: 'إجراءات الخلفية', icon: qaIconSvg('image'),  tab: 'التصميم', nav:{pageId:'design', title:'تصميم صفحتك', tabIdx:0, after:'scrollBg'} },
     logoCoverDesign:   { name: 'الشعار والغلاف',  icon: qaIconSvg('banner'), tab: 'التصميم', nav:{pageId:'design', title:'تصميم صفحتك', tabIdx:0, after:'scrollLogo'} },
     textActionsDesign: { name: 'إجراءات النص',    icon: qaIconSvg('edit'),   tab: 'التصميم', nav:{pageId:'design', title:'تصميم صفحتك', tabIdx:0, after:'scrollText'} },
-    iconActionsDesign: { name: 'إجراءات الأيقونات', icon: qaIconSvg('shape'), tab: 'التصميم', nav:{pageId:'socials', title:'إضافة حساب جديد', tabIdx:2} },
-    iconStyleDesign:   { name: 'تصميم الأيقونات',  icon: qaIconSvg('layers'), tab: 'التصميم', nav:{pageId:'socials', title:'إضافة حساب جديد', tabIdx:2}, toast:'لون كل أيقونة يُختار عند إضافتها' },
+    iconActionsDesign: { name: 'إجراءات الأيقونات', icon: qaIconSvg('shape'), tab: 'التصميم', nav:{pageId:'socials', title:'شكل الأيقونات', tabIdx:2} },
+    iconStyleDesign:   { name: 'تصميم الأيقونات',  icon: qaIconSvg('layers'), tab: 'التصميم', nav:{pageId:'socials', title:'شكل الأيقونات', tabIdx:2}, toast:'الشكل من هنا، ولون الأيقونة عند إضافة كل حساب' },
 
     // ===== قسم التواصل =====
     contactAccountsAct: { name: 'إجراءات حساباتك', icon: qaIconSvg('broadcast'), tab: 'تواصل', nav:{pageId:'socials', title:'حسابات التواصل', tabIdx:2} },
     contactNumbersAct:  { name: 'إجراءات أرقامك',   icon: qaIconSvg('phone'),     tab: 'تواصل', nav:{pageId:'socials', title:'أرقام التواصل', tabIdx:2} },
     contactEmailsAct:   { name: 'إجراءات إيميلاتك', icon: qaIconSvg('mail'),      tab: 'تواصل', nav:{pageId:'socials', title:'حسابات التواصل', tabIdx:2}, toast:'أضف بريدك كحساب تواصل من هنا' },
-    contactIconsAct:    { name: 'إجراءات أيقوناتك', icon: qaIconSvg('shape'),     tab: 'تواصل', nav:{pageId:'socials', title:'إضافة حساب جديد', tabIdx:2} },
+    contactIconsAct:    { name: 'إجراءات أيقوناتك', icon: qaIconSvg('shape'),     tab: 'تواصل', nav:{pageId:'socials', title:'شكل الأيقونات', tabIdx:2} },
     contactWebsiteAct:  { name: 'إجراءات موقعك',    icon: qaIconSvg('globe'),     tab: 'تواصل', nav:{pageId:'socials', title:'الموقع الإلكتروني', tabIdx:2} },
     contactLocationAct: { name: 'إجراءات مكانك',    icon: qaIconSvg('pin'),       tab: 'تواصل', nav:{pageId:'socials', title:'الموقع الملاحي', tabIdx:2} },
 
@@ -2698,30 +2611,25 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     }
 
     if(key === 'colors'){
-      const goDesign = (anchorJs) => `showPage('design', document.querySelectorAll('.nav-tab')[0]); window.closeQaPanel && window.closeQaPanel(); setTimeout(()=>{${anchorJs}}, 380);`;
       return `
         <div class="qa-tile">
           <div class="qa-tile-header-row">
             <div class="qa-tile-title" style="margin:0;">${item.icon} ${item.name}</div>
+            <button type="button" class="qa-dots-btn" onclick="qaToggleMenu('colors')">•••</button>
           </div>
-          <div class="qa-color-actions">
-            <button type="button" class="qa-color-act-btn" onclick="${goDesign(`document.getElementById('quickColorBg')?.scrollIntoView({behavior:'smooth',block:'center'})`)}">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M3 15l4.5-4.5a2 2 0 012.8 0L15 15"/><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor" stroke="none"/></svg>
-              <span>لون الموقع</span>
-            </button>
-            <button type="button" class="qa-color-act-btn" onclick="${goDesign(`document.getElementById('quickColorP1')?.scrollIntoView({behavior:'smooth',block:'center'})`)}">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>
-              <span>لون التطبيق</span>
-            </button>
-            <button type="button" class="qa-color-act-btn" onclick="${goDesign(`document.getElementById('avatarInput')?.click()`)}">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              <span>رفع أيقونة</span>
-            </button>
-            <button type="button" class="qa-color-act-btn" onclick="${goDesign(`document.getElementById('quickColorLabel')?.scrollIntoView({behavior:'smooth',block:'center'})`)}">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-              <span>تخصيص الألوان</span>
-            </button>
-          </div>
+          ${qaMenuOpenFor==='colors' ? `
+            <div class="qa-inline-menu">
+              <button type="button" onclick="setIconShape('circle'); qaToggleMenu('colors');" class="${currentIconShape==='circle'?'active':''}">⚪ أيقونات دائرية</button>
+              <button type="button" onclick="setIconShape('rect'); qaToggleMenu('colors');" class="${currentIconShape==='rect'?'active':''}">▭ أيقونات مستطيلة</button>
+            </div>` : `
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px;">
+              <input type="color" class="qa-color-mini" id="qaColorP1" oninput="qaQuickColorPreview()" title="أساسي ١">
+              <input type="color" class="qa-color-mini" id="qaColorP2" oninput="qaQuickColorPreview()" title="أساسي ٢">
+              <input type="color" class="qa-color-mini" id="qaColorText" oninput="qaQuickColorPreview()" title="النص">
+              <input type="color" class="qa-color-mini" id="qaColorBg" oninput="qaQuickColorPreview()" title="الخلفية">
+            </div>
+            <button type="button" class="qa-submit-btn qa-action-btn" onclick="qaSaveQuickColors()">حفظ</button>
+          `}
         </div>`;
     }
 
@@ -2899,13 +2807,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     qaAddNumMode = mode;
     qaMenuOpenFor = null;
     renderQaWidget();
-    try{ await setDoc(doc(db, "users", activePageDocId), { qaAddNumMode: mode }, { merge: true }); }catch(e){}
+    try{ await setDoc(doc(db, "users", currentUser.uid), { qaAddNumMode: mode }, { merge: true }); }catch(e){}
   };
   window.qaSetStatsMode = async function(mode){
     qaStatsMode = mode;
     qaMenuOpenFor = null;
     renderQaWidget();
-    try{ await setDoc(doc(db, "users", activePageDocId), { qaStatsMode: mode }, { merge: true }); }catch(e){}
+    try{ await setDoc(doc(db, "users", currentUser.uid), { qaStatsMode: mode }, { merge: true }); }catch(e){}
   };
 
   window.qaWizardChoose = function(mode){
@@ -2928,7 +2836,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(!num || !title || (isLink ? !url : !text)){ window.showToast("عبّئ كل الحقول المطلوبة"); return; }
     if(RESERVED_NUMBERS.includes(parseInt(num))){ window.showToast(`⚠️ الرقم ${num} محجوز للنظام`); return; }
     try{
-      const userRef = doc(db, "users", activePageDocId);
+      const userRef = doc(db, "users", currentUser.uid);
       const snap = await getDoc(userRef);
       const data = snap.exists() ? snap.data() : {};
       let links = Array.isArray(data.links) ? data.links : [];
@@ -3002,11 +2910,11 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     const el = document.getElementById('qaLast3Body');
     if(!el) return;
     try{
-      const snap = await getDoc(doc(db, "users", activePageDocId));
+      const snap = await getDoc(doc(db, "users", currentUser.uid));
       const raw = snap.exists() && Array.isArray(snap.data().links) ? snap.data().links : [];
       const sorted = [...raw].sort((a,b) => new Date(b.createdAt||0) - new Date(a.createdAt||0)).slice(0,3);
       if(!sorted.length){ el.textContent = 'لا توجد أرقام بعد'; return; }
-      el.innerHTML = sorted.map(l => `<div class="qa-tile-action qa-action-btn" style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:10px;margin-bottom:5px;text-align:right;justify-content:flex-start;background:var(--glass-bg);backdrop-filter:blur(10px) saturate(180%);-webkit-backdrop-filter:blur(10px) saturate(180%);border:1px solid var(--glass-border);box-shadow:0 4px 10px rgba(23,50,178,.08);" onclick="window.qaOpenNumber('${escapeHTML(l.number??l.num)}')"><span class="qa-square-txt" style="font-weight:800;color:var(--primary);">#${escapeHTML(l.number??l.num)}</span><span class="qa-square-txt" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHTML(l.title||l.label||'')}</span></div>`).join('');
+      el.innerHTML = sorted.map(l => `<div class="qa-tile-action qa-action-btn" style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:10px;margin-bottom:5px;text-align:right;justify-content:flex-start;background:var(--glass-bg);backdrop-filter:blur(10px) saturate(180%);-webkit-backdrop-filter:blur(10px) saturate(180%);border:1px solid var(--glass-border);box-shadow:0 4px 10px rgba(23,50,178,.08);" onclick="window.qaOpenNumber('${l.number??l.num}')"><span class="qa-square-txt" style="font-weight:800;color:var(--primary);">#${l.number??l.num}</span><span class="qa-square-txt" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${l.title||l.label||''}</span></div>`).join('');
     }catch(e){ el.textContent = 'تعذر الجلب'; }
   }
 
@@ -3018,7 +2926,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       const links = await fetchAllLinks();
       const top = [...links].sort((a,b) => (b.views||0)-(a.views||0)).slice(0,5);
       if(!top.length){ el.textContent = 'لا توجد بيانات بعد'; return; }
-      el.innerHTML = top.map(l => `<div class="qa-tile-action qa-action-btn" style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:10px;margin-bottom:5px;text-align:right;justify-content:flex-start;background:var(--glass-bg);backdrop-filter:blur(10px) saturate(180%);-webkit-backdrop-filter:blur(10px) saturate(180%);border:1px solid var(--glass-border);box-shadow:0 4px 10px rgba(23,50,178,.08);" onclick="window.qaOpenNumber('${escapeHTML(l.number)}')"><span class="qa-square-txt" style="font-weight:800;color:var(--primary);">#${escapeHTML(l.number)}</span><span class="qa-square-txt" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHTML(l.title||'')}</span><span class="qa-square-txt" style="color:var(--muted);font-size:0.68rem;">${escapeHTML(l.views||0)} 👁</span></div>`).join('');
+      el.innerHTML = top.map(l => `<div class="qa-tile-action qa-action-btn" style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:10px;margin-bottom:5px;text-align:right;justify-content:flex-start;background:var(--glass-bg);backdrop-filter:blur(10px) saturate(180%);-webkit-backdrop-filter:blur(10px) saturate(180%);border:1px solid var(--glass-border);box-shadow:0 4px 10px rgba(23,50,178,.08);" onclick="window.qaOpenNumber('${l.number}')"><span class="qa-square-txt" style="font-weight:800;color:var(--primary);">#${l.number}</span><span class="qa-square-txt" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${l.title||''}</span><span class="qa-square-txt" style="color:var(--muted);font-size:0.68rem;">${l.views||0} 👁</span></div>`).join('');
     }catch(e){ el.textContent = 'تعذر الجلب'; }
   }
 
@@ -3034,7 +2942,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     try{
       const links = await fetchAllLinks();
       if(!links.length){ sel.innerHTML = '<option>لا توجد أرقام بعد</option>'; return; }
-      sel.innerHTML = links.map(l => `<option value="${escapeHTML(l.number)}">#${escapeHTML(l.number)} — ${escapeHTML((l.title||'').slice(0,22))}</option>`).join('');
+      sel.innerHTML = links.map(l => `<option value="${l.number}">#${l.number} — ${(l.title||'').slice(0,22)}</option>`).join('');
     }catch(e){ sel.innerHTML = '<option>تعذر التحميل</option>'; }
   }
   window.qaDownloadSelectedQr = async function(){
@@ -3059,7 +2967,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   // ===== طباعة سجل حسب مدة زمنية (أسبوع / شهر / ٣ أشهر) =====
   async function fetchLinksByDateRange(days){
     try{
-      const snap = await getDoc(doc(db, "users", activePageDocId));
+      const snap = await getDoc(doc(db, "users", currentUser.uid));
       const raw = snap.exists() && Array.isArray(snap.data().links) ? snap.data().links : [];
       const cutoff = Date.now() - days*24*60*60*1000;
       return raw
@@ -3303,7 +3211,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(checked && !qaConfig.includes(key)) qaConfig.push(key);
     else if(!checked) qaConfig = qaConfig.filter(k => k!==key);
     renderQaWidget();
-    try{ await setDoc(doc(db, "users", activePageDocId), { quickActionsConfig: qaConfig }, { merge: true }); }catch(e){}
+    try{ await setDoc(doc(db, "users", currentUser.uid), { quickActionsConfig: qaConfig }, { merge: true }); }catch(e){}
   };
   function loadQaConfig(data){
     data = data || {};
@@ -3459,7 +3367,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     const avEl = document.getElementById('avatarPreview')?.querySelector('img');
     if(avEl) avatarSrc = avEl.src;
     try{
-      const snap = await getDoc(doc(db, "users", activePageDocId));
+      const snap = await getDoc(doc(db, "users", currentUser.uid));
       if(snap.exists()){
         const data = snap.data();
         if(!avatarSrc) avatarSrc = data.avatar || null;
@@ -3512,116 +3420,24 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       const isActive = acc.appName === activeAppName;
       return `
         <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;border:1.5px solid ${isActive?'var(--primary,#3d5af1)':'var(--border,#e8ecf5)'};background:${isActive?'rgba(61,90,241,.06)':'transparent'};">
-          <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#3d5af1,#6c8fff);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.9rem;flex-shrink:0;">${escapeHTML(((acc.username||acc.email||'?')[0]||'?').toUpperCase())}</div>
+          <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#3d5af1,#6c8fff);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.9rem;flex-shrink:0;">${(acc.username||acc.email||'?')[0].toUpperCase()}</div>
           <div style="flex:1;min-width:0;">
-            <div style="font-weight:700;font-size:0.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${acc.username ? '@'+escapeHTML(acc.username) : escapeHTML(acc.email||'')}</div>
-            <div style="font-size:0.7rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" dir="ltr">${escapeHTML(acc.email||'')}</div>
+            <div style="font-weight:700;font-size:0.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${acc.username ? '@'+acc.username : (acc.email||'')}</div>
+            <div style="font-size:0.7rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" dir="ltr">${acc.email||''}</div>
           </div>
           ${isActive
             ? `<span style="font-size:0.7rem;color:var(--primary,#3d5af1);font-weight:700;flex-shrink:0;">الحالي ✓</span>`
-            : `<button type="button" onclick="switchAccount('${escapeInlineAttr(acc.appName)}')" style="flex-shrink:0;padding:7px 12px;border-radius:8px;border:none;background:var(--primary,#3d5af1);color:#fff;font-weight:700;font-size:0.72rem;cursor:pointer;">تبديل</button>
-               <button type="button" onclick="removeSavedAccount('${escapeInlineAttr(acc.uid)}')" title="إزالة من القائمة" style="flex-shrink:0;padding:7px;border-radius:8px;border:1.5px solid var(--border,#e8ecf5);background:transparent;cursor:pointer;font-size:0.72rem;">🗑</button>`
+            : `<button type="button" onclick="switchAccount('${acc.appName}')" style="flex-shrink:0;padding:7px 12px;border-radius:8px;border:none;background:var(--primary,#3d5af1);color:#fff;font-weight:700;font-size:0.72rem;cursor:pointer;">تبديل</button>
+               <button type="button" onclick="removeSavedAccount('${acc.uid}')" title="إزالة من القائمة" style="flex-shrink:0;padding:7px;border-radius:8px;border:1.5px solid var(--border,#e8ecf5);background:transparent;cursor:pointer;font-size:0.72rem;">🗑</button>`
           }
         </div>
       `;
     }).join('');
   }
-  // ===== تعدد الصفحات على نفس البريد (بدون تسجيل دخول جديد) =====
-  function renderPagesList(){
-    const el = document.getElementById('pagesList');
-    if(!el) return;
-    if(!myPages.length){ el.innerHTML = '<div style="font-size:0.78rem;color:var(--muted);">لا توجد صفحات إضافية بعد</div>'; return; }
-    el.innerHTML = myPages.map(p => {
-      const isActive = p.id === activePageDocId;
-      const canDelete = !isActive && p.id !== currentUser.uid;
-      return `
-        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;border:1.5px solid ${isActive?'var(--primary,#3d5af1)':'var(--border,#e8ecf5)'};background:${isActive?'rgba(61,90,241,.06)':'transparent'};">
-          <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#0f172a,#334155);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M3 9h18"></path></svg>
-          </div>
-          <div style="flex:1;min-width:0;">
-            <div style="font-weight:700;font-size:0.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHTML(p.label || p.username || 'صفحة')}</div>
-            <div style="font-size:0.7rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" dir="ltr">electrwni.link/${escapeHTML(p.username||'')}</div>
-          </div>
-          ${isActive
-            ? `<span style="font-size:0.7rem;color:var(--primary,#3d5af1);font-weight:700;flex-shrink:0;">الحالية ✓</span>`
-            : `<button type="button" onclick="switchPage('${escapeInlineAttr(p.id)}')" style="flex-shrink:0;padding:7px 12px;border-radius:8px;border:none;background:var(--primary,#3d5af1);color:#fff;font-weight:700;font-size:0.72rem;cursor:pointer;">تبديل</button>`
-          }
-          ${canDelete ? `<button type="button" onclick="removeMyPage('${escapeInlineAttr(p.id)}')" title="حذف الصفحة" style="flex-shrink:0;padding:7px;border-radius:8px;border:1.5px solid var(--border,#e8ecf5);background:transparent;cursor:pointer;font-size:0.72rem;">🗑</button>` : ''}
-        </div>
-      `;
-    }).join('');
-  }
-
-  window.switchPage = function(pageId){
-    if(pageId === activePageDocId){ window.closeAccountsModal(); return; }
-    try { localStorage.setItem('el_active_page_' + currentUser.uid, pageId); } catch(e){}
-    window.showToast('جاري التبديل للصفحة...');
-    setTimeout(()=>location.reload(), 300);
-  };
-
-  window.toggleAddPageForm = function(){
-    document.getElementById('addPageForm').style.display = 'block';
-    document.getElementById('addPageToggleBtn').style.display = 'none';
-  };
-
-  window.submitAddPage = async function(){
-    const label = (document.getElementById('addPageLabel').value || '').trim();
-    let uname = (document.getElementById('addPageUsername').value || '').trim().toLowerCase();
-    const errEl = document.getElementById('addPageErr');
-    errEl.style.display = 'none';
-    if(!/^[a-z0-9_]{3,20}$/.test(uname)){
-      errEl.textContent = 'اسم مستخدم الصفحة: 3-20 حرفاً إنجليزياً/أرقام/_ فقط';
-      errEl.style.display = 'block'; return;
-    }
-    const btn = document.getElementById('addPageSubmitBtn');
-    btn.textContent = 'جاري الإنشاء...';
-    try {
-      // تحقق من توفر اسم المستخدم
-      const exists = await getDoc(doc(db, "usernames", uname));
-      if(exists.exists()){ errEl.textContent = 'اسم المستخدم محجوز، اختر غيره'; errEl.style.display = 'block'; btn.textContent = 'إنشاء الصفحة · Create Page'; return; }
-
-      const newPageId = 'pg_' + currentUser.uid.slice(0,6) + '_' + Date.now();
-      await setDoc(doc(db, "usernames", uname), { uid: newPageId });
-      await setDoc(doc(db, "users", newPageId), {
-        username: uname, email: currentUser.email, ownerUid: currentUser.uid, createdAt: new Date()
-      });
-
-      const newPageEntry = { id: newPageId, username: uname, label: label || uname, createdAt: new Date().toISOString() };
-      myPages.push(newPageEntry);
-      await setDoc(doc(db, "users", currentUser.uid), { myPages }, { merge: true });
-
-      try { localStorage.setItem('el_active_page_' + currentUser.uid, newPageId); } catch(e){}
-      window.showToast('تم إنشاء الصفحة — جاري الانتقال إليها...');
-      setTimeout(()=>location.reload(), 400);
-    } catch(e){
-      errEl.textContent = 'تعذر الإنشاء: ' + (e.message||'');
-      errEl.style.display = 'block';
-      btn.textContent = 'إنشاء الصفحة · Create Page';
-    }
-  };
-
-  window.removeMyPage = async function(pageId){
-    if(pageId === currentUser.uid){ window.showToast('لا يمكن حذف الصفحة الرئيسية من هنا — استخدم حذف الحساب'); return; }
-    const page = myPages.find(p => p.id === pageId);
-    if(!confirm(`حذف صفحة "${page ? (page.label||page.username) : ''}" نهائياً؟ لا يمكن التراجع.`)) return;
-    try {
-      if(page && page.username){ try { await deleteDoc(doc(db, "usernames", page.username)); } catch(e){} }
-      try { await deleteDoc(doc(db, "users", pageId)); } catch(e){}
-      myPages = myPages.filter(p => p.id !== pageId);
-      await setDoc(doc(db, "users", currentUser.uid), { myPages }, { merge: true });
-      renderPagesList();
-      window.showToast('تم حذف الصفحة');
-    } catch(e){ window.showToast('تعذر الحذف: ' + (e.message||'')); }
-  };
-
   window.openAccountsModal = function(){
     renderAccountsList();
-    renderPagesList();
     document.getElementById('addAccountForm').style.display = 'none';
     document.getElementById('addAccountToggleBtn').style.display = 'block';
-    document.getElementById('addPageForm').style.display = 'none';
-    document.getElementById('addPageToggleBtn').style.display = 'block';
     document.getElementById('accountsModal').style.display = 'flex';
   };
   window.closeAccountsModal = function(){
@@ -3826,7 +3642,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     }
 
     try {
-      const userRef = doc(db, "users", activePageDocId);
+      const userRef = doc(db, "users", currentUser.uid);
       const snap = await getDoc(userRef);
       const data = snap.exists() ? snap.data() : {};
       let links = Array.isArray(data.links) ? data.links : [];
@@ -3916,7 +3732,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         if(preloadedData){
           userData = preloadedData;
         } else {
-          const snap = await getDoc(doc(db, "users", activePageDocId));
+          const snap = await getDoc(doc(db, "users", currentUser.uid));
           if(snap.exists()) userData = snap.data();
         }
         if(Array.isArray(userData.links)) links = userData.links;
@@ -3935,7 +3751,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
           while(RESERVED_NUMBERS.includes(maxNum)) maxNum++;
           l.number = maxNum; l.num = maxNum;
         });
-        try{ await setDoc(doc(db, "users", activePageDocId), { links }, { merge: true }); }catch(e){}
+        try{ await setDoc(doc(db, "users", currentUser.uid), { links }, { merge: true }); }catch(e){}
         window.showToast(`⚠️ روابط بأرقام ${oldNums.join('، ')} تصادمت مع أرقام محجوزة — أعدنا ترقيمها تلقائياً`);
       }
 
@@ -3951,10 +3767,9 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
       allEntries.forEach(link => {
         const id = link.id;
-        const rawNum = link.number ?? link.num ?? '';
-        const num = Number.isFinite(Number(rawNum)) ? Number(rawNum) : 0; // رقم صحيح مضمون — يمنع حقن كود عبر onclick(${num})
-        const title = escapeHTML(link.title ?? link.label ?? '');
-        const fullDesc = escapeHTML(link.description || '—');
+        const num = link.number ?? link.num ?? '';
+        const title = link.title ?? link.label ?? '';
+        const fullDesc = link.description || '—';
         const clamped = fullDesc.length > 60 ? fullDesc.slice(0,60).trim() + '… <span style="color:var(--primary);font-weight:700;">للمزيد</span>' : fullDesc;
         const isText = link.type === 'text';
         const isReserved = !!link.reserved;
@@ -3967,10 +3782,9 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
           const cut = firstLine.slice(0,80);
           return hasMore ? cut.trim() + ' …' : cut;
         })();
-        const safeLinkValuePreview = escapeHTML(linkValuePreview);
 
         // معرّف احتياطي: id إن وُجد، وإلا الرقم (للروابط القديمة بلا id)
-        const ident = escapeInlineAttr(id ? `id:${id}` : `num:${num}`);
+        const ident = id ? `id:${id}` : `num:${num}`;
 
         // أزرار التعديل/الحذف: الروابط المحجوزة لا تُعدَّل، وحذفها يحذف مصدرها الفعلي (حساب التواصل) أو يُمنع (رابط الصفحة/القسم)
         let actionsHtml;
@@ -3979,13 +3793,12 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
           : (isText
               ? (link.presentMode === 'article' ? `https://electrwni.link/article.html?u=${encodeURIComponent((document.getElementById('pfUser')?.value||'').trim())}&n=${num}` : null)
               : (link.url || null));
-        const safeQrTargetUrl = sanitizeUrl(qrTargetUrl || '');
-        const qrIconBtn = safeQrTargetUrl
-          ? `<button class="qr-icon-btn" title="تنزيل QR لهذا الرابط" onclick="event.stopPropagation(); window.downloadLinkQr(${encodeURIComponent(num)}, '${escapeInlineAttr(safeQrTargetUrl)}')">${QR_ICON_SVG}</button>`
+        const qrIconBtn = qrTargetUrl
+          ? `<button class="qr-icon-btn" title="تنزيل QR لهذا الرابط" onclick="event.stopPropagation(); window.downloadLinkQr(${num}, '${qrTargetUrl.replace(/'/g,"\\'")}')">${QR_ICON_SVG}</button>`
           : '';
         if(isReserved){
           if(link.socialId){
-            actionsHtml = `${qrIconBtn}<button class="btn-edit" onclick="event.stopPropagation(); openSocialEditModal('${escapeInlineAttr(link.socialId)}')">تعديل · Edit</button>`;
+            actionsHtml = `${qrIconBtn}<button class="btn-edit" onclick="event.stopPropagation(); openSocialEditModal('${link.socialId}')">تعديل · Edit</button>`;
           } else {
             actionsHtml = `${qrIconBtn}<span style="font-size:0.75rem;color:var(--muted);">🔒 عنصر نظام ثابت · System item</span>`;
           }
@@ -4007,7 +3820,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
           <div class="item-header" onclick="this.parentElement.classList.toggle('open')">
             <span style="color:var(--primary);">${registryTypeIconTag(isText?'text':'link')}</span> [${num}] ${title}${isReserved?' <span style="font-size:0.7rem;color:var(--primary);">(محجوز)</span>':(isText?' <span style="font-size:0.7rem;color:var(--muted);">(نص)</span>':'')}${link.hidden?' <span style="font-size:0.7rem;color:var(--error);" title="مخفي عن الجمهور">🔒 مخفي</span>':''}
             <div class="item-details">
-              <div class="detail-row"><span class="detail-label">${isText?'النص:':'الرابط:'}</span> <span dir="ltr">${safeLinkValuePreview}</span></div>
+              <div class="detail-row"><span class="detail-label">${isText?'النص:':'الرابط:'}</span> <span dir="ltr">${linkValuePreview}</span></div>
               <div class="detail-row"><span class="detail-label">الوصف:</span> <span>${fullDesc}</span></div>
               <div class="detail-row"><span class="detail-label">المشاهدات:</span> <span>${link.views || 0}</span></div>
               <div style="margin-top:8px; text-align:left; display:flex; gap:8px; justify-content:flex-start; flex-wrap:wrap;">
@@ -4019,13 +3832,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         registry.appendChild(item);
 
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td><div>${num}</div><div style="font-size:0.65rem;font-weight:400;color:var(--muted);">${isText?'نص':'رابط'}</div>${safeQrTargetUrl?`<button class="qr-icon-btn qr-icon-btn-table" title="تنزيل QR" onclick="event.stopPropagation(); window.downloadLinkQr(${num}, '${escapeInlineAttr(safeQrTargetUrl)}')">${QR_ICON_SVG}</button>`:''}</td><td><b>${title}</b></td><td dir="ltr" style="word-break:break-all;">${safeLinkValuePreview}</td><td><div class="desc-clamp">${clamped}</div></td><td><span style="color:var(--primary); font-weight:700;">${escapeHTML(link.views || 0)}</span></td>`;
+        tr.innerHTML = `<td><div>${num}</div><div style="font-size:0.65rem;font-weight:400;color:var(--muted);">${isText?'نص':'رابط'}</div>${qrTargetUrl?`<button class="qr-icon-btn qr-icon-btn-table" title="تنزيل QR" onclick="event.stopPropagation(); window.downloadLinkQr(${num}, '${qrTargetUrl.replace(/'/g,"\\'")}')">${QR_ICON_SVG}</button>`:''}</td><td><b>${title}</b></td><td dir="ltr" style="word-break:break-all;">${linkValuePreview}</td><td><div class="desc-clamp">${clamped}</div></td><td><span style="color:var(--primary); font-weight:700;">${link.views || 0}</span></td>`;
         statsTbody.appendChild(tr);
       });
     } catch(e){
       console.error('loadLinks error:', e);
-      registry.innerHTML = `<div class="empty" style="color:var(--error);">⚠️ تعذر تحميل الروابط: ${escapeHTML(e.message||e.code||'خطأ غير معروف')}</div>`;
-      statsTbody.innerHTML = `<tr><td colspan="5" class="empty" style="color:var(--error);">⚠️ تعذر التحميل: ${escapeHTML(e.message||e.code||'')}</td></tr>`;
+      registry.innerHTML = `<div class="empty" style="color:var(--error);">⚠️ تعذر تحميل الروابط: ${(e.message||e.code||'خطأ غير معروف')}</div>`;
+      statsTbody.innerHTML = `<tr><td colspan="5" class="empty" style="color:var(--error);">⚠️ تعذر التحميل: ${(e.message||e.code||'')}</td></tr>`;
     }
   }
 
@@ -4063,7 +3876,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   window.deleteLink = async function(ident) {
     if(confirm("هل أنت متأكد من حذف هذا الرابط؟")) {
       try {
-        const userRef = doc(db, "users", activePageDocId);
+        const userRef = doc(db, "users", currentUser.uid);
         const snap = await getDoc(userRef);
         const links = (snap.exists() && Array.isArray(snap.data().links) ? snap.data().links : []).filter(l => !matchIdent(l, ident));
         await setDoc(userRef, { links: links }, { merge: true });
@@ -4076,7 +3889,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   // تعديل رابط: يملأ نموذج الإضافة بالبيانات الحالية ويحوّله لوضع تعديل
   window.editLink = async function(ident) {
     try {
-      const userRef = doc(db, "users", activePageDocId);
+      const userRef = doc(db, "users", currentUser.uid);
       const snap = await getDoc(userRef);
       const links = snap.exists() && Array.isArray(snap.data().links) ? snap.data().links : [];
       const link = links.find(l => matchIdent(l, ident));
@@ -4110,7 +3923,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   async function fetchAllLinks(){
     let links = [];
     try {
-      const us = await getDoc(doc(db, "users", activePageDocId));
+      const us = await getDoc(doc(db, "users", currentUser.uid));
       if(us.exists() && Array.isArray(us.data().links)) links = us.data().links;
     } catch(e){ console.error('fetch links:', e); }
     const arr = links.map(l => ({
@@ -4157,7 +3970,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         // ندمج الأرقام المحجوزة (رابط الصفحة/أرقام مختارة/حسابات التواصل) لتتصدّر التقرير
         let userData = {};
         try {
-          const snap = await getDoc(doc(db, "users", activePageDocId));
+          const snap = await getDoc(doc(db, "users", currentUser.uid));
           if(snap.exists()) userData = snap.data();
         } catch(e){}
         const reservedEntries = buildReservedLinkEntries(userData, userData.username || uname);
@@ -4165,52 +3978,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         if(!allForPdf.length){ window.showToast("لا توجد روابط للتصدير"); return; }
         const ok = await exportLinksAsPdf(allForPdf, uname);
         if(ok) window.showToast("تم فتح التقرير للمعاينة");
-
-      } else if(format === 'backup'){
-        window.showToast("جاري تجهيز النسخة الكاملة...");
-        let pageData = {};
-        try {
-          const snap = await getDoc(doc(db, "users", activePageDocId));
-          if(snap.exists()) pageData = snap.data();
-        } catch(e){}
-        // استبعاد الحقول التقنية/الحساسة التي لا تخص شكل وتصميم الصفحة
-        const { ownerUid, myPages: _mp, activePageId: _ap, ...settings } = pageData;
-        const backup = {
-          type: 'electrwni-full-backup',
-          version: 1,
-          exportedAt: new Date().toISOString(),
-          pageDocId: activePageDocId,
-          username: uname,
-          settings,
-          links
-        };
-        downloadBlob(JSON.stringify(backup, null, 2), `electrwni-${uname}-backup-كامل.json`, 'application/json');
-        window.showToast("تم تصدير النسخة الكاملة");
       }
     } catch(e){ window.showToast("تعذر التصدير: " + (e.message||'')); }
-  };
-
-  // استعادة نسخة كاملة (تصميم + بيانات) على الصفحة النشطة حالياً
-  window.importFullBackup = function(input){
-    if(!input.files || !input.files[0]) return;
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      try {
-        const data = JSON.parse(e.target.result);
-        if(data.type !== 'electrwni-full-backup' || !data.settings){
-          window.showToast("هذا الملف ليس نسخة كاملة صالحة"); return;
-        }
-        if(!confirm("سيتم استبدال كل تصميم وبيانات هذه الصفحة الحالية بمحتوى الملف. هل تريد المتابعة؟")) return;
-        window.showToast("جاري الاستعادة...");
-        const userRef = doc(db, "users", activePageDocId);
-        const { username: _u, ...settingsNoUsername } = data.settings; // لا نغيّر اسم المستخدم/الرابط تلقائياً
-        const restoredLinks = Array.isArray(data.links) ? data.links : [];
-        await setDoc(userRef, { ...settingsNoUsername, links: restoredLinks }, { merge: true });
-        window.showToast("تمت الاستعادة بنجاح — يُعاد تحميل الصفحة");
-        setTimeout(() => location.reload(), 1200);
-      } catch(err){ window.showToast("ملف غير صالح: " + (err.message||'')); }
-    };
-    reader.readAsText(input.files[0]);
   };
 
   // ===== بناء تقرير PDF احترافي (معاينة داخل الصفحة نفسها — لا نوافذ منبثقة إطلاقاً) =====
@@ -4238,7 +4007,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:#e9e9ee;display:flex;flex-direction:column;';
     modal.innerHTML = `
       <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 16px;background:#000000;color:#ffffff;gap:10px;flex-shrink:0;font-family:-apple-system,BlinkMacSystemFont,'Tajawal',sans-serif;">
-        <div style="font-weight:900;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">📄 ${escapeHTML(reportTitle)}</div>
+        <div style="font-weight:900;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">📄 ${reportTitle}</div>
         <div style="display:flex;gap:7px;flex-shrink:0;">
           <button id="pdfShareBtn" style="padding:8px 13px;border:1.5px solid #ffffff;border-radius:7px;background:transparent;color:#ffffff;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;">↗ مشاركة</button>
           <button id="pdfPrintBtn" style="padding:8px 13px;border:1.5px solid #ffffff;border-radius:7px;background:transparent;color:#ffffff;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;">🖨 طباعة</button>
@@ -4400,7 +4169,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         if(!imported.length){ window.showToast("الملف لا يحتوي روابط"); return; }
         if(!confirm(`استيراد ${imported.length} رابطاً وإضافتها لحسابك؟`)) return;
         window.showToast("جاري الاستيراد...");
-        const userRef = doc(db, "users", activePageDocId);
+        const userRef = doc(db, "users", currentUser.uid);
         const snap = await getDoc(userRef);
         const existing = (snap.exists() && Array.isArray(snap.data().links)) ? snap.data().links : [];
         let maxNum = existing.reduce((m,l)=>Math.max(m, parseInt(l.number??l.num)||0), 0);
@@ -4432,7 +4201,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   window.selectPlatformTile = function(p){
     selectedSocialPlatform = p;
     document.getElementById('socialFormBox').style.display = 'block';
-    if(document.getElementById('socUrlLabel')) document.getElementById('socUrlLabel').innerHTML = `حساب ${p.name} <span class="lbl-sub">/ ${p.id} account</span>`;
+    document.getElementById('socUrlLabel').innerHTML = `حساب ${p.name} <span class="lbl-sub">/ ${p.id} account</span>`;
     const socUrlEl = document.getElementById('socUrl');
     if(p.id === 'whatsapp'){
       socUrlEl.value = '';
@@ -4463,8 +4232,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     visible.forEach(p => {
       const btn = document.createElement('button');
       const txtColor = p.id==='snapchat' ? '#000' : '#fff';
-      btn.style.cssText = `padding: 5px 9px; background: ${p.color}; color: ${txtColor}; border: none; border-radius: 7px; cursor: pointer; font-weight: 700; font-size: 0.68rem; display: flex; align-items: center; gap: 4px; font-family:'Tajawal';`;
-      btn.innerHTML = `<span style="display:flex;width:13px;height:13px;">${platSvg(p.id)}</span> ${p.name}`;
+      btn.style.cssText = `padding: 8px 12px; background: ${p.color}; color: ${txtColor}; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; font-family:'Tajawal';`;
+      btn.innerHTML = `<span style="display:flex;width:18px;height:18px;">${platSvg(p.id)}</span> ${p.name}`;
       btn.onclick = () => window.selectPlatformTile(p);
       grid.appendChild(btn);
     });
@@ -4482,8 +4251,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       const p = platforms.find(x => x.id === id);
       if(!p) return;
       const btn = document.createElement('button');
-      btn.style.cssText = `padding: 5px 9px; background: ${p.color}; color: #fff; border: none; border-radius: 7px; cursor: pointer; font-weight: 700; font-size: 0.68rem; display: flex; align-items: center; gap: 4px; font-family:'Tajawal';`;
-      btn.innerHTML = `<span style="display:flex;width:13px;height:13px;">${platSvg(id)}</span> ${p.name}`;
+      btn.style.cssText = `padding: 8px 12px; background: ${p.color}; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; font-family:'Tajawal';`;
+      btn.innerHTML = `<span style="display:flex;width:18px;height:18px;">${platSvg(id)}</span> ${p.name}`;
       btn.onclick = () => window.selectPlatformTile(p);
       row.appendChild(btn);
     });
@@ -4510,7 +4279,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     const p = detected || { id:'website', name:'موقع', color:'#3d5af1', prefix:'' };
     selectedSocialPlatform = p;
     document.getElementById('socialFormBox').style.display = 'block';
-    if(document.getElementById('socUrlLabel')) document.getElementById('socUrlLabel').innerHTML = `حساب ${p.name}`;
+    document.getElementById('socUrlLabel').innerHTML = `حساب ${p.name}`;
     document.getElementById('socUrl').value = val;
     document.getElementById('socColorModeGroup').style.display = 'block';
     setSocColorMode('brand');
@@ -4520,43 +4289,18 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     }
   };
 
+  window.closeSocialForm = function() {
+    document.getElementById('socialFormBox').style.display = 'none';
+    document.getElementById('socDetectedPreview').style.display = 'none';
+  };
+
   window.setSocColorMode = function(mode) {
     socialColorMode = mode;
     document.querySelectorAll('#socColorModeGroup button').forEach(b => b.style.borderColor = 'var(--border)');
     if(mode === 'brand') document.getElementById('cmBrand').style.borderColor = 'var(--primary)';
     if(mode === 'site') document.getElementById('cmTheme').style.borderColor = 'var(--primary)';
     if(mode === 'upload') document.getElementById('cmUpload').style.borderColor = 'var(--primary)';
-    if(mode === 'custom') document.getElementById('cmCustom').style.borderColor = 'var(--primary)';
     document.getElementById('customIconUpload').style.display = mode === 'upload' ? 'block' : 'none';
-    const customRow = document.getElementById('socCustomColorsRow');
-    if(customRow) customRow.style.display = mode === 'custom' ? 'flex' : 'none';
-    const siteWarn = document.getElementById('socSiteWarning');
-    if(siteWarn) siteWarn.style.display = mode === 'site' ? 'block' : 'none';
-    window.updateSocLivePreview && window.updateSocLivePreview();
-  };
-
-  // معاينة مباشرة لشكل الأيقونة النهائي أثناء إضافة حساب جديد (قبل الحفظ)
-  window.updateSocLivePreview = function(){
-    const box = document.getElementById('socLivePreviewIcon');
-    if(!box) return;
-    const isRect = currentIconShape === 'rect';
-    box.style.borderRadius = isRect ? (currentRectStyle==='sharp' ? '4px' : '10px') : '50%';
-    box.style.width = isRect ? '76px' : '44px';
-    let bg = 'var(--primary)', ring = 'transparent', glyph = '#ffffff';
-    if(socialColorMode === 'custom'){
-      bg = document.getElementById('socCustomBg')?.value || '#3d5af1';
-      ring = document.getElementById('socCustomRing')?.value || '#ffffff';
-      glyph = document.getElementById('socCustomIconColor')?.value || '#ffffff';
-    } else if(selectedSocialPlatform && socialColorMode === 'brand'){
-      bg = selectedSocialPlatform.color || 'var(--primary)';
-    }
-    box.style.background = bg;
-    box.style.border = '2px solid ' + ring;
-    box.innerHTML = selectedSocialPlatform ? `<span style="display:flex;width:18px;height:18px;color:${glyph};">${platSvg(selectedSocialPlatform.id)||''}</span>` : '';
-  };
-
-  window.closeSocialForm = function() {
-    document.getElementById('socialFormBox').style.display = 'none';
   };
 
   let detectTimeout;
@@ -4569,15 +4313,15 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     const raw = document.getElementById('socUrl').value.trim();
     if(!raw || !selectedSocialPlatform) return;
     const val = (selectedSocialPlatform.id === 'whatsapp') ? normalizeWhatsApp(raw) : raw;
+    document.getElementById('socDetectedPreview').style.display = 'flex';
     const iconEl = document.getElementById('socDetectedIcon');
-    iconEl.innerHTML = `<span style="display:flex;width:18px;height:18px;color:#fff;">${platSvg(selectedSocialPlatform.id)}</span>`;
+    iconEl.innerHTML = `<span style="display:flex;width:24px;height:24px;color:#fff;">${platSvg(selectedSocialPlatform.id)}</span>`;
     iconEl.style.background = selectedSocialPlatform.color;
-    const urlRow = document.getElementById('socDetectedUrlRow');
-    urlRow.style.display = 'block';
-    urlRow.textContent = selectedSocialPlatform.id === 'website'
+    document.getElementById('socDetectedName').textContent = selectedSocialPlatform.name;
+    document.getElementById('socDetectedUrl').textContent = val;
+    document.getElementById('socDetectHint').textContent = selectedSocialPlatform.id === 'website'
       ? "⚠️ ما تعرّفنا على منصة معروفة — سيُحفظ كرابط موقع عام"
-      : `حساب ${selectedSocialPlatform.name} · ${val}`;
-    window.updateSocLivePreview && window.updateSocLivePreview();
+      : "تم فحص البنية اللغوية وصيغة الحساب جاهزة ✓";
   };
 
   window.previewCustomIcon = function(input) {
@@ -4600,7 +4344,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(!url || !selectedSocialPlatform) { window.showToast("الرجاء إدخال الرابط واختيار منصة"); return; }
     if(!currentUser){ window.showToast("لم يتم تسجيل الدخول"); return; }
     try {
-      const userRef = doc(db, "users", activePageDocId);
+      const userRef = doc(db, "users", currentUser.uid);
       const snap = await getDoc(userRef);
       const data = snap.exists() ? snap.data() : {};
       const socials = Array.isArray(data.socials) ? data.socials : [];
@@ -4618,12 +4362,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         icon: (socialColorMode === 'upload' && customSocialIconBase64) ? customSocialIconBase64 : null,
         views: 0
       };
-      if(socialColorMode === 'custom'){
-        entry.customBg = document.getElementById('socCustomBg')?.value || '#3d5af1';
-        entry.customIconColor = document.getElementById('socCustomIconColor')?.value || '#ffffff';
-        entry.customRing = document.getElementById('socCustomRing')?.value || '#ffffff';
-        entry.customContainer = document.getElementById('socCustomContainer')?.value || '#ffffff';
-      }
       socials.push(entry);
       // setDoc merge: ينشئ الوثيقة إن لم توجد، ويحدّثها إن وُجدت (أأمن من updateDoc)
       await setDoc(userRef, { socials: socials }, { merge: true });
@@ -4645,7 +4383,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       if(preloadedData){
         if(Array.isArray(preloadedData.socials)) socials = preloadedData.socials;
       } else {
-        const snap = await getDoc(doc(db, "users", activePageDocId));
+        const snap = await getDoc(doc(db, "users", currentUser.uid));
         if(snap.exists() && Array.isArray(snap.data().socials)) socials = snap.data().socials;
       }
     } catch(e){}
@@ -4656,16 +4394,16 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     }
     socials.forEach(soc => {
       try {
-      const id = escapeInlineAttr(soc.id);
+      const id = soc.id;
       const div = document.createElement('div');
       div.className = 'item';
       const mode = soc.styleMode || 'brand';
-      const iconBg = mode==='brand' ? sanitizeColor(soc.brandColor,'var(--primary)') : (mode==='custom' ? sanitizeColor(soc.customBg,'var(--primary)') : 'var(--primary)');
-      const ringColor = mode==='custom' ? sanitizeColor(soc.customRing,'transparent') : 'transparent';
-      const iconGlyphColor = mode==='custom' ? sanitizeColor(soc.customIconColor,'#ffffff') : '#ffffff';
-      const containerColor = mode==='custom' ? sanitizeColor(soc.customContainer,'transparent') : 'transparent';
+      const iconBg = mode==='brand' ? (soc.brandColor||'var(--primary)') : (mode==='custom' ? (soc.customBg||'var(--primary)') : 'var(--primary)');
+      const ringColor = mode==='custom' ? (soc.customRing||'transparent') : 'transparent';
+      const iconGlyphColor = mode==='custom' ? (soc.customIconColor||'#ffffff') : '#ffffff';
+      const containerColor = mode==='custom' ? (soc.customContainer||'transparent') : 'transparent';
       const iconInner = (mode==='upload' && soc.icon)
-        ? `<img src="${escapeHTML(sanitizeUrl(soc.icon))}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`
+        ? `<img src="${soc.icon}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`
         : `<span style="display:flex;width:18px;height:18px;color:${iconGlyphColor};">${platSvg(soc.platformId)||''}</span>`;
 
       // معاينة تحاكي شكل الأيقونة الفعلي بصفحتك العامة (دائري أو مستطيل)
@@ -4683,7 +4421,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
           <div id="socIconContainer_${id}" style="padding:4px;border-radius:9px;background:${containerColor};">
             ${previewHtml}
           </div>
-          <div style="flex:1;"><b>${escapeHTML(soc.platformName||soc.name||'')}</b><div style="font-size:0.75rem; color:var(--muted); word-break:break-all;">${escapeHTML(sanitizeUrl(soc.url))}</div></div>
+          <div style="flex:1;"><b>${soc.platformName||soc.name||''}</b><div style="font-size:0.75rem; color:var(--muted); word-break:break-all;">${soc.url}</div></div>
         </div>
         <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
           <button onclick="setEditMode('${id}','brand')" class="editmode-btn" data-id="${id}" data-mode="brand" style="flex:1;min-width:70px;padding:6px;border:2px solid ${mode==='brand'?'var(--primary)':'var(--border)'};border-radius:6px;background:var(--bg);cursor:pointer;font-family:'Tajawal';font-size:0.72rem;font-weight:700;">لون التطبيق</button>
@@ -4741,7 +4479,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     clearTimeout(customColorSaveTimer);
     customColorSaveTimer = setTimeout(async () => {
       try {
-        const userRef = doc(db, "users", activePageDocId);
+        const userRef = doc(db, "users", currentUser.uid);
         const snap = await getDoc(userRef);
         const socials = (snap.exists() && Array.isArray(snap.data().socials)) ? snap.data().socials : [];
         const idx = socials.findIndex(s => s.id === id);
@@ -4755,7 +4493,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   // تعديل نمط أيقونة حساب محفوظ (لون التطبيق / لون موقعك)
   window.setEditMode = async function(id, mode) {
     try {
-      const userRef = doc(db, "users", activePageDocId);
+      const userRef = doc(db, "users", currentUser.uid);
       const snap = await getDoc(userRef);
       const socials = (snap.exists() && Array.isArray(snap.data().socials)) ? snap.data().socials : [];
       const idx = socials.findIndex(s => s.id === id);
@@ -4789,13 +4527,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, 128, 128);
           const base64 = canvas.toDataURL('image/jpeg', 0.8);
-          const userRef = doc(db, "users", activePageDocId);
+          const userRef = doc(db, "users", currentUser.uid);
           const snap = await getDoc(userRef);
           const socials = (snap.exists() && Array.isArray(snap.data().socials)) ? snap.data().socials : [];
           const idx = socials.findIndex(s => s.id === id);
           if(idx<0) return;
           window.showToast("جاري رفع الصورة...");
-          const url = await uploadImageToStorage(base64, `social-icons/${activePageDocId}/${id}.jpg`);
+          const url = await uploadImageToStorage(base64, `social-icons/${currentUser.uid}/${id}.jpg`);
           socials[idx].styleMode = 'upload';
           socials[idx].icon = url;
           await setDoc(userRef, { socials: socials }, { merge: true });
@@ -4811,7 +4549,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   window.deleteSocial = async function(id) {
     if(confirm("هل تريد إزالة هذا الحساب؟")) {
       try {
-        const userRef = doc(db, "users", activePageDocId);
+        const userRef = doc(db, "users", currentUser.uid);
         const snap = await getDoc(userRef);
         const socials = (snap.exists() && Array.isArray(snap.data().socials) ? snap.data().socials : []).filter(s => s.id !== id);
         await setDoc(userRef, { socials: socials }, { merge: true });
@@ -4828,7 +4566,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(old) old.remove();
     let social = null;
     try{
-      const snap = await getDoc(doc(db, "users", activePageDocId));
+      const snap = await getDoc(doc(db, "users", currentUser.uid));
       const socials = (snap.exists() && Array.isArray(snap.data().socials)) ? snap.data().socials : [];
       social = socials.find(s => s.id === socialId);
     }catch(e){}
@@ -4842,15 +4580,15 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         <div style="font-weight:900;font-size:1.05rem;margin-bottom:16px;">تعديل حساب التواصل</div>
         <div class="form-group" style="margin-bottom:12px;">
           <label style="display:block;font-size:0.84rem;font-weight:700;margin-bottom:5px;">العنوان <span style="font-size:0.7rem;font-weight:400;color:var(--muted);">/ Title</span></label>
-          <input type="text" id="seTitle" value="${escapeHTML(social.platformName||social.name||'')}" style="width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:0.9rem;">
+          <input type="text" id="seTitle" value="${(social.platformName||social.name||'').replace(/"/g,'&quot;')}" style="width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:0.9rem;">
         </div>
         <div class="form-group" style="margin-bottom:12px;">
           <label style="display:block;font-size:0.84rem;font-weight:700;margin-bottom:5px;">الرابط <span style="font-size:0.7rem;font-weight:400;color:var(--muted);">/ Link</span></label>
-          <input type="text" id="seUrl" value="${escapeHTML(social.url||'')}" dir="ltr" style="width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:ui-monospace,monospace;font-size:0.88rem;">
+          <input type="text" id="seUrl" value="${(social.url||'').replace(/"/g,'&quot;')}" dir="ltr" style="width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:ui-monospace,monospace;font-size:0.88rem;">
         </div>
         <div class="form-group" style="margin-bottom:14px;">
           <label style="display:block;font-size:0.84rem;font-weight:700;margin-bottom:5px;">الوصف <span style="font-size:0.7rem;font-weight:400;color:var(--muted);">/ Description</span></label>
-          <textarea id="seDesc" style="width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:0.88rem;min-height:60px;resize:vertical;">${escapeHTML(social.description||'')}</textarea>
+          <textarea id="seDesc" style="width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:0.88rem;min-height:60px;resize:vertical;">${(social.description||'')}</textarea>
         </div>
         <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;font-weight:700;margin-bottom:18px;cursor:pointer;">
           <input type="checkbox" id="seFeatured" ${social.featured?'checked':''} style="width:18px;height:18px;">
@@ -4877,7 +4615,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       const featured = document.getElementById('seFeatured').checked;
       if(!title || !url){ window.showToast("العنوان والرابط إلزاميان"); return; }
       try{
-        const userRef = doc(db, "users", activePageDocId);
+        const userRef = doc(db, "users", currentUser.uid);
         const snap = await getDoc(userRef);
         const socials = (snap.exists() && Array.isArray(snap.data().socials)) ? snap.data().socials : [];
         const idx = socials.findIndex(s => s.id === socialId);
@@ -4895,13 +4633,12 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   // 6. محرك الأرقام والموقع والخرائط المخصصة (Phone Numbers & Location)
   function addPhoneFieldHTML(label = '', number = '') {
     const container = document.getElementById('phonesContainer');
-    if(!container) return;
     const entry = document.createElement('div');
     entry.className = 'phone-entry';
     entry.innerHTML = `
       <div class="phone-entry-fields">
-        <input type="text" placeholder="التصنيف (مثال: الإدارة، المبيعات)" value="${escapeHTML(label)}" class="phone-label">
-        <input type="tel" placeholder="+966500000000" value="${escapeHTML(number)}" dir="ltr" class="phone-number">
+        <input type="text" placeholder="التصنيف (مثال: الإدارة، المبيعات)" value="${label}" class="phone-label">
+        <input type="tel" placeholder="+966500000000" value="${number}" dir="ltr" class="phone-number">
       </div>
       <button class="btn-remove-phone" onclick="this.parentElement.remove()">حذف</button>`;
     container.appendChild(entry);
@@ -4918,7 +4655,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       if(num) phonesList.push({ label: lbl || 'اتصال', number: num });
     });
     try {
-      await setDoc(doc(db, "users", activePageDocId), { phones: phonesList }, { merge: true });
+      await setDoc(doc(db, "users", currentUser.uid), { phones: phonesList }, { merge: true });
       window.showToast("تم حفظ أرقامك بنجاح");
     } catch(e) { window.showToast("خطأ أثناء الحفظ"); }
   };
@@ -4926,27 +4663,27 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   window.deletePhones = async function() {
     if(!confirm("حذف كل الأرقام من صفحتك؟")) return;
     document.querySelectorAll('.phone-entry').forEach(e=>e.remove());
-    await setDoc(doc(db, "users", activePageDocId), { phones: [] }, { merge: true });
+    await setDoc(doc(db, "users", currentUser.uid), { phones: [] }, { merge: true });
     window.showToast("تم حذف الأرقام");
   };
 
   window.saveWebsite = async function() {
     const url = document.getElementById('websiteInput').value.trim();
-    await setDoc(doc(db, "users", activePageDocId), { website: url }, { merge: true });
+    await setDoc(doc(db, "users", currentUser.uid), { website: url }, { merge: true });
     window.showToast("تم حفظ الموقع الإلكتروني");
   };
 
   window.deleteWebsite = async function() {
     if(!confirm("حذف الموقع الإلكتروني؟")) return;
     document.getElementById('websiteInput').value = '';
-    await setDoc(doc(db, "users", activePageDocId), { website: '' }, { merge: true });
+    await setDoc(doc(db, "users", currentUser.uid), { website: '' }, { merge: true });
     window.showToast("تم حذف الموقع");
   };
 
   window.saveMap = async function() {
     const url = document.getElementById('mapInput').value.trim();
     const title = document.getElementById('mapTitleInput').value.trim();
-    await setDoc(doc(db, "users", activePageDocId), { mapUrl: url, mapLocation: url, mapTitle: title }, { merge: true });
+    await setDoc(doc(db, "users", currentUser.uid), { mapUrl: url, mapLocation: url, mapTitle: title }, { merge: true });
     window.showToast("تم حفظ الموقع الملاحي بنجاح");
   };
 
@@ -4954,57 +4691,12 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(!confirm("حذف الخريطة من صفحتك؟")) return;
     document.getElementById('mapInput').value = '';
     document.getElementById('mapTitleInput').value = '';
-    await setDoc(doc(db, "users", activePageDocId), { mapUrl: '', mapLocation: '', mapTitle: '' }, { merge: true });
+    await setDoc(doc(db, "users", currentUser.uid), { mapUrl: '', mapLocation: '', mapTitle: '' }, { merge: true });
     window.showToast("تم حذف الخريطة");
   };
 
   // 7. محرك التصميم المتقدم واقتصاص الصور (Design UI & Cropper Engine)
 
-
-  // ===== الألوان الذكية: قاموس جاهز لأعلام الدول وألوان الأشياء الشائعة (فوري وبدون تكلفة) =====
-  const SMART_COLOR_MAP = {
-    // دول (اللون الأبرز بعلمها)
-    'السعودية':'#0B5F3C','مصر':'#CE1126','الإمارات':'#00732F','الكويت':'#007A3D','قطر':'#8D1B3D','البحرين':'#CE1126',
-    'عمان':'#DB161B','الأردن':'#007A3D','العراق':'#CE1126','سوريا':'#CE1126','لبنان':'#ED1C24','اليمن':'#CE1126',
-    'فلسطين':'#CE1126','ليبيا':'#E70013','تونس':'#E70013','الجزائر':'#006233','المغرب':'#C1272D','السودان':'#D21034',
-    'موريتانيا':'#00A651','الصومال':'#4189DD','جيبوتي':'#6AB2E7','تركيا':'#E30A17','إيران':'#239F40','باكستان':'#01411C',
-    'الهند':'#FF9933','الصين':'#DE2910','اليابان':'#BC002D','كوريا الجنوبية':'#003478','إندونيسيا':'#FF0000','ماليزيا':'#010066',
-    'أمريكا':'#3C3B6E','الولايات المتحدة':'#3C3B6E','بريطانيا':'#012169','فرنسا':'#0055A4','ألمانيا':'#FFCC00','إيطاليا':'#008C45',
-    'إسبانيا':'#AA151B','البرتغال':'#046A38','هولندا':'#AE1C28','بلجيكا':'#FDDA24','سويسرا':'#D52B1E','السويد':'#006AA7',
-    'النرويج':'#BA0C2F','الدنمارك':'#C60C30','فنلندا':'#003580','اليونان':'#0D5EAF','روسيا':'#0039A6','أوكرانيا':'#0057B7',
-    'البرازيل':'#009C3B','الأرجنتين':'#74ACDF','المكسيك':'#006847','كندا':'#FF0000','أستراليا':'#00008B','نيوزيلندا':'#00247D',
-    'جنوب أفريقيا':'#007749','نيجيريا':'#008751','كينيا':'#006600',
-    // ألوان أشياء وطبيعة شائعة
-    'الذهب':'#D4AF37','الفضة':'#C0C0C0','البرونز':'#CD7F32','النحاس':'#B87333','الماس':'#B9F2FF',
-    'السماء':'#4A90D9','البحر':'#006994','المحيط':'#1B4F72','الغروب':'#FF6B35','الشروق':'#FFB347',
-    'الدم':'#8A0303','الورد':'#E75480','الزهر':'#FFC0CB','الياسمين':'#F0EAD6','النعناع':'#98FF98',
-    'العشب':'#4CAF50','الغابة':'#228B22','الصحراء':'#EDC9AF','الرمل':'#C2B280','الليل':'#0B1026',
-    'الفحم':'#36454F','الثلج':'#FFFAFA','الحليب':'#FFFFF0','العاج':'#FFFFF0','اللؤلؤ':'#F0EAD6',
-    'الليمون':'#FFF700','البرتقال':'#FFA500','التفاح':'#D2122E','العنب':'#6F2DA8','الموز':'#FFE135',
-    'القهوة':'#6F4E37','الشوكولاتة':'#7B3F00','الكراميل':'#C68E17','العسل':'#FFB300','الزيتون':'#708238',
-    'النار':'#FF4500','الجليد':'#A5F2F3','الفولاذ':'#71797E','الخشب':'#8B5A2B','الجلد':'#A0522D'
-  };
-  let smartColorTarget = 'p1';
-  window.smartColorSetTarget = function(t){
-    smartColorTarget = t;
-    document.querySelectorAll('#smartColorTargetGrid button').forEach(b=>b.classList.toggle('active', b.getAttribute('data-t')===t));
-  };
-  window.smartColorApply = function(hex){
-    if(smartColorTarget==='p1') window.onColorPick(hex);
-    else if(smartColorTarget==='p2') window.onColor2Pick(hex);
-    else if(smartColorTarget==='text') window.onTextColorPick(hex);
-    else if(smartColorTarget==='bg') window.onBgColorPick(hex);
-    window.showToast && window.showToast('تم تطبيق اللون ✓');
-  };
-  window.smartColorSearch = function(q){
-    const box = document.getElementById('smartColorChips');
-    if(!box) return;
-    const query = (q||'').trim();
-    if(!query){ box.innerHTML=''; return; }
-    const matches = Object.keys(SMART_COLOR_MAP).filter(k => k.includes(query) || query.includes(k)).slice(0, 12);
-    if(!matches.length){ box.innerHTML = '<div style="font-size:0.75rem;color:var(--muted);">لا توجد نتيجة مطابقة — جرّب اسم دولة أو كلمة أخرى</div>'; return; }
-    box.innerHTML = matches.map(k => `<button type="button" class="smart-color-chip" onclick="window.smartColorApply('${SMART_COLOR_MAP[k]}')"><span class="swatch" style="background:${SMART_COLOR_MAP[k]};"></span>${k}</button>`).join('');
-  };
 
   window.onColorPick = function(color) {
     document.getElementById('colorHexInput').value = color;
@@ -5029,13 +4721,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       const ic=s.querySelector('[data-lpicon]');
       if(ic){ const key=ic.getAttribute('data-lpicon'); ic.innerHTML=PLATFORM_SVG[key]||''; ic.style.color=textC; }
     });
-    // مزامنة بطاقة "تخصيص الألوان السريع" (المستطيلات الثلاثة) مع نفس القيم دائماً
-    const qp1=lp('quickColorP1'), qp2=lp('quickColorP2'), qtx=lp('quickColorText'), qbg=lp('quickColorBg');
-    if(qp1) qp1.value=primary; if(qp2) qp2.value=primary2; if(qtx) qtx.value=textC; if(qbg) qbg.value=bg;
-    const qcpAvatar=lp('qcpAvatar'), qcpName=lp('qcpName'), qcpBtn=lp('qcpBtn');
-    if(qcpAvatar){ qcpAvatar.style.background=primary; qcpAvatar.style.borderColor=primary2; }
-    if(qcpName) qcpName.style.color=textC;
-    if(qcpBtn){ qcpBtn.style.background=primary; }
   }
 
   window.onColorHexInput = function(hex) {
@@ -5122,7 +4807,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         croppedBgImageBase64 = base64;   // معاينة فورية محلية بينما الرفع يجري بالخلفية
         refreshBgModeUI();
         window.showToast('جاري رفع الصورة...');
-        uploadImageToStorage(base64, `backgrounds/${activePageDocId}.jpg`)
+        uploadImageToStorage(base64, `backgrounds/${currentUser.uid}.jpg`)
           .then(url => { croppedBgImageBase64 = url; window.showToast('تم رفع الصورة — اضغط "حفظ" لتظهر بصفحتك'); })
           .catch(err => window.showToast('تعذر رفع الصورة: ' + (err.message||'')));
       };
@@ -5252,7 +4937,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     }
     window.showToast("جاري رفع الصورة...");
     try{
-      const path = `${type === 'avatar' ? 'avatars' : 'banners'}/${activePageDocId}.jpg`;
+      const path = `${type === 'avatar' ? 'avatars' : 'banners'}/${currentUser.uid}.jpg`;
       const url = await uploadImageToStorage(base64, path);
       if (type === 'avatar') croppedAvatarBase64 = url;
       else croppedBannerBase64 = url;
@@ -5268,7 +4953,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(checked){
       croppedAvatarBase64 = null; window.__currentAvatarUrl = null;
       if(p){ p.style.opacity = '.2'; p.style.filter = 'grayscale(1)'; }
-      deleteObject(storageRef(storage, `avatars/${activePageDocId}.jpg`)).catch(()=>{});
+      deleteObject(storageRef(storage, `avatars/${currentUser.uid}.jpg`)).catch(()=>{});
       window.showToast("سيختفي الشعار من صفحتك عند الحفظ");
     } else if(p){ p.style.opacity=''; p.style.filter=''; }
   };
@@ -5278,7 +4963,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(checked){
       croppedBannerBase64 = null;
       if(p){ p.style.opacity = '.2'; p.style.filter = 'grayscale(1)'; }
-      deleteObject(storageRef(storage, `banners/${activePageDocId}.jpg`)).catch(()=>{});
+      deleteObject(storageRef(storage, `banners/${currentUser.uid}.jpg`)).catch(()=>{});
       window.showToast("سيختفي الغلاف من صفحتك عند الحفظ");
     } else if(p){ p.style.opacity=''; p.style.filter=''; }
   };
@@ -5287,7 +4972,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(checked){
       croppedBgImageBase64 = null; currentBgImage = null;
       if(typeof window.setBgMode === 'function') window.setBgMode('color');
-      deleteObject(storageRef(storage, `backgrounds/${activePageDocId}.jpg`)).catch(()=>{});
+      deleteObject(storageRef(storage, `backgrounds/${currentUser.uid}.jpg`)).catch(()=>{});
       window.showToast("ستُحذف صورة الخلفية وتعود الصفحة للون صافٍ عند الحفظ");
     }
   };
@@ -5324,7 +5009,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       if(currentIconPaletteRect) upData.iconPaletteRect = currentIconPaletteRect;
       if(currentIconPaletteCircle) upData.iconPaletteCircle = currentIconPaletteCircle;
 
-      await setDoc(doc(db, "users", activePageDocId), upData, { merge: true });
+      await setDoc(doc(db, "users", currentUser.uid), upData, { merge: true });
       window.showToast("تم حفظ التصميم والصور بنجاح");
     } catch (e) {
       window.showToast("تعذر الحفظ: " + (e.message || e.code || ''));
@@ -5334,7 +5019,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   // 8. محرك الملف الشخصي وإتلاف الحسابات (Profile & Account Deletion)
   window.saveProfile = async function() {
     try {
-      await setDoc(doc(db, "users", activePageDocId), {
+      await setDoc(doc(db, "users", currentUser.uid), {
         fullName: document.getElementById('pfName').value.trim(),
         bio: document.getElementById('pfBio').value.trim()
       }, { merge: true });
@@ -5402,20 +5087,10 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       await reauthenticateWithCredential(currentUser, cred);
       // حذف بيانات Firestore ثم الحساب
       let uname = null;
-      let ownedPages = [];
       try {
         const usnap = await getDoc(doc(db, "users", currentUser.uid));
-        if(usnap.exists()){
-          uname = (usnap.data().username || '').toLowerCase();
-          ownedPages = Array.isArray(usnap.data().myPages) ? usnap.data().myPages : [];
-        }
+        if(usnap.exists()) uname = (usnap.data().username || '').toLowerCase();
       } catch(e){}
-      // حذف كل الصفحات الإضافية التابعة لهذا البريد (باستثناء الصفحة الرئيسية نفسها)
-      for(const p of ownedPages){
-        if(p.id === currentUser.uid) continue;
-        try { await deleteDoc(doc(db, "users", p.id)); } catch(e){}
-        if(p.username){ try { await deleteDoc(doc(db, "usernames", p.username)); } catch(e){} }
-      }
       try { await deleteDoc(doc(db, "users", currentUser.uid)); } catch(e){}
       // حذف فهرس اسم المستخدم حتى يتحرر للتسجيل من جديد
       if(uname){ try { await deleteDoc(doc(db, "usernames", uname)); } catch(e){} }
