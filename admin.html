@@ -7,7 +7,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Tajawal',sans-serif;background:#f4f5f9;color:#0f1535;min-height:100vh;}
+:root{--glass-bg:rgba(255,255,255,.55);--glass-bg-soft:rgba(255,255,255,.35);--glass-border:rgba(255,255,255,.7);--primary:#1732B2;--primary-light:#0069FD;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Tajawal',sans-serif;background:linear-gradient(160deg,#EDF2FB,#D7E3FC);color:#0f1535;min-height:100vh;}
+/* ===== توحيد الزجاج مع لوحة التحكم والصفحة العامة ===== */
+.gate button{width:100%;padding:13px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 8px 18px rgba(23,50,178,.25);}
+.tab-btn{background:var(--glass-bg) !important;backdrop-filter:blur(12px) saturate(180%);-webkit-backdrop-filter:blur(12px) saturate(180%);border-color:var(--glass-border) !important;box-shadow:0 6px 14px rgba(23,50,178,.10), inset 0 1px 0 rgba(255,255,255,.5);}
+.tab-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-light)) !important;color:#fff;border-color:rgba(255,255,255,.5) !important;}
+.card{background:var(--glass-bg) !important;backdrop-filter:blur(14px) saturate(180%);-webkit-backdrop-filter:blur(14px) saturate(180%);border:1px solid var(--glass-border) !important;box-shadow:0 8px 20px rgba(23,50,178,.10), inset 0 1px 0 rgba(255,255,255,.4);}
+.stat-box{background:var(--glass-bg) !important;backdrop-filter:blur(14px) saturate(180%);-webkit-backdrop-filter:blur(14px) saturate(180%);border:1px solid var(--glass-border) !important;box-shadow:0 8px 20px rgba(23,50,178,.10), inset 0 1px 0 rgba(255,255,255,.4);}
 nav{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:#0f1535;color:#fff;}
 .nav-logo{font-family:'Space Mono',monospace;font-weight:700;font-size:1rem;color:#fff;}
 .nav-logo em{color:#f5c518;font-style:normal;}
@@ -149,13 +156,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:14px 2
 .tpl-color-mini-row:last-child{margin-bottom:0;}
 .tpl-color-mini-row span{font-size:0.85rem;flex:1;}
 .tpl-color-mini-row input[type=color]{width:54px;height:38px;border-radius:8px;border:1px solid #e0e0e0;padding:2px;}
-/* شبكة ألوان مدمجة — مربعات صغيرة بدل صفوف طويلة مكدّسة، أسلوب "شدة الظل" المرجعي */
-.tpl-color-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:4px;}
-.tpl-color-swatch{display:flex;flex-direction:column;align-items:center;gap:6px;}
-.tpl-color-swatch input[type=color]{
-  width:100%;aspect-ratio:1;border-radius:12px;border:1.5px solid #e0e0e0;padding:0;cursor:pointer;
-}
-.tpl-color-swatch-label{font-size:0.64rem;font-weight:700;color:#6b7280;text-align:center;line-height:1.3;}
 </style>
 </head>
 <body>
@@ -199,11 +199,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:14px 2
     <div class="stat-row">
       <div class="stat-box"><div class="stat-num" id="statUsers">—</div><div class="stat-label">إجمالي المستخدمين</div></div>
       <div class="stat-box"><div class="stat-num" id="statOpenFeedback">—</div><div class="stat-label">ملاحظات بانتظار الرد</div></div>
-    </div>
-    <div class="card">
-      <b>مصادر التسجيل <span style="font-weight:400;color:#6b7280;font-size:0.78rem;">Signup Sources</span></b>
-      <p style="font-size:0.74rem;color:#6b7280;margin:4px 0 10px;">قِس قبل ما تصرف — كل رابط تسويق (فليّر، شراكة، إعلان) يوسم بـ <code dir="ltr">?ref=اسم_المصدر</code> برابط التسجيل، ويظهر هنا كم حساب فعلي جا من كل مصدر.</p>
-      <div id="sourceBreakdown"><div class="empty-note">جاري التحميل...</div></div>
     </div>
     <div class="card">
       <b>حسابك الحالي</b>
@@ -262,45 +257,28 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:14px 2
   </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 <script>
 window.addEventListener('error', function(e){
   const b = document.getElementById('errBanner');
   b.textContent = '⚠️ خطأ بالسكربت: ' + e.message + ' (سطر ' + e.lineno + ')';
   b.classList.add('show');
 });
-let auth = null, db = null, storage = null, firebaseReady = false;
-let fbDoc=null, fbGetDoc=null, fbSetDoc=null, fbUpdateDoc=null, fbGetDocs=null, fbCollection=null, fbQuery=null, fbOrderBy=null, fbLimit=null, fbStartAfter=null;
-let fbSignIn=null, fbSignOut=null, fbOnAuthStateChanged=null;
-let fbStorageRef=null, fbUploadString=null, fbGetDownloadURL=null, fbDeleteObject=null;
-(async function initFirebase(){
-  try{
-    const cfg={apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",authDomain:"electrwni-link.firebaseapp.com",projectId:"electrwni-link",storageBucket:"electrwni-link.firebasestorage.app",messagingSenderId:"712490301263",appId:"1:712490301263:web:2084210da3f687285ab73a"};
-    const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js");
-    const { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
-    const { getFirestore, doc, getDoc, setDoc, updateDoc, getDocs, collection, query, orderBy, limit, startAfter } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
-    const { getStorage, ref, uploadString, getDownloadURL, deleteObject } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js");
-    const app = initializeApp(cfg);
-    auth = getAuth(app);
-    db = getFirestore(app);
-    storage = getStorage(app);
-    fbDoc=doc; fbGetDoc=getDoc; fbSetDoc=setDoc; fbUpdateDoc=updateDoc; fbGetDocs=getDocs;
-    fbCollection=collection; fbQuery=query; fbOrderBy=orderBy; fbLimit=limit; fbStartAfter=startAfter;
-    fbSignIn=signInWithEmailAndPassword; fbSignOut=signOut; fbOnAuthStateChanged=onAuthStateChanged;
-    fbStorageRef=ref; fbUploadString=uploadString; fbGetDownloadURL=getDownloadURL; fbDeleteObject=deleteObject;
-    firebaseReady = true;
-    attachAuthListener();
-  }catch(e){
-    console.error('Firebase init failed:', e);
-    const b = document.getElementById('errBanner');
-    b.textContent = '⚠️ تعذر الاتصال بالخادم: ' + e.message + ' — أعد تحميل الصفحة أو تحقق من الاتصال';
-    b.classList.add('show');
-  }
-})();
-// يرفع صورة (data URL) فعلياً لـ Storage ويرجّع رابط تحميل دائم — بدل حشرها base64 داخل وثيقة القوالب المشتركة
-async function uploadTplImageToStorage(dataUrl, path){
-  const fileRef = fbStorageRef(storage, path);
-  await fbUploadString(fileRef, dataUrl, 'data_url');
-  return await fbGetDownloadURL(fileRef);
+let auth = null, db = null, firebaseReady = false;
+try{
+  const cfg={apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",authDomain:"electrwni-link.firebaseapp.com",projectId:"electrwni-link",storageBucket:"electrwni-link.firebasestorage.app",messagingSenderId:"712490301263",appId:"1:712490301263:web:2084210da3f687285ab73a"};
+  if(typeof firebase === 'undefined') throw new Error('تعذر تحميل مكتبة Firebase (تحقق من الاتصال بالإنترنت أو حاجب الإعلانات)');
+  if(!firebase.apps.length) firebase.initializeApp(cfg);
+  auth = firebase.auth();
+  db = firebase.firestore();
+  firebaseReady = true;
+}catch(e){
+  console.error('Firebase init failed:', e);
+  const b = document.getElementById('errBanner');
+  b.textContent = '⚠️ تعذر الاتصال بالخادم: ' + e.message + ' — أعد تحميل الصفحة أو تحقق من الاتصال';
+  b.classList.add('show');
 }
 
 // ⚠️ عدّل هذا البريد ليكون بريدك الحقيقي المسجّل بالموقع — هذا هو مفتاح الوصول للوحة الإدارة
@@ -314,8 +292,6 @@ const TPL_DESIGN_DEFAULTS = {
   socialLabel1:'حساب 1', socialLabel2:'حساب 2', socialLabel3:'حساب 3', socialLabel4:'حساب 4',
   // خلفية الصفحة: image = صورة فقط | imageColor = صورة + طبقة لون أمامها | color = لون فقط
   bgMode:'color', bgOverlayOpacity:0.55,
-  // صندوق زجاجي خلف الاسم والوصف لتحسين الوضوح فوق خلفية صورة — 0 يعني بلا صندوق (سلوك الموقع الحالي، افتراضي آمن)
-  nameBoxOpacity:0, bioBoxOpacity:0,
   // ٤ ألوان مخصصة للأيقونات المستطيلة، و٤ ألوان مخصصة للأيقونات الدائرية (مستقلة عن بعض)
   rectColor1:'#3d5af1', rectColor2:'#6c8fff', rectColor3:'#0f1535', rectColor4:'#9aa2c8',
   circleColor1:'#3d5af1', circleColor2:'#6c8fff', circleColor3:'#0f1535', circleColor4:'#9aa2c8'
@@ -351,7 +327,7 @@ async function adminLogin(){
   if(!email || !password){ errEl.textContent='عبّئ البريد وكلمة المرور'; errEl.classList.add('show'); return; }
   document.getElementById('loginBtn').textContent = 'جاري الدخول...';
   try{
-    await fbSignIn(auth, email, password);
+    await auth.signInWithEmailAndPassword(email, password);
     // onAuthStateChanged يتولى الباقي
   }catch(e){
     errEl.textContent = 'بيانات الدخول غير صحيحة';
@@ -363,12 +339,12 @@ window.adminLogin = adminLogin;
 
 function adminLogout(){
   if(!firebaseReady){ window.location.reload(); return; }
-  fbSignOut(auth).then(()=>window.location.reload());
+  auth.signOut().then(()=>window.location.reload());
 }
 window.adminLogout = adminLogout;
 
-function attachAuthListener(){
-  fbOnAuthStateChanged(auth, async (user) => {
+if(firebaseReady){
+  auth.onAuthStateChanged(async (user) => {
     if(!user){
       document.getElementById('gateScreen').style.display='block';
       document.getElementById('deniedScreen').style.display='none';
@@ -388,7 +364,6 @@ function attachAuthListener(){
     loadUsersData();
     loadFeedbackData();
     loadTemplates();
-    loadSourceBreakdown();
   });
 }
 
@@ -397,40 +372,6 @@ const USERS_PAGE_SIZE = 100;
 let usersLastDoc = null;
 let usersAllLoaded = false;
 let usersRowsHtml = [];
-
-// تجميع مصادر التسجيل (referralSource) على كل المستخدمين — قياس فعلي قبل أي صرف تسويقي جديد
-async function loadSourceBreakdown(){
-  const el = document.getElementById('sourceBreakdown');
-  if(!el) return;
-  try{
-    const snap = await fbGetDocs(fbCollection(db,'users'));
-    const counts = {}; // { 'بدون مصدر': N, 'cafe1': N, ... }
-    let total = 0;
-    snap.forEach(d => {
-      const src = (d.data().referralSource || '').trim() || 'بدون مصدر · Direct';
-      counts[src] = (counts[src] || 0) + 1;
-      total++;
-    });
-    if(!total){ el.innerHTML = '<div class="empty-note">لا يوجد مستخدمون بعد</div>'; return; }
-    const rows = Object.entries(counts).sort((a,b) => b[1]-a[1]);
-    const max = rows[0][1];
-    el.innerHTML = rows.map(([src, n]) => {
-      const pct = Math.round((n/total)*100);
-      const barPct = Math.max(6, Math.round((n/max)*100));
-      return `<div style="margin-bottom:10px;">
-        <div style="display:flex;justify-content:space-between;font-size:0.78rem;font-weight:700;margin-bottom:4px;">
-          <span dir="ltr">${escapeHtml(src)}</span><span>${n} · ${pct}%</span>
-        </div>
-        <div style="height:7px;border-radius:4px;background:#eef0f7;overflow:hidden;">
-          <div style="height:100%;width:${barPct}%;border-radius:4px;background:#3d5af1;"></div>
-        </div>
-      </div>`;
-    }).join('');
-  }catch(e){
-    console.error(e);
-    el.innerHTML = `<div class="empty-note">تعذر التحميل: ${escapeHtml(e.message)}</div>`;
-  }
-}
 
 async function loadUsersData(){
   // إعادة تصفير عند أول تحميل (تسجيل دخول جديد)
@@ -446,9 +387,9 @@ async function loadMoreUsers(){
   const listEl = document.getElementById('usersList');
   if(usersAllLoaded) return;
   try{
-    let q = fbQuery(fbCollection(db,'users'), fbOrderBy('createdAt','desc'), fbLimit(USERS_PAGE_SIZE));
-    if(usersLastDoc) q = fbQuery(fbCollection(db,'users'), fbOrderBy('createdAt','desc'), fbLimit(USERS_PAGE_SIZE), fbStartAfter(usersLastDoc));
-    const snap = await fbGetDocs(q);
+    let q = db.collection('users').orderBy('createdAt','desc').limit(USERS_PAGE_SIZE);
+    if(usersLastDoc) q = q.startAfter(usersLastDoc);
+    const snap = await q.get();
 
     if(snap.empty && !usersRowsHtml.length){
       listEl.innerHTML = '<div class="empty-note">لا يوجد مستخدمون بعد</div>';
@@ -459,14 +400,12 @@ async function loadMoreUsers(){
     snap.forEach(d => {
       const u = d.data();
       const joined = u.createdAt ? new Date(u.createdAt).toLocaleDateString('ar-SA') : '—';
-      const srcTag = u.referralSource ? `<span style="display:inline-block;margin-top:2px;padding:1px 7px;border-radius:20px;background:#eef0fb;color:#3d5af1;font-size:0.66rem;font-weight:700;" dir="ltr">${escapeHtml(u.referralSource)}</span>` : '';
       usersRowsHtml.push(`
         <div class="user-row">
           <div class="user-avatar">${escapeHtml((u.displayName||u.username||'?')[0].toUpperCase())}</div>
           <div class="user-info">
             <div class="user-name">${escapeHtml(u.displayName||u.username||'—')}</div>
             <div class="user-meta" dir="ltr">@${escapeHtml(u.username||'—')} · ${escapeHtml(u.email||'—')}</div>
-            ${srcTag}
           </div>
           <div class="user-meta">${joined}</div>
         </div>
@@ -493,7 +432,7 @@ async function loadFeedbackData(){
   const badgeEl = document.getElementById('feedbackBadge');
   const listEl = document.getElementById('feedbackList');
   try{
-    const snap = await fbGetDocs(fbQuery(fbCollection(db,'feedback'), fbOrderBy('createdAt','desc')));
+    const snap = await db.collection('feedback').orderBy('createdAt','desc').get();
     feedbackCache = [];
     snap.forEach(d => feedbackCache.push({id:d.id, ...d.data()}));
     const openCount = feedbackCache.filter(it => it.status === 'open').length;
@@ -529,7 +468,7 @@ async function sendReply(id){
   if(!reply){ alert('اكتب رداً أولاً'); return; }
   if(btn){ btn.disabled = true; btn.textContent = 'جاري الإرسال...'; }
   try{
-    await fbUpdateDoc(fbDoc(db,'feedback',id), { adminReply: reply, status: 'closed' });
+    await db.collection('feedback').doc(id).update({ adminReply: reply, status: 'closed' });
     await loadFeedbackData();
   }catch(e){
     alert('تعذر الحفظ: '+e.message);
@@ -550,8 +489,10 @@ async function loadTemplates(){
     return;
   }
   try{
-    const snap = await fbGetDoc(fbDoc(db,'siteConfig','templates'));
-    templatesData = snap.exists() ? snap.data() : {};
+    const snap = await db.collection('siteConfig').doc('templates').get();
+    // ⚠️ إصلاح: exists خاصية منطقية (true/false) وليست دالة بمكتبة Firestore compat —
+    // استدعاؤها كـ snap.exists() كان يرمي خطأً يُمسَك بصمت، فتُهمَل كل القوالب المحفوظة وترجع الافتراضية دائمًا.
+    templatesData = snap.exists ? snap.data() : {};
   }catch(e){
     console.error('loadTemplates failed:', e);
     templatesData = {};
@@ -649,7 +590,6 @@ function buildMockupHtml(key){
   const rectStyle = t.rectStyle || 'rounded';
   const showAvatar = t.showAvatar !== false;
   const showLogo = t.showLogo !== false;
-  const showBanner = t.showBanner !== false;
   const showSocials = t.showSocials !== false;
   const showLinks = t.showLinks !== false;
   // وضع الخلفية: image = صورة كاملة فقط | imageColor = صورة + طبقة لون أمامها | color = لون فقط
@@ -668,14 +608,9 @@ function buildMockupHtml(key){
   const linkFillStyle = t.linkFill ? `background:${t.p1};color:${t.linkText};` : `background:transparent;color:${t.linkText};`;
   const linkShadowStyle = t.linkShadow ? `box-shadow:0 6px 14px -4px rgba(0,0,0,.35);` : '';
   const socialsHtml = buildSocialsPreview(t, isRect, rectStyle);
-  const nameOp = t.nameBoxOpacity ?? 0;
-  const bioOp = t.bioBoxOpacity ?? 0;
-  const nameBoxStyle = nameOp > 0 ? `display:inline-block;padding:5px 16px;border-radius:10px;background:rgba(255,255,255,${nameOp});backdrop-filter:blur(${Math.round(nameOp*16)}px);` : '';
-  const bioBoxStyle = bioOp > 0 ? `display:inline-block;padding:5px 14px;border-radius:10px;background:rgba(255,255,255,${bioOp});backdrop-filter:blur(${Math.round(bioOp*16)}px);` : '';
 
   return `
-    <div class="tpl-mockup-lg" id="tplMockupLg" style="${bgStyle}position:relative;font-family:'${t.fontFamily}',sans-serif;padding-top:${28+t.gap}px;overflow:hidden;">
-      ${showBanner ? `<div style="position:absolute;top:0;left:0;right:0;height:70px;background:linear-gradient(135deg,${t.p1}55,${t.p2}55);"></div>` : ''}
+    <div class="tpl-mockup-lg" id="tplMockupLg" style="${bgStyle}position:relative;font-family:'${t.fontFamily}',sans-serif;padding-top:${28+t.gap}px;">
       <!-- + الخلفية: أعلى يسار -->
       <button type="button" class="tpl-plus-badge" style="top:8px;left:8px;" data-action="open-bg-popover" data-key="${key}" title="الخلفية">+</button>
 
@@ -686,19 +621,15 @@ function buildMockupHtml(key){
       ` : ''}
 
       ${showAvatar ? `
-        <div style="position:relative;display:inline-block;margin-bottom:${t.gap}px;z-index:1;">
-          <div style="width:${t.avatarSize}px;height:${t.avatarSize}px;border-radius:${avatarRadius};border:3px solid #fff;${t.avatarImg ? `background-image:url(${t.avatarImg});background-size:cover;background-position:center;` : `background:linear-gradient(135deg,${t.p1},${t.p2});`}"></div>
+        <div style="position:relative;display:inline-block;margin-bottom:${t.gap}px;">
+          <div style="width:${t.avatarSize}px;height:${t.avatarSize}px;border-radius:${avatarRadius};${t.avatarImg ? `background-image:url(${t.avatarImg});background-size:cover;background-position:center;` : `background:linear-gradient(135deg,${t.p1},${t.p2});`}"></div>
           <!-- + الأفتار (صورة المستخدم الشخصية): مركّز أفقيًا تحت الدائرة تمامًا مهما كان حجمها — منفصل عن الشعار -->
           <button type="button" class="tpl-plus-badge" style="bottom:-8px;left:50%;transform:translateX(-50%);" data-action="open-avatar-popover" data-key="${key}" title="الأفتار">+</button>
         </div>
       ` : ''}
-      <div style="${nameBoxStyle}margin-bottom:${Math.max(6,t.gap*0.4)}px;">
-        <span style="color:${t.text};font-size:${t.nameSize}px;font-weight:${t.nameWeight};">${escapeHtml(t.sampleName || 'اسمك هنا')}</span>
-      </div>
-      <div style="${bioBoxStyle}margin-bottom:${t.gap}px;">
-        <div style="height:${t.bioSize*0.35}px;width:120px;border-radius:3px;opacity:.35;background:${t.text};margin-bottom:6px;"></div>
-        <div style="height:${t.bioSize*0.35}px;width:75px;border-radius:3px;opacity:.35;background:${t.text};"></div>
-      </div>
+      <div style="color:${t.text};font-size:${t.nameSize}px;font-weight:${t.nameWeight};margin-bottom:${Math.max(6,t.gap*0.4)}px;">${escapeHtml(t.sampleName || 'اسمك هنا')}</div>
+      <div style="height:${t.bioSize*0.35}px;width:70%;border-radius:3px;opacity:.35;background:${t.text};margin-bottom:6px;"></div>
+      <div style="height:${t.bioSize*0.35}px;width:45%;border-radius:3px;opacity:.35;background:${t.text};margin-bottom:${t.gap}px;"></div>
 
       <div style="position:relative;width:100%;">
         <button type="button" class="tpl-plus-badge" style="top:-6px;left:8px;" data-action="open-socials-popover" data-key="${key}" title="التواصل">+</button>
@@ -734,7 +665,6 @@ function renderTplExpanded(){
   if(!t) return;
   const showAvatar = t.showAvatar !== false;
   const showLogo = t.showLogo !== false;
-  const showBanner = t.showBanner !== false;
   const showSocials = t.showSocials !== false;
   const showLinks = t.showLinks !== false;
   const activeId = currentTplSubTab;
@@ -765,7 +695,7 @@ function renderTplExpanded(){
           <button type="button" class="back-btn" data-action="sub-tab" data-tab="preview">→ رجوع للمعاينة</button>
           <div class="title">${activeLabel}</div>
         </div>
-        ${buildPanelBody(activeId, key, t, {showAvatar, showLogo, showBanner, showSocials, showLinks})}
+        ${buildPanelBody(activeId, key, t, {showAvatar, showLogo, showSocials, showLinks})}
       </div>
     `;
   }
@@ -787,34 +717,14 @@ function buildPanelBody(id, key, t, flags){
       </div>`;
   }
   if(id === 'colors'){
-    const bgLabel = t.bgMode==='imageColor' ? 'لون الطبقة' : 'لون الموقع';
-    const bgNote = (t.bgMode||'color')==='image' ? `<div style="font-size:0.68rem;color:#9aa2c8;margin-top:8px;">وضع الخلفية الحالي «صورة فقط» — هذا اللون غير مستخدم إلا لو فعّلت "خلفية+ألوان".</div>` : '';
     return `
       <div class="tpl-dash-section">
-        <div class="tpl-dash-label">الألوان الأساسية</div>
-        <div class="tpl-color-grid">
-          <div class="tpl-color-swatch">
-            <input type="color" value="${t.p1}" data-field="p1" data-key="${key}" data-live="fast">
-            <span class="tpl-color-swatch-label">أساسي</span>
-          </div>
-          <div class="tpl-color-swatch">
-            <input type="color" value="${t.p2}" data-field="p2" data-key="${key}" data-live="fast">
-            <span class="tpl-color-swatch-label">ثانوي</span>
-          </div>
-          <div class="tpl-color-swatch">
-            <input type="color" value="${t.text}" data-field="text" data-key="${key}" data-live="fast">
-            <span class="tpl-color-swatch-label">النص</span>
-          </div>
-          <div class="tpl-color-swatch">
-            <input type="color" value="${t.bg}" data-field="bg" data-key="${key}" data-live="fast">
-            <span class="tpl-color-swatch-label">${bgLabel}</span>
-          </div>
-        </div>
-        ${bgNote}
-      </div>
-      <div class="tpl-dash-section">
-        <div class="tpl-dash-label">ألوان إضافية</div>
+        <div class="tpl-dash-label">لوحة الألوان الكاملة</div>
+        <div class="tpl-color-mini-row"><span>اللون الأساسي</span><input type="color" value="${t.p1}" data-field="p1" data-key="${key}" data-live="fast"></div>
+        <div class="tpl-color-mini-row"><span>اللون الثانوي</span><input type="color" value="${t.p2}" data-field="p2" data-key="${key}" data-live="fast"></div>
+        <div class="tpl-color-mini-row"><span>لون النص</span><input type="color" value="${t.text}" data-field="text" data-key="${key}" data-live="fast"></div>
         <div class="tpl-color-mini-row"><span>لون نص الأزرار</span><input type="color" value="${t.linkText}" data-field="linkText" data-key="${key}" data-live="fast"></div>
+        ${(t.bgMode || 'color') !== 'image' ? `<div class="tpl-color-mini-row"><span>${t.bgMode==='imageColor' ? 'لون الطبقة أمام الخلفية' : 'لون الخلفية'}</span><input type="color" value="${t.bg}" data-field="bg" data-key="${key}" data-live="fast"></div>` : `<div style="font-size:0.78rem;color:#9aa2c8;">وضع الخلفية الحالي «خلفية فقط» — غيّر الوضع من زر "+" الخلفية بالمعاينة لإظهار لون.</div>`}
       </div>`;
   }
   if(id === 'fonts'){
@@ -835,16 +745,6 @@ function buildPanelBody(id, key, t, flags){
         </div>
         <div class="tpl-field"><span class="tpl-field-label">حجم سطور الوصف</span>
           <div class="tpl-range-row"><input type="range" min="8" max="20" value="${t.bioSize}" data-field="bioSize" data-key="${key}" data-live="fast" data-unit="px"><span class="tpl-range-val">${t.bioSize}px</span></div>
-        </div>
-      </div>
-      <div class="tpl-dash-section">
-        <div class="tpl-dash-label">وضوح فوق خلفية صورة</div>
-        <div style="font-size:0.74rem;color:#9aa2c8;margin-bottom:12px;line-height:1.6;">صندوق زجاجي خلف الاسم والوصف — مفيد لو الخلفية صورة تُصعّب قراءتهما. اضبط كل صندوق لحاله.</div>
-        <div class="tpl-field"><span class="tpl-field-label">شدة صندوق الاسم</span>
-          <div class="tpl-range-row"><input type="range" min="0" max="100" value="${Math.round((t.nameBoxOpacity ?? 0)*100)}" data-field="nameBoxOpacity" data-percent="1" data-key="${key}" data-live="fast" data-unit="%"><span class="tpl-range-val">${Math.round((t.nameBoxOpacity ?? 0)*100)}%</span></div>
-        </div>
-        <div class="tpl-field"><span class="tpl-field-label">شدة صندوق الوصف</span>
-          <div class="tpl-range-row"><input type="range" min="0" max="100" value="${Math.round((t.bioBoxOpacity ?? 0)*100)}" data-field="bioBoxOpacity" data-percent="1" data-key="${key}" data-live="fast" data-unit="%"><span class="tpl-range-val">${Math.round((t.bioBoxOpacity ?? 0)*100)}%</span></div>
         </div>
       </div>`;
   }
@@ -891,7 +791,6 @@ function buildPanelBody(id, key, t, flags){
       <div class="tpl-dash-section">
         <label class="tpl-toggle-row"><input type="checkbox" ${flags.showAvatar?'checked':''} data-field="showAvatar" data-key="${key}" data-live="flag"><span>إظهار الأفتار (صورة المستخدم)</span></label>
         <label class="tpl-toggle-row"><input type="checkbox" ${flags.showLogo?'checked':''} data-field="showLogo" data-key="${key}" data-live="flag"><span>إظهار الشعار (البراند)</span></label>
-        <label class="tpl-toggle-row"><input type="checkbox" ${flags.showBanner?'checked':''} data-field="showBanner" data-key="${key}" data-live="flag"><span>إظهار الغلاف (صورة الخلفية العلوية)</span></label>
         <label class="tpl-toggle-row"><input type="checkbox" ${flags.showSocials?'checked':''} data-field="showSocials" data-key="${key}" data-live="flag"><span>إظهار حسابات التواصل</span></label>
         <label class="tpl-toggle-row"><input type="checkbox" ${flags.showLinks?'checked':''} data-field="showLinks" data-key="${key}" data-live="flag"><span>إظهار الروابط</span></label>
       </div>`;
@@ -1046,47 +945,19 @@ function openSocialsPopover(key){
     </div>
 
     <div class="tpl-dash-section">
-      <div class="tpl-dash-label">🔲 ألوان الأيقونات المستطيلة (تتكرر بالدوران على الحسابات)</div>
-      <div class="tpl-color-grid">
-        <div class="tpl-color-swatch">
-          <input type="color" value="${t.rectColor1}" data-field="rectColor1" data-key="${key}" data-live="fast">
-          <span class="tpl-color-swatch-label">حساب 1</span>
-        </div>
-        <div class="tpl-color-swatch">
-          <input type="color" value="${t.rectColor2}" data-field="rectColor2" data-key="${key}" data-live="fast">
-          <span class="tpl-color-swatch-label">حساب 2</span>
-        </div>
-        <div class="tpl-color-swatch">
-          <input type="color" value="${t.rectColor3}" data-field="rectColor3" data-key="${key}" data-live="fast">
-          <span class="tpl-color-swatch-label">حساب 3</span>
-        </div>
-        <div class="tpl-color-swatch">
-          <input type="color" value="${t.rectColor4}" data-field="rectColor4" data-key="${key}" data-live="fast">
-          <span class="tpl-color-swatch-label">حساب 4</span>
-        </div>
-      </div>
+      <div class="tpl-dash-label">🔲 ألوان الأيقونات المستطيلة (٤ ألوان)</div>
+      <div class="tpl-color-mini-row"><span>اللون الأول</span><input type="color" value="${t.rectColor1}" data-field="rectColor1" data-key="${key}" data-live="fast"></div>
+      <div class="tpl-color-mini-row"><span>اللون الثاني</span><input type="color" value="${t.rectColor2}" data-field="rectColor2" data-key="${key}" data-live="fast"></div>
+      <div class="tpl-color-mini-row"><span>اللون الثالث</span><input type="color" value="${t.rectColor3}" data-field="rectColor3" data-key="${key}" data-live="fast"></div>
+      <div class="tpl-color-mini-row"><span>اللون الرابع</span><input type="color" value="${t.rectColor4}" data-field="rectColor4" data-key="${key}" data-live="fast"></div>
     </div>
 
     <div class="tpl-dash-section">
-      <div class="tpl-dash-label">⚪ ألوان الأيقونات الدائرية (تتكرر بالدوران على الحسابات)</div>
-      <div class="tpl-color-grid">
-        <div class="tpl-color-swatch">
-          <input type="color" value="${t.circleColor1}" data-field="circleColor1" data-key="${key}" data-live="fast">
-          <span class="tpl-color-swatch-label">حساب 1</span>
-        </div>
-        <div class="tpl-color-swatch">
-          <input type="color" value="${t.circleColor2}" data-field="circleColor2" data-key="${key}" data-live="fast">
-          <span class="tpl-color-swatch-label">حساب 2</span>
-        </div>
-        <div class="tpl-color-swatch">
-          <input type="color" value="${t.circleColor3}" data-field="circleColor3" data-key="${key}" data-live="fast">
-          <span class="tpl-color-swatch-label">حساب 3</span>
-        </div>
-        <div class="tpl-color-swatch">
-          <input type="color" value="${t.circleColor4}" data-field="circleColor4" data-key="${key}" data-live="fast">
-          <span class="tpl-color-swatch-label">حساب 4</span>
-        </div>
-      </div>
+      <div class="tpl-dash-label">⚪ ألوان الأيقونات الدائرية (٤ ألوان)</div>
+      <div class="tpl-color-mini-row"><span>اللون الأول</span><input type="color" value="${t.circleColor1}" data-field="circleColor1" data-key="${key}" data-live="fast"></div>
+      <div class="tpl-color-mini-row"><span>اللون الثاني</span><input type="color" value="${t.circleColor2}" data-field="circleColor2" data-key="${key}" data-live="fast"></div>
+      <div class="tpl-color-mini-row"><span>اللون الثالث</span><input type="color" value="${t.circleColor3}" data-field="circleColor3" data-key="${key}" data-live="fast"></div>
+      <div class="tpl-color-mini-row"><span>اللون الرابع</span><input type="color" value="${t.circleColor4}" data-field="circleColor4" data-key="${key}" data-live="fast"></div>
     </div>
 
     <div style="font-size:0.72rem;color:#9aa2c8;">⋮⋮ هذا تصميم افتراضي للعرض — يظهر لكل مستخدم بحساباته الفعلية وأسمائها الحقيقية. لوحة المستطيلة ولوحة الدائرية مستقلتان عن بعض؛ التبديل بين الشكلين يحافظ على ألوان كل شكل.</div>
@@ -1097,17 +968,14 @@ function openSocialsPopover(key){
 function setField(key, field, value){ templatesData[key][field] = value; }
 function setFieldAndRerender(key, field, value){ setField(key, field, value); renderTplExpanded(); }
 
-async function deleteTemplate(key){
+function deleteTemplate(key){
   if(!confirm(`حذف قالب "${templatesData[key].name}"؟ سيختفي من تبويب القوالب لكل المستخدمين.`)) return;
   delete templatesData[key];
   closeTplExpanded();
-  renderTemplatesEditor();
-  // الحذف من الذاكرة وحده لا يكفي — لازم يُحفظ فوراً بقاعدة البيانات وإلا يرجع القالب عند إعادة تحميل الصفحة
-  await saveTemplatesConfig();
 }
 function addNewTemplate(){
   const id = 'custom_' + Date.now();
-  templatesData[id] = { name: 'قالب جديد', p1:'#3d5af1', p2:'#6c8fff', text:'#0f1535', bg:'#ffffff', iconShape:'circle', showAvatar:true, showLogo:true, showBanner:true, showSocials:true, showLinks:true, ...TPL_DESIGN_DEFAULTS };
+  templatesData[id] = { name: 'قالب جديد', p1:'#3d5af1', p2:'#6c8fff', text:'#0f1535', bg:'#ffffff', iconShape:'circle', showAvatar:true, showLogo:true, showSocials:true, showLinks:true, ...TPL_DESIGN_DEFAULTS };
   renderTemplatesEditor();
 }
 let isSaving = false;
@@ -1115,30 +983,17 @@ async function saveTemplatesConfig(){
   if(isSaving) return;
   if(!firebaseReady){ alert('تعذر الاتصال بالخادم، أعد تحميل الصفحة'); return; }
 
-  // فحص الحجم مسبقًا — مستندات Firestore محدودة فعلياً بـ1 ميجابايت، والتجاوز يُفشل كل عملية حفظ (بما فيها الحذف والتعديلات الأخرى)
+  // فحص الحجم مسبقًا — مستندات Firestore محدودة بـ1 ميجابايت تقريبًا
   const approxSize = new Blob([JSON.stringify(templatesData)]).size;
   if(approxSize > 900000){
-    // نحدد بالضبط أي قالب/حقل لسه فيه صورة base64 قديمة (من قبل تفعيل الرفع لـ Storage) بدل رسالة عامة
-    const offenders = [];
-    Object.entries(templatesData).forEach(([key, t]) => {
-      ['avatarImg','logoImg','bgImage'].forEach(f => {
-        if(typeof t[f] === 'string' && t[f].startsWith('data:')){
-          offenders.push(`«${t.name}» — ${f==='avatarImg'?'الأفتار':f==='logoImg'?'الشعار':'الخلفية'}`);
-        }
-      });
-    });
-    const detail = offenders.length
-      ? '\n\nالصور التالية لسه محفوظة بالطريقة القديمة (قبل تفعيل الرفع لـ Storage)، أعد رفعها من نفس المكان لتصغير الحجم تلقائياً:\n• ' + offenders.join('\n• ')
-      : '';
-    alert('⚠️ حجم بيانات القوالب كبير جدًا (' + Math.round(approxSize/1024) + ' كيلوبايت من حد 1024 تقريبًا) — تم إيقاف الحفظ لأنه سيفشل بأي حال.' + detail);
-    return; // لا نكمل الحفظ — كان الخطأ سابقًا أنه يحذّر ثم يحاول الحفظ رغم ذلك فيفشل بصمت (وهذا سبب عدم حفظ التعديلات/الحذف/إخفاء الخلفية)
+    alert('⚠️ حجم بيانات القوالب كبير جدًا (' + Math.round(approxSize/1024) + ' كيلوبايت) وقد يفشل الحفظ. قلّل عدد الصور المرفوعة يدويًا (الخلفيات/الشعارات) بالقوالب.');
   }
 
   const btns = document.querySelectorAll('[data-action="save-all"], [data-action="save-and-close"]');
   isSaving = true;
   btns.forEach(b => { b.dataset.origText = b.textContent; b.disabled = true; if(b.dataset.action==='save-all') b.textContent = 'جاري الحفظ...'; });
   try{
-    await fbSetDoc(fbDoc(db,'siteConfig','templates'), templatesData);
+    await db.collection('siteConfig').doc('templates').set(templatesData);
     alert('تم الحفظ ✓');
   }catch(e){
     alert('تعذر الحفظ: '+e.message);
@@ -1207,37 +1062,16 @@ document.addEventListener('change', function(e){
   const el = e.target;
 
   if(el.dataset.action === 'avatar-file' && el.files && el.files[0]){
-    const key = el.dataset.key;
-    fileToBase64(el.files[0], async (dataUrl) => {
-      setField(key, 'avatarImg', dataUrl); renderTplExpanded(); closeTplPopover(); // معاينة فورية محلية بينما الرفع يجري
-      try{
-        const url = await uploadTplImageToStorage(dataUrl, `template-assets/${key}/avatar.jpg`);
-        setField(key, 'avatarImg', url); refreshMockupOnly(key);
-      }catch(err){ alert('تعذر رفع صورة الأفتار: ' + err.message); }
-    });
+    fileToBase64(el.files[0], (dataUrl) => { setField(el.dataset.key, 'avatarImg', dataUrl); renderTplExpanded(); closeTplPopover(); });
     return;
   }
   if(el.dataset.action === 'logo-file' && el.files && el.files[0]){
-    const key = el.dataset.key;
-    fileToBase64(el.files[0], async (dataUrl) => {
-      setField(key, 'logoImg', dataUrl); renderTplExpanded(); closeTplPopover();
-      try{
-        const url = await uploadTplImageToStorage(dataUrl, `template-assets/${key}/logo.jpg`);
-        setField(key, 'logoImg', url); refreshMockupOnly(key);
-      }catch(err){ alert('تعذر رفع صورة الشعار: ' + err.message); }
-    });
+    fileToBase64(el.files[0], (dataUrl) => { setField(el.dataset.key, 'logoImg', dataUrl); renderTplExpanded(); closeTplPopover(); });
     return;
   }
   if(el.dataset.action === 'bg-file' && el.files && el.files[0]){
-    const key = el.dataset.key;
     // خلفية كاملة الصفحة تحتاج دقة أعلى من الأفتار/الشعار (480px تصير مموّهة لو تمددت على الشاشة كاملة)
-    fileToBase64(el.files[0], async (dataUrl) => {
-      setField(key, 'bgImage', dataUrl); renderTplExpanded(); closeTplPopover();
-      try{
-        const url = await uploadTplImageToStorage(dataUrl, `template-assets/${key}/bg.jpg`);
-        setField(key, 'bgImage', url); refreshMockupOnly(key);
-      }catch(err){ alert('تعذر رفع صورة الخلفية: ' + err.message); }
-    }, 1080, 0.75);
+    fileToBase64(el.files[0], (dataUrl) => { setField(el.dataset.key, 'bgImage', dataUrl); renderTplExpanded(); closeTplPopover(); }, 1080, 0.75);
     return;
   }
 
