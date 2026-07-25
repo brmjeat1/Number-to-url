@@ -154,6 +154,12 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
     <button class="btn btn-primary" onclick="window.location.href='signin.html'">🔓 تسجيل الدخول · Sign In</button>
     <button class="btn btn-secondary" id="createAccountBtn">✨ إنشاء حساب · Create Account</button>
   </div>
+  <div style="margin-top:14px;text-align:center;">
+    <a href="#" id="demoTryBtn" style="font-size:0.85rem;font-weight:700;color:#3d5af1;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><circle cx="12" cy="8" r="0.5" fill="currentColor"></circle></svg>
+      جرّب بدون تسجيل · Try before you sign up
+    </a>
+  </div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -199,6 +205,27 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
         ? ('signup.html?u=' + encodeURIComponent(availableUsername))
         : 'signup.html';
       window.location.href = target;
+    });
+  }
+
+  // ===== دخول تجربة بدون تسجيل: حساب مؤقت حقيقي عبر Firebase Anonymous Auth =====
+  const demoTryBtn = document.getElementById('demoTryBtn');
+  if(demoTryBtn){
+    demoTryBtn.addEventListener('click', async (e)=>{
+      e.preventDefault();
+      if(!firebaseReady){ alert('تعذر الاتصال بالخادم، أعد تحميل الصفحة'); return; }
+      const original = demoTryBtn.innerHTML;
+      demoTryBtn.innerHTML = '⏳ جاري التجهيز...';
+      demoTryBtn.style.pointerEvents = 'none';
+      try{
+        await auth.signInAnonymously();
+        window.location.href = 'dashboard.html';
+      }catch(err){
+        console.error('demo signin failed:', err);
+        alert('تعذر بدء التجربة، حاول مرة أخرى · Could not start demo');
+        demoTryBtn.innerHTML = original;
+        demoTryBtn.style.pointerEvents = 'auto';
+      }
     });
   }
 
