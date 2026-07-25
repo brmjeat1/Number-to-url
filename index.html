@@ -36,8 +36,8 @@
     font-weight:900;
     font-display:swap;
   }
-*{margin:0;padding:0;box-sizing:border-box;}
-html{font-size:106.25%;} /* Apple-scale baseline (~17px) */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{font-size:106.25%;}
 body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;background:#ffffff;color:#0f1535;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
 .container{max-width:500px;width:100%;background:#f9f9f9;border-radius:20px;padding:48px 32px;text-align:center;border:1px solid #e8ecf5;}
 .brand{margin-bottom:40px;}
@@ -54,7 +54,7 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
 .btn-secondary:active{transform:scale(0.98);}
 @media(max-width:600px){.container{padding:32px 20px;}.brand-title{font-size:1.8rem;}.brand-subtitle{font-size:1rem;}}
 
-/* ========== FINDER / QUICK SIGNUP ========== */
+/* ========== FINDER (حقل بحث نصي بحت — لا علاقة له بتسجيل الدخول) ========== */
 .finder-title{font-size:0.98rem;font-weight:700;color:#0f1535;margin-bottom:4px;}
 .finder-title-en{display:block;font-size:0.72rem;font-weight:400;color:#9aa2c8;margin-bottom:14px;}
 .finder-box{
@@ -69,10 +69,12 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
   font-size:0.82rem;flex-shrink:0;
 }
 .finder-input{
-  flex:1;min-width:0;border:none;outline:none;background:#ffffff;
+  flex:1;min-width:0;border:none;outline:none;background:#ffffff;-webkit-appearance:none;appearance:none;
   padding:14px 10px;font-family:ui-monospace,'SF Mono','Space Mono',monospace;
   font-weight:700;font-size:0.92rem;color:#0f1535;text-align:left;
 }
+.finder-input::-webkit-search-cancel-button,
+.finder-input::-webkit-search-decoration{display:none;}
 .finder-input::placeholder{color:#9aa2c8;font-weight:400;}
 .finder-verify{
   border:none;background:#ffffff;color:#3d5af1;padding:0 16px;cursor:pointer;
@@ -88,7 +90,6 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
 .finder-msg.error{color:#e8436a;}
 .finder-msg.success{color:#0ab87a;}
 
-/* التسجيل السريع (يُبنى ديناميكياً في DOM فقط عند الحاجة — لا يوجد أي حقل إيميل/كلمة مرور عند تحميل الصفحة) */
 .quick-signup{display:flex;flex-direction:column;gap:10px;margin-top:14px;text-align:right;}
 .quick-signup input{
   width:100%;padding:12px 14px;border:1.5px solid #e0e0e0;border-radius:10px;
@@ -106,6 +107,63 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
 .qs-msg{font-size:0.78rem;font-weight:700;text-align:center;min-height:0;}
 .qs-msg.error{color:#e8436a;}
 .qs-msg.success{color:#0ab87a;}
+
+/* رابط بسيط يفتح تجربة النافذة المنبثقة — لا يغيّر تصميم الحاوية الأصلية */
+.choice-title{font-size:0.92rem;font-weight:700;color:#0f1535;margin-bottom:18px;}
+.choice-title-en{display:block;font-size:0.7rem;font-weight:400;color:#9aa2c8;margin-top:2px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;margin-bottom:18px;background:none;border:none;color:#9aa2c8;font-weight:700;font-size:0.8rem;cursor:pointer;font-family:inherit;}
+.back-link svg{width:15px;height:15px;}
+.try-link{display:inline-flex;align-items:center;gap:6px;margin-top:18px;background:none;border:none;color:#3d5af1;font-weight:700;font-size:0.82rem;cursor:pointer;font-family:inherit;}
+.try-link svg{width:15px;height:15px;}
+
+/* ========== النافذة المنبثقة: التجربة التفاعلية ========== */
+.demo-overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(15,21,53,0.55);align-items:center;justify-content:center;padding:20px;}
+.demo-overlay.open{display:flex;}
+.demo-modal{background:#fff;border-radius:20px;padding:28px 26px;max-width:400px;width:100%;max-height:88vh;overflow-y:auto;position:relative;text-align:right;}
+.demo-close{position:absolute;top:14px;left:14px;width:30px;height:30px;border-radius:50%;border:none;background:#f0f4ff;color:#3d5af1;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.demo-close svg{width:15px;height:15px;}
+.demo-title{font-size:1.02rem;font-weight:900;margin-bottom:2px;}
+.demo-title-en{display:block;font-size:0.7rem;font-weight:400;color:#9aa2c8;margin-bottom:20px;}
+.demo-dots{display:flex;gap:6px;justify-content:center;margin-bottom:22px;}
+.demo-dot{width:7px;height:7px;border-radius:50%;background:#e0e5f5;transition:all .25s;}
+.demo-dot.active{background:#3d5af1;width:20px;border-radius:4px;}
+.demo-dot.done{background:#0ab87a;}
+.demo-step{display:none;}
+.demo-step.active{display:block;}
+.demo-step-label{font-size:0.85rem;font-weight:900;color:#0f1535;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.demo-step-num{width:24px;height:24px;border-radius:50%;background:#3d5af1;color:#fff;font-size:0.72rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.demo-required{color:#e8436a;font-size:0.7rem;font-weight:700;margin-right:auto;}
+.demo-input{
+  width:100%;padding:13px 14px;border:1.5px solid #e0e0e0;border-radius:10px;
+  font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text','Tajawal',sans-serif;
+  font-size:0.88rem;outline:none;transition:border .2s;background:#fff;color:#0f1535;margin-bottom:6px;
+  -webkit-appearance:none;appearance:none;
+}
+.demo-input::-webkit-search-cancel-button,
+.demo-input::-webkit-search-decoration{display:none;}
+.demo-input:focus{border-color:#3d5af1;box-shadow:0 0 0 3px rgba(61,90,241,0.1);}
+.demo-input[dir="ltr"]{text-align:left;}
+.demo-err{font-size:0.74rem;font-weight:700;color:#e8436a;min-height:16px;margin-bottom:8px;}
+.demo-actions{display:flex;gap:10px;margin-top:8px;}
+.demo-btn-next{flex:1;padding:13px;background:linear-gradient(135deg,#3d5af1,#6c8fff);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:0.9rem;cursor:pointer;font-family:inherit;}
+.demo-btn-back{padding:13px 18px;background:#fff;color:#3a4270;border:1.5px solid #e0e5f5;border-radius:10px;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:inherit;}
+
+/* نتيجة التجربة */
+.demo-result{text-align:center;}
+.demo-result-title{font-size:0.95rem;font-weight:900;margin-bottom:16px;color:#0f1535;}
+.demo-check-list{display:flex;flex-direction:column;gap:10px;margin-bottom:18px;}
+.demo-check-item{display:flex;align-items:center;gap:10px;background:#f9f9f9;border:1px solid #e8ecf5;border-radius:12px;padding:12px 14px;text-align:right;}
+.demo-check-ic{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:#e7f9f1;color:#0ab87a;display:flex;align-items:center;justify-content:center;}
+.demo-check-ic svg{width:14px;height:14px;}
+.demo-check-txt{flex:1;min-width:0;}
+.demo-check-label{font-size:0.68rem;color:#9aa2c8;font-weight:700;}
+.demo-check-value{font-size:0.85rem;font-weight:700;color:#0f1535;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.demo-qr-box{text-align:center;margin-bottom:18px;padding:14px;border-radius:16px;background:linear-gradient(135deg,#FFFFFF 0%,#A1B2CC 140%);border:1px solid #A1B2CC;}
+.demo-qr-box canvas{border-radius:12px;background:#fff;max-width:100%;height:auto;}
+.demo-final-note{font-size:0.78rem;color:#9aa2c8;font-weight:700;margin-bottom:14px;line-height:1.7;text-align:center;}
+.demo-cta{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;background:linear-gradient(135deg,#3d5af1,#6c8fff);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:0.92rem;cursor:pointer;font-family:inherit;}
+.demo-cta svg{width:18px;height:18px;}
+.demo-restart{width:100%;text-align:center;background:none;border:none;color:#9aa2c8;font-weight:700;font-size:0.76rem;padding:12px 0 0;cursor:pointer;font-family:inherit;}
 </style>
 </head>
 <body>
@@ -116,29 +174,53 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
       <span class="dark">إلكتروني</span>
     </div>
     <div class="brand-subtitle">Electrwni</div>
+  </div>
 
+  <!-- ========== شاشة الاختيار: تظهر أولاً، بلا أي حقل نصي — تمنع أي اقتراح دخول تلقائي عند فتح الصفحة ========== -->
+  <div id="choiceScreen">
+    <div class="choice-title">كيف تريد المتابعة؟<span class="choice-title-en">Choose how to continue</span></div>
+    <div class="buttons">
+      <button class="btn btn-primary" onclick="window.location.href='signin.html'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;vertical-align:-3px;margin-left:6px;"><path d="M14 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>
+        عندي حساب · تسجيل الدخول
+      </button>
+      <button class="btn btn-secondary" onclick="showFinderScreen()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;vertical-align:-3px;margin-left:6px;"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
+        حساب جديد · إنشاء حساب
+      </button>
+    </div>
+    <button type="button" class="try-link" onclick="demoOpen()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2 2-2 3.5"/><path d="M12 17h.01"/></svg>
+      بدون حساب · جرّب كتجربة أولاً
+    </button>
+  </div>
+
+  <!-- ========== شاشة إنشاء الحساب: تظهر فقط بعد اختيار المستخدم صراحة ========== -->
+  <div id="finderScreen" style="display:none;">
+    <button type="button" class="back-link" onclick="showChoiceScreen()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      رجوع · Back
+    </button>
     <div class="finder-title">تحقق من توفر اسم المستخدم<span class="finder-title-en">Check Username Availability</span></div>
-
-    <!-- خانتان وهميتان مخفيتان: تمتصان اقتراح "الحساب المحفوظ" من Safari/Chrome بعيداً عن خانة التحقق أدناه -->
-    <input type="text" name="username" autocomplete="username" tabindex="-1" aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;left:-9999px;">
-    <input type="password" name="password" autocomplete="current-password" tabindex="-1" aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;left:-9999px;">
-
     <div class="finder-box" id="finderBox">
       <div class="finder-domain">electrwni.link/</div>
       <input
-        type="text"
+        type="search"
         id="finderInput"
         class="finder-input"
         placeholder="username"
-        name="pageQuery"
+        name="q"
         autocomplete="off"
         autocapitalize="off"
         autocorrect="off"
         spellcheck="false"
         inputmode="text"
         maxlength="20"
-        readonly
-        onfocus="this.removeAttribute('readonly');"
+        data-lpignore="true"
+        data-1p-ignore
+        data-bwignore
+        data-form-type="other"
+        role="searchbox"
       >
       <button type="button" class="finder-verify" id="finderVerifyBtn" title="تحقق · Verify" aria-label="تحقق · Verify">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -149,19 +231,88 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
     <!-- منطقة التسجيل السريع: فارغة عند تحميل الصفحة، تُبنى بالكامل عبر JS فقط بعد تحقق ناجح -->
     <div id="quickSignupSlot"></div>
   </div>
+</div>
 
-  <div class="buttons">
-    <button class="btn btn-primary" onclick="window.location.href='signin.html'">🔓 تسجيل الدخول · Sign In</button>
-    <button class="btn btn-secondary" id="createAccountBtn">✨ إنشاء حساب · Create Account</button>
-  </div>
-  <div style="margin-top:14px;text-align:center;">
-    <a href="#" id="demoTryBtn" style="font-size:0.85rem;font-weight:700;color:#3d5af1;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><circle cx="12" cy="8" r="0.5" fill="currentColor"></circle></svg>
-      جرّب بدون تسجيل · Try before you sign up
-    </a>
+
+<!-- ========== النافذة المنبثقة: جرّب بنفسك ========== -->
+<div class="demo-overlay" id="demoOverlay" onclick="if(event.target===this)demoClose()">
+  <div class="demo-modal">
+    <button type="button" class="demo-close" onclick="demoClose()" aria-label="إغلاق">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="demo-title">جرّب بنفسك<span class="demo-title-en">Try It Yourself</span></div>
+    <div class="demo-dots">
+      <div class="demo-dot active" id="ddot1"></div>
+      <div class="demo-dot" id="ddot2"></div>
+      <div class="demo-dot" id="ddot3"></div>
+      <div class="demo-dot" id="ddot4"></div>
+    </div>
+
+    <!-- خطوة ١: أدخل رقم -->
+    <div class="demo-step active" id="dstep1">
+      <div class="demo-step-label"><span class="demo-step-num">1</span>أدخل رقم</div>
+      <input type="text" id="dNum" class="demo-input" dir="ltr" placeholder="مثال: 42" inputmode="numeric" autocomplete="off" data-lpignore="true" maxlength="4">
+      <div class="demo-err" id="dErr1"></div>
+      <div class="demo-actions"><button type="button" class="demo-btn-next" onclick="demoNext(1)">التالي · Next</button></div>
+    </div>
+
+    <!-- خطوة ٢: أدخل رابط -->
+    <div class="demo-step" id="dstep2">
+      <div class="demo-step-label"><span class="demo-step-num">2</span>أدخل رابط</div>
+      <input type="search" id="dLink" class="demo-input" dir="ltr" placeholder="https://example.com" autocomplete="off" data-lpignore="true" data-1p-ignore data-form-type="other">
+      <div class="demo-err" id="dErr2"></div>
+      <div class="demo-actions">
+        <button type="button" class="demo-btn-back" onclick="demoBack(2)">السابق</button>
+        <button type="button" class="demo-btn-next" onclick="demoNext(2)">التالي · Next</button>
+      </div>
+    </div>
+
+    <!-- خطوة ٣: العنوان -->
+    <div class="demo-step" id="dstep3">
+      <div class="demo-step-label"><span class="demo-step-num">3</span>العنوان</div>
+      <input type="search" id="dTitle" class="demo-input" placeholder="اكتب عنوان الرابط" autocomplete="off" data-lpignore="true" data-1p-ignore data-form-type="other" maxlength="40">
+      <div class="demo-err" id="dErr3"></div>
+      <div class="demo-actions">
+        <button type="button" class="demo-btn-back" onclick="demoBack(3)">السابق</button>
+        <button type="button" class="demo-btn-next" onclick="demoNext(3)">تم · Done</button>
+      </div>
+    </div>
+
+    <!-- خطوة ٤: النتيجة -->
+    <div class="demo-step" id="dstep4">
+      <div class="demo-result">
+        <div class="demo-result-title">هذا شكل رقمك بعد النشر</div>
+        <div class="demo-check-list">
+          <div class="demo-check-item">
+            <span class="demo-check-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+            <span class="demo-check-txt"><span class="demo-check-label">الرقم · Number</span><br><span class="demo-check-value" id="dResNum">—</span></span>
+          </div>
+          <div class="demo-check-item">
+            <span class="demo-check-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+            <span class="demo-check-txt"><span class="demo-check-label">الرابط · Link</span><br><span class="demo-check-value" id="dResLink" dir="ltr">—</span></span>
+          </div>
+          <div class="demo-check-item">
+            <span class="demo-check-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+            <span class="demo-check-txt"><span class="demo-check-label">العنوان · Title</span><br><span class="demo-check-value" id="dResTitle">—</span></span>
+          </div>
+        </div>
+
+        <div class="demo-qr-box">
+          <canvas id="dQrCanvas" width="300" height="430"></canvas>
+        </div>
+
+        <div class="demo-final-note">هذه لمحة سريعة عن وظيفة الموقع — بادر بتسجيل الدخول لفهرسة روابطك</div>
+        <button type="button" class="demo-cta" onclick="window.location.href='signin.html'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>
+          تسجيل الدخول لفهرسة روابطك
+        </button>
+        <button type="button" class="demo-restart" onclick="demoRestart()">جرّب مرة أخرى · Try again</button>
+      </div>
+    </div>
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
@@ -174,12 +325,10 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
   const finderBtn=document.getElementById('finderVerifyBtn');
   const finderMsg=document.getElementById('finderMsg');
   const quickSignupSlot=document.getElementById('quickSignupSlot');
-  const createAccountBtn=document.getElementById('createAccountBtn');
 
   let finderBusy=false;
   let availableUsername=null; // يُضبط فقط عندما يكون الاسم متاحاً فعلياً
 
-  // أيقونات SVG احترافية بدل الإيموجي
   const ICONS = {
     success: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M8.3 12.3l2.4 2.4 4.7-5.2"></path></svg>',
     error: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></svg>'
@@ -198,36 +347,21 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
   });
   finderBtn.addEventListener('click',verifyUsername);
 
-  // نقل اليوزر المفحوص والمتاح إلى صفحة إنشاء الحساب الكاملة، توفيراً للوقت
-  if(createAccountBtn){
-    createAccountBtn.addEventListener('click', ()=>{
-      const target = availableUsername
-        ? ('signup.html?u=' + encodeURIComponent(availableUsername))
-        : 'signup.html';
-      window.location.href = target;
-    });
-  }
-
-  // ===== دخول تجربة بدون تسجيل: حساب مؤقت حقيقي عبر Firebase Anonymous Auth =====
-  const demoTryBtn = document.getElementById('demoTryBtn');
-  if(demoTryBtn){
-    demoTryBtn.addEventListener('click', async (e)=>{
-      e.preventDefault();
-      if(!firebaseReady){ alert('تعذر الاتصال بالخادم، أعد تحميل الصفحة'); return; }
-      const original = demoTryBtn.innerHTML;
-      demoTryBtn.innerHTML = '⏳ جاري التجهيز...';
-      demoTryBtn.style.pointerEvents = 'none';
-      try{
-        await auth.signInAnonymously();
-        window.location.href = 'dashboard.html';
-      }catch(err){
-        console.error('demo signin failed:', err);
-        alert('تعذر بدء التجربة، حاول مرة أخرى · Could not start demo');
-        demoTryBtn.innerHTML = original;
-        demoTryBtn.style.pointerEvents = 'auto';
-      }
-    });
-  }
+  // ===== شاشتا الاختيار وإنشاء الحساب =====
+  const choiceScreen=document.getElementById('choiceScreen');
+  const finderScreen=document.getElementById('finderScreen');
+  window.showFinderScreen=function(){
+    choiceScreen.style.display='none';
+    finderScreen.style.display='block';
+    setTimeout(()=>finderInput.focus({preventScroll:true}),50);
+  };
+  window.showChoiceScreen=function(){
+    finderScreen.style.display='none';
+    choiceScreen.style.display='block';
+    hideFinderMsg();
+    hideQuickSignup();
+    finderInput.value='';
+  };
 
   function hideFinderMsg(){finderMsg.className='finder-msg';finderMsg.innerHTML='';}
   function showFinderMsg(text,type){
@@ -241,13 +375,12 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
     availableUsername=null;
   }
 
-  // يبني حقول البريد وكلمة المرور ديناميكياً فقط عند الحاجة الفعلية (بعد التأكد من توفر الاسم)
   function showQuickSignup(){
     quickSignupSlot.innerHTML = `
       <div class="quick-signup" id="quickSignup">
-        <input type="email" id="qsEmail" placeholder="بريدك الإلكتروني · Email" autocomplete="off" dir="ltr">
+        <input type="email" id="qsEmail" placeholder="بريدك الإلكتروني · Email" autocomplete="off" data-lpignore="true" dir="ltr">
         <input type="password" id="qsPassword" placeholder="كلمة المرور (6 أحرف+) · Password" autocomplete="new-password" dir="ltr">
-        <button type="button" class="qs-btn" id="qsSubmitBtn">⚡ إنشاء الحساب واستخدام الاسم · Claim Username</button>
+        <button type="button" class="qs-btn" id="qsSubmitBtn">إنشاء الحساب واستخدام الاسم · Claim Username</button>
         <div class="qs-msg" id="qsMsg"></div>
       </div>`;
     const qsEmail=document.getElementById('qsEmail');
@@ -255,14 +388,14 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
     const qsSubmitBtn=document.getElementById('qsSubmitBtn');
     qsSubmitBtn.addEventListener('click',quickSignup);
     qsPassword.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();quickSignup();}});
-    qsEmail.focus({preventScroll:true}); // تركيز صريح هنا فقط، بعد فعل مباشر من المستخدم (ضغط زر التحقق)
+    qsEmail.focus({preventScroll:true});
   }
 
   function setQsLoading(v){
     const btn=document.getElementById('qsSubmitBtn');
     if(!btn)return;
     btn.disabled=v;
-    btn.textContent=v?'⏳ جاري الإنشاء...':'⚡ إنشاء الحساب واستخدام الاسم · Claim Username';
+    btn.textContent=v?'جاري الإنشاء...':'إنشاء الحساب واستخدام الاسم · Claim Username';
   }
   function showQsMsg(text,type){
     const el=document.getElementById('qsMsg');
@@ -286,8 +419,8 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
     console.error('Firebase init failed:', e);
   }
 
-  // ===== 3) المنطق الفعلي =====
-  window.verifyUsername = verifyUsername; // إتاحة عامة احتياطية
+  // ===== 3) المنطق الفعلي: البحث عن اسم مستخدم =====
+  window.verifyUsername = verifyUsername;
   async function verifyUsername(){
     if(finderBusy)return;
     const username=finderInput.value.trim().toLowerCase();
@@ -360,6 +493,190 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
       else showQsMsg('خطأ' + (e.code?` (${e.code})`:'') + ': '+e.message,'error');
     }
   }
+
+  // ===== 4) التجربة التفاعلية "جرّب بنفسك" — نافذة منبثقة، بيانات محلية بالكامل بدون تسجيل =====
+  const demoOverlay=document.getElementById('demoOverlay');
+  const dNum=document.getElementById('dNum');
+  const dLink=document.getElementById('dLink');
+  const dTitle=document.getElementById('dTitle');
+
+  window.demoOpen=function(){
+    demoOverlay.classList.add('open');
+    setTimeout(()=>dNum.focus({preventScroll:true}),50);
+  };
+  window.demoClose=function(){
+    demoOverlay.classList.remove('open');
+  };
+
+  // يحوّل الأرقام العربية ٠-٩ إلى إنجليزية 0-9 فوراً أثناء الكتابة
+  function arabicToEnglishDigits(str){
+    const map={'٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9'};
+    return str.replace(/[٠-٩]/g, d => map[d]);
+  }
+  dNum.addEventListener('input',()=>{
+    const cursorFromEnd = dNum.value.length - dNum.selectionStart;
+    const converted = arabicToEnglishDigits(dNum.value).replace(/[^0-9]/g,'');
+    dNum.value = converted;
+    const pos = Math.max(0, converted.length - cursorFromEnd);
+    try{ dNum.setSelectionRange(pos, pos); }catch(e){}
+  });
+
+  window.demoNext=function(step){
+    const errEl=document.getElementById('dErr'+step);
+    if(errEl)errEl.textContent='';
+
+    if(step===3){
+      buildDemoResult();
+    }
+
+    document.getElementById('dstep'+step).classList.remove('active');
+    document.getElementById('dstep'+(step+1)).classList.add('active');
+    document.getElementById('ddot'+step).classList.add('done');
+    document.getElementById('ddot'+step).classList.remove('active');
+    if(step+1<=4) document.getElementById('ddot'+(step+1)).classList.add('active');
+  };
+
+  window.demoBack=function(step){
+    document.getElementById('dstep'+step).classList.remove('active');
+    document.getElementById('dstep'+(step-1)).classList.add('active');
+    document.getElementById('ddot'+step).classList.remove('active');
+    document.getElementById('ddot'+(step-1)).classList.remove('done');
+    document.getElementById('ddot'+(step-1)).classList.add('active');
+  };
+
+  function roundRectPath(ctx,x,y,w,h,r){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.arcTo(x+w,y,x+w,y+h,r);
+    ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r);
+    ctx.arcTo(x,y,x+w,y,r);
+    ctx.closePath();
+  }
+
+  function drawShareGlyph(ctx, cx, cy, L, whiteMode){
+    const rRight={x:cx+L*0.30, y:cy, r:L*0.22};
+    const rTop={x:cx-L*0.28, y:cy-L*0.22, r:L*0.17};
+    const rBot={x:cx-L*0.28, y:cy+L*0.22, r:L*0.17};
+    ctx.strokeStyle = whiteMode ? 'rgba(255,255,255,0.92)' : '#1732B2';
+    ctx.lineWidth = Math.max(1.5, L*0.045);
+    ctx.beginPath(); ctx.moveTo(rRight.x,rRight.y); ctx.lineTo(rTop.x,rTop.y); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(rRight.x,rRight.y); ctx.lineTo(rBot.x,rBot.y); ctx.stroke();
+    ctx.fillStyle = whiteMode ? '#ffffff' : '#1732B2';
+    [rTop,rBot,rRight].forEach(c=>{ ctx.beginPath(); ctx.arc(c.x,c.y,c.r,0,Math.PI*2); ctx.fill(); });
+    ctx.beginPath();
+    ctx.arc(rRight.x+rRight.r*0.5, rRight.y-rRight.r*0.5, L*0.06, 0, Math.PI*2);
+    ctx.fillStyle='#FFFF52'; ctx.fill();
+  }
+
+  function shortenUrl(u){
+    const clean=u.replace(/^https?:\/\//,'');
+    return clean.length>30 ? clean.slice(0,28)+'…' : clean;
+  }
+
+  function getQrElement(url){
+    return new Promise(resolve=>{
+      if(window.QRCode){
+        const holder=document.createElement('div');
+        holder.style.position='fixed'; holder.style.left='-9999px'; holder.style.top='0';
+        document.body.appendChild(holder);
+        new QRCode(holder, { text:url, width:340, height:340, colorDark:'#0f1535', colorLight:'#ffffff', correctLevel: QRCode.CorrectLevel.H });
+        setTimeout(()=>{
+          const el = holder.querySelector('canvas') || holder.querySelector('img');
+          resolve({el, holder});
+        }, 150);
+      } else {
+        const img=new Image();
+        img.crossOrigin='anonymous';
+        img.onload=()=>resolve({el:img, holder:null});
+        img.onerror=()=>resolve({el:null, holder:null});
+        img.src='https://api.qrserver.com/v1/create-qr-code/?size=340x340&margin=6&color=0f1535&bgcolor=ffffff&data='+encodeURIComponent(url);
+      }
+    });
+  }
+
+  // بطاقة QR بنفس تنظيم تصميم بطاقة QR الفعلية بالموقع: شعار دائري أعلى، عنوان ورابط، صندوق QR أبيض بظل، ومربعا الرقم/امسح الرمز أسفلها
+  async function buildDemoQrCard(url, number, title){
+    const p1='#0069FD', p2='#1732B2';
+    const canvas=document.getElementById('dQrCanvas');
+    const W=canvas.width, H=canvas.height;
+    const ctx=canvas.getContext('2d');
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,W,H);
+
+    const logoR=32, logoCx=W/2, logoCy=50;
+    ctx.save();
+    ctx.beginPath(); ctx.arc(logoCx,logoCy,logoR,0,Math.PI*2); ctx.closePath(); ctx.clip();
+    const g=ctx.createLinearGradient(logoCx-logoR,logoCy-logoR,logoCx+logoR,logoCy+logoR);
+    g.addColorStop(0,p1); g.addColorStop(1,p2);
+    ctx.fillStyle=g; ctx.fillRect(logoCx-logoR,logoCy-logoR,logoR*2,logoR*2);
+    ctx.restore();
+    drawShareGlyph(ctx, logoCx, logoCy, logoR*1.2, true);
+    ctx.beginPath(); ctx.arc(logoCx,logoCy,logoR,0,Math.PI*2);
+    ctx.lineWidth=3; ctx.strokeStyle='#ffffff'; ctx.stroke();
+
+    ctx.fillStyle='#0f1535'; ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+    ctx.font='bold 16px Tajawal, -apple-system, sans-serif';
+    ctx.fillText(title || 'تجربة رابطك', W/2, 104);
+    ctx.fillStyle=p1;
+    ctx.font='12px "Space Mono", monospace';
+    ctx.fillText(shortenUrl(url), W/2, 124);
+
+    const qrSize=170, qrX=(W-qrSize)/2, qrY=142;
+    ctx.save();
+    ctx.shadowColor='rgba(23,50,178,0.2)'; ctx.shadowBlur=16;
+    ctx.fillStyle='#ffffff';
+    roundRectPath(ctx, qrX-12, qrY-12, qrSize+24, qrSize+24, 14);
+    ctx.fill();
+    ctx.restore();
+
+    const {el, holder}=await getQrElement(url);
+    if(el) ctx.drawImage(el, qrX, qrY, qrSize, qrSize);
+    if(holder) document.body.removeChild(holder);
+
+    const boxY=qrY+qrSize+34, boxH=44, boxW=Math.min(118,(W-24)/2-6);
+    ctx.fillStyle='#0f1535';
+    roundRectPath(ctx, W/2-boxW-6, boxY, boxW, boxH, 10); ctx.fill();
+    ctx.fillStyle='#ffffff'; ctx.font='bold 17px "Space Mono", monospace'; ctx.textAlign='center';
+    ctx.fillText('#'+(number||'—'), W/2-boxW/2-6, boxY+boxH/2+6);
+
+    const g2=ctx.createLinearGradient(W/2+6,0,W/2+6+boxW,0);
+    g2.addColorStop(0,p1); g2.addColorStop(1,p2);
+    ctx.fillStyle=g2;
+    roundRectPath(ctx, W/2+6, boxY, boxW, boxH, 10); ctx.fill();
+    ctx.fillStyle='#ffffff'; ctx.font='bold 11px Tajawal, sans-serif';
+    ctx.fillText('امسح الرمز', W/2+boxW/2+6, boxY+18);
+    ctx.font='10px Tajawal, sans-serif';
+    ctx.fillText('لتصل للرابط', W/2+boxW/2+6, boxY+34);
+  }
+
+  function buildDemoResult(){
+    let link=dLink.value.trim();
+    if(!link) link='electrwni.link';
+    if(!/^https?:\/\//i.test(link)) link='https://'+link;
+    const number = dNum.value.trim() || Math.floor(Math.random()*90+10).toString();
+    const title = dTitle.value.trim() || 'تجربة وظيفة الموقع لمستخدم جديد';
+    document.getElementById('dResNum').textContent = number;
+    document.getElementById('dResLink').textContent = link;
+    document.getElementById('dResTitle').textContent = title;
+    buildDemoQrCard(link, number, title);
+  }
+
+  window.demoRestart=function(){
+    dNum.value='';
+    dLink.value='';
+    dTitle.value='';
+    document.getElementById('dErr1').textContent='';
+    document.getElementById('dErr2').textContent='';
+    document.getElementById('dErr3').textContent='';
+    for(let i=1;i<=4;i++){
+      document.getElementById('dstep'+i).classList.remove('active');
+      document.getElementById('ddot'+i).classList.remove('active','done');
+    }
+    document.getElementById('dstep1').classList.add('active');
+    document.getElementById('ddot1').classList.add('active');
+    dNum.focus({preventScroll:true});
+  };
 })();
 </script>
 </body>
