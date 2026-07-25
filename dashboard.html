@@ -202,7 +202,47 @@ textarea{resize:vertical;min-height:60px;}
 .detail-row{display:flex;gap:8px;margin-bottom:6px;font-size:0.85rem;}
 .detail-label{font-weight:700;min-width:60px;}
 .btn-delete{background:var(--error);color:#fff;padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-size:0.8rem;font-weight:700;transition:all .2s;}
-.btn-edit{background:var(--primary);color:#fff;padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-size:0.8rem;font-weight:700;transition:all .2s;}
+.btn-edit{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-size:0.8rem;font-weight:700;transition:all .2s;box-shadow:0 4px 10px rgba(23,50,178,.2);}
+
+/* ===== مربع الزجاج الموحّد — يستخدمه كل عنصر تحكم غير موحّد سابقاً (وضع خلفية / شكل أيقونة / قوالب / حذف / ترقيم / إلخ) ===== */
+.glass-control{
+  background:var(--glass-bg);backdrop-filter:blur(12px) saturate(180%);-webkit-backdrop-filter:blur(12px) saturate(180%);
+  border:1px solid var(--glass-border);box-shadow:0 6px 14px rgba(23,50,178,.10), inset 0 1px 0 rgba(255,255,255,.4);
+  color:var(--text);transition:all .2s;
+}
+.glass-control.active,.glass-control[data-active="true"]{
+  background:linear-gradient(135deg, rgba(23,50,178,.55), rgba(0,105,253,.45));
+  border-color:rgba(255,255,255,.5);color:#fff;
+}
+
+/* ===== توحيد قسري: يغلب أي نمط inline قديم غير زجاجي على هذه العناصر (كانت بلا تمويه/شفافية) ===== */
+.bg-mode-btn,.shape-opt,.template-card,.mockup-card,
+.pagination button,.phone-entry,.crop-btn-cancel,
+.qa-dots-btn,.qa-inline-menu button,#addAccountToggleBtn,
+button[onclick*="closeAccountsModal"],button[onclick*="closeUsageGuide"],button[onclick*="closeAiDesignModal"]{
+  background:var(--glass-bg) !important;
+  backdrop-filter:blur(12px) saturate(180%) !important;-webkit-backdrop-filter:blur(12px) saturate(180%) !important;
+  border-color:var(--glass-border) !important;
+  box-shadow:0 6px 14px rgba(23,50,178,.10), inset 0 1px 0 rgba(255,255,255,.4) !important;
+}
+.bg-mode-btn.active,.shape-opt.active,.template-card.active,.mockup-card.active,
+.pagination button.active,.qa-inline-menu button.active{
+  background:linear-gradient(135deg, rgba(23,50,178,.55), rgba(0,105,253,.45)) !important;
+  border-color:rgba(255,255,255,.5) !important;color:#fff !important;
+}
+th{background:linear-gradient(135deg,var(--primary),var(--primary-light)) !important;backdrop-filter:blur(6px);}
+/* مفاتيح تبديل (checkbox) بشكل Switch زجاجي بدل مربع المتصفح الافتراضي */
+input[type="checkbox"]{
+  appearance:none;-webkit-appearance:none;width:42px !important;height:24px !important;
+  border-radius:999px;background:var(--glass-bg);border:1px solid var(--glass-border);
+  backdrop-filter:blur(8px);position:relative;cursor:pointer;transition:all .25s;vertical-align:middle;
+}
+input[type="checkbox"]::before{
+  content:'';position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;
+  background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.25);transition:all .25s;
+}
+input[type="checkbox"]:checked{background:linear-gradient(135deg,var(--primary),var(--primary-light));border-color:rgba(255,255,255,.5);}
+input[type="checkbox"]:checked::before{right:20px;}
 .btn-delete:active{transform:scale(0.95);}
 
 /* TABLE */
@@ -1682,7 +1722,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         try { sessionStorage.removeItem('el_redirect_count'); } catch(e){}
         console.log("تمت استعادة الجلسة بنجاح:", user.uid);
 
-        if (!user.emailVerified && !user.isAnonymous) {
+        if (!user.emailVerified) {
           const createdMs = (user.metadata && user.metadata.creationTime) ? new Date(user.metadata.creationTime).getTime() : Date.now();
           const elapsed = Date.now() - createdMs;
           if (elapsed >= EMAIL_GRACE_MS) {
@@ -1701,9 +1741,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         }
 
         await initDashboard();
-        if (user.isAnonymous) {
-          try { window.showToast('أنت الآن بوضع التجربة · Demo Mode — أنشئ حسابك من الإعدادات لحفظ عملك بشكل دائم'); } catch(e){}
-        }
       } else {
         // حماية من الحلقة: لا نوجّه أكثر من مرة متتالية دون جلسة
         let count = 0;
