@@ -36,8 +36,8 @@
     font-weight:900;
     font-display:swap;
   }
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html{font-size:106.25%;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:106.25%;} /* Apple-scale baseline (~17px) */
 body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;background:#ffffff;color:#0f1535;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
 .container{max-width:500px;width:100%;background:#f9f9f9;border-radius:20px;padding:48px 32px;text-align:center;border:1px solid #e8ecf5;}
 .brand{margin-bottom:40px;}
@@ -54,7 +54,7 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
 .btn-secondary:active{transform:scale(0.98);}
 @media(max-width:600px){.container{padding:32px 20px;}.brand-title{font-size:1.8rem;}.brand-subtitle{font-size:1rem;}}
 
-/* ========== FINDER (حقل بحث نصي بحت — لا علاقة له بتسجيل الدخول) ========== */
+/* ========== FINDER / QUICK SIGNUP ========== */
 .finder-title{font-size:0.98rem;font-weight:700;color:#0f1535;margin-bottom:4px;}
 .finder-title-en{display:block;font-size:0.72rem;font-weight:400;color:#9aa2c8;margin-bottom:14px;}
 .finder-box{
@@ -69,12 +69,10 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
   font-size:0.82rem;flex-shrink:0;
 }
 .finder-input{
-  flex:1;min-width:0;border:none;outline:none;background:#ffffff;-webkit-appearance:none;appearance:none;
+  flex:1;min-width:0;border:none;outline:none;background:#ffffff;
   padding:14px 10px;font-family:ui-monospace,'SF Mono','Space Mono',monospace;
   font-weight:700;font-size:0.92rem;color:#0f1535;text-align:left;
 }
-.finder-input::-webkit-search-cancel-button,
-.finder-input::-webkit-search-decoration{display:none;}
 .finder-input::placeholder{color:#9aa2c8;font-weight:400;}
 .finder-verify{
   border:none;background:#ffffff;color:#3d5af1;padding:0 16px;cursor:pointer;
@@ -90,6 +88,7 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
 .finder-msg.error{color:#e8436a;}
 .finder-msg.success{color:#0ab87a;}
 
+/* التسجيل السريع (يُبنى ديناميكياً في DOM فقط عند الحاجة — لا يوجد أي حقل إيميل/كلمة مرور عند تحميل الصفحة) */
 .quick-signup{display:flex;flex-direction:column;gap:10px;margin-top:14px;text-align:right;}
 .quick-signup input{
   width:100%;padding:12px 14px;border:1.5px solid #e0e0e0;border-radius:10px;
@@ -107,57 +106,6 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
 .qs-msg{font-size:0.78rem;font-weight:700;text-align:center;min-height:0;}
 .qs-msg.error{color:#e8436a;}
 .qs-msg.success{color:#0ab87a;}
-
-/* رابط بسيط يفتح تجربة النافذة المنبثقة — لا يغيّر تصميم الحاوية الأصلية */
-.try-link{display:inline-flex;align-items:center;gap:6px;margin-top:18px;background:none;border:none;color:#3d5af1;font-weight:700;font-size:0.82rem;cursor:pointer;font-family:inherit;}
-.try-link svg{width:15px;height:15px;}
-
-/* ========== النافذة المنبثقة: التجربة التفاعلية ========== */
-.demo-overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(15,21,53,0.55);align-items:center;justify-content:center;padding:20px;}
-.demo-overlay.open{display:flex;}
-.demo-modal{background:#fff;border-radius:20px;padding:28px 26px;max-width:400px;width:100%;max-height:88vh;overflow-y:auto;position:relative;text-align:right;}
-.demo-close{position:absolute;top:14px;left:14px;width:30px;height:30px;border-radius:50%;border:none;background:#f0f4ff;color:#3d5af1;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-.demo-close svg{width:15px;height:15px;}
-.demo-title{font-size:1.02rem;font-weight:900;margin-bottom:2px;}
-.demo-title-en{display:block;font-size:0.7rem;font-weight:400;color:#9aa2c8;margin-bottom:20px;}
-.demo-dots{display:flex;gap:6px;justify-content:center;margin-bottom:22px;}
-.demo-dot{width:7px;height:7px;border-radius:50%;background:#e0e5f5;transition:all .25s;}
-.demo-dot.active{background:#3d5af1;width:20px;border-radius:4px;}
-.demo-dot.done{background:#0ab87a;}
-.demo-step{display:none;}
-.demo-step.active{display:block;}
-.demo-step-label{font-size:0.85rem;font-weight:900;color:#0f1535;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
-.demo-step-num{width:24px;height:24px;border-radius:50%;background:#3d5af1;color:#fff;font-size:0.72rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.demo-required{color:#e8436a;font-size:0.7rem;font-weight:700;margin-right:auto;}
-.demo-input{
-  width:100%;padding:13px 14px;border:1.5px solid #e0e0e0;border-radius:10px;
-  font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text','Tajawal',sans-serif;
-  font-size:0.88rem;outline:none;transition:border .2s;background:#fff;color:#0f1535;margin-bottom:6px;
-}
-.demo-input:focus{border-color:#3d5af1;box-shadow:0 0 0 3px rgba(61,90,241,0.1);}
-.demo-input[dir="ltr"]{text-align:left;}
-.demo-err{font-size:0.74rem;font-weight:700;color:#e8436a;min-height:16px;margin-bottom:8px;}
-.demo-actions{display:flex;gap:10px;margin-top:8px;}
-.demo-btn-next{flex:1;padding:13px;background:linear-gradient(135deg,#3d5af1,#6c8fff);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:0.9rem;cursor:pointer;font-family:inherit;}
-.demo-btn-back{padding:13px 18px;background:#fff;color:#3a4270;border:1.5px solid #e0e5f5;border-radius:10px;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:inherit;}
-
-/* نتيجة التجربة */
-.demo-result{text-align:center;}
-.demo-result-title{font-size:0.95rem;font-weight:900;margin-bottom:16px;color:#0f1535;}
-.demo-check-list{display:flex;flex-direction:column;gap:10px;margin-bottom:18px;}
-.demo-check-item{display:flex;align-items:center;gap:10px;background:#f9f9f9;border:1px solid #e8ecf5;border-radius:12px;padding:12px 14px;text-align:right;}
-.demo-check-ic{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:#e7f9f1;color:#0ab87a;display:flex;align-items:center;justify-content:center;}
-.demo-check-ic svg{width:14px;height:14px;}
-.demo-check-txt{flex:1;min-width:0;}
-.demo-check-label{font-size:0.68rem;color:#9aa2c8;font-weight:700;}
-.demo-check-value{font-size:0.85rem;font-weight:700;color:#0f1535;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.demo-qr-box{text-align:center;margin-bottom:18px;padding:18px;border-radius:16px;background:linear-gradient(135deg,#FFFFFF 0%,#A1B2CC 140%);border:1px solid #A1B2CC;}
-.demo-qr-box canvas{border-radius:12px;background:#fff;}
-.demo-qr-box img{border-radius:12px;border:1px solid #e8ecf5;}
-.demo-final-note{font-size:0.78rem;color:#9aa2c8;font-weight:700;margin-bottom:14px;line-height:1.7;text-align:center;}
-.demo-cta{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;background:linear-gradient(135deg,#3d5af1,#6c8fff);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:0.92rem;cursor:pointer;font-family:inherit;}
-.demo-cta svg{width:18px;height:18px;}
-.demo-restart{width:100%;text-align:center;background:none;border:none;color:#9aa2c8;font-weight:700;font-size:0.76rem;padding:12px 0 0;cursor:pointer;font-family:inherit;}
 </style>
 </head>
 <body>
@@ -170,25 +118,27 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
     <div class="brand-subtitle">Electrwni</div>
 
     <div class="finder-title">تحقق من توفر اسم المستخدم<span class="finder-title-en">Check Username Availability</span></div>
+
+    <!-- خانتان وهميتان مخفيتان: تمتصان اقتراح "الحساب المحفوظ" من Safari/Chrome بعيداً عن خانة التحقق أدناه -->
+    <input type="text" name="username" autocomplete="username" tabindex="-1" aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;left:-9999px;">
+    <input type="password" name="password" autocomplete="current-password" tabindex="-1" aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;left:-9999px;">
+
     <div class="finder-box" id="finderBox">
       <div class="finder-domain">electrwni.link/</div>
       <input
-        type="search"
+        type="text"
         id="finderInput"
         class="finder-input"
         placeholder="username"
-        name="q"
+        name="pageQuery"
         autocomplete="off"
         autocapitalize="off"
         autocorrect="off"
         spellcheck="false"
         inputmode="text"
         maxlength="20"
-        data-lpignore="true"
-        data-1p-ignore
-        data-bwignore
-        data-form-type="other"
-        role="searchbox"
+        readonly
+        onfocus="this.removeAttribute('readonly');"
       >
       <button type="button" class="finder-verify" id="finderVerifyBtn" title="تحقق · Verify" aria-label="تحقق · Verify">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -201,96 +151,11 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
   </div>
 
   <div class="buttons">
-    <button class="btn btn-primary" onclick="window.location.href='signin.html'">تسجيل الدخول · Sign In</button>
-    <button class="btn btn-secondary" id="createAccountBtn">إنشاء حساب · Create Account</button>
-  </div>
-
-  <button type="button" class="try-link" onclick="demoOpen()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2 2-2 3.5"/><path d="M12 17h.01"/></svg>
-    جرّب بدون تسجيل · Try before you sign up
-  </button>
-</div>
-
-<!-- ========== النافذة المنبثقة: جرّب بنفسك ========== -->
-<div class="demo-overlay" id="demoOverlay" onclick="if(event.target===this)demoClose()">
-  <div class="demo-modal">
-    <button type="button" class="demo-close" onclick="demoClose()" aria-label="إغلاق">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-    <div class="demo-title">جرّب بنفسك<span class="demo-title-en">Try It Yourself</span></div>
-    <div class="demo-dots">
-      <div class="demo-dot active" id="ddot1"></div>
-      <div class="demo-dot" id="ddot2"></div>
-      <div class="demo-dot" id="ddot3"></div>
-      <div class="demo-dot" id="ddot4"></div>
-    </div>
-
-    <!-- خطوة ١: أدخل رقم -->
-    <div class="demo-step active" id="dstep1">
-      <div class="demo-step-label"><span class="demo-step-num">1</span>أدخل رقم</div>
-      <input type="text" id="dNum" class="demo-input" dir="ltr" placeholder="مثال: 42" inputmode="numeric" autocomplete="off" data-lpignore="true" maxlength="4">
-      <div class="demo-err" id="dErr1"></div>
-      <div class="demo-actions"><button type="button" class="demo-btn-next" onclick="demoNext(1)">التالي · Next</button></div>
-    </div>
-
-    <!-- خطوة ٢: أدخل رابط -->
-    <div class="demo-step" id="dstep2">
-      <div class="demo-step-label"><span class="demo-step-num">2</span>أدخل رابط</div>
-      <input type="text" id="dLink" class="demo-input" dir="ltr" placeholder="https://example.com" autocomplete="off" data-lpignore="true">
-      <div class="demo-err" id="dErr2"></div>
-      <div class="demo-actions">
-        <button type="button" class="demo-btn-back" onclick="demoBack(2)">السابق</button>
-        <button type="button" class="demo-btn-next" onclick="demoNext(2)">التالي · Next</button>
-      </div>
-    </div>
-
-    <!-- خطوة ٣: العنوان (إجباري) -->
-    <div class="demo-step" id="dstep3">
-      <div class="demo-step-label"><span class="demo-step-num">3</span>العنوان<span class="demo-required">إجباري *</span></div>
-      <input type="text" id="dTitle" class="demo-input" placeholder="اكتب عنوان الرابط" autocomplete="off" data-lpignore="true" maxlength="40">
-      <div class="demo-err" id="dErr3"></div>
-      <div class="demo-actions">
-        <button type="button" class="demo-btn-back" onclick="demoBack(3)">السابق</button>
-        <button type="button" class="demo-btn-next" onclick="demoNext(3)">تم · Done</button>
-      </div>
-    </div>
-
-    <!-- خطوة ٤: النتيجة -->
-    <div class="demo-step" id="dstep4">
-      <div class="demo-result">
-        <div class="demo-result-title">هذا شكل رقمك بعد النشر</div>
-        <div class="demo-check-list">
-          <div class="demo-check-item">
-            <span class="demo-check-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
-            <span class="demo-check-txt"><span class="demo-check-label">الرقم · Number</span><br><span class="demo-check-value" id="dResNum">—</span></span>
-          </div>
-          <div class="demo-check-item">
-            <span class="demo-check-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
-            <span class="demo-check-txt"><span class="demo-check-label">الرابط · Link</span><br><span class="demo-check-value" id="dResLink" dir="ltr">—</span></span>
-          </div>
-          <div class="demo-check-item">
-            <span class="demo-check-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
-            <span class="demo-check-txt"><span class="demo-check-label">العنوان · Title</span><br><span class="demo-check-value" id="dResTitle">—</span></span>
-          </div>
-        </div>
-
-        <div class="demo-qr-box">
-          <canvas id="dQrCanvas" width="180" height="180"></canvas>
-          <img id="dQrImg" width="180" height="180" alt="QR" style="display:none;">
-        </div>
-
-        <div class="demo-final-note">هذه لمحة سريعة عن وظيفة الموقع — بادر بتسجيل الدخول لفهرسة روابطك</div>
-        <button type="button" class="demo-cta" onclick="window.location.href='signin.html'">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>
-          تسجيل الدخول لفهرسة روابطك
-        </button>
-        <button type="button" class="demo-restart" onclick="demoRestart()">جرّب مرة أخرى · Try again</button>
-      </div>
-    </div>
+    <button class="btn btn-primary" onclick="window.location.href='signin.html'">🔓 تسجيل الدخول · Sign In</button>
+    <button class="btn btn-secondary" id="createAccountBtn">✨ إنشاء حساب · Create Account</button>
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
@@ -308,6 +173,7 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
   let finderBusy=false;
   let availableUsername=null; // يُضبط فقط عندما يكون الاسم متاحاً فعلياً
 
+  // أيقونات SVG احترافية بدل الإيموجي
   const ICONS = {
     success: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M8.3 12.3l2.4 2.4 4.7-5.2"></path></svg>',
     error: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></svg>'
@@ -326,6 +192,7 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
   });
   finderBtn.addEventListener('click',verifyUsername);
 
+  // نقل اليوزر المفحوص والمتاح إلى صفحة إنشاء الحساب الكاملة، توفيراً للوقت
   if(createAccountBtn){
     createAccountBtn.addEventListener('click', ()=>{
       const target = availableUsername
@@ -347,12 +214,13 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
     availableUsername=null;
   }
 
+  // يبني حقول البريد وكلمة المرور ديناميكياً فقط عند الحاجة الفعلية (بعد التأكد من توفر الاسم)
   function showQuickSignup(){
     quickSignupSlot.innerHTML = `
       <div class="quick-signup" id="quickSignup">
-        <input type="email" id="qsEmail" placeholder="بريدك الإلكتروني · Email" autocomplete="off" data-lpignore="true" dir="ltr">
+        <input type="email" id="qsEmail" placeholder="بريدك الإلكتروني · Email" autocomplete="off" dir="ltr">
         <input type="password" id="qsPassword" placeholder="كلمة المرور (6 أحرف+) · Password" autocomplete="new-password" dir="ltr">
-        <button type="button" class="qs-btn" id="qsSubmitBtn">إنشاء الحساب واستخدام الاسم · Claim Username</button>
+        <button type="button" class="qs-btn" id="qsSubmitBtn">⚡ إنشاء الحساب واستخدام الاسم · Claim Username</button>
         <div class="qs-msg" id="qsMsg"></div>
       </div>`;
     const qsEmail=document.getElementById('qsEmail');
@@ -360,14 +228,14 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
     const qsSubmitBtn=document.getElementById('qsSubmitBtn');
     qsSubmitBtn.addEventListener('click',quickSignup);
     qsPassword.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();quickSignup();}});
-    qsEmail.focus({preventScroll:true});
+    qsEmail.focus({preventScroll:true}); // تركيز صريح هنا فقط، بعد فعل مباشر من المستخدم (ضغط زر التحقق)
   }
 
   function setQsLoading(v){
     const btn=document.getElementById('qsSubmitBtn');
     if(!btn)return;
     btn.disabled=v;
-    btn.textContent=v?'جاري الإنشاء...':'إنشاء الحساب واستخدام الاسم · Claim Username';
+    btn.textContent=v?'⏳ جاري الإنشاء...':'⚡ إنشاء الحساب واستخدام الاسم · Claim Username';
   }
   function showQsMsg(text,type){
     const el=document.getElementById('qsMsg');
@@ -391,8 +259,8 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
     console.error('Firebase init failed:', e);
   }
 
-  // ===== 3) المنطق الفعلي: البحث عن اسم مستخدم =====
-  window.verifyUsername = verifyUsername;
+  // ===== 3) المنطق الفعلي =====
+  window.verifyUsername = verifyUsername; // إتاحة عامة احتياطية
   async function verifyUsername(){
     if(finderBusy)return;
     const username=finderInput.value.trim().toLowerCase();
@@ -465,150 +333,6 @@ body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text',
       else showQsMsg('خطأ' + (e.code?` (${e.code})`:'') + ': '+e.message,'error');
     }
   }
-
-  // ===== 4) التجربة التفاعلية "جرّب بنفسك" — نافذة منبثقة، بيانات محلية بالكامل بدون تسجيل =====
-  const demoOverlay=document.getElementById('demoOverlay');
-  const dNum=document.getElementById('dNum');
-  const dLink=document.getElementById('dLink');
-  const dTitle=document.getElementById('dTitle');
-
-  window.demoOpen=function(){
-    demoOverlay.classList.add('open');
-    setTimeout(()=>dNum.focus({preventScroll:true}),50);
-  };
-  window.demoClose=function(){
-    demoOverlay.classList.remove('open');
-  };
-
-  // يحوّل الأرقام العربية ٠-٩ إلى إنجليزية 0-9 فوراً أثناء الكتابة
-  function arabicToEnglishDigits(str){
-    const map={'٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9'};
-    return str.replace(/[٠-٩]/g, d => map[d]);
-  }
-  dNum.addEventListener('input',()=>{
-    const cursorFromEnd = dNum.value.length - dNum.selectionStart;
-    const converted = arabicToEnglishDigits(dNum.value).replace(/[^0-9]/g,'');
-    dNum.value = converted;
-    const pos = Math.max(0, converted.length - cursorFromEnd);
-    try{ dNum.setSelectionRange(pos, pos); }catch(e){}
-  });
-
-  window.demoNext=function(step){
-    const errEl=document.getElementById('dErr'+step);
-    if(errEl)errEl.textContent='';
-
-    if(step===1){
-      if(!dNum.value.trim()){ errEl.textContent='أدخل رقماً أولاً · Enter a number'; dNum.focus(); return; }
-    }
-    if(step===2){
-      if(!dLink.value.trim()){ errEl.textContent='أدخل رابطاً أولاً · Enter a link'; dLink.focus(); return; }
-    }
-    if(step===3){
-      if(!dTitle.value.trim()){ errEl.textContent='العنوان إجباري · Title is required'; dTitle.focus(); return; }
-      buildDemoResult();
-    }
-
-    document.getElementById('dstep'+step).classList.remove('active');
-    document.getElementById('dstep'+(step+1)).classList.add('active');
-    document.getElementById('ddot'+step).classList.add('done');
-    document.getElementById('ddot'+step).classList.remove('active');
-    if(step+1<=4) document.getElementById('ddot'+(step+1)).classList.add('active');
-  };
-
-  window.demoBack=function(step){
-    document.getElementById('dstep'+step).classList.remove('active');
-    document.getElementById('dstep'+(step-1)).classList.add('active');
-    document.getElementById('ddot'+step).classList.remove('active');
-    document.getElementById('ddot'+(step-1)).classList.remove('done');
-    document.getElementById('ddot'+(step-1)).classList.add('active');
-  };
-
-  function drawBrandLogo(ctx, cx, cy, L){
-    // خلفية بيضاء دائرية لضمان وضوح المسح
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(cx, cy, L*0.62, 0, Math.PI*2);
-    ctx.fillStyle = '#FFFFFF';
-    ctx.shadowColor = 'rgba(23,50,178,0.25)';
-    ctx.shadowBlur = 6;
-    ctx.fill();
-    ctx.restore();
-
-    // شعار الموقع: أيقونة المشاركة — دائرة يمين، دائرتان يسار (بألوان الهوية)
-    const rRight={x:cx+L*0.20, y:cy, r:L*0.16};
-    const rTop={x:cx-L*0.20, y:cy-L*0.16, r:L*0.13};
-    const rBot={x:cx-L*0.20, y:cy+L*0.16, r:L*0.13};
-
-    ctx.strokeStyle='#1732B2';
-    ctx.lineWidth=Math.max(1.5, L*0.03);
-    ctx.beginPath(); ctx.moveTo(rRight.x,rRight.y); ctx.lineTo(rTop.x,rTop.y); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(rRight.x,rRight.y); ctx.lineTo(rBot.x,rBot.y); ctx.stroke();
-
-    const grad=ctx.createLinearGradient(rTop.x,rTop.y,rRight.x,rRight.y);
-    grad.addColorStop(0,'#1732B2'); grad.addColorStop(1,'#0069FD');
-
-    [rTop,rBot].forEach(c=>{
-      ctx.beginPath(); ctx.arc(c.x,c.y,c.r,0,Math.PI*2);
-      ctx.fillStyle='#1732B2'; ctx.fill();
-    });
-    ctx.beginPath(); ctx.arc(rRight.x,rRight.y,rRight.r,0,Math.PI*2);
-    ctx.fillStyle=grad; ctx.fill();
-
-    // لمسة صفراء من الهوية البصرية
-    ctx.beginPath();
-    ctx.arc(rRight.x+rRight.r*0.55, rRight.y-rRight.r*0.55, L*0.045, 0, Math.PI*2);
-    ctx.fillStyle='#FFFF52';
-    ctx.fill();
-  }
-
-  function renderBrandedQr(link){
-    const canvas=document.getElementById('dQrCanvas');
-    const img=document.getElementById('dQrImg');
-    if(window.QRCode && canvas){
-      QRCode.toCanvas(canvas, link, {
-        width:180, margin:2,
-        color:{ dark:'#1732B2', light:'#FFFFFF' }
-      }, function(err){
-        if(err){ fallbackQrImage(link, canvas, img); return; }
-        const ctx=canvas.getContext('2d');
-        drawBrandLogo(ctx, canvas.width/2, canvas.height/2, 46);
-        canvas.style.display='inline-block';
-        img.style.display='none';
-      });
-    } else {
-      fallbackQrImage(link, canvas, img);
-    }
-  }
-  function fallbackQrImage(link, canvas, img){
-    if(canvas) canvas.style.display='none';
-    img.style.display='inline-block';
-    img.src='https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=8&color=1732B2&bgcolor=ffffff&data=' + encodeURIComponent(link);
-  }
-
-  function buildDemoResult(){
-    let link=dLink.value.trim();
-    if(!/^https?:\/\//i.test(link)) link='https://'+link;
-    document.getElementById('dResNum').textContent = dNum.value.trim();
-    document.getElementById('dResLink').textContent = link;
-    document.getElementById('dResTitle').textContent = dTitle.value.trim();
-    renderBrandedQr(link);
-  }
-
-  window.demoRestart=function(){
-    dNum.value='';
-    dLink.value='';
-    dTitle.value='';
-    document.getElementById('dErr1').textContent='';
-    document.getElementById('dErr2').textContent='';
-    document.getElementById('dErr3').textContent='';
-    for(let i=1;i<=4;i++){
-      document.getElementById('dstep'+i).classList.remove('active');
-      document.getElementById('ddot'+i).classList.remove('active','done');
-    }
-    document.getElementById('dstep1').classList.add('active');
-    document.getElementById('ddot1').classList.add('active');
-    dNum.focus({preventScroll:true});
-  };
 })();
 </script>
 </body>
