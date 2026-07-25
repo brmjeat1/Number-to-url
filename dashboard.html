@@ -1461,47 +1461,10 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     appId: "1:712490301263:web:2084210da3f687285ab73a"
   };
 
-  // ===================================================================================
-  // ===== طبقة الأمان: تعقيم كل مُخرَج قبل حقنه في DOM (وقاية من XSS) ==================
-  // ===================================================================================
-  // أي نص مصدره المستخدم (عنوان رابط، وصف، اسم حساب تواصل...) يجب أن يمر من هنا
-  // قبل إدخاله داخل innerHTML. القاعدة: لا نص خام أبداً داخل HTML.
-  const HTML_ESCAPE_MAP = { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;', '`':'&#96;' };
-  function escapeHTML(str){
-    if(str === null || str === undefined) return '';
-    return String(str).replace(/[&<>"'`]/g, ch => HTML_ESCAPE_MAP[ch]);
-  }
-  // تعقيم الروابط: يمنع javascript:, data:text/html, vbscript: ...إلخ. يسمح فقط بـ http/https/mailto/tel أو روابط نسبية.
-  function sanitizeUrl(url){
-    const u = String(url||'').trim();
-    if(!u) return '';
-    if(/^(https?:|mailto:|tel:)/i.test(u)) return u;
-    if(/^[a-z][a-z0-9+.-]*:/i.test(u)) return ''; // أي بروتوكول آخر (javascript:, data:, vbscript:...) → مرفوض
-    return u; // رابط نسبي بلا بروتوكول
-  }
-  // تعقيم قيم الألوان القادمة من منتقي الألوان/تخصيص الأيقونات — يمنع الهروب من داخل attribute style="" أو تنفيذ CSS خبيث
-  function sanitizeColor(color, fallback){
-    const c = String(color||'').trim();
-    if(/^#[0-9a-fA-F]{3,8}$/.test(c)) return c;
-    if(/^rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*(,\s*(0|1|0?\.\d+)\s*)?\)$/.test(c)) return c;
-    if(/^[a-zA-Z]{3,20}$/.test(c)) return c; // اسم لون CSS بسيط (red, transparent...)
-    return fallback || 'transparent';
-  }
-  // كتابة نص خام كمحتوى نصي (Text Node) بدل innerHTML — الخيار الأكثر أماناً حين لا نحتاج وسوم HTML
-  function setText(el, value){
-    if(!el) return;
-    el.textContent = (value === null || value === undefined) ? '' : String(value);
-  }
-  // تعقيم أي نص يُدرج داخل onclick="...('${نص}')" — يمنع الهروب من الاقتباس الأحادي (JS) ومن سمة HTML معاً
-  function escapeInlineAttr(str){
-    return escapeHTML(String(str||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'"));
-  }
-  window.__security = { escapeHTML, sanitizeUrl, sanitizeColor, setText, escapeInlineAttr };
-
   // ===== دعم أكثر من حساب: كل حساب يُربط بتطبيق Firebase منفصل بالاسم، فتُحفظ جلسته باستقلالية =====
   // ولا يؤثر هذا على المستخدمين الحاليين إطلاقاً: الحساب الأول يبقى دائماً بالتطبيق الافتراضي [DEFAULT]
-  const ACCOUNTS_KEY = 'electrwni_saved_accounts';
-  const ACTIVE_ACCOUNT_KEY = 'electrwni_active_account';
+  const ACCOUNTS_KEY = 'elSavedAccounts';
+  const ACTIVE_ACCOUNT_KEY = 'elActiveAccountApp';
   function getSavedAccounts(){ try{ return JSON.parse(localStorage.getItem(ACCOUNTS_KEY) || '[]'); }catch(e){ return []; } }
   function setSavedAccounts(list){ try{ localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(list)); }catch(e){} }
   function upsertSavedAccount(acc){
@@ -1719,7 +1682,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         try { sessionStorage.removeItem('el_redirect_count'); } catch(e){}
         console.log("تمت استعادة الجلسة بنجاح:", user.uid);
 
-        if (!user.emailVerified) {
+        if (!user.emailVerified && !user.isAnonymous) {
           const createdMs = (user.metadata && user.metadata.creationTime) ? new Date(user.metadata.creationTime).getTime() : Date.now();
           const elapsed = Date.now() - createdMs;
           if (elapsed >= EMAIL_GRACE_MS) {
@@ -1738,6 +1701,9 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         }
 
         await initDashboard();
+        if (user.isAnonymous) {
+          try { window.showToast('أنت الآن بوضع التجربة · Demo Mode — أنشئ حسابك من الإعدادات لحفظ عملك بشكل دائم'); } catch(e){}
+        }
       } else {
         // حماية من الحلقة: لا نوجّه أكثر من مرة متتالية دون جلسة
         let count = 0;
@@ -1842,7 +1808,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         if(preview) preview.style.borderRadius = currentAvatarShape === 'rect' ? '18px' : '50%';
       }
       // الصور (base64 من Firestore) — أسماء موحّدة مع page.html
-      if (data.avatar) { document.getElementById('avatarPreview').innerHTML = `<img src="${escapeHTML(sanitizeUrl(data.avatar))}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`; window.__currentAvatarUrl = data.avatar; }
+      if (data.avatar) { document.getElementById('avatarPreview').innerHTML = `<img src="${data.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`; window.__currentAvatarUrl = data.avatar; }
       if (data.bannerImage) document.getElementById('bannerPreview').style.backgroundImage = `url(${data.bannerImage})`;
       // حالة إزالة الشعار / الغلاف / الخلفية
       avatarHidden = !!data.avatarHidden; bannerHidden = !!data.bannerHidden; bgImageHidden = !!data.bgImageHidden;
@@ -2417,9 +2383,9 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       el.innerHTML = '<div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;">رسائلك السابقة · Your messages</div>' +
         items.map(it => `
           <div style="padding:10px 12px;border:1px solid var(--border);border-radius:10px;margin-bottom:8px;">
-            <div style="font-size:0.82rem;margin-bottom:6px;">${escapeHTML(it.message)}</div>
+            <div style="font-size:0.82rem;margin-bottom:6px;">${(it.message||'').replace(/</g,'&lt;')}</div>
             <div style="font-size:0.7rem;color:${it.status==='open'?'var(--muted)':'var(--primary)'};font-weight:700;">${it.status==='open'?'⏳ بانتظار الرد':'✅ تم الرد'}</div>
-            ${it.adminReply ? `<div style="margin-top:6px;padding:8px;background:var(--bg2);border-radius:8px;font-size:0.8rem;"><b>الرد:</b> ${escapeHTML(it.adminReply)}</div>` : ''}
+            ${it.adminReply ? `<div style="margin-top:6px;padding:8px;background:var(--bg2);border-radius:8px;font-size:0.8rem;"><b>الرد:</b> ${it.adminReply.replace(/</g,'&lt;')}</div>` : ''}
           </div>
         `).join('');
     }catch(e){ console.error('loadFeedbackHistory failed:', e); }
@@ -2948,7 +2914,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       const raw = snap.exists() && Array.isArray(snap.data().links) ? snap.data().links : [];
       const sorted = [...raw].sort((a,b) => new Date(b.createdAt||0) - new Date(a.createdAt||0)).slice(0,3);
       if(!sorted.length){ el.textContent = 'لا توجد أرقام بعد'; return; }
-      el.innerHTML = sorted.map(l => `<div class="qa-tile-action qa-action-btn" style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:10px;margin-bottom:5px;text-align:right;justify-content:flex-start;background:var(--glass-bg);backdrop-filter:blur(10px) saturate(180%);-webkit-backdrop-filter:blur(10px) saturate(180%);border:1px solid var(--glass-border);box-shadow:0 4px 10px rgba(23,50,178,.08);" onclick="window.qaOpenNumber('${escapeHTML(l.number??l.num)}')"><span class="qa-square-txt" style="font-weight:800;color:var(--primary);">#${escapeHTML(l.number??l.num)}</span><span class="qa-square-txt" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHTML(l.title||l.label||'')}</span></div>`).join('');
+      el.innerHTML = sorted.map(l => `<div class="qa-tile-action qa-action-btn" style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:10px;margin-bottom:5px;text-align:right;justify-content:flex-start;background:var(--glass-bg);backdrop-filter:blur(10px) saturate(180%);-webkit-backdrop-filter:blur(10px) saturate(180%);border:1px solid var(--glass-border);box-shadow:0 4px 10px rgba(23,50,178,.08);" onclick="window.qaOpenNumber('${l.number??l.num}')"><span class="qa-square-txt" style="font-weight:800;color:var(--primary);">#${l.number??l.num}</span><span class="qa-square-txt" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${l.title||l.label||''}</span></div>`).join('');
     }catch(e){ el.textContent = 'تعذر الجلب'; }
   }
 
@@ -2960,7 +2926,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       const links = await fetchAllLinks();
       const top = [...links].sort((a,b) => (b.views||0)-(a.views||0)).slice(0,5);
       if(!top.length){ el.textContent = 'لا توجد بيانات بعد'; return; }
-      el.innerHTML = top.map(l => `<div class="qa-tile-action qa-action-btn" style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:10px;margin-bottom:5px;text-align:right;justify-content:flex-start;background:var(--glass-bg);backdrop-filter:blur(10px) saturate(180%);-webkit-backdrop-filter:blur(10px) saturate(180%);border:1px solid var(--glass-border);box-shadow:0 4px 10px rgba(23,50,178,.08);" onclick="window.qaOpenNumber('${escapeHTML(l.number)}')"><span class="qa-square-txt" style="font-weight:800;color:var(--primary);">#${escapeHTML(l.number)}</span><span class="qa-square-txt" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHTML(l.title||'')}</span><span class="qa-square-txt" style="color:var(--muted);font-size:0.68rem;">${escapeHTML(l.views||0)} 👁</span></div>`).join('');
+      el.innerHTML = top.map(l => `<div class="qa-tile-action qa-action-btn" style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:10px;margin-bottom:5px;text-align:right;justify-content:flex-start;background:var(--glass-bg);backdrop-filter:blur(10px) saturate(180%);-webkit-backdrop-filter:blur(10px) saturate(180%);border:1px solid var(--glass-border);box-shadow:0 4px 10px rgba(23,50,178,.08);" onclick="window.qaOpenNumber('${l.number}')"><span class="qa-square-txt" style="font-weight:800;color:var(--primary);">#${l.number}</span><span class="qa-square-txt" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${l.title||''}</span><span class="qa-square-txt" style="color:var(--muted);font-size:0.68rem;">${l.views||0} 👁</span></div>`).join('');
     }catch(e){ el.textContent = 'تعذر الجلب'; }
   }
 
@@ -2976,7 +2942,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     try{
       const links = await fetchAllLinks();
       if(!links.length){ sel.innerHTML = '<option>لا توجد أرقام بعد</option>'; return; }
-      sel.innerHTML = links.map(l => `<option value="${escapeHTML(l.number)}">#${escapeHTML(l.number)} — ${escapeHTML((l.title||'').slice(0,22))}</option>`).join('');
+      sel.innerHTML = links.map(l => `<option value="${l.number}">#${l.number} — ${(l.title||'').slice(0,22)}</option>`).join('');
     }catch(e){ sel.innerHTML = '<option>تعذر التحميل</option>'; }
   }
   window.qaDownloadSelectedQr = async function(){
@@ -3454,15 +3420,15 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       const isActive = acc.appName === activeAppName;
       return `
         <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;border:1.5px solid ${isActive?'var(--primary,#3d5af1)':'var(--border,#e8ecf5)'};background:${isActive?'rgba(61,90,241,.06)':'transparent'};">
-          <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#3d5af1,#6c8fff);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.9rem;flex-shrink:0;">${escapeHTML(((acc.username||acc.email||'?')[0]||'?').toUpperCase())}</div>
+          <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#3d5af1,#6c8fff);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.9rem;flex-shrink:0;">${(acc.username||acc.email||'?')[0].toUpperCase()}</div>
           <div style="flex:1;min-width:0;">
-            <div style="font-weight:700;font-size:0.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${acc.username ? '@'+escapeHTML(acc.username) : escapeHTML(acc.email||'')}</div>
-            <div style="font-size:0.7rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" dir="ltr">${escapeHTML(acc.email||'')}</div>
+            <div style="font-weight:700;font-size:0.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${acc.username ? '@'+acc.username : (acc.email||'')}</div>
+            <div style="font-size:0.7rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" dir="ltr">${acc.email||''}</div>
           </div>
           ${isActive
             ? `<span style="font-size:0.7rem;color:var(--primary,#3d5af1);font-weight:700;flex-shrink:0;">الحالي ✓</span>`
-            : `<button type="button" onclick="switchAccount('${escapeInlineAttr(acc.appName)}')" style="flex-shrink:0;padding:7px 12px;border-radius:8px;border:none;background:var(--primary,#3d5af1);color:#fff;font-weight:700;font-size:0.72rem;cursor:pointer;">تبديل</button>
-               <button type="button" onclick="removeSavedAccount('${escapeInlineAttr(acc.uid)}')" title="إزالة من القائمة" style="flex-shrink:0;padding:7px;border-radius:8px;border:1.5px solid var(--border,#e8ecf5);background:transparent;cursor:pointer;font-size:0.72rem;">🗑</button>`
+            : `<button type="button" onclick="switchAccount('${acc.appName}')" style="flex-shrink:0;padding:7px 12px;border-radius:8px;border:none;background:var(--primary,#3d5af1);color:#fff;font-weight:700;font-size:0.72rem;cursor:pointer;">تبديل</button>
+               <button type="button" onclick="removeSavedAccount('${acc.uid}')" title="إزالة من القائمة" style="flex-shrink:0;padding:7px;border-radius:8px;border:1.5px solid var(--border,#e8ecf5);background:transparent;cursor:pointer;font-size:0.72rem;">🗑</button>`
           }
         </div>
       `;
@@ -3801,10 +3767,9 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
       allEntries.forEach(link => {
         const id = link.id;
-        const rawNum = link.number ?? link.num ?? '';
-        const num = Number.isFinite(Number(rawNum)) ? Number(rawNum) : 0; // رقم صحيح مضمون — يمنع حقن كود عبر onclick(${num})
-        const title = escapeHTML(link.title ?? link.label ?? '');
-        const fullDesc = escapeHTML(link.description || '—');
+        const num = link.number ?? link.num ?? '';
+        const title = link.title ?? link.label ?? '';
+        const fullDesc = link.description || '—';
         const clamped = fullDesc.length > 60 ? fullDesc.slice(0,60).trim() + '… <span style="color:var(--primary);font-weight:700;">للمزيد</span>' : fullDesc;
         const isText = link.type === 'text';
         const isReserved = !!link.reserved;
@@ -3817,10 +3782,9 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
           const cut = firstLine.slice(0,80);
           return hasMore ? cut.trim() + ' …' : cut;
         })();
-        const safeLinkValuePreview = escapeHTML(linkValuePreview);
 
         // معرّف احتياطي: id إن وُجد، وإلا الرقم (للروابط القديمة بلا id)
-        const ident = escapeInlineAttr(id ? `id:${id}` : `num:${num}`);
+        const ident = id ? `id:${id}` : `num:${num}`;
 
         // أزرار التعديل/الحذف: الروابط المحجوزة لا تُعدَّل، وحذفها يحذف مصدرها الفعلي (حساب التواصل) أو يُمنع (رابط الصفحة/القسم)
         let actionsHtml;
@@ -3829,13 +3793,12 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
           : (isText
               ? (link.presentMode === 'article' ? `https://electrwni.link/article.html?u=${encodeURIComponent((document.getElementById('pfUser')?.value||'').trim())}&n=${num}` : null)
               : (link.url || null));
-        const safeQrTargetUrl = sanitizeUrl(qrTargetUrl || '');
-        const qrIconBtn = safeQrTargetUrl
-          ? `<button class="qr-icon-btn" title="تنزيل QR لهذا الرابط" onclick="event.stopPropagation(); window.downloadLinkQr(${encodeURIComponent(num)}, '${escapeInlineAttr(safeQrTargetUrl)}')">${QR_ICON_SVG}</button>`
+        const qrIconBtn = qrTargetUrl
+          ? `<button class="qr-icon-btn" title="تنزيل QR لهذا الرابط" onclick="event.stopPropagation(); window.downloadLinkQr(${num}, '${qrTargetUrl.replace(/'/g,"\\'")}')">${QR_ICON_SVG}</button>`
           : '';
         if(isReserved){
           if(link.socialId){
-            actionsHtml = `${qrIconBtn}<button class="btn-edit" onclick="event.stopPropagation(); openSocialEditModal('${escapeInlineAttr(link.socialId)}')">تعديل · Edit</button>`;
+            actionsHtml = `${qrIconBtn}<button class="btn-edit" onclick="event.stopPropagation(); openSocialEditModal('${link.socialId}')">تعديل · Edit</button>`;
           } else {
             actionsHtml = `${qrIconBtn}<span style="font-size:0.75rem;color:var(--muted);">🔒 عنصر نظام ثابت · System item</span>`;
           }
@@ -3857,7 +3820,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
           <div class="item-header" onclick="this.parentElement.classList.toggle('open')">
             <span style="color:var(--primary);">${registryTypeIconTag(isText?'text':'link')}</span> [${num}] ${title}${isReserved?' <span style="font-size:0.7rem;color:var(--primary);">(محجوز)</span>':(isText?' <span style="font-size:0.7rem;color:var(--muted);">(نص)</span>':'')}${link.hidden?' <span style="font-size:0.7rem;color:var(--error);" title="مخفي عن الجمهور">🔒 مخفي</span>':''}
             <div class="item-details">
-              <div class="detail-row"><span class="detail-label">${isText?'النص:':'الرابط:'}</span> <span dir="ltr">${safeLinkValuePreview}</span></div>
+              <div class="detail-row"><span class="detail-label">${isText?'النص:':'الرابط:'}</span> <span dir="ltr">${linkValuePreview}</span></div>
               <div class="detail-row"><span class="detail-label">الوصف:</span> <span>${fullDesc}</span></div>
               <div class="detail-row"><span class="detail-label">المشاهدات:</span> <span>${link.views || 0}</span></div>
               <div style="margin-top:8px; text-align:left; display:flex; gap:8px; justify-content:flex-start; flex-wrap:wrap;">
@@ -3869,13 +3832,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         registry.appendChild(item);
 
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td><div>${num}</div><div style="font-size:0.65rem;font-weight:400;color:var(--muted);">${isText?'نص':'رابط'}</div>${safeQrTargetUrl?`<button class="qr-icon-btn qr-icon-btn-table" title="تنزيل QR" onclick="event.stopPropagation(); window.downloadLinkQr(${num}, '${escapeInlineAttr(safeQrTargetUrl)}')">${QR_ICON_SVG}</button>`:''}</td><td><b>${title}</b></td><td dir="ltr" style="word-break:break-all;">${safeLinkValuePreview}</td><td><div class="desc-clamp">${clamped}</div></td><td><span style="color:var(--primary); font-weight:700;">${escapeHTML(link.views || 0)}</span></td>`;
+        tr.innerHTML = `<td><div>${num}</div><div style="font-size:0.65rem;font-weight:400;color:var(--muted);">${isText?'نص':'رابط'}</div>${qrTargetUrl?`<button class="qr-icon-btn qr-icon-btn-table" title="تنزيل QR" onclick="event.stopPropagation(); window.downloadLinkQr(${num}, '${qrTargetUrl.replace(/'/g,"\\'")}')">${QR_ICON_SVG}</button>`:''}</td><td><b>${title}</b></td><td dir="ltr" style="word-break:break-all;">${linkValuePreview}</td><td><div class="desc-clamp">${clamped}</div></td><td><span style="color:var(--primary); font-weight:700;">${link.views || 0}</span></td>`;
         statsTbody.appendChild(tr);
       });
     } catch(e){
       console.error('loadLinks error:', e);
-      registry.innerHTML = `<div class="empty" style="color:var(--error);">⚠️ تعذر تحميل الروابط: ${escapeHTML(e.message||e.code||'خطأ غير معروف')}</div>`;
-      statsTbody.innerHTML = `<tr><td colspan="5" class="empty" style="color:var(--error);">⚠️ تعذر التحميل: ${escapeHTML(e.message||e.code||'')}</td></tr>`;
+      registry.innerHTML = `<div class="empty" style="color:var(--error);">⚠️ تعذر تحميل الروابط: ${(e.message||e.code||'خطأ غير معروف')}</div>`;
+      statsTbody.innerHTML = `<tr><td colspan="5" class="empty" style="color:var(--error);">⚠️ تعذر التحميل: ${(e.message||e.code||'')}</td></tr>`;
     }
   }
 
@@ -4044,7 +4007,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:#e9e9ee;display:flex;flex-direction:column;';
     modal.innerHTML = `
       <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 16px;background:#000000;color:#ffffff;gap:10px;flex-shrink:0;font-family:-apple-system,BlinkMacSystemFont,'Tajawal',sans-serif;">
-        <div style="font-weight:900;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">📄 ${escapeHTML(reportTitle)}</div>
+        <div style="font-weight:900;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">📄 ${reportTitle}</div>
         <div style="display:flex;gap:7px;flex-shrink:0;">
           <button id="pdfShareBtn" style="padding:8px 13px;border:1.5px solid #ffffff;border-radius:7px;background:transparent;color:#ffffff;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;">↗ مشاركة</button>
           <button id="pdfPrintBtn" style="padding:8px 13px;border:1.5px solid #ffffff;border-radius:7px;background:transparent;color:#ffffff;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;">🖨 طباعة</button>
@@ -4431,16 +4394,16 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     }
     socials.forEach(soc => {
       try {
-      const id = escapeInlineAttr(soc.id);
+      const id = soc.id;
       const div = document.createElement('div');
       div.className = 'item';
       const mode = soc.styleMode || 'brand';
-      const iconBg = mode==='brand' ? sanitizeColor(soc.brandColor,'var(--primary)') : (mode==='custom' ? sanitizeColor(soc.customBg,'var(--primary)') : 'var(--primary)');
-      const ringColor = mode==='custom' ? sanitizeColor(soc.customRing,'transparent') : 'transparent';
-      const iconGlyphColor = mode==='custom' ? sanitizeColor(soc.customIconColor,'#ffffff') : '#ffffff';
-      const containerColor = mode==='custom' ? sanitizeColor(soc.customContainer,'transparent') : 'transparent';
+      const iconBg = mode==='brand' ? (soc.brandColor||'var(--primary)') : (mode==='custom' ? (soc.customBg||'var(--primary)') : 'var(--primary)');
+      const ringColor = mode==='custom' ? (soc.customRing||'transparent') : 'transparent';
+      const iconGlyphColor = mode==='custom' ? (soc.customIconColor||'#ffffff') : '#ffffff';
+      const containerColor = mode==='custom' ? (soc.customContainer||'transparent') : 'transparent';
       const iconInner = (mode==='upload' && soc.icon)
-        ? `<img src="${escapeHTML(sanitizeUrl(soc.icon))}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`
+        ? `<img src="${soc.icon}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`
         : `<span style="display:flex;width:18px;height:18px;color:${iconGlyphColor};">${platSvg(soc.platformId)||''}</span>`;
 
       // معاينة تحاكي شكل الأيقونة الفعلي بصفحتك العامة (دائري أو مستطيل)
@@ -4458,7 +4421,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
           <div id="socIconContainer_${id}" style="padding:4px;border-radius:9px;background:${containerColor};">
             ${previewHtml}
           </div>
-          <div style="flex:1;"><b>${escapeHTML(soc.platformName||soc.name||'')}</b><div style="font-size:0.75rem; color:var(--muted); word-break:break-all;">${escapeHTML(sanitizeUrl(soc.url))}</div></div>
+          <div style="flex:1;"><b>${soc.platformName||soc.name||''}</b><div style="font-size:0.75rem; color:var(--muted); word-break:break-all;">${soc.url}</div></div>
         </div>
         <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
           <button onclick="setEditMode('${id}','brand')" class="editmode-btn" data-id="${id}" data-mode="brand" style="flex:1;min-width:70px;padding:6px;border:2px solid ${mode==='brand'?'var(--primary)':'var(--border)'};border-radius:6px;background:var(--bg);cursor:pointer;font-family:'Tajawal';font-size:0.72rem;font-weight:700;">لون التطبيق</button>
@@ -4617,15 +4580,15 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         <div style="font-weight:900;font-size:1.05rem;margin-bottom:16px;">تعديل حساب التواصل</div>
         <div class="form-group" style="margin-bottom:12px;">
           <label style="display:block;font-size:0.84rem;font-weight:700;margin-bottom:5px;">العنوان <span style="font-size:0.7rem;font-weight:400;color:var(--muted);">/ Title</span></label>
-          <input type="text" id="seTitle" value="${escapeHTML(social.platformName||social.name||'')}" style="width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:0.9rem;">
+          <input type="text" id="seTitle" value="${(social.platformName||social.name||'').replace(/"/g,'&quot;')}" style="width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:0.9rem;">
         </div>
         <div class="form-group" style="margin-bottom:12px;">
           <label style="display:block;font-size:0.84rem;font-weight:700;margin-bottom:5px;">الرابط <span style="font-size:0.7rem;font-weight:400;color:var(--muted);">/ Link</span></label>
-          <input type="text" id="seUrl" value="${escapeHTML(social.url||'')}" dir="ltr" style="width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:ui-monospace,monospace;font-size:0.88rem;">
+          <input type="text" id="seUrl" value="${(social.url||'').replace(/"/g,'&quot;')}" dir="ltr" style="width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:ui-monospace,monospace;font-size:0.88rem;">
         </div>
         <div class="form-group" style="margin-bottom:14px;">
           <label style="display:block;font-size:0.84rem;font-weight:700;margin-bottom:5px;">الوصف <span style="font-size:0.7rem;font-weight:400;color:var(--muted);">/ Description</span></label>
-          <textarea id="seDesc" style="width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:0.88rem;min-height:60px;resize:vertical;">${escapeHTML(social.description||'')}</textarea>
+          <textarea id="seDesc" style="width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:0.88rem;min-height:60px;resize:vertical;">${(social.description||'')}</textarea>
         </div>
         <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;font-weight:700;margin-bottom:18px;cursor:pointer;">
           <input type="checkbox" id="seFeatured" ${social.featured?'checked':''} style="width:18px;height:18px;">
@@ -4674,8 +4637,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     entry.className = 'phone-entry';
     entry.innerHTML = `
       <div class="phone-entry-fields">
-        <input type="text" placeholder="التصنيف (مثال: الإدارة، المبيعات)" value="${escapeHTML(label)}" class="phone-label">
-        <input type="tel" placeholder="+966500000000" value="${escapeHTML(number)}" dir="ltr" class="phone-number">
+        <input type="text" placeholder="التصنيف (مثال: الإدارة، المبيعات)" value="${label}" class="phone-label">
+        <input type="tel" placeholder="+966500000000" value="${number}" dir="ltr" class="phone-number">
       </div>
       <button class="btn-remove-phone" onclick="this.parentElement.remove()">حذف</button>`;
     container.appendChild(entry);
