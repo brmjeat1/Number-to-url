@@ -549,6 +549,24 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 }
 @keyframes loadShimmerText{0%{background-position:150% 0;}100%{background-position:-50% 0;}}
 .load-sub{margin-top:10px;font-size:0.78rem;color:#9aa2c8;font-weight:600;}
+
+/* ===== معرض حسابات التواصل الأفقي (يحل محل القائمة العمودية القديمة) ===== */
+.soc-gallery-wrap{position:relative;margin-top:4px;}
+.soc-gallery{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x proximity;padding:6px 4px 14px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.soc-gallery::-webkit-scrollbar{display:none;}
+.soc-card{scroll-snap-align:start;flex-shrink:0;width:78px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;background:none;border:none;font-family:inherit;padding:2px;}
+.soc-card-icon{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,0.12);transition:transform .15s;position:relative;}
+.soc-card.rect .soc-card-icon{border-radius:16px;}
+.soc-card:active .soc-card-icon{transform:scale(0.92);}
+.soc-card.is-open .soc-card-icon{outline:3px solid var(--primary);outline-offset:2px;}
+.soc-card-icon.is-hidden{opacity:0.35;}
+.soc-card-hidden-badge{position:absolute;bottom:-2px;left:-2px;background:var(--error,#e33);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;border:2px solid var(--bg);}
+.soc-card-name{font-size:0.68rem;font-weight:700;color:var(--text2);max-width:76px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.soc-swipe-hint{position:absolute;top:22px;pointer-events:none;display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:linear-gradient(90deg,var(--bg) 0%,transparent 100%);color:var(--muted);animation:socSwipePulse 1.6s ease-in-out infinite;z-index:2;}
+.soc-swipe-hint.right{left:-2px;}
+.soc-swipe-hint.left{right:-2px;transform:scaleX(-1);background:linear-gradient(90deg,transparent 0%,var(--bg) 100%);}
+@keyframes socSwipePulse{0%,100%{opacity:0.35;transform:translateX(0) scaleX(var(--fx,1));}50%{opacity:1;transform:translateX(4px) scaleX(var(--fx,1));}}
+.soc-swipe-caption{text-align:center;font-size:0.68rem;color:var(--muted);margin-top:-6px;margin-bottom:10px;}
 </style>
 </head>
 <body>
@@ -595,50 +613,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     <div id="accountsList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div>
 
     <div id="addAccountForm" style="display:none;border-top:1px solid var(--border,#e8ecf5);padding-top:14px;margin-top:4px;">
-      <div style="font-weight:700;font-size:0.85rem;margin-bottom:10px;">تسجيل دخول لحساب بإيميل مختلف <span class="lbl-sub" style="font-weight:400;">Sign in (different email)</span></div>
+      <div style="font-weight:700;font-size:0.85rem;margin-bottom:10px;">إضافة حساب آخر <span class="lbl-sub" style="font-weight:400;">Add Account</span></div>
       <input type="email" id="addAcctEmail" placeholder="البريد الإلكتروني · Email" dir="ltr" style="width:100%;margin-bottom:8px;">
       <input type="password" id="addAcctPassword" placeholder="كلمة المرور · Password" dir="ltr" style="width:100%;margin-bottom:8px;">
       <div id="addAcctErr" style="display:none;color:#c33;font-size:0.76rem;margin-bottom:8px;"></div>
       <button type="button" class="btn-add" id="addAcctSubmitBtn" onclick="submitAddAccount()" style="margin:0;width:100%;">دخول وإضافة · Sign in & Add</button>
     </div>
-    <button type="button" class="btn-add" onclick="closeAccountsModal(); window.openSameEmailAccountModal();" style="margin:0 0 10px;width:100%;background:var(--primary);color:#fff;">+ إضافة حساب على نفس الإيميل · Same Email</button>
-    <button type="button" onclick="toggleAddAccountForm()" style="margin:0;width:100%;background:transparent;border:none;color:var(--muted);font-size:0.76rem;font-weight:700;text-decoration:underline;cursor:pointer;padding:6px;">لديك حساب بإيميل مختلف؟ سجّل دخول له</button>
-  </div>
-</div>
-
-<!-- نافذة إنشاء حساب/موقع جديد يبقى مرتبطاً بنفس الإيميل الحالي -->
-<div id="sameEmailModal" style="display:none;position:fixed;inset:0;z-index:2100;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;padding:20px;" onclick="if(event.target===this) window.closeSameEmailModal()">
-  <div style="background:#fff;border-radius:20px;padding:22px;width:100%;max-width:400px;max-height:88vh;overflow-y:auto;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-      <div style="font-weight:800;font-size:1rem;">حساب جديد بنفس الإيميل <span class="lbl-sub" style="font-weight:400;">Same-Email Account</span></div>
-      <button type="button" onclick="window.closeSameEmailModal()" style="background:var(--surface,#f4f5f9);border:none;width:28px;height:28px;border-radius:50%;font-size:0.9rem;cursor:pointer;flex-shrink:0;">✕</button>
-    </div>
-    <p style="font-size:0.78rem;color:var(--muted);margin-bottom:16px;line-height:1.6;">
-      أنشئ موقعاً/حساباً جديداً مستقلاً يبقى مرتبطاً ببريدك الحالي، وبدّل بينه وبين حسابك الأساسي بضغطة زر.<br>
-      <span style="font-size:0.7rem;">Create a new independent site linked to your current email.</span>
-    </p>
-    <div class="form-group">
-      <label>البريد الإلكتروني <span class="lbl-sub">/ Email</span></label>
-      <input type="email" id="sameEmailDisplay" dir="ltr" disabled style="opacity:0.65;">
-    </div>
-    <div class="form-group">
-      <label>كلمة المرور <span class="lbl-sub">/ Password (auto-generated)</span></label>
-      <div style="display:flex;gap:8px;">
-        <input type="password" id="sameEmailPassword" dir="ltr" readonly style="flex:1;">
-        <button type="button" onclick="window.toggleSameEmailPwVisibility()" id="sameEmailPwEye" style="flex-shrink:0;width:42px;border-radius:10px;border:1.5px solid var(--border,#e8ecf5);background:var(--surface,#f4f5f9);cursor:pointer;font-size:0.9rem;">👁</button>
-      </div>
-      <div style="font-size:0.7rem;color:var(--muted);margin-top:6px;">كلمة مرور آمنة أُنشئت تلقائياً — احفظها إن احتجتها لاحقاً · Auto-generated — save it if you may need it</div>
-    </div>
-    <div class="form-group">
-      <label>اسم المستخدم الجديد <span class="lbl-sub">/ New Username</span></label>
-      <input type="text" id="sameEmailUsername" dir="ltr" placeholder="username">
-    </div>
-    <div class="form-group">
-      <label>الاسم الكامل <span class="lbl-sub">/ Full Name</span></label>
-      <input type="text" id="sameEmailFullName" placeholder="اسمك / Your name">
-    </div>
-    <div id="sameEmailErr" style="display:none;color:#c33;font-size:0.76rem;margin-bottom:10px;"></div>
-    <button type="button" class="btn-add" id="sameEmailSubmitBtn" onclick="window.submitSameEmailAccount()" style="margin:0;width:100%;background:var(--primary);">إنشاء الحساب الجديد · Create Account</button>
+    <button type="button" class="btn-add" id="addAccountToggleBtn" onclick="toggleAddAccountForm()" style="margin:0;width:100%;background:var(--surface,#f4f5f9);color:var(--text,#1a1d24);border:1.5px dashed var(--border,#c7cee0);">+ إضافة حساب آخر · Add Account</button>
   </div>
 </div>
 
@@ -918,7 +899,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       <div class="expandable-content open">
         <div style="margin-bottom:16px;">
           <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">دائماً هنا · Always here</div>
-          <div id="alwaysVisibleGrid" style="display:flex;flex-wrap:wrap;gap:7px;"></div>
+          <div class="soc-gallery" id="alwaysVisibleGrid" style="padding-bottom:4px;"></div>
           <button onclick="window.openQrCard()" style="margin-top:7px;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--primary);font-weight:700;font-family:inherit;cursor:pointer;">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v2h-3v-2zm0 4h3v4h-2v-2h-1v-2zm-5-4h3v3h-2v-1h-1v-2zm0 5h2v2h-2v-2z"></path></svg>
             QR صفحتك · Your Page QR
@@ -941,8 +922,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
         <div style="margin-bottom:16px;">
           <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">اختر منصة · Choose Platform</div>
-          <div id="quickAddGrid" style="display:flex;flex-wrap:wrap;gap:7px;"></div>
-          <button id="moreBtn" onclick="toggleMorePlatforms()" style="margin-top:8px;background:none;border:1.5px dashed var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;font-size:0.78rem;color:var(--text2);">المزيد · More</button>
+          <div class="soc-gallery-wrap">
+            <span class="soc-swipe-hint right" style="--fx:1;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></span>
+            <div class="soc-gallery" id="quickAddGrid"></div>
+            <span class="soc-swipe-hint left" style="--fx:1;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></span>
+          </div>
+          <div class="soc-swipe-caption">‹ اسحب لباقي المنصات · Swipe ›</div>
+          <button id="moreBtn" onclick="toggleMorePlatforms()" style="margin-top:2px;background:none;border:1.5px dashed var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;font-size:0.78rem;color:var(--text2);">المزيد · More</button>
         </div>
 
         <div id="socialFormBox" style="display:none;margin-bottom:16px;padding:16px;background:var(--bg2);border-radius:12px;border:1px solid var(--border);">
@@ -968,13 +954,22 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
             <label style="margin-bottom:8px;display:block;font-size:0.84rem;font-weight:700;color:var(--text2);">لون الأيقونة <span style="font-size:0.7rem;font-weight:400;color:var(--muted);">/ Icon Style</span></label>
             <div style="display:flex;gap:7px;flex-wrap:wrap;">
               <button onclick="setSocColorMode('brand')" id="cmBrand" style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">لون التطبيق</button>
-              <button onclick="setSocColorMode('site')" id="cmTheme" style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">لون موقعك</button>
-              <button onclick="setSocColorMode('upload')" id="cmUpload" style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">رفع صورة</button>
+              <button onclick="setSocColorMode('site')" id="cmTheme" style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">ألوان الموقع</button>
+              <button onclick="setSocColorMode('custom')" id="cmCustom" style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">🎨 ألوان مخصصة</button>
+              <button onclick="setSocColorMode('upload')" id="cmUpload" style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">رفع من الجهاز</button>
             </div>
             <div id="customIconUpload" style="display:none;margin-top:10px;">
               <input type="file" id="socIconFile" accept="image/*" onchange="previewCustomIcon(this)">
               <div id="socIconPreview" style="margin-top:8px;display:none;">
                 <img id="socIconImg" style="width:52px;height:52px;border-radius:12px;object-fit:cover;border:2px solid var(--border);">
+              </div>
+            </div>
+            <div id="customColorPanel" style="display:none;margin-top:12px;padding:12px;background:var(--bg);border-radius:10px;border:1px solid var(--border);">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div><label style="font-size:0.72rem;display:block;margin-bottom:4px;color:var(--muted);">خلفية الدائرة</label><input type="color" id="newCustomBg" class="color-box-picker" value="#3d5af1"></div>
+                <div><label style="font-size:0.72rem;display:block;margin-bottom:4px;color:var(--muted);">لون الدائرة</label><input type="color" id="newCustomRing" class="color-box-picker" value="#ffffff"></div>
+                <div><label style="font-size:0.72rem;display:block;margin-bottom:4px;color:var(--muted);">أيقونة التطبيق</label><input type="color" id="newCustomIconColor" class="color-box-picker" value="#ffffff"></div>
+                <div><label style="font-size:0.72rem;display:block;margin-bottom:4px;color:var(--muted);">لون الاسم</label><input type="color" id="newCustomNameColor" class="color-box-picker" value="#0f1535"></div>
               </div>
             </div>
           </div>
@@ -986,6 +981,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         </div>
 
         <div id="socialsRegistry"></div>
+        <div id="socEditPanel"></div>
       </div>
     </div>
 
@@ -1354,41 +1350,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       </div>
     </div>
 
-    <div class="expandable">
-      <div class="expandable-header" onclick="toggleExpand(this)">
-        <div class="expandable-title"><div class="expandable-icon">⬇</div><span>تصدير كامل الموقع<span class="title-sub">Full Export</span></span></div>
-        <div class="expandable-toggle">▼</div>
-      </div>
-      <div class="expandable-content">
-        <p style="font-size:0.82rem;color:var(--muted);margin-bottom:16px;line-height:1.6;">
-          صدّر نسخة كاملة من موقعك (بياناتك، تصميم صفحتك بالكامل، وروابطك)، أو استوردها لاحقاً لاستعادة موقعك كما كان.<br>
-          <span style="font-size:0.72rem;color:var(--muted);">Export a full copy of your site (profile, full design, and links), or import one to restore it later.</span>
-        </p>
-        <button onclick="exportFullBackup()" class="export-pill pill-json" style="margin-bottom:16px;">
-          <span class="pill-badge">JSON</span>
-          <span class="pill-text"><b>تصدير الموقع بأكمله</b><small>ملف واحد يشمل كل شيء</small></span>
-        </button>
-        <div style="height:1px;background:var(--border);margin:0 0 16px;"></div>
-        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:10px;">استيراد نسخة سابقة سيستبدل تصميم موقعك وبياناتك وروابطك الحالية · Importing replaces your current site</p>
-        <button onclick="document.getElementById('importFullFile').click()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border:1.5px dashed var(--primary);border-radius:12px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;color:var(--primary);">⬆ اختر ملف JSON لاستيراد الموقع بأكمله</button>
-        <input type="file" id="importFullFile" accept=".json,application/json" style="display:none;" onchange="importFullBackup(this)">
-      </div>
-    </div>
-
-    <div class="expandable">
-      <div class="expandable-header" onclick="toggleExpand(this)">
-        <div class="expandable-title"><div class="expandable-icon">+</div><span>حساب جديد بنفس الإيميل<span class="title-sub">Same-Email Account</span></span></div>
-        <div class="expandable-toggle">▼</div>
-      </div>
-      <div class="expandable-content">
-        <p style="font-size:0.82rem;color:var(--muted);margin-bottom:16px;line-height:1.6;">
-          أنشئ موقعاً/حساباً جديداً مستقلاً تماماً (تصميم وروابط خاصة به) يبقى مرتبطاً ببريدك الحالي، وبدّل بينه وبين حسابك الأساسي بضغطة زر من قائمة الحسابات.<br>
-          <span style="font-size:0.72rem;color:var(--muted);">Create a new independent site linked to your current email, and switch between accounts anytime.</span>
-        </p>
-        <button class="btn-add" onclick="window.openSameEmailAccountModal()" style="background:var(--primary);">+ إنشاء حساب جديد · Create Account</button>
-      </div>
-    </div>
-
     <div class="expandable" style="border-color:#ffd0d8;">
       <div class="expandable-header" onclick="toggleExpand(this)" style="background:#fff5f7;">
         <div class="expandable-title" style="color:var(--error);">
@@ -1519,7 +1480,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 <!-- FIREBASE SDK V10 MODULES -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, deleteUser, updatePassword, reauthenticateWithCredential, EmailAuthProvider, setPersistence, browserLocalPersistence, indexedDBLocalPersistence, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, deleteUser, updatePassword, reauthenticateWithCredential, EmailAuthProvider, setPersistence, browserLocalPersistence, indexedDBLocalPersistence, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, getDoc, collection, getDocs, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { getStorage, ref as storageRef, uploadString, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
@@ -2505,7 +2466,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       swap: `<svg ${s}><path d="M17 3l4 4-4 4"/><path d="M3 7h18"/><path d="M7 21l-4-4 4-4"/><path d="M21 17H3"/></svg>`,
       layers: `<svg ${s}><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/><path d="M3 17l9 5 9-5"/></svg>`,
       sparkles: `<svg ${s}><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>`,
-      userPlus: `<svg ${s}><circle cx="9" cy="8" r="3.3"/><path d="M2.5 20c0-3.8 2.9-6 6.5-6s6.5 2.2 6.5 6"/><line x1="18" y1="8" x2="18" y2="14"/><line x1="15" y1="11" x2="21" y2="11"/></svg>`,
     };
     return icons[id] || '';
   }
@@ -2565,7 +2525,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     sendSuggestion:{ name: 'إرسال اقتراح',     icon: qaIconSvg('send'), tab: 'ملفي', nav:{pageId:'profile', title:'الدعم والملاحظات', tabIdx:3, after:'focusFeedback'} },
     goToProfile:   { name: 'ملفي الشخصي',      icon: qaIconSvg('userCircle'), tab: 'ملفي', nav:{pageId:'profile', title:'بيانات ملفي', tabIdx:3} },
     usageGuide:    { name: 'دليل الاستخدام',   icon: qaIconSvg('compass'), tab: 'ملفي' },
-    addSameEmailAccount: { name: 'حساب بنفس الإيميل', icon: qaIconSvg('userPlus'), tab: 'ملفي' },
 
     // ===== قسم الإحصائيات =====
     topSearched:     { name: 'الأكثر بحثاً',     icon: qaIconSvg('search'),       tab: 'إحصائيات' },
@@ -2591,7 +2550,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     { label:'الأرقام',      keys:['numLinkQuick','numTextQuick','numArticleQuick','numImageQuick','numAlbumQuick','numFileQuick','numProductQuick','numArchive','numFeatured','numRandom','numLast3','qrForNumber','qrForAccount','qrForRegistry','qrForFeatured'] },
     { label:'التصميم',      keys:['aiPageDesign','bgActionsDesign','logoCoverDesign','textActionsDesign','iconActionsDesign','colors','iconStyleDesign'] },
     { label:'التواصل',      keys:['contactAccountsAct','contactNumbersAct','contactEmailsAct','contactIconsAct','contactWebsiteAct','contactLocationAct'] },
-    { label:'ملفي',         keys:['techSupport','sendSuggestion','goToProfile','usageGuide','addSameEmailAccount'] },
+    { label:'ملفي',         keys:['techSupport','sendSuggestion','goToProfile','usageGuide'] },
     { label:'الإحصائيات',   keys:['topSearched','printMonthLog','printWeekLog','print3MonthsLog','printStatsPdf','printStatsExcel','importExportData'] },
     { label:'أساسية',       keys:['addNum','printStats','copyLink','qrCode','featuredToggle','hideToggle','socialQuickAdd','iconShapeSwitch','bioQuickEdit','avatarQuickUpload','bannerQuickUpload','exportJson','templateQuickApply','viewsSummary'] }
   ];
@@ -2730,9 +2689,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     }
     if(key === 'bioQuickEdit'){
       return `<div class="qa-tile qa-tile-action qa-action-btn" onclick="showPage('profile', document.querySelectorAll('.nav-tab')[3])"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div><span class="qa-btn-hover-ic">${item.icon}</span></div>`;
-    }
-    if(key === 'addSameEmailAccount'){
-      return `<div class="qa-tile qa-tile-action qa-action-btn" onclick="window.openSameEmailAccountModal()"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div><span class="qa-btn-hover-ic">${item.icon}</span></div>`;
     }
     if(key === 'avatarQuickUpload'){
       return `<div class="qa-tile qa-tile-action qa-action-btn" onclick="document.getElementById('avatarInput')?.click(); showPage('design', document.querySelectorAll('.nav-tab')[0]);"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div><span class="qa-btn-hover-ic">${item.icon}</span></div>`;
@@ -3514,14 +3470,15 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   window.openAccountsModal = function(){
     renderAccountsList();
     document.getElementById('addAccountForm').style.display = 'none';
+    document.getElementById('addAccountToggleBtn').style.display = 'block';
     document.getElementById('accountsModal').style.display = 'flex';
   };
   window.closeAccountsModal = function(){
     document.getElementById('accountsModal').style.display = 'none';
   };
   window.toggleAddAccountForm = function(){
-    const form = document.getElementById('addAccountForm');
-    form.style.display = (form.style.display === 'block') ? 'none' : 'block';
+    document.getElementById('addAccountForm').style.display = 'block';
+    document.getElementById('addAccountToggleBtn').style.display = 'none';
   };
   window.switchAccount = function(appName){
     if(appName === activeAppName){ window.closeAccountsModal(); return; }
@@ -3564,98 +3521,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       errEl.textContent = 'بيانات الدخول غير صحيحة أو تعذر الاتصال';
       errEl.style.display = 'block';
       btn.textContent = 'دخول وإضافة · Sign in & Add';
-    }
-  };
-
-  // ===== إنشاء حساب/موقع جديد يبقى مرتبطاً بنفس الإيميل الحالي (Same-Email Account) =====
-  function generateRandomPassword(len){
-    len = len || 14;
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%';
-    let out = '';
-    const arr = new Uint32Array(len);
-    (window.crypto || window.msCrypto).getRandomValues(arr);
-    for(let i=0;i<len;i++) out += chars[arr[i] % chars.length];
-    return out;
-  }
-
-  window.openSameEmailAccountModal = function(){
-    document.getElementById('sameEmailDisplay').value = (currentUser && currentUser.email) || '';
-    const pwField = document.getElementById('sameEmailPassword');
-    pwField.value = generateRandomPassword();
-    pwField.type = 'password';
-    document.getElementById('sameEmailPwEye').textContent = '👁';
-    document.getElementById('sameEmailUsername').value = '';
-    document.getElementById('sameEmailFullName').value = '';
-    document.getElementById('sameEmailErr').style.display = 'none';
-    document.getElementById('sameEmailSubmitBtn').textContent = 'إنشاء الحساب الجديد · Create Account';
-    document.getElementById('sameEmailModal').style.display = 'flex';
-  };
-  window.closeSameEmailModal = function(){
-    document.getElementById('sameEmailModal').style.display = 'none';
-  };
-  window.toggleSameEmailPwVisibility = function(){
-    const inp = document.getElementById('sameEmailPassword');
-    const eye = document.getElementById('sameEmailPwEye');
-    if(inp.type === 'password'){ inp.type = 'text'; eye.textContent = '🙈'; }
-    else { inp.type = 'password'; eye.textContent = '👁'; }
-  };
-
-  window.submitSameEmailAccount = async function(){
-    const errEl = document.getElementById('sameEmailErr');
-    errEl.style.display = 'none';
-    const uname = (document.getElementById('sameEmailUsername').value || '').trim().toLowerCase();
-    const fullName = (document.getElementById('sameEmailFullName').value || '').trim();
-    const password = document.getElementById('sameEmailPassword').value;
-
-    if(!/^[a-z0-9_]{3,20}$/.test(uname)){
-      errEl.textContent = 'اسم المستخدم: 3-20 حرفاً إنجليزياً/أرقام/_ فقط';
-      errEl.style.display = 'block'; return;
-    }
-    if(!fullName){ errEl.textContent = 'أدخل الاسم الكامل'; errEl.style.display = 'block'; return; }
-
-    const btn = document.getElementById('sameEmailSubmitBtn');
-    btn.textContent = 'جاري الإنشاء...';
-    try {
-      // تحقق من توفر اسم المستخدم أولاً (الفهرس مشترك بين كل الحسابات على نفس المشروع)
-      const exists = await getDoc(doc(db, "usernames", uname));
-      if(exists.exists()){
-        errEl.textContent = 'اسم المستخدم محجوز، اختر غيره';
-        errEl.style.display = 'block';
-        btn.textContent = 'إنشاء الحساب الجديد · Create Account';
-        return;
-      }
-
-      // بريد بديل (plus-alias) يصل لنفس صندوق الوارد، لتفادي شرط Firebase بتفرّد البريد لكل حساب
-      const baseEmail = (currentUser && currentUser.email) || '';
-      const atIdx = baseEmail.indexOf('@');
-      const aliasSuffix = 'alt' + Date.now().toString(36);
-      const aliasEmail = atIdx > -1
-        ? (baseEmail.slice(0, atIdx) + '+' + aliasSuffix + baseEmail.slice(atIdx))
-        : (baseEmail + '+' + aliasSuffix);
-
-      // تطبيق Firebase منفصل بالاسم لهذا الحساب — تُحفظ جلسته باستقلالية عن الحساب الحالي
-      const newAppName = 'acct_' + Date.now();
-      const secApp = initializeApp(firebaseConfig, newAppName);
-      const secAuth = getAuth(secApp);
-      try{ await setPersistence(secAuth, indexedDBLocalPersistence); }
-      catch(e){ try{ await setPersistence(secAuth, browserLocalPersistence); }catch(e2){} }
-
-      const cred = await createUserWithEmailAndPassword(secAuth, aliasEmail, password);
-      const secDb = getFirestore(secApp);
-      await setDoc(doc(secDb, "usernames", uname), { uid: cred.user.uid });
-      await setDoc(doc(secDb, "users", cred.user.uid), {
-        username: uname, fullName: fullName, email: aliasEmail, createdAt: new Date()
-      }, { merge: true });
-      try{ await sendEmailVerification(cred.user); }catch(e){}
-
-      upsertSavedAccount({ uid: cred.user.uid, email: aliasEmail, username: uname, appName: newAppName });
-      localStorage.setItem(ACTIVE_ACCOUNT_KEY, newAppName);
-      window.showToast('تم إنشاء الحساب الجديد — جاري التبديل إليه...');
-      setTimeout(() => location.reload(), 500);
-    } catch(e){
-      errEl.textContent = 'تعذر الإنشاء: ' + (e.code || e.message || '');
-      errEl.style.display = 'block';
-      btn.textContent = 'إنشاء الحساب الجديد · Create Account';
     }
   };
 
@@ -4150,66 +4015,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     } catch(e){ window.showToast("تعذر التصدير: " + (e.message||'')); }
   };
 
-  // ===== تصدير واستيراد الموقع بأكمله (تصميم + إعدادات + بيانات + روابط) — تبويب "ملفي" =====
-  window.exportFullBackup = async function(){
-    window.showToast("جاري تجهيز نسخة الموقع بأكمله...");
-    try {
-      let userData = {};
-      try {
-        const snap = await getDoc(doc(db, "users", currentUser.uid));
-        if(snap.exists()) userData = snap.data();
-      } catch(e){}
-      const uname = (userData.username || document.getElementById('pfUser').value || 'account').trim();
-      const backup = {
-        exportedAt: new Date().toISOString(),
-        email: currentUser.email,
-        uid: currentUser.uid,
-        profile: userData   // يشمل كل شيء: الاسم والنبذة والتصميم (الألوان/الخلفية/الشعار/الغلاف) وروابط الموقع
-      };
-      downloadBlob(JSON.stringify(backup, null, 2), `electrwni-${uname}-full-backup.json`, 'application/json');
-      window.showToast("تم تصدير الموقع بأكمله");
-    } catch(e){ window.showToast("تعذر التصدير: " + (e.message||'')); }
-  };
-
-  window.importFullBackup = function(input){
-    if(!input.files || !input.files[0]) return;
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      try {
-        const data = JSON.parse(e.target.result);
-        const profile = (data && typeof data.profile === 'object') ? data.profile : data;
-        if(!profile || typeof profile !== 'object' || Array.isArray(profile)){
-          window.showToast("ملف غير صالح"); return;
-        }
-        if(!confirm("سيستبدل هذا تصميم موقعك وبياناتك وروابطك الحالية بمحتوى الملف. هل تريد المتابعة؟")) return;
-        window.showToast("جاري استيراد الموقع بأكمله...");
-
-        const restoreData = { ...profile };
-        // نستثني حقول مرتبطة بالحساب/الفهرسة كي لا نكسر تسجيل الدخول أو رابط اسم المستخدم المحجوز
-        delete restoreData.email;
-        delete restoreData.uid;
-        delete restoreData.createdAt;
-        delete restoreData.username;
-
-        // تطبيع الروابط (تدعم البنية القديمة number/num والجديدة title/label)
-        if(Array.isArray(profile.links)){
-          restoreData.links = profile.links.map((l,i) => ({
-            id: l.id || ('lnk_' + Date.now() + '_' + i),
-            number: l.number ?? l.num ?? (i+1), num: l.number ?? l.num ?? (i+1),
-            title: l.title || l.label || '', label: l.title || l.label || '',
-            url: l.url || '', text: l.text || '', type: l.type || 'link',
-            description: l.description || '', views: l.views || 0
-          }));
-        }
-
-        await setDoc(doc(db, "users", currentUser.uid), restoreData, { merge: true });
-        window.showToast("تم استيراد الموقع بأكمله بنجاح، جاري إعادة التحميل...");
-        setTimeout(() => window.location.reload(), 1000);
-      } catch(err){ window.showToast("ملف غير صالح: " + (err.message||'')); }
-    };
-    reader.readAsText(input.files[0]);
-  };
-
   // ===== بناء تقرير PDF احترافي (معاينة داخل الصفحة نفسها — لا نوافذ منبثقة إطلاقاً) =====
   function buildArabicDateParts(){
     const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
@@ -4452,19 +4257,22 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     detectNow();
   };
 
+  // بطاقة منصة واحدة بمعرض الاختيار (أيقونة دائرية بلون التطبيق الرسمي + اسمه أسفلها)
+  function platformCardHtml(p){
+    return `
+      <button type="button" class="soc-card" onclick="window.selectPlatformTile(${JSON.stringify(p).replace(/"/g,'&quot;')})">
+        <div class="soc-card-icon" style="background:${p.color};">
+          <span style="display:flex;width:26px;height:26px;color:${p.id==='snapchat'?'#000':'#fff'};">${platSvg(p.id)}</span>
+        </div>
+        <div class="soc-card-name">${p.name}</div>
+      </button>`;
+  }
+
   function initQuickAddGrid() {
     const grid = document.getElementById('quickAddGrid');
-    grid.innerHTML = '';
     const gridPlatforms = platforms.filter(p => !ALWAYS_VISIBLE_IDS.includes(p.id));
-    const visible = showAllPlatforms ? gridPlatforms : gridPlatforms.slice(0,5);
-    visible.forEach(p => {
-      const btn = document.createElement('button');
-      const txtColor = p.id==='snapchat' ? '#000' : '#fff';
-      btn.style.cssText = `padding: 8px 12px; background: ${p.color}; color: ${txtColor}; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; font-family:'Tajawal';`;
-      btn.innerHTML = `<span style="display:flex;width:18px;height:18px;">${platSvg(p.id)}</span> ${p.name}`;
-      btn.onclick = () => window.selectPlatformTile(p);
-      grid.appendChild(btn);
-    });
+    const visible = showAllPlatforms ? gridPlatforms : gridPlatforms.slice(0,8);
+    grid.innerHTML = visible.map(platformCardHtml).join('');
     const moreBtn = document.getElementById('moreBtn');
     if(moreBtn) moreBtn.innerHTML = showAllPlatforms ? 'أقل · Less' : 'المزيد · More';
   }
@@ -4474,16 +4282,11 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   function initAlwaysVisibleRow(){
     const row = document.getElementById('alwaysVisibleGrid');
     if(!row) return;
-    row.innerHTML = '';
-    ALWAYS_VISIBLE_IDS.forEach(id => {
-      const p = platforms.find(x => x.id === id);
-      if(!p) return;
-      const btn = document.createElement('button');
-      btn.style.cssText = `padding: 8px 12px; background: ${p.color}; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; font-family:'Tajawal';`;
-      btn.innerHTML = `<span style="display:flex;width:18px;height:18px;">${platSvg(id)}</span> ${p.name}`;
-      btn.onclick = () => window.selectPlatformTile(p);
-      row.appendChild(btn);
-    });
+    row.innerHTML = ALWAYS_VISIBLE_IDS
+      .map(id => platforms.find(x => x.id === id))
+      .filter(Boolean)
+      .map(platformCardHtml)
+      .join('');
   }
 
   window.toggleMorePlatforms = function() {
@@ -4527,8 +4330,10 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     document.querySelectorAll('#socColorModeGroup button').forEach(b => b.style.borderColor = 'var(--border)');
     if(mode === 'brand') document.getElementById('cmBrand').style.borderColor = 'var(--primary)';
     if(mode === 'site') document.getElementById('cmTheme').style.borderColor = 'var(--primary)';
+    if(mode === 'custom') document.getElementById('cmCustom').style.borderColor = 'var(--primary)';
     if(mode === 'upload') document.getElementById('cmUpload').style.borderColor = 'var(--primary)';
     document.getElementById('customIconUpload').style.display = mode === 'upload' ? 'block' : 'none';
+    document.getElementById('customColorPanel').style.display = mode === 'custom' ? 'block' : 'none';
   };
 
   let detectTimeout;
@@ -4586,8 +4391,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         url: url,
         description: '',
         featured: false,
+        hidden: false,
         styleMode: socialColorMode || 'brand',
         icon: (socialColorMode === 'upload' && customSocialIconBase64) ? customSocialIconBase64 : null,
+        customBg: socialColorMode === 'custom' ? (document.getElementById('newCustomBg').value || '#3d5af1') : null,
+        customRing: socialColorMode === 'custom' ? (document.getElementById('newCustomRing').value || '#ffffff') : null,
+        customIconColor: socialColorMode === 'custom' ? (document.getElementById('newCustomIconColor').value || '#ffffff') : null,
+        customNameColor: socialColorMode === 'custom' ? (document.getElementById('newCustomNameColor').value || '#0f1535') : null,
         views: 0
       };
       socials.push(entry);
@@ -4602,6 +4412,29 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     }
   };
 
+  let gallerySocialsCache = [];
+  let gallerySelectedId = null;
+
+  function socIconInnerHtml(soc, mode, iconGlyphColor){
+    return (mode==='upload' && soc.icon)
+      ? `<img src="${soc.icon}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
+      : `<span style="display:flex;width:26px;height:26px;color:${iconGlyphColor};">${platSvg(soc.platformId)||''}</span>`;
+  }
+
+  function socColorsFor(soc){
+    const mode = soc.styleMode || 'brand';
+    let bg, ring, iconColor;
+    if(mode==='custom'){
+      bg = soc.customBg||'#3d5af1'; ring = soc.customRing||'#ffffff'; iconColor = soc.customIconColor||'#ffffff';
+    } else if(mode==='site'){
+      const pal = currentIconShape==='rect' ? currentIconPaletteRect : currentIconPaletteCircle;
+      bg = (pal && pal.length) ? pal[0] : 'var(--primary)'; ring='var(--border)'; iconColor='var(--text)';
+    } else {
+      bg = soc.brandColor||'var(--primary)'; ring='transparent'; iconColor='#ffffff';
+    }
+    return { mode, bg, ring, iconColor };
+  }
+
   async function loadSocials(preloadedData) {
     if (!currentUser) return;
     const registry = document.getElementById('socialsRegistry');
@@ -4615,93 +4448,132 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         if(snap.exists() && Array.isArray(snap.data().socials)) socials = snap.data().socials;
       }
     } catch(e){}
+    gallerySocialsCache = socials;
 
     if(!socials.length) {
-      registry.innerHTML = '<div class="empty">لا توجد شبكات مضافة</div>';
+      registry.innerHTML = '<div class="empty">لا توجد شبكات مضافة — أضف أول حساب من الأعلى ↑</div>';
+      document.getElementById('socEditPanel').innerHTML = '';
       return;
     }
-    socials.forEach(soc => {
-      try {
-      const id = soc.id;
-      const div = document.createElement('div');
-      div.className = 'item';
-      const mode = soc.styleMode || 'brand';
-      const iconBg = mode==='brand' ? (soc.brandColor||'var(--primary)') : (mode==='custom' ? (soc.customBg||'var(--primary)') : 'var(--primary)');
-      const ringColor = mode==='custom' ? (soc.customRing||'transparent') : 'transparent';
-      const iconGlyphColor = mode==='custom' ? (soc.customIconColor||'#ffffff') : '#ffffff';
-      const containerColor = mode==='custom' ? (soc.customContainer||'transparent') : 'transparent';
-      const iconInner = (mode==='upload' && soc.icon)
-        ? `<img src="${soc.icon}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`
-        : `<span style="display:flex;width:18px;height:18px;color:${iconGlyphColor};">${platSvg(soc.platformId)||''}</span>`;
 
-      // معاينة تحاكي شكل الأيقونة الفعلي بصفحتك العامة (دائري أو مستطيل)
-      const isRect = currentIconShape === 'rect';
-      const previewHtml = isRect
-        ? `<div id="socIconPrev_${id}" style="position:relative;width:88px;height:36px;background:${iconBg};border:2px solid ${ringColor};border-radius:${currentRectStyle==='sharp'?'4px':'10px'};display:flex;align-items:stretch;overflow:hidden;">
-             <div style="width:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;">${iconInner}</div>
-             <div style="position:absolute;top:0;bottom:0;right:36px;width:2px;background:currentColor;opacity:0.35;z-index:2;${currentRectStyle==='sharp'?'transform:skewX(-18deg);':''}"></div>
-             <div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:${iconGlyphColor};position:relative;z-index:1;">يوزر</div>
-           </div>`
-        : `<div id="socIconPrev_${id}" style="width:32px; height:32px; background:${iconBg}; border-radius:6px; display:flex; align-items:center; justify-content:center; border:2px solid ${ringColor};">${iconInner}</div>`;
+    const isRect = currentIconShape === 'rect';
+    const cardsHtml = socials.map(soc => {
+      const { mode, bg, ring, iconColor } = socColorsFor(soc);
+      const inner = socIconInnerHtml(soc, mode, iconColor);
+      const isOpen = gallerySelectedId === soc.id;
+      const isHidden = !!soc.hidden;
+      return `
+        <button type="button" class="soc-card ${isRect?'rect':''} ${isOpen?'is-open':''}" onclick="window.toggleSocGallerySelect('${soc.id}')">
+          <div class="soc-card-icon ${isHidden?'is-hidden':''}" style="background:${bg};border:2px solid ${ring};">
+            ${inner}
+            ${isHidden ? `<span class="soc-card-hidden-badge" title="مخفي">🚫</span>` : ''}
+          </div>
+          <div class="soc-card-name">${soc.platformName||soc.name||''}</div>
+        </button>`;
+    }).join('');
 
-      div.innerHTML = `
-        <div class="item-header" style="display:flex; align-items:center; gap:10px;">
-          <div id="socIconContainer_${id}" style="padding:4px;border-radius:9px;background:${containerColor};">
-            ${previewHtml}
-          </div>
-          <div style="flex:1;"><b>${soc.platformName||soc.name||''}</b><div style="font-size:0.75rem; color:var(--muted); word-break:break-all;">${soc.url}</div></div>
-        </div>
-        <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
-          <button onclick="setEditMode('${id}','brand')" class="editmode-btn" data-id="${id}" data-mode="brand" style="flex:1;min-width:70px;padding:6px;border:2px solid ${mode==='brand'?'var(--primary)':'var(--border)'};border-radius:6px;background:var(--bg);cursor:pointer;font-family:'Tajawal';font-size:0.72rem;font-weight:700;">لون التطبيق</button>
-          <button onclick="setEditMode('${id}','custom')" class="editmode-btn" data-id="${id}" data-mode="custom" style="flex:1;min-width:70px;padding:6px;border:2px solid ${mode==='custom'?'var(--primary)':'var(--border)'};border-radius:6px;background:var(--bg);cursor:pointer;font-family:'Tajawal';font-size:0.72rem;font-weight:700;">🎨 تخصيص</button>
-          <button onclick="document.getElementById('editIconFile_${id}').click()" style="flex:1;min-width:70px;padding:6px;border:2px solid ${mode==='upload'?'var(--primary)':'var(--border)'};border-radius:6px;background:var(--bg);cursor:pointer;font-family:'Tajawal';font-size:0.72rem;font-weight:700;">رفع صورة</button>
-          <input type="file" id="editIconFile_${id}" accept="image/*" style="display:none;" onchange="uploadEditIcon('${id}',this)">
-          <button class="btn-delete" onclick="deleteSocial('${id}')" style="flex-shrink:0;">حذف</button>
-        </div>
-        ${mode==='custom' ? `
-        <div style="margin-top:10px;padding:12px;background:var(--bg2);border-radius:10px;">
-          <div style="font-size:0.75rem;font-weight:700;color:var(--muted);margin-bottom:10px;">🖼 معاينة مباشرة · Live Preview أعلاه</div>
-          <div style="display:grid;grid-template-columns:1fr;gap:10px;">
-            <div>
-              <label style="font-size:0.72rem;display:block;margin-bottom:4px;">لون الخلفية · Background</label>
-              <input type="color" class="color-box-picker" value="${soc.customBg||'#3d5af1'}" oninput="updateCustomSocialColor('${id}','customBg',this.value)">
-            </div>
-            <div>
-              <label style="font-size:0.72rem;display:block;margin-bottom:4px;">لون الأيقونة · Icon</label>
-              <input type="color" class="color-box-picker" value="${soc.customIconColor||'#ffffff'}" oninput="updateCustomSocialColor('${id}','customIconColor',this.value)">
-            </div>
-            <div>
-              <label style="font-size:0.72rem;display:block;margin-bottom:4px;">اللون الدائري · Ring</label>
-              <input type="color" class="color-box-picker" value="${soc.customRing||'#ffffff'}" oninput="updateCustomSocialColor('${id}','customRing',this.value)">
-            </div>
-            <div>
-              <label style="font-size:0.72rem;display:block;margin-bottom:4px;">لون الحاوية · Container</label>
-              <input type="color" class="color-box-picker" value="${soc.customContainer||'#ffffff'}" oninput="updateCustomSocialColor('${id}','customContainer',this.value)">
-            </div>
-          </div>
-        </div>` : ''}`;
-      registry.appendChild(div);
-      } catch(itemErr) {
-        console.error('loadSocials: failed to render one social item, skipping it:', soc, itemErr);
-      }
-    });
+    const showHint = socials.length >= 3;
+    registry.innerHTML = `
+      <div class="soc-gallery-wrap">
+        ${showHint ? `
+          <span class="soc-swipe-hint right" style="--fx:1;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+          </span>` : ''}
+        <div class="soc-gallery" id="socGalleryTrack">${cardsHtml}</div>
+        ${showHint ? `
+          <span class="soc-swipe-hint left" style="--fx:1;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+          </span>` : ''}
+      </div>
+      ${showHint ? `<div class="soc-swipe-caption">‹ اسحب لرؤية باقي الحسابات · Swipe ›</div>` : ''}
+    `;
+
+    renderSocEditPanel();
   }
 
-  // تحديث لحظي لألوان التخصيص الأربعة + معاينة مباشرة قبل الحفظ بقاعدة البيانات
+  // فتح/إغلاق لوحة تعديل حساب واحد من المعرض (بطاقة واحدة مفعّلة كل مرة)
+  window.toggleSocGallerySelect = function(id){
+    gallerySelectedId = (gallerySelectedId === id) ? null : id;
+    loadSocials(); // إعادة رسم خفيفة تعكس outline البطاقة المفتوحة
+  };
+
+  function renderSocEditPanel(){
+    const panel = document.getElementById('socEditPanel');
+    if(!gallerySelectedId){ panel.innerHTML = ''; return; }
+    const soc = gallerySocialsCache.find(s => s.id === gallerySelectedId);
+    if(!soc){ panel.innerHTML = ''; return; }
+    const id = soc.id;
+    const mode = soc.styleMode || 'brand';
+    const isHidden = !!soc.hidden;
+
+    panel.innerHTML = `
+      <div style="margin-top:4px;padding:14px;background:var(--bg2);border-radius:14px;border:1.5px solid var(--border);animation:fadeIn .2s;">
+        <div style="display:flex;align-items:center;justify-content:between;gap:8px;margin-bottom:10px;">
+          <b style="flex:1;">${soc.platformName||soc.name||''}</b>
+          <button onclick="window.toggleSocGallerySelect('${id}')" style="background:none;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer;line-height:1;">✕</button>
+        </div>
+        <div style="font-size:0.75rem;color:var(--muted);word-break:break-all;margin-bottom:10px;">${soc.url}</div>
+
+        <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
+          <button onclick="setEditMode('${id}','brand')" class="editmode-btn" style="flex:1;min-width:70px;padding:7px;border:2px solid ${mode==='brand'?'var(--primary)':'var(--border)'};border-radius:8px;background:var(--bg);cursor:pointer;font-family:'Tajawal';font-size:0.72rem;font-weight:700;">لون التطبيق</button>
+          <button onclick="setEditMode('${id}','site')" class="editmode-btn" style="flex:1;min-width:70px;padding:7px;border:2px solid ${mode==='site'?'var(--primary)':'var(--border)'};border-radius:8px;background:var(--bg);cursor:pointer;font-family:'Tajawal';font-size:0.72rem;font-weight:700;">ألوان الموقع</button>
+          <button onclick="setEditMode('${id}','custom')" class="editmode-btn" style="flex:1;min-width:70px;padding:7px;border:2px solid ${mode==='custom'?'var(--primary)':'var(--border)'};border-radius:8px;background:var(--bg);cursor:pointer;font-family:'Tajawal';font-size:0.72rem;font-weight:700;">🎨 مخصص</button>
+          <button onclick="document.getElementById('editIconFile_${id}').click()" style="flex:1;min-width:70px;padding:7px;border:2px solid ${mode==='upload'?'var(--primary)':'var(--border)'};border-radius:8px;background:var(--bg);cursor:pointer;font-family:'Tajawal';font-size:0.72rem;font-weight:700;">رفع من الجهاز</button>
+          <input type="file" id="editIconFile_${id}" accept="image/*" style="display:none;" onchange="uploadEditIcon('${id}',this)">
+        </div>
+
+        ${mode==='custom' ? `
+        <div style="margin-bottom:10px;padding:12px;background:var(--bg);border-radius:10px;">
+          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);margin-bottom:10px;">🖼 معاينة مباشرة على البطاقة أعلاه</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div><label style="font-size:0.7rem;display:block;margin-bottom:4px;">خلفية الدائرة</label><input type="color" class="color-box-picker" value="${soc.customBg||'#3d5af1'}" oninput="updateCustomSocialColor('${id}','customBg',this.value)"></div>
+            <div><label style="font-size:0.7rem;display:block;margin-bottom:4px;">لون الدائرة</label><input type="color" class="color-box-picker" value="${soc.customRing||'#ffffff'}" oninput="updateCustomSocialColor('${id}','customRing',this.value)"></div>
+            <div><label style="font-size:0.7rem;display:block;margin-bottom:4px;">أيقونة التطبيق</label><input type="color" class="color-box-picker" value="${soc.customIconColor||'#ffffff'}" oninput="updateCustomSocialColor('${id}','customIconColor',this.value)"></div>
+            <div><label style="font-size:0.7rem;display:block;margin-bottom:4px;">لون الاسم</label><input type="color" class="color-box-picker" value="${soc.customNameColor||'#0f1535'}" oninput="updateCustomSocialColor('${id}','customNameColor',this.value)"></div>
+          </div>
+        </div>` : ''}
+
+        <div style="display:flex;gap:8px;">
+          <button onclick="window.toggleSocHidden('${id}')" style="flex:1;padding:9px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:'Tajawal';font-weight:700;font-size:0.78rem;color:var(--text2);display:flex;align-items:center;justify-content:center;gap:6px;">
+            ${isHidden
+              ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg> إظهار الحساب'
+              : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-11-8-11-8a18.4 18.4 0 015.06-5.94M9.9 4.24A10.9 10.9 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19M14.12 14.12a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg> إخفاء عن الزوّار'}
+          </button>
+          <button class="btn-delete" onclick="deleteSocial('${id}')" style="flex-shrink:0;">حذف</button>
+        </div>
+      </div>`;
+  }
+
+  // إخفاء/إظهار حساب فردي عن زوار الصفحة العامة بدون حذفه
+  window.toggleSocHidden = async function(id){
+    try {
+      const userRef = doc(db, "users", currentUser.uid);
+      const snap = await getDoc(userRef);
+      const socials = (snap.exists() && Array.isArray(snap.data().socials)) ? snap.data().socials : [];
+      const idx = socials.findIndex(s => s.id === id);
+      if(idx<0) return;
+      socials[idx].hidden = !socials[idx].hidden;
+      await setDoc(userRef, { socials: socials }, { merge: true });
+      window.showToast(socials[idx].hidden ? "تم إخفاء الحساب عن الزوّار" : "الحساب ظاهر الآن للزوّار");
+      loadSocials();
+    } catch(e){ window.showToast("تعذر التحديث: "+(e.message||'')); }
+  };
+
+  // تحديث لحظي لألوان التخصيص الأربعة (خلفية/دائرة/أيقونة/اسم) + معاينة فورية على بطاقة المعرض
   let customColorSaveTimer = null;
   window.updateCustomSocialColor = function(id, field, value){
-    // تحديث المعاينة فوراً بدون انتظار الحفظ
-    const iconEl = document.getElementById('socIconPrev_'+id);
-    const containerEl = document.getElementById('socIconContainer_'+id);
-    if(iconEl){
-      if(field==='customBg') iconEl.style.background = value;
-      if(field==='customRing') iconEl.style.borderColor = value;
+    // تحديث فوري بالذاكرة المحلية لإعادة رسم البطاقة بدون وميض أو انتظار الحفظ
+    const item = gallerySocialsCache.find(s => s.id === id);
+    if(item) item[field] = value;
+    const cardIcon = document.querySelector(`#socGalleryTrack button[onclick*="'${id}'"] .soc-card-icon`);
+    if(cardIcon){
+      if(field==='customBg') cardIcon.style.background = value;
+      if(field==='customRing') cardIcon.style.borderColor = value;
       if(field==='customIconColor'){
-        const span = iconEl.querySelector('span');
+        const span = cardIcon.querySelector('span');
         if(span) span.style.color = value;
       }
     }
-    if(containerEl && field==='customContainer') containerEl.style.background = value;
 
     // احفظ بقاعدة البيانات بعد توقف قصير عن التغيير (تفادي كتابة متكررة أثناء السحب على منتقي اللون)
     clearTimeout(customColorSaveTimer);
@@ -4733,7 +4605,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         if(!socials[idx].customBg) socials[idx].customBg = socials[idx].brandColor || '#3d5af1';
         if(!socials[idx].customIconColor) socials[idx].customIconColor = '#ffffff';
         if(!socials[idx].customRing) socials[idx].customRing = '#ffffff';
-        if(!socials[idx].customContainer) socials[idx].customContainer = '#ffffff';
+        if(!socials[idx].customNameColor) socials[idx].customNameColor = '#0f1535';
       }
       await setDoc(userRef, { socials: socials }, { merge: true });
       window.showToast("تم تحديث شكل الأيقونة");
@@ -5276,9 +5148,33 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     }
   };
 
-  // تنزيل نسخة احتياطية كاملة قبل الحذف (JSON) — يعتمد على نفس محرك "تصدير نسخة كاملة" في تبويب ملفي
+  // تنزيل نسخة احتياطية كاملة قبل الحذف (JSON)
   window.backupBeforeDelete = async function() {
-    await window.exportFullBackup();
+    try {
+      const snap = await getDoc(doc(db, "users", currentUser.uid));
+      const data = snap.exists() ? snap.data() : {};
+      // جلب الروابط من subcollection أيضاً
+      let links = [];
+      try {
+        const ls = await getDocs(collection(db, "users", currentUser.uid, "links"));
+        ls.forEach(d => links.push(d.data()));
+      } catch(e){}
+      const backup = {
+        exportedAt: new Date().toISOString(),
+        email: currentUser.email,
+        uid: currentUser.uid,
+        profile: data,
+        links: links
+      };
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `electrwni-backup-${(data.username||'account')}.json`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      window.showToast("تم تنزيل النسخة الاحتياطية");
+    } catch(e) { window.showToast("تعذر التنزيل: " + (e.message||'')); }
   };
 
   window.deleteAccount = async function() {
