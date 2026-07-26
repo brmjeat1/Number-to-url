@@ -1317,6 +1317,27 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       </div>
     </div>
 
+    <div class="expandable">
+      <div class="expandable-header" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon">⬇</div><span>الموقع بأكمله<span class="title-sub">Full Site</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content">
+        <p style="font-size:0.82rem;color:var(--muted);margin-bottom:16px;line-height:1.6;">
+          صدّر نسخة كاملة من موقعك (بياناتك، تصميم صفحتك بالكامل، وروابطك)، أو استوردها لاحقاً لاستعادة موقعك كما كان.<br>
+          <span style="font-size:0.72rem;color:var(--muted);">Export a full copy of your site (profile, full design, and links), or import one to restore it later.</span>
+        </p>
+        <button onclick="exportFullBackup()" class="export-pill pill-json" style="margin-bottom:16px;">
+          <span class="pill-badge">JSON</span>
+          <span class="pill-text"><b>تصدير الموقع بأكمله</b><small>ملف واحد يشمل كل شيء</small></span>
+        </button>
+        <div style="height:1px;background:var(--border);margin:0 0 16px;"></div>
+        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:10px;">استيراد نسخة سابقة سيستبدل تصميم موقعك وبياناتك وروابطك الحالية · Importing replaces your current site</p>
+        <button onclick="document.getElementById('importFullFile').click()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border:1.5px dashed var(--primary);border-radius:12px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;color:var(--primary);">⬆ اختر ملف JSON لاستيراد الموقع بأكمله</button>
+        <input type="file" id="importFullFile" accept=".json,application/json" style="display:none;" onchange="importFullBackup(this)">
+      </div>
+    </div>
+
     <div class="expandable" style="border-color:#ffd0d8;">
       <div class="expandable-header" onclick="toggleExpand(this)" style="background:#fff5f7;">
         <div class="expandable-title" style="color:var(--error);">
@@ -3982,6 +4003,66 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     } catch(e){ window.showToast("تعذر التصدير: " + (e.message||'')); }
   };
 
+  // ===== تصدير واستيراد الموقع بأكمله (تصميم + إعدادات + بيانات + روابط) — تبويب "ملفي" =====
+  window.exportFullBackup = async function(){
+    window.showToast("جاري تجهيز نسخة الموقع بأكمله...");
+    try {
+      let userData = {};
+      try {
+        const snap = await getDoc(doc(db, "users", currentUser.uid));
+        if(snap.exists()) userData = snap.data();
+      } catch(e){}
+      const uname = (userData.username || document.getElementById('pfUser').value || 'account').trim();
+      const backup = {
+        exportedAt: new Date().toISOString(),
+        email: currentUser.email,
+        uid: currentUser.uid,
+        profile: userData   // يشمل كل شيء: الاسم والنبذة والتصميم (الألوان/الخلفية/الشعار/الغلاف) وروابط الموقع
+      };
+      downloadBlob(JSON.stringify(backup, null, 2), `electrwni-${uname}-full-backup.json`, 'application/json');
+      window.showToast("تم تصدير الموقع بأكمله");
+    } catch(e){ window.showToast("تعذر التصدير: " + (e.message||'')); }
+  };
+
+  window.importFullBackup = function(input){
+    if(!input.files || !input.files[0]) return;
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const data = JSON.parse(e.target.result);
+        const profile = (data && typeof data.profile === 'object') ? data.profile : data;
+        if(!profile || typeof profile !== 'object' || Array.isArray(profile)){
+          window.showToast("ملف غير صالح"); return;
+        }
+        if(!confirm("سيستبدل هذا تصميم موقعك وبياناتك وروابطك الحالية بمحتوى الملف. هل تريد المتابعة؟")) return;
+        window.showToast("جاري استيراد الموقع بأكمله...");
+
+        const restoreData = { ...profile };
+        // نستثني حقول مرتبطة بالحساب/الفهرسة كي لا نكسر تسجيل الدخول أو رابط اسم المستخدم المحجوز
+        delete restoreData.email;
+        delete restoreData.uid;
+        delete restoreData.createdAt;
+        delete restoreData.username;
+
+        // تطبيع الروابط (تدعم البنية القديمة number/num والجديدة title/label)
+        if(Array.isArray(profile.links)){
+          restoreData.links = profile.links.map((l,i) => ({
+            id: l.id || ('lnk_' + Date.now() + '_' + i),
+            number: l.number ?? l.num ?? (i+1), num: l.number ?? l.num ?? (i+1),
+            title: l.title || l.label || '', label: l.title || l.label || '',
+            url: l.url || '', text: l.text || '', type: l.type || 'link',
+            description: l.description || '', views: l.views || 0
+          }));
+        }
+
+        await setDoc(doc(db, "users", currentUser.uid), restoreData, { merge: true });
+        window.showToast("تم استيراد الموقع بأكمله بنجاح، جاري إعادة التحميل...");
+        setTimeout(() => window.location.reload(), 1000);
+      } catch(err){ window.showToast("ملف غير صالح: " + (err.message||'')); }
+    };
+    reader.readAsText(input.files[0]);
+  };
+
   // ===== بناء تقرير PDF احترافي (معاينة داخل الصفحة نفسها — لا نوافذ منبثقة إطلاقاً) =====
   function buildArabicDateParts(){
     const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
@@ -5048,33 +5129,9 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     }
   };
 
-  // تنزيل نسخة احتياطية كاملة قبل الحذف (JSON)
+  // تنزيل نسخة احتياطية كاملة قبل الحذف (JSON) — يعتمد على نفس محرك "تصدير نسخة كاملة" في تبويب ملفي
   window.backupBeforeDelete = async function() {
-    try {
-      const snap = await getDoc(doc(db, "users", currentUser.uid));
-      const data = snap.exists() ? snap.data() : {};
-      // جلب الروابط من subcollection أيضاً
-      let links = [];
-      try {
-        const ls = await getDocs(collection(db, "users", currentUser.uid, "links"));
-        ls.forEach(d => links.push(d.data()));
-      } catch(e){}
-      const backup = {
-        exportedAt: new Date().toISOString(),
-        email: currentUser.email,
-        uid: currentUser.uid,
-        profile: data,
-        links: links
-      };
-      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `electrwni-backup-${(data.username||'account')}.json`;
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      window.showToast("تم تنزيل النسخة الاحتياطية");
-    } catch(e) { window.showToast("تعذر التنزيل: " + (e.message||'')); }
+    await window.exportFullBackup();
   };
 
   window.deleteAccount = async function() {
