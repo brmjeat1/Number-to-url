@@ -594,7 +594,11 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 .soc-attr-name{font-size:0.72rem;font-weight:700;color:var(--text2);}
 
 /* صندوق معاينة كبير مطابق لحجم أمثلة الصورة المرجعية */
-.soc-live-box{width:100%;min-height:96px;border:2.5px solid #0f1535;border-radius:16px;display:flex;align-items:center;padding:14px 18px;gap:14px;background:#fff;box-sizing:border-box;}
+.soc-live-box{width:100%;min-height:96px;border:2.5px solid #0f1535;border-radius:16px;display:flex;align-items:center;padding:14px 18px;gap:14px;background:#fff;box-sizing:border-box;position:relative;}
+.soc-live-box.shape-circle{flex-direction:column;justify-content:center;gap:8px;text-align:center;}
+.soc-live-box .soc-live-edit-btn{position:absolute;top:8px;left:8px;width:30px;height:30px;border-radius:9px;border:1.5px solid var(--border,#ddd);background:var(--bg2,#f3f4f8);color:var(--text2,#555);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.soc-live-box .soc-live-edit-btn:active{background:var(--primary,#3d5af1);color:#fff;}
+.soc-live-box .soc-live-name-input{font-weight:700;font-size:1rem;border:1.5px dashed var(--primary,#3d5af1);border-radius:8px;padding:4px 8px;background:#fff;font-family:inherit;max-width:60%;}
 .soc-live-box .soc-live-icon{width:56px;height:56px;flex-shrink:0;border-radius:14px;display:flex;align-items:center;justify-content:center;}
 .soc-live-box .soc-live-icon svg{width:32px;height:32px;}
 .soc-live-box .soc-live-name{font-weight:700;font-size:1rem;}
@@ -1564,7 +1568,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   let cropper = null;
   let currentCropType = ''; 
   let selectedSocialPlatform = null;
-  let socialColorMode = 'site';
+  let socialColorMode = 'brand';
   let croppedAvatarBase64 = null;
   let croppedBannerBase64 = null;
   let croppedBgImageBase64 = null;   // صورة خلفية الصفحة الكاملة (منفصلة عن البانر)
@@ -2164,8 +2168,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         <div class="soc-live-box"><span class="soc-live-icon" style="background:${bg};border:2px solid ${ring};">${qrGlyph}</span><span class="soc-live-name" style="color:${nameColor};">رمز QR</span></div>`;
     } else {
       box.innerHTML = `
-        <div class="soc-live-box" style="justify-content:center;"><span class="soc-live-icon" style="background:${bg};border:2px solid ${ring};width:64px;height:64px;">${sampleGlyph}</span><span class="soc-live-name" style="color:${nameColor};">Instagram</span></div>
-        <div class="soc-live-box" style="justify-content:center;"><span class="soc-live-icon" style="background:${bg};border:2px solid ${ring};width:64px;height:64px;">${qrGlyph}</span><span class="soc-live-name" style="color:${nameColor};">رمز QR</span></div>`;
+        <div class="soc-live-box shape-circle"><span class="soc-live-icon" style="background:${bg};border:2px solid ${ring};width:72px;height:72px;">${sampleGlyph}</span><span class="soc-live-name" style="color:${nameColor};">Instagram</span></div>
+        <div class="soc-live-box shape-circle"><span class="soc-live-icon" style="background:${bg};border:2px solid ${ring};width:72px;height:72px;">${qrGlyph}</span><span class="soc-live-name" style="color:${nameColor};">رمز QR</span></div>`;
     }
   };
 
@@ -4276,6 +4280,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   // 5. محرك التواصل الاجتماعي والشبكات (Socials Accounts)
   window.selectPlatformTile = function(p){
     if(p.isQr){ window.openQrCard(); return; }
+    window.newSocDisplayName = null;
     selectedSocialPlatform = p;
     document.getElementById('socialFormBox').style.display = 'block';
     document.getElementById('socUrlLabel').innerHTML = `حساب ${p.name} <span class="lbl-sub">/ ${p.id} account</span>`;
@@ -4300,7 +4305,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     document.getElementById('socColorModeGroup').style.display = 'block';
     document.getElementById('socLivePreviewWrap').style.display = 'block';
     syncShapeTiles();
-    setSocColorMode('site');
+    setSocColorMode('brand');
     detectNow();
     renderSocLivePreview();
   };
@@ -4364,7 +4369,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     document.getElementById('socColorModeGroup').style.display = 'block';
     document.getElementById('socLivePreviewWrap').style.display = 'block';
     syncShapeTiles();
-    setSocColorMode('site');
+    setSocColorMode('brand');
     detectNow();
     renderSocLivePreview();
     if(!detected){
@@ -4373,6 +4378,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   };
 
   window.closeSocialForm = function() {
+    window.newSocDisplayName = null;
     document.getElementById('socialFormBox').style.display = 'none';
     document.getElementById('socDetectedPreview').style.display = 'none';
     document.getElementById('socShapeGroup').style.display = 'none';
@@ -4399,11 +4405,14 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   }
 
   // معاينة كبيرة مباشرة أثناء إضافة حساب جديد (قبل الحفظ)
+  window.newSocDisplayName = null; // اسم مخصص يكتبه المستخدم بدل اسم المنصة الافتراضي (يُصفَّر عند اختيار منصة جديدة)
+
   window.renderSocLivePreview = function(){
     const box = document.getElementById('socLivePreview');
     if(!box || !selectedSocialPlatform) return;
     syncShapeTiles();
     const p = selectedSocialPlatform;
+    const displayName = window.newSocDisplayName !== null ? window.newSocDisplayName : p.name;
     let bg, ring, iconColor, nameColor;
     if(socialColorMode === 'custom'){
       bg = document.getElementById('newCustomBg')?.value || '#3d5af1';
@@ -4417,19 +4426,48 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       bg = p.color; ring='transparent'; iconColor = (p.id==='snapchat'?'#000':'#fff'); nameColor='#0f1535';
     }
     const glyph = `<span style="display:flex;color:${iconColor};">${platSvg(p.id)}</span>`;
+    const editBtn = `<button type="button" class="soc-live-edit-btn" onclick="startEditSocLiveName('new')" aria-label="تعديل النص"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>`;
     if(currentIconShape === 'rect'){
       box.innerHTML = `
         <div class="soc-live-box">
+          ${editBtn}
           <span class="soc-live-icon" style="background:${bg};border:2px solid ${ring};">${glyph}</span>
-          <span class="soc-live-name" style="color:${nameColor};">${p.name}</span>
+          <span class="soc-live-name" id="socLiveNameText_new" style="color:${nameColor};">${displayName}</span>
         </div>`;
     } else {
       box.innerHTML = `
-        <div class="soc-live-box" style="justify-content:center;">
-          <span class="soc-live-icon" style="background:${bg};border:2px solid ${ring};width:64px;height:64px;">${glyph}</span>
-          <span class="soc-live-name" style="color:${nameColor};">${p.name}</span>
+        <div class="soc-live-box shape-circle">
+          ${editBtn}
+          <span class="soc-live-icon" style="background:${bg};border:2px solid ${ring};width:72px;height:72px;">${glyph}</span>
+          <span class="soc-live-name" id="socLiveNameText_new" style="color:${nameColor};">${displayName}</span>
         </div>`;
     }
+  };
+
+  // تفعيل تعديل النص المكتوب أسفل/بجانب المعاينة: يحوّل النص الثابت لحقل إدخال فوري
+  window.startEditSocLiveName = function(kind){
+    const nameEl = document.getElementById(kind==='new' ? 'socLiveNameText_new' : ('socEditNameText_'+kind));
+    if(!nameEl) return;
+    const current = nameEl.textContent;
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = current;
+    input.className = 'soc-live-name-input';
+    input.style.color = nameEl.style.color;
+    nameEl.replaceWith(input);
+    input.focus();
+    input.select();
+    const commit = () => {
+      const val = input.value.trim() || current;
+      if(kind === 'new'){
+        window.newSocDisplayName = val;
+        renderSocLivePreview();
+      } else {
+        window.commitSocEditName(kind, val);
+      }
+    };
+    input.addEventListener('blur', commit);
+    input.addEventListener('keydown', e => { if(e.key==='Enter'){ input.blur(); } });
   };
 
   let detectTimeout;
@@ -4478,17 +4516,18 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       const data = snap.exists() ? snap.data() : {};
       const socials = Array.isArray(data.socials) ? data.socials : [];
       // كائن نظيف بلا أي undefined (Firestore يرفض undefined)
+      const finalName = (window.newSocDisplayName !== null && window.newSocDisplayName.trim()) ? window.newSocDisplayName.trim() : (selectedSocialPlatform.name || '');
       const entry = {
         id: 'soc_' + Date.now(),
         platformId: selectedSocialPlatform.id || 'website',
-        platformName: selectedSocialPlatform.name || '',
-        name: selectedSocialPlatform.name || '',
+        platformName: finalName,
+        name: finalName,
         brandColor: selectedSocialPlatform.color || '#3d5af1',
         url: url,
         description: '',
         featured: false,
         hidden: false,
-        styleMode: socialColorMode || 'site',
+        styleMode: socialColorMode || 'brand',
         icon: (socialColorMode === 'upload' && customSocialIconBase64) ? customSocialIconBase64 : null,
         customBg: socialColorMode === 'custom' ? (document.getElementById('newCustomBg').value || '#3d5af1') : null,
         customRing: socialColorMode === 'custom' ? (document.getElementById('newCustomRing').value || '#ffffff') : null,
@@ -4665,15 +4704,36 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       const { bg, ring, iconColor } = socColorsFor(soc);
       const nameColor = (mode==='custom' && soc.customNameColor) ? soc.customNameColor : '#0f1535';
       const glyph = `<span style="display:flex;color:${iconColor};">${platSvg(soc.platformId)||''}</span>`;
+      const label = soc.platformName || soc.name || '';
+      const editBtn = `<button type="button" class="soc-live-edit-btn" onclick="startEditSocLiveName('${id}')" aria-label="تعديل النص"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>`;
       if(currentIconShape === 'rect'){
-        previewBox.innerHTML = `<div class="soc-live-box"><span class="soc-live-icon" style="background:${bg};border:2px solid ${ring};">${glyph}</span><span class="soc-live-name" style="color:${nameColor};">${soc.platformName||soc.name||''}</span></div>`;
+        previewBox.innerHTML = `<div class="soc-live-box">${editBtn}<span class="soc-live-icon" style="background:${bg};border:2px solid ${ring};">${glyph}</span><span class="soc-live-name" id="socEditNameText_${id}" style="color:${nameColor};">${label}</span></div>`;
       } else {
-        previewBox.innerHTML = `<div class="soc-live-box" style="justify-content:center;"><span class="soc-live-icon" style="background:${bg};border:2px solid ${ring};width:64px;height:64px;">${glyph}</span><span class="soc-live-name" style="color:${nameColor};">${soc.platformName||soc.name||''}</span></div>`;
+        previewBox.innerHTML = `<div class="soc-live-box shape-circle">${editBtn}<span class="soc-live-icon" style="background:${bg};border:2px solid ${ring};width:72px;height:72px;">${glyph}</span><span class="soc-live-name" id="socEditNameText_${id}" style="color:${nameColor};">${label}</span></div>`;
       }
     }, 0);
   }
 
   // إخفاء/إظهار حساب فردي عن زوار الصفحة العامة بدون حذفه
+  // حفظ الاسم الجديد لحساب موجود بعد تعديله عبر القلم بالمعاينة المباشرة
+  window.commitSocEditName = async function(id, newName){
+    const item = gallerySocialsCache.find(s => s.id === id);
+    if(item){ item.platformName = newName; item.name = newName; }
+    const rowName = document.querySelector(`.soc-row-edit[onclick*="'${id}'"]`)?.closest('.soc-row')?.querySelector('.soc-row-name');
+    if(rowName) rowName.textContent = newName;
+    try {
+      const userRef = doc(db, "users", currentUser.uid);
+      const snap = await getDoc(userRef);
+      const socials = (snap.exists() && Array.isArray(snap.data().socials)) ? snap.data().socials : [];
+      const idx = socials.findIndex(s => s.id === id);
+      if(idx<0) return;
+      socials[idx].platformName = newName;
+      socials[idx].name = newName;
+      await setDoc(userRef, { socials: socials }, { merge: true });
+      window.showToast('تم تحديث الاسم');
+    } catch(e){ window.showToast('تعذر حفظ الاسم'); }
+  };
+
   window.toggleSocHidden = async function(id){
     try {
       const userRef = doc(db, "users", currentUser.uid);
