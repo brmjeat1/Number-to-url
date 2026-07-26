@@ -554,10 +554,10 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 .soc-gallery-wrap{position:relative;margin-top:4px;display:flex;align-items:center;gap:6px;}
 .soc-gallery{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x proximity;padding:6px 4px 10px;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex:1;}
 .soc-gallery::-webkit-scrollbar{display:none;}
-.soc-card{scroll-snap-align:start;flex-shrink:0;width:96px;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;background:none;border:none;font-family:inherit;padding:2px;}
-.soc-card-icon{width:92px;height:92px;border-radius:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,0.12);transition:transform .15s;position:relative;}
+.soc-card{scroll-snap-align:start;flex-shrink:0;width:106px;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;background:none;border:none;font-family:inherit;padding:2px;}
+.soc-card-icon{width:102px;height:102px;border-radius:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,0.12);transition:transform .15s;position:relative;}
 .soc-card.rect .soc-card-icon{border-radius:22px;}
-.soc-card-icon svg, .soc-card-icon span svg{width:46px !important;height:46px !important;}
+.soc-card-icon svg, .soc-card-icon span svg{width:66px !important;height:66px !important;}
 .soc-card:active .soc-card-icon{transform:scale(0.93);}
 .soc-card.is-open .soc-card-icon{outline:3px solid var(--primary);outline-offset:3px;}
 .soc-card-icon.is-hidden{opacity:0.35;}
@@ -573,9 +573,17 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
 /* بلاطة خاصية لون واحدة (خلفية الدائرة/لون الدائرة/الأيقونة/الاسم) */
 .soc-attr-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.soc-attr-tile{display:flex;align-items:center;gap:10px;padding:9px 10px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);cursor:pointer;}
-.soc-attr-tile input[type=color]{width:34px;height:34px;border-radius:9px;border:2px solid var(--border);padding:0;background:var(--sw);flex-shrink:0;}
+.soc-attr-tile{display:flex;align-items:center;gap:10px;padding:9px 10px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);cursor:pointer;position:relative;}
+.soc-attr-tile input[type=color]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.soc-attr-tile-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:2px solid transparent;}
+.soc-attr-ring{background:var(--bg2);border:3px solid var(--border);box-sizing:border-box;}
 .soc-attr-name{font-size:0.72rem;font-weight:700;color:var(--text2);}
+
+/* صندوق معاينة كبير مطابق لحجم أمثلة الصورة المرجعية */
+.soc-live-box{width:100%;min-height:96px;border:2.5px solid #0f1535;border-radius:16px;display:flex;align-items:center;padding:14px 18px;gap:14px;background:#fff;box-sizing:border-box;}
+.soc-live-box .soc-live-icon{width:56px;height:56px;flex-shrink:0;border-radius:14px;display:flex;align-items:center;justify-content:center;}
+.soc-live-box .soc-live-icon svg{width:32px;height:32px;}
+.soc-live-box .soc-live-name{font-weight:700;font-size:1rem;}
 </style>
 </head>
 <body>
@@ -954,6 +962,20 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
             <div id="socDetectHint" style="font-size:0.72rem;color:var(--muted);margin-top:4px;min-height:16px;"></div>
           </div>
 
+          <div id="socShapeGroup" style="display:none;margin-bottom:14px;">
+            <label style="margin-bottom:10px;display:block;font-size:0.84rem;font-weight:700;color:var(--text2);">شكل الأيقونة <span style="font-size:0.7rem;font-weight:400;color:var(--muted);">/ Icon Shape — يُطبَّق على كل حساباتك دفعة واحدة</span></label>
+            <div style="display:flex;gap:10px;">
+              <button type="button" onclick="setIconShape('circle'); renderSocLivePreview();" id="newShapeCircle" class="soc-mode-tile">
+                <span class="soc-mode-tile-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></span>
+                <span>دائري</span>
+              </button>
+              <button type="button" onclick="setIconShape('rect'); renderSocLivePreview();" id="newShapeRect" class="soc-mode-tile">
+                <span class="soc-mode-tile-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="10" rx="3"/></svg></span>
+                <span>مستطيل</span>
+              </button>
+            </div>
+          </div>
+
           <div id="socColorModeGroup" style="display:none;margin-bottom:14px;">
             <label style="margin-bottom:10px;display:block;font-size:0.84rem;font-weight:700;color:var(--text2);">لون الأيقونة <span style="font-size:0.7rem;font-weight:400;color:var(--muted);">/ Icon Style</span></label>
             <div style="display:flex;gap:10px;">
@@ -978,12 +1000,33 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
             </div>
             <div id="customColorPanel" style="display:none;margin-top:12px;">
               <div class="soc-attr-row">
-                <label class="soc-attr-tile"><input type="color" id="newCustomBg" value="#3d5af1" oninput="this.parentElement.style.setProperty('--sw',this.value)" style="--sw:#3d5af1;"><span class="soc-attr-name">خلفية الدائرة</span></label>
-                <label class="soc-attr-tile"><input type="color" id="newCustomRing" value="#ffffff" oninput="this.parentElement.style.setProperty('--sw',this.value)" style="--sw:#ffffff;"><span class="soc-attr-name">لون الدائرة</span></label>
-                <label class="soc-attr-tile"><input type="color" id="newCustomIconColor" value="#ffffff" oninput="this.parentElement.style.setProperty('--sw',this.value)" style="--sw:#ffffff;"><span class="soc-attr-name">أيقونة التطبيق</span></label>
-                <label class="soc-attr-tile"><input type="color" id="newCustomNameColor" value="#0f1535" oninput="this.parentElement.style.setProperty('--sw',this.value)" style="--sw:#0f1535;"><span class="soc-attr-name">لون الاسم</span></label>
+                <label class="soc-attr-tile">
+                  <span class="soc-attr-tile-icon" style="background:var(--sw);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9" fill="#fff" fill-opacity="0.001"/></svg></span>
+                  <input type="color" id="newCustomBg" value="#3d5af1" oninput="this.closest('.soc-attr-tile').style.setProperty('--sw',this.value); renderSocLivePreview();" style="--sw:#3d5af1;">
+                  <span class="soc-attr-name">خلفية الدائرة</span>
+                </label>
+                <label class="soc-attr-tile">
+                  <span class="soc-attr-tile-icon soc-attr-ring" style="border-color:var(--sw);"></span>
+                  <input type="color" id="newCustomRing" value="#ffffff" oninput="this.closest('.soc-attr-tile').style.setProperty('--sw',this.value); renderSocLivePreview();" style="--sw:#ffffff;">
+                  <span class="soc-attr-name">لون الإطار</span>
+                </label>
+                <label class="soc-attr-tile">
+                  <span class="soc-attr-tile-icon" style="background:var(--bg2);color:var(--sw);"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></span>
+                  <input type="color" id="newCustomIconColor" value="#ffffff" oninput="this.closest('.soc-attr-tile').style.setProperty('--sw',this.value); renderSocLivePreview();" style="--sw:#ffffff;">
+                  <span class="soc-attr-name">أيقونة التطبيق</span>
+                </label>
+                <label class="soc-attr-tile">
+                  <span class="soc-attr-tile-icon" style="background:var(--bg2);color:var(--sw);font-weight:900;font-size:0.9rem;">A</span>
+                  <input type="color" id="newCustomNameColor" value="#0f1535" oninput="this.closest('.soc-attr-tile').style.setProperty('--sw',this.value); renderSocLivePreview();" style="--sw:#0f1535;">
+                  <span class="soc-attr-name">لون الاسم</span>
+                </label>
               </div>
             </div>
+          </div>
+
+          <div id="socLivePreviewWrap" style="display:none;margin-bottom:14px;">
+            <label style="margin-bottom:8px;display:block;font-size:0.84rem;font-weight:700;color:var(--text2);">معاينة مباشرة <span style="font-size:0.7rem;font-weight:400;color:var(--muted);">/ Live Preview</span></label>
+            <div id="socLivePreview"></div>
           </div>
 
           <div style="display:flex;gap:8px;">
@@ -2071,6 +2114,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       window.showToast("تم تحديث شكل الأيقونات");
     }catch(e){ window.showToast("تعذر الحفظ: " + (e.message||'')); }
     loadSocials(); // أعد رسم المعاينات لتعكس الشكل الجديد فوراً
+    if(typeof syncShapeTiles === 'function') syncShapeTiles();
   };
   window.setRectStyle = async function(style){
     currentRectStyle = style;
@@ -4263,9 +4307,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       socUrlEl.value = p.prefix;
       socUrlEl.placeholder = 'https://instagram.com/username أو @username';
     }
+    document.getElementById('socShapeGroup').style.display = 'block';
     document.getElementById('socColorModeGroup').style.display = 'block';
+    document.getElementById('socLivePreviewWrap').style.display = 'block';
+    syncShapeTiles();
     setSocColorMode('site');
     detectNow();
+    renderSocLivePreview();
   };
 
   // بطاقة منصة واحدة بمعرض الاختيار (أيقونة دائرية بلون التطبيق الرسمي + اسمه أسفلها)
@@ -4318,9 +4366,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     document.getElementById('socialFormBox').style.display = 'block';
     document.getElementById('socUrlLabel').innerHTML = `حساب ${p.name}`;
     document.getElementById('socUrl').value = val;
+    document.getElementById('socShapeGroup').style.display = 'block';
     document.getElementById('socColorModeGroup').style.display = 'block';
+    document.getElementById('socLivePreviewWrap').style.display = 'block';
+    syncShapeTiles();
     setSocColorMode('site');
     detectNow();
+    renderSocLivePreview();
     if(!detected){
       window.showToast("⚠️ ما تعرّفنا على منصة معروفة من هذا الرابط — تم حفظه كـ«موقع» عام، تأكد إن الرابط صحيح");
     }
@@ -4329,6 +4381,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   window.closeSocialForm = function() {
     document.getElementById('socialFormBox').style.display = 'none';
     document.getElementById('socDetectedPreview').style.display = 'none';
+    document.getElementById('socShapeGroup').style.display = 'none';
+    document.getElementById('socLivePreviewWrap').style.display = 'none';
   };
 
   window.setSocColorMode = function(mode) {
@@ -4339,6 +4393,49 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(mode === 'upload') document.getElementById('cmUpload').classList.add('active');
     document.getElementById('customIconUpload').style.display = mode === 'upload' ? 'block' : 'none';
     document.getElementById('customColorPanel').style.display = mode === 'custom' ? 'block' : 'none';
+    renderSocLivePreview();
+  };
+
+  // يعكس شكل الأيقونة الحالي (دائري/مستطيل) على بلاطتي الاختيار بنموذج الإضافة
+  function syncShapeTiles(){
+    const c = document.getElementById('newShapeCircle'), r = document.getElementById('newShapeRect');
+    if(!c || !r) return;
+    c.classList.toggle('active', currentIconShape === 'circle');
+    r.classList.toggle('active', currentIconShape === 'rect');
+  }
+
+  // معاينة كبيرة مباشرة أثناء إضافة حساب جديد (قبل الحفظ)
+  window.renderSocLivePreview = function(){
+    const box = document.getElementById('socLivePreview');
+    if(!box || !selectedSocialPlatform) return;
+    syncShapeTiles();
+    const p = selectedSocialPlatform;
+    let bg, ring, iconColor, nameColor;
+    if(socialColorMode === 'custom'){
+      bg = document.getElementById('newCustomBg')?.value || '#3d5af1';
+      ring = document.getElementById('newCustomRing')?.value || '#ffffff';
+      iconColor = document.getElementById('newCustomIconColor')?.value || '#ffffff';
+      nameColor = document.getElementById('newCustomNameColor')?.value || '#0f1535';
+    } else if(socialColorMode === 'site'){
+      const pal = currentIconShape==='rect' ? currentIconPaletteRect : currentIconPaletteCircle;
+      bg = (pal && pal.length) ? pal[0] : 'var(--primary)'; ring='var(--border)'; iconColor='#ffffff'; nameColor='#0f1535';
+    } else {
+      bg = p.color; ring='transparent'; iconColor = (p.id==='snapchat'?'#000':'#fff'); nameColor='#0f1535';
+    }
+    const glyph = `<span style="display:flex;color:${iconColor};">${platSvg(p.id)}</span>`;
+    if(currentIconShape === 'rect'){
+      box.innerHTML = `
+        <div class="soc-live-box">
+          <span class="soc-live-icon" style="background:${bg};border:2px solid ${ring};">${glyph}</span>
+          <span class="soc-live-name" style="color:${nameColor};">${p.name}</span>
+        </div>`;
+    } else {
+      box.innerHTML = `
+        <div class="soc-live-box" style="justify-content:center;">
+          <span class="soc-live-icon" style="background:${bg};border:2px solid ${ring};width:64px;height:64px;">${glyph}</span>
+          <span class="soc-live-name" style="color:${nameColor};">${p.name}</span>
+        </div>`;
+    }
   };
 
   let detectTimeout;
@@ -4536,14 +4633,35 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
         ${mode==='custom' ? `
         <div style="margin-bottom:10px;padding:12px;background:var(--bg);border-radius:10px;">
-          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);margin-bottom:10px;">🖼 معاينة مباشرة على البطاقة أعلاه</div>
+          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);margin-bottom:10px;">🖼 تحكم بالألوان</div>
           <div class="soc-attr-row">
-            <label class="soc-attr-tile"><input type="color" value="${soc.customBg||'#3d5af1'}" style="--sw:${soc.customBg||'#3d5af1'};" oninput="updateCustomSocialColor('${id}','customBg',this.value)"><span class="soc-attr-name">خلفية الدائرة</span></label>
-            <label class="soc-attr-tile"><input type="color" value="${soc.customRing||'#ffffff'}" style="--sw:${soc.customRing||'#ffffff'};" oninput="updateCustomSocialColor('${id}','customRing',this.value)"><span class="soc-attr-name">لون الدائرة</span></label>
-            <label class="soc-attr-tile"><input type="color" value="${soc.customIconColor||'#ffffff'}" style="--sw:${soc.customIconColor||'#ffffff'};" oninput="updateCustomSocialColor('${id}','customIconColor',this.value)"><span class="soc-attr-name">أيقونة التطبيق</span></label>
-            <label class="soc-attr-tile"><input type="color" value="${soc.customNameColor||'#0f1535'}" style="--sw:${soc.customNameColor||'#0f1535'};" oninput="updateCustomSocialColor('${id}','customNameColor',this.value)"><span class="soc-attr-name">لون الاسم</span></label>
+            <label class="soc-attr-tile">
+              <span class="soc-attr-tile-icon" style="background:${soc.customBg||'#3d5af1'};"></span>
+              <input type="color" value="${soc.customBg||'#3d5af1'}" oninput="this.previousElementSibling.style.background=this.value; updateCustomSocialColor('${id}','customBg',this.value)">
+              <span class="soc-attr-name">خلفية الدائرة</span>
+            </label>
+            <label class="soc-attr-tile">
+              <span class="soc-attr-tile-icon soc-attr-ring" style="border-color:${soc.customRing||'#ffffff'};"></span>
+              <input type="color" value="${soc.customRing||'#ffffff'}" oninput="this.previousElementSibling.style.borderColor=this.value; updateCustomSocialColor('${id}','customRing',this.value)">
+              <span class="soc-attr-name">لون الإطار</span>
+            </label>
+            <label class="soc-attr-tile">
+              <span class="soc-attr-tile-icon" style="background:var(--bg2);color:${soc.customIconColor||'#ffffff'};"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></span>
+              <input type="color" value="${soc.customIconColor||'#ffffff'}" oninput="this.previousElementSibling.style.color=this.value; updateCustomSocialColor('${id}','customIconColor',this.value)">
+              <span class="soc-attr-name">أيقونة التطبيق</span>
+            </label>
+            <label class="soc-attr-tile">
+              <span class="soc-attr-tile-icon" style="background:var(--bg2);color:${soc.customNameColor||'#0f1535'};font-weight:900;">A</span>
+              <input type="color" value="${soc.customNameColor||'#0f1535'}" oninput="this.previousElementSibling.style.color=this.value; updateCustomSocialColor('${id}','customNameColor',this.value)">
+              <span class="soc-attr-name">لون الاسم</span>
+            </label>
           </div>
         </div>` : ''}
+
+        <div style="margin-bottom:12px;">
+          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);margin-bottom:8px;">معاينة مباشرة · Live Preview</div>
+          <div id="socEditLivePreview_${id}"></div>
+        </div>
 
         <div style="display:flex;gap:8px;">
           <button onclick="window.toggleSocHidden('${id}')" style="flex:1;padding:9px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:'Tajawal';font-weight:700;font-size:0.78rem;color:var(--text2);display:flex;align-items:center;justify-content:center;gap:6px;">
@@ -4554,6 +4672,20 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
           <button class="btn-delete" onclick="deleteSocial('${id}')" style="flex-shrink:0;">حذف</button>
         </div>
       </div>`;
+
+    // عبّي صندوق المعاينة الكبير بعد إدراج الـ HTML (نفس منطق حفظ الحساب، لكن بلا حفظ)
+    setTimeout(() => {
+      const previewBox = document.getElementById('socEditLivePreview_'+id);
+      if(!previewBox) return;
+      const { bg, ring, iconColor } = socColorsFor(soc);
+      const nameColor = (mode==='custom' && soc.customNameColor) ? soc.customNameColor : '#0f1535';
+      const glyph = `<span style="display:flex;color:${iconColor};">${platSvg(soc.platformId)||''}</span>`;
+      if(currentIconShape === 'rect'){
+        previewBox.innerHTML = `<div class="soc-live-box"><span class="soc-live-icon" style="background:${bg};border:2px solid ${ring};">${glyph}</span><span class="soc-live-name" style="color:${nameColor};">${soc.platformName||soc.name||''}</span></div>`;
+      } else {
+        previewBox.innerHTML = `<div class="soc-live-box" style="justify-content:center;"><span class="soc-live-icon" style="background:${bg};border:2px solid ${ring};width:64px;height:64px;">${glyph}</span><span class="soc-live-name" style="color:${nameColor};">${soc.platformName||soc.name||''}</span></div>`;
+      }
+    }, 0);
   }
 
   // إخفاء/إظهار حساب فردي عن زوار الصفحة العامة بدون حذفه
@@ -4585,6 +4717,18 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         const span = cardIcon.querySelector('span');
         if(span) span.style.color = value;
       }
+    }
+
+    const previewBox = document.getElementById('socEditLivePreview_'+id);
+    if(previewBox){
+      const icon = previewBox.querySelector('.soc-live-icon');
+      const nameEl = previewBox.querySelector('.soc-live-name');
+      if(icon){
+        if(field==='customBg') icon.style.background = value;
+        if(field==='customRing') icon.style.borderColor = value;
+        if(field==='customIconColor'){ const sp = icon.querySelector('span'); if(sp) sp.style.color = value; }
+      }
+      if(field==='customNameColor' && nameEl) nameEl.style.color = value;
     }
 
     // احفظ بقاعدة البيانات بعد توقف قصير عن التغيير (تفادي كتابة متكررة أثناء السحب على منتقي اللون)
