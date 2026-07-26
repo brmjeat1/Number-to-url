@@ -595,13 +595,50 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     <div id="accountsList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div>
 
     <div id="addAccountForm" style="display:none;border-top:1px solid var(--border,#e8ecf5);padding-top:14px;margin-top:4px;">
-      <div style="font-weight:700;font-size:0.85rem;margin-bottom:10px;">إضافة حساب آخر <span class="lbl-sub" style="font-weight:400;">Add Account</span></div>
+      <div style="font-weight:700;font-size:0.85rem;margin-bottom:10px;">تسجيل دخول لحساب بإيميل مختلف <span class="lbl-sub" style="font-weight:400;">Sign in (different email)</span></div>
       <input type="email" id="addAcctEmail" placeholder="البريد الإلكتروني · Email" dir="ltr" style="width:100%;margin-bottom:8px;">
       <input type="password" id="addAcctPassword" placeholder="كلمة المرور · Password" dir="ltr" style="width:100%;margin-bottom:8px;">
       <div id="addAcctErr" style="display:none;color:#c33;font-size:0.76rem;margin-bottom:8px;"></div>
       <button type="button" class="btn-add" id="addAcctSubmitBtn" onclick="submitAddAccount()" style="margin:0;width:100%;">دخول وإضافة · Sign in & Add</button>
     </div>
-    <button type="button" class="btn-add" id="addAccountToggleBtn" onclick="toggleAddAccountForm()" style="margin:0;width:100%;background:var(--surface,#f4f5f9);color:var(--text,#1a1d24);border:1.5px dashed var(--border,#c7cee0);">+ إضافة حساب آخر · Add Account</button>
+    <button type="button" class="btn-add" onclick="closeAccountsModal(); window.openSameEmailAccountModal();" style="margin:0 0 10px;width:100%;background:var(--primary);color:#fff;">+ إضافة حساب على نفس الإيميل · Same Email</button>
+    <button type="button" onclick="toggleAddAccountForm()" style="margin:0;width:100%;background:transparent;border:none;color:var(--muted);font-size:0.76rem;font-weight:700;text-decoration:underline;cursor:pointer;padding:6px;">لديك حساب بإيميل مختلف؟ سجّل دخول له</button>
+  </div>
+</div>
+
+<!-- نافذة إنشاء حساب/موقع جديد يبقى مرتبطاً بنفس الإيميل الحالي -->
+<div id="sameEmailModal" style="display:none;position:fixed;inset:0;z-index:2100;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;padding:20px;" onclick="if(event.target===this) window.closeSameEmailModal()">
+  <div style="background:#fff;border-radius:20px;padding:22px;width:100%;max-width:400px;max-height:88vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <div style="font-weight:800;font-size:1rem;">حساب جديد بنفس الإيميل <span class="lbl-sub" style="font-weight:400;">Same-Email Account</span></div>
+      <button type="button" onclick="window.closeSameEmailModal()" style="background:var(--surface,#f4f5f9);border:none;width:28px;height:28px;border-radius:50%;font-size:0.9rem;cursor:pointer;flex-shrink:0;">✕</button>
+    </div>
+    <p style="font-size:0.78rem;color:var(--muted);margin-bottom:16px;line-height:1.6;">
+      أنشئ موقعاً/حساباً جديداً مستقلاً يبقى مرتبطاً ببريدك الحالي، وبدّل بينه وبين حسابك الأساسي بضغطة زر.<br>
+      <span style="font-size:0.7rem;">Create a new independent site linked to your current email.</span>
+    </p>
+    <div class="form-group">
+      <label>البريد الإلكتروني <span class="lbl-sub">/ Email</span></label>
+      <input type="email" id="sameEmailDisplay" dir="ltr" disabled style="opacity:0.65;">
+    </div>
+    <div class="form-group">
+      <label>كلمة المرور <span class="lbl-sub">/ Password (auto-generated)</span></label>
+      <div style="display:flex;gap:8px;">
+        <input type="password" id="sameEmailPassword" dir="ltr" readonly style="flex:1;">
+        <button type="button" onclick="window.toggleSameEmailPwVisibility()" id="sameEmailPwEye" style="flex-shrink:0;width:42px;border-radius:10px;border:1.5px solid var(--border,#e8ecf5);background:var(--surface,#f4f5f9);cursor:pointer;font-size:0.9rem;">👁</button>
+      </div>
+      <div style="font-size:0.7rem;color:var(--muted);margin-top:6px;">كلمة مرور آمنة أُنشئت تلقائياً — احفظها إن احتجتها لاحقاً · Auto-generated — save it if you may need it</div>
+    </div>
+    <div class="form-group">
+      <label>اسم المستخدم الجديد <span class="lbl-sub">/ New Username</span></label>
+      <input type="text" id="sameEmailUsername" dir="ltr" placeholder="username">
+    </div>
+    <div class="form-group">
+      <label>الاسم الكامل <span class="lbl-sub">/ Full Name</span></label>
+      <input type="text" id="sameEmailFullName" placeholder="اسمك / Your name">
+    </div>
+    <div id="sameEmailErr" style="display:none;color:#c33;font-size:0.76rem;margin-bottom:10px;"></div>
+    <button type="button" class="btn-add" id="sameEmailSubmitBtn" onclick="window.submitSameEmailAccount()" style="margin:0;width:100%;background:var(--primary);">إنشاء الحساب الجديد · Create Account</button>
   </div>
 </div>
 
@@ -1319,7 +1356,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
     <div class="expandable">
       <div class="expandable-header" onclick="toggleExpand(this)">
-        <div class="expandable-title"><div class="expandable-icon">⬇</div><span>الموقع بأكمله<span class="title-sub">Full Site</span></span></div>
+        <div class="expandable-title"><div class="expandable-icon">⬇</div><span>تصدير كامل الموقع<span class="title-sub">Full Export</span></span></div>
         <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content">
@@ -1335,6 +1372,20 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         <p style="font-size:0.8rem;color:var(--muted);margin-bottom:10px;">استيراد نسخة سابقة سيستبدل تصميم موقعك وبياناتك وروابطك الحالية · Importing replaces your current site</p>
         <button onclick="document.getElementById('importFullFile').click()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border:1.5px dashed var(--primary);border-radius:12px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;color:var(--primary);">⬆ اختر ملف JSON لاستيراد الموقع بأكمله</button>
         <input type="file" id="importFullFile" accept=".json,application/json" style="display:none;" onchange="importFullBackup(this)">
+      </div>
+    </div>
+
+    <div class="expandable">
+      <div class="expandable-header" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon">+</div><span>حساب جديد بنفس الإيميل<span class="title-sub">Same-Email Account</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content">
+        <p style="font-size:0.82rem;color:var(--muted);margin-bottom:16px;line-height:1.6;">
+          أنشئ موقعاً/حساباً جديداً مستقلاً تماماً (تصميم وروابط خاصة به) يبقى مرتبطاً ببريدك الحالي، وبدّل بينه وبين حسابك الأساسي بضغطة زر من قائمة الحسابات.<br>
+          <span style="font-size:0.72rem;color:var(--muted);">Create a new independent site linked to your current email, and switch between accounts anytime.</span>
+        </p>
+        <button class="btn-add" onclick="window.openSameEmailAccountModal()" style="background:var(--primary);">+ إنشاء حساب جديد · Create Account</button>
       </div>
     </div>
 
@@ -1468,7 +1519,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 <!-- FIREBASE SDK V10 MODULES -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, deleteUser, updatePassword, reauthenticateWithCredential, EmailAuthProvider, setPersistence, browserLocalPersistence, indexedDBLocalPersistence, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, deleteUser, updatePassword, reauthenticateWithCredential, EmailAuthProvider, setPersistence, browserLocalPersistence, indexedDBLocalPersistence, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, getDoc, collection, getDocs, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { getStorage, ref as storageRef, uploadString, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
@@ -2454,6 +2505,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       swap: `<svg ${s}><path d="M17 3l4 4-4 4"/><path d="M3 7h18"/><path d="M7 21l-4-4 4-4"/><path d="M21 17H3"/></svg>`,
       layers: `<svg ${s}><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/><path d="M3 17l9 5 9-5"/></svg>`,
       sparkles: `<svg ${s}><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>`,
+      userPlus: `<svg ${s}><circle cx="9" cy="8" r="3.3"/><path d="M2.5 20c0-3.8 2.9-6 6.5-6s6.5 2.2 6.5 6"/><line x1="18" y1="8" x2="18" y2="14"/><line x1="15" y1="11" x2="21" y2="11"/></svg>`,
     };
     return icons[id] || '';
   }
@@ -2513,6 +2565,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     sendSuggestion:{ name: 'إرسال اقتراح',     icon: qaIconSvg('send'), tab: 'ملفي', nav:{pageId:'profile', title:'الدعم والملاحظات', tabIdx:3, after:'focusFeedback'} },
     goToProfile:   { name: 'ملفي الشخصي',      icon: qaIconSvg('userCircle'), tab: 'ملفي', nav:{pageId:'profile', title:'بيانات ملفي', tabIdx:3} },
     usageGuide:    { name: 'دليل الاستخدام',   icon: qaIconSvg('compass'), tab: 'ملفي' },
+    addSameEmailAccount: { name: 'حساب بنفس الإيميل', icon: qaIconSvg('userPlus'), tab: 'ملفي' },
 
     // ===== قسم الإحصائيات =====
     topSearched:     { name: 'الأكثر بحثاً',     icon: qaIconSvg('search'),       tab: 'إحصائيات' },
@@ -2538,7 +2591,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     { label:'الأرقام',      keys:['numLinkQuick','numTextQuick','numArticleQuick','numImageQuick','numAlbumQuick','numFileQuick','numProductQuick','numArchive','numFeatured','numRandom','numLast3','qrForNumber','qrForAccount','qrForRegistry','qrForFeatured'] },
     { label:'التصميم',      keys:['aiPageDesign','bgActionsDesign','logoCoverDesign','textActionsDesign','iconActionsDesign','colors','iconStyleDesign'] },
     { label:'التواصل',      keys:['contactAccountsAct','contactNumbersAct','contactEmailsAct','contactIconsAct','contactWebsiteAct','contactLocationAct'] },
-    { label:'ملفي',         keys:['techSupport','sendSuggestion','goToProfile','usageGuide'] },
+    { label:'ملفي',         keys:['techSupport','sendSuggestion','goToProfile','usageGuide','addSameEmailAccount'] },
     { label:'الإحصائيات',   keys:['topSearched','printMonthLog','printWeekLog','print3MonthsLog','printStatsPdf','printStatsExcel','importExportData'] },
     { label:'أساسية',       keys:['addNum','printStats','copyLink','qrCode','featuredToggle','hideToggle','socialQuickAdd','iconShapeSwitch','bioQuickEdit','avatarQuickUpload','bannerQuickUpload','exportJson','templateQuickApply','viewsSummary'] }
   ];
@@ -2677,6 +2730,9 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     }
     if(key === 'bioQuickEdit'){
       return `<div class="qa-tile qa-tile-action qa-action-btn" onclick="showPage('profile', document.querySelectorAll('.nav-tab')[3])"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div><span class="qa-btn-hover-ic">${item.icon}</span></div>`;
+    }
+    if(key === 'addSameEmailAccount'){
+      return `<div class="qa-tile qa-tile-action qa-action-btn" onclick="window.openSameEmailAccountModal()"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div><span class="qa-btn-hover-ic">${item.icon}</span></div>`;
     }
     if(key === 'avatarQuickUpload'){
       return `<div class="qa-tile qa-tile-action qa-action-btn" onclick="document.getElementById('avatarInput')?.click(); showPage('design', document.querySelectorAll('.nav-tab')[0]);"><div class="qa-tile-icon">${item.icon}</div><div class="qa-tile-title" style="margin:0;">${item.name}</div><span class="qa-btn-hover-ic">${item.icon}</span></div>`;
@@ -3458,15 +3514,14 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   window.openAccountsModal = function(){
     renderAccountsList();
     document.getElementById('addAccountForm').style.display = 'none';
-    document.getElementById('addAccountToggleBtn').style.display = 'block';
     document.getElementById('accountsModal').style.display = 'flex';
   };
   window.closeAccountsModal = function(){
     document.getElementById('accountsModal').style.display = 'none';
   };
   window.toggleAddAccountForm = function(){
-    document.getElementById('addAccountForm').style.display = 'block';
-    document.getElementById('addAccountToggleBtn').style.display = 'none';
+    const form = document.getElementById('addAccountForm');
+    form.style.display = (form.style.display === 'block') ? 'none' : 'block';
   };
   window.switchAccount = function(appName){
     if(appName === activeAppName){ window.closeAccountsModal(); return; }
@@ -3509,6 +3564,98 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       errEl.textContent = 'بيانات الدخول غير صحيحة أو تعذر الاتصال';
       errEl.style.display = 'block';
       btn.textContent = 'دخول وإضافة · Sign in & Add';
+    }
+  };
+
+  // ===== إنشاء حساب/موقع جديد يبقى مرتبطاً بنفس الإيميل الحالي (Same-Email Account) =====
+  function generateRandomPassword(len){
+    len = len || 14;
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%';
+    let out = '';
+    const arr = new Uint32Array(len);
+    (window.crypto || window.msCrypto).getRandomValues(arr);
+    for(let i=0;i<len;i++) out += chars[arr[i] % chars.length];
+    return out;
+  }
+
+  window.openSameEmailAccountModal = function(){
+    document.getElementById('sameEmailDisplay').value = (currentUser && currentUser.email) || '';
+    const pwField = document.getElementById('sameEmailPassword');
+    pwField.value = generateRandomPassword();
+    pwField.type = 'password';
+    document.getElementById('sameEmailPwEye').textContent = '👁';
+    document.getElementById('sameEmailUsername').value = '';
+    document.getElementById('sameEmailFullName').value = '';
+    document.getElementById('sameEmailErr').style.display = 'none';
+    document.getElementById('sameEmailSubmitBtn').textContent = 'إنشاء الحساب الجديد · Create Account';
+    document.getElementById('sameEmailModal').style.display = 'flex';
+  };
+  window.closeSameEmailModal = function(){
+    document.getElementById('sameEmailModal').style.display = 'none';
+  };
+  window.toggleSameEmailPwVisibility = function(){
+    const inp = document.getElementById('sameEmailPassword');
+    const eye = document.getElementById('sameEmailPwEye');
+    if(inp.type === 'password'){ inp.type = 'text'; eye.textContent = '🙈'; }
+    else { inp.type = 'password'; eye.textContent = '👁'; }
+  };
+
+  window.submitSameEmailAccount = async function(){
+    const errEl = document.getElementById('sameEmailErr');
+    errEl.style.display = 'none';
+    const uname = (document.getElementById('sameEmailUsername').value || '').trim().toLowerCase();
+    const fullName = (document.getElementById('sameEmailFullName').value || '').trim();
+    const password = document.getElementById('sameEmailPassword').value;
+
+    if(!/^[a-z0-9_]{3,20}$/.test(uname)){
+      errEl.textContent = 'اسم المستخدم: 3-20 حرفاً إنجليزياً/أرقام/_ فقط';
+      errEl.style.display = 'block'; return;
+    }
+    if(!fullName){ errEl.textContent = 'أدخل الاسم الكامل'; errEl.style.display = 'block'; return; }
+
+    const btn = document.getElementById('sameEmailSubmitBtn');
+    btn.textContent = 'جاري الإنشاء...';
+    try {
+      // تحقق من توفر اسم المستخدم أولاً (الفهرس مشترك بين كل الحسابات على نفس المشروع)
+      const exists = await getDoc(doc(db, "usernames", uname));
+      if(exists.exists()){
+        errEl.textContent = 'اسم المستخدم محجوز، اختر غيره';
+        errEl.style.display = 'block';
+        btn.textContent = 'إنشاء الحساب الجديد · Create Account';
+        return;
+      }
+
+      // بريد بديل (plus-alias) يصل لنفس صندوق الوارد، لتفادي شرط Firebase بتفرّد البريد لكل حساب
+      const baseEmail = (currentUser && currentUser.email) || '';
+      const atIdx = baseEmail.indexOf('@');
+      const aliasSuffix = 'alt' + Date.now().toString(36);
+      const aliasEmail = atIdx > -1
+        ? (baseEmail.slice(0, atIdx) + '+' + aliasSuffix + baseEmail.slice(atIdx))
+        : (baseEmail + '+' + aliasSuffix);
+
+      // تطبيق Firebase منفصل بالاسم لهذا الحساب — تُحفظ جلسته باستقلالية عن الحساب الحالي
+      const newAppName = 'acct_' + Date.now();
+      const secApp = initializeApp(firebaseConfig, newAppName);
+      const secAuth = getAuth(secApp);
+      try{ await setPersistence(secAuth, indexedDBLocalPersistence); }
+      catch(e){ try{ await setPersistence(secAuth, browserLocalPersistence); }catch(e2){} }
+
+      const cred = await createUserWithEmailAndPassword(secAuth, aliasEmail, password);
+      const secDb = getFirestore(secApp);
+      await setDoc(doc(secDb, "usernames", uname), { uid: cred.user.uid });
+      await setDoc(doc(secDb, "users", cred.user.uid), {
+        username: uname, fullName: fullName, email: aliasEmail, createdAt: new Date()
+      }, { merge: true });
+      try{ await sendEmailVerification(cred.user); }catch(e){}
+
+      upsertSavedAccount({ uid: cred.user.uid, email: aliasEmail, username: uname, appName: newAppName });
+      localStorage.setItem(ACTIVE_ACCOUNT_KEY, newAppName);
+      window.showToast('تم إنشاء الحساب الجديد — جاري التبديل إليه...');
+      setTimeout(() => location.reload(), 500);
+    } catch(e){
+      errEl.textContent = 'تعذر الإنشاء: ' + (e.code || e.message || '');
+      errEl.style.display = 'block';
+      btn.textContent = 'إنشاء الحساب الجديد · Create Account';
     }
   };
 
