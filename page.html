@@ -1048,9 +1048,6 @@ function render(user){
 
     ${user.bio?`<div class="profile-bio">${user.bio}</div>`:''}
 
-    ${socialsHtml}
-    ${contactsHtml}
-
     <div class="main-search-row">
       <div class="main-search-box">
         <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -1062,6 +1059,9 @@ function render(user){
       </div>
     </div>
     <div class="error-msg" id="errMsg">الرقم غير موجود · Number not found</div>
+
+    ${socialsHtml}
+    ${contactsHtml}
   `;
 
   // تخزين رابط الصفحة للـ QR المنبثق
