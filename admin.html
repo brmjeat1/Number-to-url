@@ -7,14 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-:root{--glass-bg:rgba(255,255,255,.55);--glass-bg-soft:rgba(255,255,255,.35);--glass-border:rgba(255,255,255,.7);--primary:#1732B2;--primary-light:#0069FD;}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Tajawal',sans-serif;background:linear-gradient(160deg,#EDF2FB,#D7E3FC);color:#0f1535;min-height:100vh;}
-/* ===== توحيد الزجاج مع لوحة التحكم والصفحة العامة ===== */
-.gate button{width:100%;padding:13px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 8px 18px rgba(23,50,178,.25);}
-.tab-btn{background:var(--glass-bg) !important;backdrop-filter:blur(12px) saturate(180%);-webkit-backdrop-filter:blur(12px) saturate(180%);border-color:var(--glass-border) !important;box-shadow:0 6px 14px rgba(23,50,178,.10), inset 0 1px 0 rgba(255,255,255,.5);}
-.tab-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-light)) !important;color:#fff;border-color:rgba(255,255,255,.5) !important;}
-.card{background:var(--glass-bg) !important;backdrop-filter:blur(14px) saturate(180%);-webkit-backdrop-filter:blur(14px) saturate(180%);border:1px solid var(--glass-border) !important;box-shadow:0 8px 20px rgba(23,50,178,.10), inset 0 1px 0 rgba(255,255,255,.4);}
-.stat-box{background:var(--glass-bg) !important;backdrop-filter:blur(14px) saturate(180%);-webkit-backdrop-filter:blur(14px) saturate(180%);border:1px solid var(--glass-border) !important;box-shadow:0 8px 20px rgba(23,50,178,.10), inset 0 1px 0 rgba(255,255,255,.4);}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Tajawal',sans-serif;background:#f4f5f9;color:#0f1535;min-height:100vh;}
 nav{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:#0f1535;color:#fff;}
 .nav-logo{font-family:'Space Mono',monospace;font-weight:700;font-size:1rem;color:#fff;}
 .nav-logo em{color:#f5c518;font-style:normal;}
@@ -133,10 +126,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:14px 2
 .tpl-toggle-row input{width:auto;}
 
 .tpl-plus-badge{
-  position:absolute;z-index:50;width:34px;height:34px;border-radius:50%;
-  background:#3d5af1;color:#fff;border:2.5px solid #fff;font-size:1.2rem;font-weight:900;
+  position:absolute;z-index:50;height:26px;padding:0 10px;border-radius:999px;
+  background:#3d5af1;color:#fff;border:2px solid #fff;font-size:0.64rem;font-weight:800;
   cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;line-height:1;
-  touch-action:manipulation;-webkit-tap-highlight-color:rgba(61,90,241,0.3);
+  white-space:nowrap;touch-action:manipulation;-webkit-tap-highlight-color:rgba(61,90,241,0.3);
 }
 
 /* ===== عناصر تحكم المحرر الشامل ===== */
@@ -289,7 +282,7 @@ const TPL_DESIGN_DEFAULTS = {
   avatarSize:64, avatarShape:'circle', gap:14,
   linkRadius:'rounded', linkHeight:22, linkBorderWidth:2, linkShadow:false, linkFill:false, linkText:'#0f1535',
   socialSize:38, socialBorderWidth:0, socialBorderColor:'#ffffff', socialShowLabel:false, socialTextBold:false, socialTextColor:'#0f1535', socialTextSize:11,
-  socialLabel1:'حساب 1', socialLabel2:'حساب 2', socialLabel3:'حساب 3', socialLabel4:'حساب 4',
+  socialLabel1:'', socialLabel2:'', socialLabel3:'', socialLabel4:'',
   // خلفية الصفحة: image = صورة فقط | imageColor = صورة + طبقة لون أمامها | color = لون فقط
   bgMode:'color', bgOverlayOpacity:0.55,
   // ٤ ألوان مخصصة للأيقونات المستطيلة، و٤ ألوان مخصصة للأيقونات الدائرية (مستقلة عن بعض)
@@ -611,28 +604,37 @@ function buildMockupHtml(key){
 
   return `
     <div class="tpl-mockup-lg" id="tplMockupLg" style="${bgStyle}position:relative;font-family:'${t.fontFamily}',sans-serif;padding-top:${28+t.gap}px;">
-      <!-- + الخلفية: أعلى يسار -->
-      <button type="button" class="tpl-plus-badge" style="top:8px;left:8px;" data-action="open-bg-popover" data-key="${key}" title="الخلفية">+</button>
+      <!-- الخلفية: أعلى يسار -->
+      <button type="button" class="tpl-plus-badge" style="top:8px;left:8px;" data-action="open-bg-popover" data-key="${key}" title="الخلفية">الخلفية</button>
 
-      <!-- + الشعار (شعار المنصة/البراند): أعلى يمين — منفصل تمامًا عن الأفتار -->
-      <button type="button" class="tpl-plus-badge" style="top:8px;right:8px;" data-action="open-logo-popover" data-key="${key}" title="الشعار">+</button>
+      <!-- الشعار (شعار المنصة/البراند): أعلى يمين — منفصل تمامًا عن الأفتار -->
+      <button type="button" class="tpl-plus-badge" style="top:8px;right:8px;" data-action="open-logo-popover" data-key="${key}" title="الشعار">الشعار</button>
       ${showLogo ? `
-        <div style="position:absolute;top:8px;right:44px;width:30px;height:30px;border-radius:8px;overflow:hidden;${t.logoImg ? `background-image:url(${t.logoImg});background-size:cover;background-position:center;` : `background:rgba(255,255,255,.55);border:1.5px dashed #b9c0d9;`}"></div>
+        <div style="position:absolute;top:8px;right:70px;width:30px;height:30px;border-radius:8px;overflow:hidden;${t.logoImg ? `background-image:url(${t.logoImg});background-size:cover;background-position:center;` : `background:rgba(255,255,255,.55);border:1.5px dashed #b9c0d9;`}"></div>
       ` : ''}
 
       ${showAvatar ? `
         <div style="position:relative;display:inline-block;margin-bottom:${t.gap}px;">
           <div style="width:${t.avatarSize}px;height:${t.avatarSize}px;border-radius:${avatarRadius};${t.avatarImg ? `background-image:url(${t.avatarImg});background-size:cover;background-position:center;` : `background:linear-gradient(135deg,${t.p1},${t.p2});`}"></div>
-          <!-- + الأفتار (صورة المستخدم الشخصية): مركّز أفقيًا تحت الدائرة تمامًا مهما كان حجمها — منفصل عن الشعار -->
-          <button type="button" class="tpl-plus-badge" style="bottom:-8px;left:50%;transform:translateX(-50%);" data-action="open-avatar-popover" data-key="${key}" title="الأفتار">+</button>
+          <!-- الأفاتار (صورة المستخدم الشخصية): مركّز أفقيًا تحت الدائرة تمامًا مهما كان حجمها — منفصل عن الشعار -->
+          <button type="button" class="tpl-plus-badge" style="bottom:-8px;left:50%;transform:translateX(-50%);" data-action="open-avatar-popover" data-key="${key}" title="الأفاتار">الأفاتار</button>
         </div>
       ` : ''}
-      <div style="color:${t.text};font-size:${t.nameSize}px;font-weight:${t.nameWeight};margin-bottom:${Math.max(6,t.gap*0.4)}px;">${escapeHtml(t.sampleName || 'اسمك هنا')}</div>
-      <div style="height:${t.bioSize*0.35}px;width:70%;border-radius:3px;opacity:.35;background:${t.text};margin-bottom:6px;"></div>
-      <div style="height:${t.bioSize*0.35}px;width:45%;border-radius:3px;opacity:.35;background:${t.text};margin-bottom:${t.gap}px;"></div>
+      <div style="position:relative;display:inline-block;margin-bottom:${Math.max(6,t.gap*0.4)}px;">
+        <div style="color:${t.text};font-size:${t.nameSize}px;font-weight:${t.nameWeight};">${escapeHtml(t.sampleName || '')}</div>
+        <button type="button" class="tpl-plus-badge" style="top:-10px;right:-8px;" data-action="open-name-popover" data-key="${key}" title="الاسم المعروض">الاسم المعروض</button>
+      </div>
+      <div style="position:relative;display:inline-block;margin-bottom:${Math.max(6,t.gap*0.4)}px;">
+        <div style="color:${t.text};opacity:.7;font-size:${Math.max(10,t.nameSize*0.42)}px;font-family:ui-monospace,'SF Mono',monospace;direction:ltr;">${escapeHtml(t.sampleUsername || '')}</div>
+        <button type="button" class="tpl-plus-badge" style="top:-10px;right:-8px;" data-action="open-username-popover" data-key="${key}" title="اسم المستخدم">اسم المستخدم</button>
+      </div>
+      <div style="position:relative;display:inline-block;margin-bottom:${t.gap}px;">
+        <div style="color:${t.text};opacity:.55;font-size:${Math.max(9,t.nameSize*0.36)}px;font-family:ui-monospace,'SF Mono',monospace;direction:ltr;">${escapeHtml(t.samplePageLink || 'electrwni.link/electrwni')}</div>
+        <button type="button" class="tpl-plus-badge" style="top:-10px;right:-8px;" data-action="open-pagelink-popover" data-key="${key}" title="رابط الصفحة">رابط الصفحة</button>
+      </div>
 
       <div style="position:relative;width:100%;">
-        <button type="button" class="tpl-plus-badge" style="top:-6px;left:8px;" data-action="open-socials-popover" data-key="${key}" title="التواصل">+</button>
+        <button type="button" class="tpl-plus-badge" style="top:-6px;left:8px;" data-action="open-socials-popover" data-key="${key}" title="أيقونات تواصل دائرية">أيقونات تواصل دائرية</button>
         ${showSocials ? socialsHtml : `<div style="height:14px;"></div>`}
       </div>
 
@@ -841,9 +843,38 @@ function fileToBase64(file, cb, maxDim = 480, quality = 0.82){
 
 // ===== + الأفتار (صورة المستخدم الشخصية فقط) =====
 function openAvatarPopover(key){
-  showPopover('الأفتار (صورة المستخدم)', `
+  const t = templatesData[key];
+  showPopover('الأفاتار (صورة المستخدم)', `
     <p style="font-size:0.8rem;color:#6b7280;margin-bottom:12px;">هذي صورة توضيحية للمعاينة فقط — كل مستخدم يرفع صورته الشخصية الحقيقية بحسابه.</p>
-    <input type="file" accept="image/*" data-action="avatar-file" data-key="${key}" style="width:100%;padding:10px;border:1.5px solid #e0e0e0;border-radius:10px;">
+    <input type="file" accept="image/*" data-action="avatar-file" data-key="${key}" style="width:100%;padding:10px;border:1.5px solid #e0e0e0;border-radius:10px;margin-bottom:10px;">
+    ${t.avatarImg ? `<button type="button" data-action="remove-avatar" data-key="${key}" style="width:100%;padding:10px;border:1.5px solid #e0e0e0;border-radius:10px;background:#fdecea;color:#c33;font-weight:700;cursor:pointer;font-family:inherit;">🗑 إزالة الأفاتار الحالي</button>` : ''}
+  `);
+}
+
+// ===== الاسم المعروض =====
+function openNamePopover(key){
+  const t = templatesData[key];
+  showPopover('الاسم المعروض', `
+    <p style="font-size:0.8rem;color:#6b7280;margin-bottom:12px;">اسم توضيحي للمعاينة فقط — كل مستخدم يكتب اسمه الحقيقي بحسابه.</p>
+    <input type="text" class="tpl-expanded-input" value="${escapeHtml(t.sampleName||'')}" data-field="sampleName" data-key="${key}" data-live="lg" placeholder="مثال: اسمك هنا">
+  `);
+}
+
+// ===== اسم المستخدم =====
+function openUsernamePopover(key){
+  const t = templatesData[key];
+  showPopover('اسم المستخدم', `
+    <p style="font-size:0.8rem;color:#6b7280;margin-bottom:12px;">مثال توضيحي فقط — كل مستخدم يختار اسم المستخدم الفعلي الخاص به.</p>
+    <input type="text" class="tpl-expanded-input" dir="ltr" value="${escapeHtml(t.sampleUsername||'')}" data-field="sampleUsername" data-key="${key}" data-live="lg" placeholder="username">
+  `);
+}
+
+// ===== رابط الصفحة =====
+function openPageLinkPopover(key){
+  const t = templatesData[key];
+  showPopover('رابط الصفحة', `
+    <p style="font-size:0.8rem;color:#6b7280;margin-bottom:12px;">مثال توضيحي لشكل الرابط بالمعاينة (يتولّد تلقائيًا من اسم المستخدم الحقيقي بحساب كل شخص).</p>
+    <input type="text" class="tpl-expanded-input" dir="ltr" value="${escapeHtml(t.samplePageLink||'electrwni.link/electrwni')}" data-field="samplePageLink" data-key="${key}" data-live="lg" placeholder="electrwni.link/username">
   `);
 }
 
@@ -1025,8 +1056,12 @@ document.addEventListener('click', function(e){
   if(action === 'open-avatar-popover'){ openAvatarPopover(key); return; }
   if(action === 'open-logo-popover'){ openLogoPopover(key); return; }
   if(action === 'open-socials-popover'){ openSocialsPopover(key); return; }
+  if(action === 'open-name-popover'){ openNamePopover(key); return; }
+  if(action === 'open-username-popover'){ openUsernamePopover(key); return; }
+  if(action === 'open-pagelink-popover'){ openPageLinkPopover(key); return; }
   if(action === 'close-popover'){ closeTplPopover(); return; }
   if(action === 'remove-logo'){ setField(key,'logoImg',null); closeTplPopover(); renderTplExpanded(); return; }
+  if(action === 'remove-avatar'){ setField(key,'avatarImg',null); closeTplPopover(); renderTplExpanded(); return; }
   if(action === 'remove-bg-image'){ setField(key,'bgImage',null); refreshMockupOnly(key); openBgPopover(key); return; }
   if(action === 'bg-mode'){
     setField(key, 'bgMode', el.dataset.mode);
