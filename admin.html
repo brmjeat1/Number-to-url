@@ -253,19 +253,21 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:14px 2
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
 <script>
 window.addEventListener('error', function(e){
   const b = document.getElementById('errBanner');
   b.textContent = '⚠️ خطأ بالسكربت: ' + e.message + ' (سطر ' + e.lineno + ')';
   b.classList.add('show');
 });
-let auth = null, db = null, firebaseReady = false;
+let auth = null, db = null, storage = null, firebaseReady = false;
 try{
   const cfg={apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",authDomain:"electrwni-link.firebaseapp.com",projectId:"electrwni-link",storageBucket:"electrwni-link.firebasestorage.app",messagingSenderId:"712490301263",appId:"1:712490301263:web:2084210da3f687285ab73a"};
   if(typeof firebase === 'undefined') throw new Error('تعذر تحميل مكتبة Firebase (تحقق من الاتصال بالإنترنت أو حاجب الإعلانات)');
   if(!firebase.apps.length) firebase.initializeApp(cfg);
   auth = firebase.auth();
   db = firebase.firestore();
+  storage = firebase.storage();
   firebaseReady = true;
 }catch(e){
   console.error('Firebase init failed:', e);
@@ -541,17 +543,27 @@ function closeTplExpanded(){
 
 // يبني لوحة المعاينة الحيّة فقط — تحديث سريع بدون لمس عناصر التحكم
 // يبني عنصر واحد لأيقونة/مربع تواصل: لون + حجم + حدود + تسمية اختيارية (Bold قابل للتحكم)
-function buildSocialItem(t, isRect, rectStyle, color, label){
+// أيقونات تطبيقات حقيقية (بدل مربعات لونية مجرّدة) — تُستخدم فقط لمعاينة القالب بالأدمن
+const TPL_APP_ICONS = [
+  `<svg width="60%" height="60%" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c2.7 0 3.06.01 4.12.06 1.06.05 1.79.22 2.42.46.66.26 1.22.6 1.77 1.15.55.55.89 1.11 1.15 1.77.24.63.41 1.36.46 2.42.05 1.06.06 1.42.06 4.14 0 2.72-.01 3.08-.06 4.14-.05 1.06-.22 1.79-.46 2.42a4.9 4.9 0 01-1.15 1.77 4.9 4.9 0 01-1.77 1.15c-.63.24-1.36.41-2.42.46-1.06.05-1.42.06-4.12.06s-3.06-.01-4.12-.06c-1.06-.05-1.79-.22-2.42-.46a4.9 4.9 0 01-1.77-1.15 4.9 4.9 0 01-1.15-1.77c-.24-.63-.41-1.36-.46-2.42C2.01 15.08 2 14.72 2 12s.01-3.08.06-4.14c.05-1.06.22-1.79.46-2.42.26-.66.6-1.22 1.15-1.77A4.9 4.9 0 015.44 2.52c.63-.24 1.36-.41 2.42-.46C8.92 2.01 9.28 2 12 2z"/></svg>`, // Instagram
+  `<svg width="60%" height="60%" viewBox="0 0 24 24" fill="currentColor"><path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>`, // TikTok
+  `<svg width="60%" height="60%" viewBox="0 0 24 24" fill="currentColor"><path d="M12.166 3c1.36 0 2.803.703 3.44 2.128.209.472.293 1.043.293 1.719 0 .87-.07 1.548-.07 1.548s.55.201.784.472c.201.235.185.65.05.87-.14.235-.65.65-1.79.87-.14.03-.264.07-.373.117 0 0 .295 1.548 1.688 2.298.65.354 1.4.472 1.4.472s.51.253.35.73c-.19.55-1.09.87-1.85.87 0 0-.35 1.048-1.11 1.548-.51.34-1.19.472-1.7.472-.51 0-1.19-.132-1.7-.472-.76-.5-1.11-1.548-1.11-1.548-.76 0-1.66-.32-1.85-.87-.16-.477.35-.73.35-.73s.75-.118 1.4-.472c1.393-.75 1.688-2.298 1.688-2.298-.109-.047-.233-.086-.373-.117-1.14-.22-1.65-.635-1.79-.87-.135-.22-.15-.635.05-.87.235-.271.784-.472.784-.472s-.07-.678-.07-1.548c0-.676.084-1.247.293-1.719.637-1.425 2.08-2.128 3.44-2.128z"/></svg>`, // Snapchat (ghost simplified)
+  `<svg width="55%" height="55%" viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.6 8.7L23 22h-6.9l-5.4-6.9L4.5 22H1.4l8.2-9.4L1 2h7l4.9 6.4L18.9 2zm-1.2 18h1.9L7.4 4H5.4l12.3 16z"/></svg>` // X
+];
+function buildSocialItem(t, isRect, rectStyle, color, label, iconIdx){
   const border = t.socialBorderWidth > 0 ? `border:${t.socialBorderWidth}px solid ${t.socialBorderColor};` : '';
+  const icon = TPL_APP_ICONS[iconIdx % TPL_APP_ICONS.length];
+  const iconWrap = `<span style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;color:#fff;">${icon}</span>`;
   const boxStyle = isRect
-    ? `width:100%;height:${Math.max(28,t.socialSize*0.45)}px;border-radius:${rectStyle==='sharp'?'4px':'10px'};background:${color};${border}`
-    : `width:${t.socialSize}px;height:${t.socialSize}px;border-radius:50%;background:${color};${border};flex-shrink:0;`;
+    ? `width:100%;height:${Math.max(28,t.socialSize*0.45)}px;border-radius:${rectStyle==='sharp'?'4px':'10px'};background:${color};${border}display:flex;align-items:center;justify-content:flex-start;padding-right:10px;box-sizing:border-box;gap:8px;`
+    : `width:${t.socialSize}px;height:${t.socialSize}px;border-radius:50%;background:${color};${border};flex-shrink:0;display:flex;align-items:center;justify-content:center;`;
   const labelHtml = t.socialShowLabel
     ? `<div style="font-size:${t.socialTextSize}px;font-weight:${t.socialTextBold?800:400};color:${t.socialTextColor};margin-top:5px;text-align:center;">${escapeHtml(label)}</div>`
     : '';
-  return isRect
-    ? `<div style="width:100%;"><div style="${boxStyle}"></div>${labelHtml}</div>`
-    : `<div style="display:flex;flex-direction:column;align-items:center;"><div style="${boxStyle}"></div>${labelHtml}</div>`;
+  if(isRect){
+    return `<div style="width:100%;"><div style="${boxStyle}"><span style="width:${Math.max(18,t.socialSize*0.28)}px;height:${Math.max(18,t.socialSize*0.28)}px;flex-shrink:0;">${iconWrap}</span>${t.socialShowLabel ? `<span style="font-size:${t.socialTextSize}px;font-weight:${t.socialTextBold?800:400};color:#fff;">${escapeHtml(label)}</span>` : ''}</div></div>`;
+  }
+  return `<div style="display:flex;flex-direction:column;align-items:center;"><div style="${boxStyle}">${iconWrap}</div>${labelHtml}</div>`;
 }
 function buildSocialsPreview(t, isRect, rectStyle){
   // كل شكل (مستطيل / دائري) له لوحة ٤ ألوان مستقلة خاصة فيه
@@ -559,10 +571,10 @@ function buildSocialsPreview(t, isRect, rectStyle){
     ? [t.rectColor1, t.rectColor2, t.rectColor3, t.rectColor4]
     : [t.circleColor1, t.circleColor2, t.circleColor3, t.circleColor4];
   const labels = [
-    t.socialLabel1 || 'حساب 1', t.socialLabel2 || 'حساب 2',
-    t.socialLabel3 || 'حساب 3', t.socialLabel4 || 'حساب 4'
+    t.socialLabel1 || 'Instagram', t.socialLabel2 || 'TikTok',
+    t.socialLabel3 || 'Snapchat', t.socialLabel4 || 'X'
   ];
-  const items = colors.map((c,i) => buildSocialItem(t, isRect, rectStyle, c, labels[i]));
+  const items = colors.map((c,i) => buildSocialItem(t, isRect, rectStyle, c, labels[i], i));
   return isRect
     ? `<div style="display:flex;flex-direction:column;gap:8px;width:100%;margin:14px 0;">${items.join('')}</div>`
     : `<div style="display:flex;gap:14px;margin:14px 0;">${items.join('')}</div>`;
@@ -610,36 +622,47 @@ function buildMockupHtml(key){
       <!-- الشعار (شعار المنصة/البراند): أعلى يمين — منفصل تمامًا عن الأفتار -->
       <button type="button" class="tpl-plus-badge" style="top:8px;right:8px;" data-action="open-logo-popover" data-key="${key}" title="الشعار">الشعار</button>
       ${showLogo ? `
-        <div style="position:absolute;top:8px;right:70px;width:30px;height:30px;border-radius:8px;overflow:hidden;${t.logoImg ? `background-image:url(${t.logoImg});background-size:cover;background-position:center;` : `background:rgba(255,255,255,.55);border:1.5px dashed #b9c0d9;`}"></div>
+        <div style="position:absolute;top:38px;right:8px;width:30px;height:30px;border-radius:8px;overflow:hidden;${t.logoImg ? `background-image:url(${t.logoImg});background-size:cover;background-position:center;` : `background:rgba(255,255,255,.55);border:1.5px dashed #b9c0d9;`}"></div>
       ` : ''}
 
       ${showAvatar ? `
-        <div style="position:relative;display:inline-block;margin-bottom:${t.gap}px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:${t.gap}px;">
           <div style="width:${t.avatarSize}px;height:${t.avatarSize}px;border-radius:${avatarRadius};${t.avatarImg ? `background-image:url(${t.avatarImg});background-size:cover;background-position:center;` : `background:linear-gradient(135deg,${t.p1},${t.p2});`}"></div>
-          <!-- الأفاتار (صورة المستخدم الشخصية): مركّز أفقيًا تحت الدائرة تمامًا مهما كان حجمها — منفصل عن الشعار -->
-          <button type="button" class="tpl-plus-badge" style="bottom:-8px;left:50%;transform:translateX(-50%);" data-action="open-avatar-popover" data-key="${key}" title="الأفاتار">الأفاتار</button>
+          <!-- الأفاتار (صورة المستخدم الشخصية) — بادج بتدفق طبيعي أسفل الدائرة، بلا تراكب أبداً -->
+          <button type="button" class="tpl-plus-badge" style="position:static;" data-action="open-avatar-popover" data-key="${key}" title="الأفاتار">الأفاتار</button>
         </div>
       ` : ''}
-      <div style="position:relative;display:inline-block;margin-bottom:${Math.max(6,t.gap*0.4)}px;">
+
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:${Math.max(8,t.gap*0.5)}px;">
+        <button type="button" class="tpl-plus-badge" style="position:static;" data-action="open-name-popover" data-key="${key}" title="الاسم المعروض">الاسم المعروض</button>
         <div style="color:${t.text};font-size:${t.nameSize}px;font-weight:${t.nameWeight};">${escapeHtml(t.sampleName || '')}</div>
-        <button type="button" class="tpl-plus-badge" style="top:-10px;right:-8px;" data-action="open-name-popover" data-key="${key}" title="الاسم المعروض">الاسم المعروض</button>
-      </div>
-      <div style="position:relative;display:inline-block;margin-bottom:${Math.max(6,t.gap*0.4)}px;">
-        <div style="color:${t.text};opacity:.7;font-size:${Math.max(10,t.nameSize*0.42)}px;font-family:ui-monospace,'SF Mono',monospace;direction:ltr;">${escapeHtml(t.sampleUsername || '')}</div>
-        <button type="button" class="tpl-plus-badge" style="top:-10px;right:-8px;" data-action="open-username-popover" data-key="${key}" title="اسم المستخدم">اسم المستخدم</button>
-      </div>
-      <div style="position:relative;display:inline-block;margin-bottom:${t.gap}px;">
-        <div style="color:${t.text};opacity:.55;font-size:${Math.max(9,t.nameSize*0.36)}px;font-family:ui-monospace,'SF Mono',monospace;direction:ltr;">${escapeHtml(t.samplePageLink || 'electrwni.link/electrwni')}</div>
-        <button type="button" class="tpl-plus-badge" style="top:-10px;right:-8px;" data-action="open-pagelink-popover" data-key="${key}" title="رابط الصفحة">رابط الصفحة</button>
       </div>
 
-      <div style="position:relative;width:100%;">
-        <button type="button" class="tpl-plus-badge" style="top:-6px;left:8px;" data-action="open-socials-popover" data-key="${key}" title="أيقونات تواصل دائرية">أيقونات تواصل دائرية</button>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:${Math.max(8,t.gap*0.5)}px;">
+        <button type="button" class="tpl-plus-badge" style="position:static;" data-action="open-username-popover" data-key="${key}" title="اسم المستخدم">اسم المستخدم</button>
+        <div style="color:${t.text};opacity:.7;font-size:${Math.max(10,t.nameSize*0.42)}px;font-family:ui-monospace,'SF Mono',monospace;direction:ltr;">${escapeHtml(t.sampleUsername || '')}</div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:${t.gap}px;">
+        <button type="button" class="tpl-plus-badge" style="position:static;" data-action="open-pagelink-popover" data-key="${key}" title="رابط الصفحة">رابط الصفحة</button>
+        <div style="color:${t.text};opacity:.55;font-size:${Math.max(9,t.nameSize*0.36)}px;font-family:ui-monospace,'SF Mono',monospace;direction:ltr;">${escapeHtml(t.samplePageLink || 'electrwni.link/electrwni')}</div>
+      </div>
+
+      <!-- حقل الأرقام: نفس شكل حقل "اكتب رقم يحيلك لرابط" بالداشبورد/الصفحة العامة، يظهر دائماً فوق التواصل -->
+      <div style="display:flex;align-items:center;gap:8px;width:100%;padding:7px 7px 7px 16px;border-radius:999px;border:1.5px solid rgba(0,0,0,0.12);background:rgba(255,255,255,0.92);margin-bottom:${t.gap}px;box-sizing:border-box;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9aa2c8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <span style="flex:1;font-size:0.72rem;color:#b8bfd6;font-family:ui-monospace,monospace;">اكتب رقم يحيلك لرابط</span>
+        <span style="flex-shrink:0;padding:5px 14px;border-radius:999px;background:${t.p1};color:#fff;font-weight:700;font-size:0.68rem;">إتمام</span>
+      </div>
+
+      <!-- التواصل: بمكانه الصحيح بالأسفل، بأيقونات تطبيقات حقيقية بدل المربعات اللونية المجرّدة -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;">
+        <button type="button" class="tpl-plus-badge" style="position:static;" data-action="open-socials-popover" data-key="${key}" title="أيقونات تواصل">أيقونات تواصل</button>
         ${showSocials ? socialsHtml : `<div style="height:14px;"></div>`}
       </div>
 
       ${showLinks ? `
-        <div style="width:100%;height:${t.linkHeight}px;border-radius:${linkRadiusPx};border:${t.linkBorderWidth}px solid ${t.p1};${linkFillStyle}${linkShadowStyle}margin-bottom:${Math.max(6,t.gap*0.55)}px;"></div>
+        <div style="width:100%;height:${t.linkHeight}px;border-radius:${linkRadiusPx};border:${t.linkBorderWidth}px solid ${t.p1};${linkFillStyle}${linkShadowStyle}margin-bottom:${Math.max(6,t.gap*0.55)}px;margin-top:${t.gap}px;"></div>
         <div style="width:100%;height:${t.linkHeight}px;border-radius:${linkRadiusPx};border:${t.linkBorderWidth}px solid ${t.p1};${linkFillStyle}${linkShadowStyle}"></div>
       ` : ''}
     </div>
@@ -721,7 +744,7 @@ function buildPanelBody(id, key, t, flags){
   if(id === 'colors'){
     return `
       <div class="tpl-dash-section">
-        <div class="tpl-dash-label">لوحة الألوان الكاملة</div>
+        <div class="tpl-dash-label">🎨 حزمة ألوان الموقع (٤ ألوان) — تطبيق حي مباشر على الخلفية والنص والأزرار</div>
         <div class="tpl-color-mini-row"><span>اللون الأساسي</span><input type="color" value="${t.p1}" data-field="p1" data-key="${key}" data-live="fast"></div>
         <div class="tpl-color-mini-row"><span>اللون الثانوي</span><input type="color" value="${t.p2}" data-field="p2" data-key="${key}" data-live="fast"></div>
         <div class="tpl-color-mini-row"><span>لون النص</span><input type="color" value="${t.text}" data-field="text" data-key="${key}" data-live="fast"></div>
@@ -1092,21 +1115,49 @@ document.addEventListener('input', function(e){
   if(valSpan) valSpan.textContent = (isPercent ? el.value : value) + (el.dataset.unit || '');
 });
 
+/* رفع صورة القالب لمساحة تخزين Firebase بدل تضمينها كـ base64 مباشرة بمستند القوالب —
+   هذا هو الحل الجذري لمشكلة "يتعذر حفظ الإعدادات": مستند Firestore الواحد محدود بـ1 ميجابايت،
+   وتضمين صور base64 لعدة قوالب يتجاوزه بسرعة. الآن يُخزَّن رابط قصير فقط بدل الصورة كاملة. */
+async function uploadTplImageToStorage(dataUrl, path){
+  if(!storage) throw new Error('التخزين السحابي غير متاح');
+  const ref = storage.ref(path);
+  await ref.putString(dataUrl, 'data_url');
+  return await ref.getDownloadURL();
+}
+
 /* ===== تفويض الأحداث (change) — قوائم/سويتشات/ملفات ===== */
 document.addEventListener('change', function(e){
   const el = e.target;
 
   if(el.dataset.action === 'avatar-file' && el.files && el.files[0]){
-    fileToBase64(el.files[0], (dataUrl) => { setField(el.dataset.key, 'avatarImg', dataUrl); renderTplExpanded(); closeTplPopover(); });
+    fileToBase64(el.files[0], async (dataUrl) => {
+      setField(el.dataset.key, 'avatarImg', dataUrl); renderTplExpanded(); closeTplPopover();
+      try{
+        const url = await uploadTplImageToStorage(dataUrl, `templates/${el.dataset.key}/avatar.jpg`);
+        setField(el.dataset.key, 'avatarImg', url); refreshMockupOnly(el.dataset.key);
+      }catch(err){ console.error('avatar upload failed:', err); }
+    });
     return;
   }
   if(el.dataset.action === 'logo-file' && el.files && el.files[0]){
-    fileToBase64(el.files[0], (dataUrl) => { setField(el.dataset.key, 'logoImg', dataUrl); renderTplExpanded(); closeTplPopover(); });
+    fileToBase64(el.files[0], async (dataUrl) => {
+      setField(el.dataset.key, 'logoImg', dataUrl); renderTplExpanded(); closeTplPopover();
+      try{
+        const url = await uploadTplImageToStorage(dataUrl, `templates/${el.dataset.key}/logo.jpg`);
+        setField(el.dataset.key, 'logoImg', url); refreshMockupOnly(el.dataset.key);
+      }catch(err){ console.error('logo upload failed:', err); }
+    });
     return;
   }
   if(el.dataset.action === 'bg-file' && el.files && el.files[0]){
     // خلفية كاملة الصفحة تحتاج دقة أعلى من الأفتار/الشعار (480px تصير مموّهة لو تمددت على الشاشة كاملة)
-    fileToBase64(el.files[0], (dataUrl) => { setField(el.dataset.key, 'bgImage', dataUrl); renderTplExpanded(); closeTplPopover(); }, 1080, 0.75);
+    fileToBase64(el.files[0], async (dataUrl) => {
+      setField(el.dataset.key, 'bgImage', dataUrl); renderTplExpanded(); closeTplPopover();
+      try{
+        const url = await uploadTplImageToStorage(dataUrl, `templates/${el.dataset.key}/bg.jpg`);
+        setField(el.dataset.key, 'bgImage', url); refreshMockupOnly(el.dataset.key);
+      }catch(err){ console.error('bg upload failed:', err); }
+    }, 1080, 0.75);
     return;
   }
 
