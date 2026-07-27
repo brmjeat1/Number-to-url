@@ -5258,13 +5258,21 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     } else if(p){ p.style.opacity=''; p.style.filter=''; }
   };
   window.onRemoveBanner = function(checked){
+    // تأكيد صارم قبل أي حذف فعلي: لو ألغى المستخدم نرجّع المفتاح لوضعه القديم ولا ننفّذ شيء إطلاقاً
+    if(checked){
+      const confirmed = confirm("سيتم حذف صورة الغلاف نهائياً. لون الخلفية المختار سيبقى كما هو بلا أي تغيير. هل أنت متأكد؟");
+      if(!confirmed){
+        document.getElementById('removeBannerToggle').checked = false;
+        return; // إلغاء تام — بلا حذف وبلا أي أثر
+      }
+    }
     bannerHidden = checked;
     const p = document.getElementById('bannerPreview');
     if(checked){
       croppedBannerBase64 = null;
       if(p){ p.style.opacity = '.2'; p.style.filter = 'grayscale(1)'; }
       deleteObject(storageRef(storage, `banners/${currentUser.uid}.jpg`)).catch(()=>{});
-      window.showToast("سيختفي الغلاف من صفحتك عند الحفظ");
+      window.showToast("تم حذف الغلاف — لون الخلفية باقٍ كما هو");
     } else if(p){ p.style.opacity=''; p.style.filter=''; }
   };
   window.onRemoveBg = function(checked){
