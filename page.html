@@ -78,7 +78,8 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html{font-size:106.25%;background:#ffffff;} /* Apple-scale baseline (~17px) */
 html{scroll-behavior:smooth;}
-body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;background:#ffffff;color:var(--text);min-height:100vh;}
+html{overflow-x:hidden;}
+body{font-family:'ThmanyahSerif',-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;background:#ffffff;color:var(--text);min-height:100vh;overflow-x:hidden;}
 
 /* ========== NAVBAR (قسمان: شعار ثابت يسار + زر ذكي يمين) ========== */
 nav{
@@ -125,8 +126,9 @@ nav{
 }
 .numbers-panel-close-centered{
   position:absolute;top:16px;left:50%;transform:translateX(-50%);
-  width:42px;height:42px;border-radius:50%;border:none;background:var(--bg2,#f3f3f3);
-  color:var(--text2);font-size:1.35rem;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  width:42px;height:42px;border-radius:50%;border:none;background:#eef0f6;
+  color:#3a4270;font-size:1.35rem;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  z-index:2;
 }
 .numbers-panel-search-row{display:flex;justify-content:center;margin-bottom:28px;}
 .numbers-panel-search{
@@ -182,6 +184,10 @@ nav{
 /* ========== CONTENT ========== */
 .content{padding:0 24px 30px;max-width:500px;margin:0 auto;}
 .page-themed-wrap{background:var(--bg);}
+/* توافق متصفحات الويب على الشاشات الواسعة: الصفحة تتوسّط بعرض ثابت أنيق بدل الامتداد الكامل عبر الشاشة */
+@media(min-width:701px){
+  .page-themed-wrap{max-width:480px;margin:0 auto;box-shadow:0 0 60px rgba(0,0,0,0.08);}
+}
 .profile-info{text-align:center;margin-bottom:16px;}
 .main-search-row{display:flex;justify-content:center;margin-bottom:6px;}
 .main-search-box{
