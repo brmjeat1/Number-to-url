@@ -5239,9 +5239,19 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     try{
       const path = `${type === 'avatar' ? 'avatars' : 'banners'}/${currentUser.uid}.jpg`;
       const url = await uploadImageToStorage(base64, path);
-      if (type === 'avatar') croppedAvatarBase64 = url;
-      else croppedBannerBase64 = url;
-      window.showToast("تم رفع الصورة، يرجى حفظ التصميم");
+      if (type === 'avatar') {
+        croppedAvatarBase64 = url;
+        // احفظ فوراً بقاعدة البيانات — لا تعتمد على ضغطة "حفظ التصميم" لاحقاً، لضمان عدم فقد الصورة أبداً
+        await setDoc(doc(db, "users", currentUser.uid), { avatar: url }, { merge: true });
+        avatarHidden = false;
+        const rAv = document.getElementById('removeAvatarToggle'); if(rAv) rAv.checked = false;
+      } else {
+        croppedBannerBase64 = url;
+        await setDoc(doc(db, "users", currentUser.uid), { bannerImage: url }, { merge: true });
+        bannerHidden = false;
+        const rBn = document.getElementById('removeBannerToggle'); if(rBn) rBn.checked = false;
+      }
+      window.showToast("✅ تم حفظ الصورة نهائياً على صفحتك");
     }catch(e){
       window.showToast("تعذر رفع الصورة: " + (e.message||''));
     }
