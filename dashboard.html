@@ -4420,8 +4420,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       iconColor = document.getElementById('newCustomIconColor')?.value || '#ffffff';
       nameColor = document.getElementById('newCustomNameColor')?.value || '#0f1535';
     } else if(socialColorMode === 'site'){
-      const pal = currentIconShape==='rect' ? currentIconPaletteRect : currentIconPaletteCircle;
-      bg = (pal && pal.length) ? pal[0] : 'var(--primary)'; ring='var(--border)'; iconColor='#ffffff'; nameColor='#0f1535';
+      bg = p.color; ring='transparent'; iconColor = (p.id==='snapchat'?'#000':'#fff'); nameColor='#0f1535';
     } else {
       bg = p.color; ring='transparent'; iconColor = (p.id==='snapchat'?'#000':'#fff'); nameColor='#0f1535';
     }
@@ -4562,8 +4561,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     if(mode==='custom'){
       bg = soc.customBg||'#3d5af1'; ring = soc.customRing||'#ffffff'; iconColor = soc.customIconColor||'#ffffff';
     } else if(mode==='site'){
-      const pal = currentIconShape==='rect' ? currentIconPaletteRect : currentIconPaletteCircle;
-      bg = (pal && pal.length) ? pal[0] : 'var(--primary)'; ring='var(--border)'; iconColor='var(--text)';
+      // نفس منطق الصفحة العامة الآن: لون التطبيق الحقيقي الزاهي بدل الباستيل الباهت
+      bg = soc.brandColor||'var(--primary)'; ring='transparent'; iconColor='#ffffff';
     } else {
       bg = soc.brandColor||'var(--primary)'; ring='transparent'; iconColor='#ffffff';
     }
