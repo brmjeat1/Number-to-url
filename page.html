@@ -865,16 +865,19 @@ function render(user){
     document.documentElement.style.setProperty('--bg', chosenBg);
     document.documentElement.style.setProperty('--surface', chosenBg);
     document.documentElement.style.background = chosenBg; // يمنع نفس مشكلة شريط اللون عند الارتداد حتى بوضع "لون فقط"
+    document.body.style.background = chosenBg; // يمنع أي بياض بأسفل الصفحة لو المحتوى أقصر من الشاشة
   } else if(prefersDark){
     if(themedWrap) themedWrap.style.background = '';
     document.documentElement.style.setProperty('--bg', '#15171c');
     document.documentElement.style.setProperty('--surface', '#1e2128');
     document.documentElement.style.setProperty('--border', '#2a2e37');
     document.documentElement.style.background = '#15171c';
+    document.body.style.background = '#15171c';
   } else {
     if(themedWrap) themedWrap.style.background = '';
     document.documentElement.style.setProperty('--bg', '#ffffff');
     document.documentElement.style.setProperty('--surface', '#f9f9f9');
+    document.body.style.background = '';
   }
   // لون النص: صريح من اختيار المستخدم، وإلا تباين تلقائي مع الخلفية
   if(user.textColor && /^#[0-9A-Fa-f]{6}$/.test(user.textColor)){
@@ -890,8 +893,14 @@ function render(user){
   avatarEl.classList.remove('skeleton-shimmer');
   avatarEl.classList.toggle('shape-rect', user.avatarShape === 'rect'); // افتار مستطيل بدل الدائري لو اختاره صاحب الصفحة
 
+  const heroBannerEl = document.getElementById('heroBanner');
   if(user.bannerImage){
-    document.getElementById('heroBanner').style.backgroundImage=`url(${user.bannerImage})`;
+    heroBannerEl.style.backgroundImage=`url(${user.bannerImage})`;
+    heroBannerEl.style.background='';
+  } else {
+    // لا صورة غلاف = امنع التدرج الاحتياطي الثابت بالكود نهائياً، واجعله نفس لون خلفية الصفحة تمامًا (لون واحد صريح فقط، بلا أي تراكب أو تدرج)
+    heroBannerEl.style.backgroundImage='none';
+    heroBannerEl.style.background = chosenBg || (prefersDark ? '#15171c' : '#ffffff');
   }
 
   // حسابات التواصل الاجتماعي (دائرية أو مستطيلة حسب اختيار صاحب الصفحة)
