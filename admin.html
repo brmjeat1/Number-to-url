@@ -1377,19 +1377,52 @@ function addNewTemplate(){
   openTplExpanded(id);
 }
 let isSaving = false;
+const IMAGE_FIELDS = ['avatarImg','logoImg','bgImage'];
+// يفحص كل القوالب بحثًا عن صور base64 قديمة (من قبل تفعيل الرفع الخارجي) ويرفعها فورًا لمساحة التخزين
+// — هذا هو السبب الحقيقي لتعذر الحفظ سابقًا: الصور القديمة كانت متكدّسة داخل مستند القوالب نفسه وتتجاوز حد Firestore (~1MB)
+async function migrateLegacyBase64Images(){
+  const jobs = [];
+  Object.keys(templatesData).forEach(key => {
+    IMAGE_FIELDS.forEach(field => {
+      const val = templatesData[key][field];
+      if(typeof val === 'string' && val.startsWith('data:image')){
+        jobs.push((async () => {
+          try{
+            const path = `templates/${key}/${field}_${Date.now()}.jpg`;
+            const ref = storage.ref(path);
+            await ref.putString(val, 'data_url');
+            const url = await ref.getDownloadURL();
+            templatesData[key][field] = url;
+          }catch(err){
+            console.error('تعذر ترحيل صورة قديمة:', key, field, err);
+          }
+        })());
+      }
+    });
+  });
+  if(jobs.length) await Promise.all(jobs);
+  return jobs.length;
+}
+
 async function saveTemplatesConfig(){
   if(isSaving) return;
   if(!firebaseReady){ alert('تعذر الاتصال بالخادم، أعد تحميل الصفحة'); return; }
-
-  const approxSize = new Blob([JSON.stringify(templatesData)]).size;
-  if(approxSize > 900000){
-    alert('⚠ حجم بيانات القوالب كبير جدًا (' + Math.round(approxSize/1024) + ' كيلوبايت) وقد يفشل الحفظ. الصور تُرفع الآن تلقائيًا لمساحة تخزين خارجية، فتأكد أنك رفعتها من نافذة "+" ولم تُلصق يدويًا.');
-  }
 
   const btns = document.querySelectorAll('[data-action="save-all"], [data-action="save-and-close"]');
   isSaving = true;
   btns.forEach(b => { b.dataset.origHtml = b.innerHTML; b.disabled = true; if(b.dataset.action==='save-all') b.innerHTML = ICONS.loader + ' جاري الحفظ...'; });
   try{
+    const migratedCount = await migrateLegacyBase64Images();
+    if(migratedCount){
+      renderTemplatesEditor();
+      if(currentExpandedTpl) renderTplExpanded();
+    }
+
+    const approxSize = new Blob([JSON.stringify(templatesData)]).size;
+    if(approxSize > 900000){
+      alert('⚠ حجم بيانات القوالب كبير جدًا (' + Math.round(approxSize/1024) + ' كيلوبايت) وقد يفشل الحفظ حتى بعد ترحيل الصور. راجع القوالب وقلّل عدد الصور المرفوعة.');
+    }
+
     await db.collection('siteConfig').doc('templates').set(templatesData);
   }catch(e){
     alert('تعذر الحفظ: '+e.message);
