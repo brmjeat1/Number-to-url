@@ -296,6 +296,26 @@ svg{display:block;}
 .tpl-color-mini-row input[type=color]{width:52px;height:38px;border-radius:var(--r-xs);border:1.5px solid var(--border-strong);padding:2px;cursor:pointer;}
 .tpl-expanded-select{width:100%;padding:11px;border:1.5px solid var(--border-strong);border-radius:var(--r-sm);font-size:0.85rem;font-weight:700;background:#fff;}
 
+/* ===== تبويب التصميم — كروت مستطيلة موحّدة، تسميات كلمة واحدة، بلا كلام شارح ===== */
+.tpl-card-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px;}
+.tpl-card-grid.cols-1{grid-template-columns:1fr;}
+.tpl-card-grid:last-child{margin-bottom:0;}
+.tpl-mini-card{background:var(--surface);border:1.5px solid var(--border-strong);border-radius:var(--r-md);padding:14px;}
+.tpl-mini-card .lbl{font-size:0.72rem;font-weight:800;color:var(--text-3);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.tpl-chip-row{display:flex;gap:7px;flex-wrap:wrap;}
+.tpl-chip{padding:8px 14px;border-radius:var(--r-pill);border:1.5px solid var(--border-strong);background:#fff;font-size:0.78rem;font-weight:700;cursor:pointer;color:var(--text);}
+.tpl-chip.active{border-color:var(--neon);background:#EAF1FF;color:var(--neon);}
+.tpl-switch-card{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--surface);border:1.5px solid var(--border-strong);border-radius:var(--r-md);padding:13px 14px;margin-bottom:10px;}
+.tpl-switch-card:last-child{margin-bottom:0;}
+.tpl-switch-card .left{display:flex;align-items:center;gap:10px;font-weight:800;font-size:0.85rem;}
+.tpl-switch-card .left .ico{width:34px;height:34px;border-radius:10px;background:var(--surface-2);color:var(--neon);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tpl-switch{position:relative;width:44px;height:26px;flex-shrink:0;display:block;}
+.tpl-switch input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;z-index:1;}
+.tpl-switch .track{position:absolute;inset:0;background:var(--border-strong);border-radius:var(--r-pill);transition:background .15s;}
+.tpl-switch .thumb{position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.35);transition:transform .15s;}
+.tpl-switch input:checked + .track{background:var(--neon);}
+.tpl-switch input:checked + .track + .thumb{transform:translateX(-18px);}
+
 .tpl-plus-badge{
   position:absolute;z-index:50;width:34px;height:34px;border-radius:50%;
   background:var(--royal-ink);color:#fff;border:2.5px solid #fff;
@@ -872,6 +892,7 @@ const $ = (id) => document.getElementById(id);
 let currentExpandedTpl = null;
 let currentTplSubTab = 'preview';
 const TPL_FONTS = ['Tajawal','IBM Plex Sans Arabic','Cairo','Almarai','Space Mono'];
+const TPL_FONT_LABELS = {'Tajawal':'Tajawal','IBM Plex Sans Arabic':'Plex','Cairo':'Cairo','Almarai':'Almarai','Space Mono':'Mono'};
 
 function escapeHtml(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
@@ -981,9 +1002,11 @@ function buildMockupHtml(key){
   // نقطة "الشعار" — صندوق منقّط يحيط بمعاينة الشعار، والشارة + مستقرة على الخط المتقطع أعلاه
   const logoZone = showLogo ? `
     <div class="tpl-dash-zone" style="position:absolute;top:8px;right:8px;width:40px;height:40px;border-radius:12px;">
-      <div style="position:absolute;inset:3px;border-radius:9px;overflow:hidden;${t.logoImg ? `background-image:url(${t.logoImg});background-size:cover;background-position:center;` : `background:rgba(255,255,255,.5);`}"></div>
+      ${t.logoImg
+        ? `<div style="position:absolute;inset:3px;border-radius:9px;overflow:hidden;background-image:url(${t.logoImg});background-size:cover;background-position:center;"></div>`
+        : `<div style="position:absolute;inset:3px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.7);">${ICONS.image}</div>`}
       <button type="button" class="tpl-plus-badge" style="top:-17px;left:50%;transform:translateX(-50%);" data-action="open-logo-popover" data-key="${key}" title="الشعار">${plusIco}</button>
-    </div>` : `<button type="button" class="tpl-plus-badge" style="top:8px;right:8px;" data-action="open-logo-popover" data-key="${key}" title="الشعار">${plusIco}</button>`;
+    </div>` : '';
 
   // نقطة "الأفتار" — حلقة منقّطة تحيط بالصورة، والشارة + على حافتها السفلية
   const avatarZone = showAvatar ? `
@@ -1084,94 +1107,120 @@ function renderTplExpanded(){
 }
 
 function buildPanelBody(id, key, t, flags){
+  const switchCard = (label, field, checked, ico) => `
+    <div class="tpl-switch-card">
+      <div class="left"><span class="ico">${ico}</span>${label}</div>
+      <label class="tpl-switch"><input type="checkbox" ${checked?'checked':''} data-field="${field}" data-key="${key}" data-live="flag"><span class="track"></span><span class="thumb"></span></label>
+    </div>`;
+
   if(id === 'design'){
     return `
-      <div class="tpl-dash-section">
-        <div class="tpl-field"><span class="tpl-field-label">اسم القالب (للإدارة فقط)</span>
+      <div class="tpl-card-grid cols-1">
+        <div class="tpl-mini-card">
+          <div class="lbl">${ICONS.pencil} الاسم</div>
           <input type="text" class="tpl-expanded-input" value="${escapeHtml(t.name)}" data-field="name" data-key="${key}" data-live="lg">
         </div>
-        <div class="tpl-field"><span class="tpl-field-label">نص الاسم بالمعاينة</span>
+        <div class="tpl-mini-card">
+          <div class="lbl">${ICONS.eye} المعاينة</div>
           <input type="text" class="tpl-expanded-input" value="${escapeHtml(t.sampleName || 'اسمك هنا')}" data-field="sampleName" data-key="${key}" data-live="lg">
         </div>
       </div>`;
   }
   if(id === 'colors'){
+    const bgMode = t.bgMode || 'color';
+    const items = [['أساسي','p1',t.p1],['ثانوي','p2',t.p2],['النص','text',t.text],['الأزرار','linkText',t.linkText]];
+    if(bgMode !== 'image') items.push([bgMode==='imageColor' ? 'الطبقة' : 'الخلفية','bg',t.bg]);
     return `
-      <div class="tpl-dash-section">
-        <div class="tpl-dash-label">${ICONS.swatch} لوحة الألوان الكاملة</div>
-        <div class="tpl-color-mini-row"><span>اللون الأساسي</span><input type="color" value="${t.p1}" data-field="p1" data-key="${key}" data-live="fast"></div>
-        <div class="tpl-color-mini-row"><span>اللون الثانوي</span><input type="color" value="${t.p2}" data-field="p2" data-key="${key}" data-live="fast"></div>
-        <div class="tpl-color-mini-row"><span>لون النص</span><input type="color" value="${t.text}" data-field="text" data-key="${key}" data-live="fast"></div>
-        <div class="tpl-color-mini-row"><span>لون نص الأزرار</span><input type="color" value="${t.linkText}" data-field="linkText" data-key="${key}" data-live="fast"></div>
-        ${(t.bgMode || 'color') !== 'image' ? `<div class="tpl-color-mini-row"><span>${t.bgMode==='imageColor' ? 'لون الطبقة أمام الخلفية' : 'لون الخلفية'}</span><input type="color" value="${t.bg}" data-field="bg" data-key="${key}" data-live="fast"></div>` : `<div style="font-size:0.78rem;color:var(--text-3);">وضع الخلفية الحالي «خلفية فقط» — غيّر الوضع من زر "+" الخلفية بالمعاينة لإظهار لون.</div>`}
+      <div class="tpl-card-grid">
+        ${items.map(([label,field,val]) => `
+          <div class="tpl-mini-card">
+            <div class="lbl">${label}</div>
+            <input type="color" value="${val}" data-field="${field}" data-key="${key}" data-live="fast" style="width:100%;height:40px;border-radius:10px;border:1.5px solid var(--border-strong);cursor:pointer;">
+          </div>`).join('')}
       </div>`;
   }
   if(id === 'fonts'){
     return `
-      <div class="tpl-dash-section">
-        <div class="tpl-field"><span class="tpl-field-label">نوع الخط</span>
-          <select class="tpl-expanded-select" data-field="fontFamily" data-key="${key}" data-live="lg">
-            ${TPL_FONTS.map(f=>`<option value="${f}" ${t.fontFamily===f?'selected':''}>${f}</option>`).join('')}
-          </select>
+      <div class="tpl-card-grid cols-1">
+        <div class="tpl-mini-card">
+          <div class="lbl">${ICONS.type} الخط</div>
+          <div class="tpl-chip-row">
+            ${TPL_FONTS.map(f => `<button type="button" class="tpl-chip ${t.fontFamily===f?'active':''}" data-action="set-field" data-field="fontFamily" data-value="${f}" data-key="${key}" style="font-family:'${f}';">${TPL_FONT_LABELS[f]||f}</button>`).join('')}
+          </div>
         </div>
-        <div class="tpl-field"><span class="tpl-field-label">حجم الاسم</span>
-          <div class="tpl-range-row"><input type="range" min="14" max="40" value="${t.nameSize}" data-field="nameSize" data-key="${key}" data-live="fast" data-unit="px"><span class="tpl-range-val">${t.nameSize}px</span></div>
+        <div class="tpl-mini-card">
+          <div class="lbl">${ICONS.sliders} الوزن</div>
+          <div class="tpl-chip-row">
+            ${[400,500,600,700,800,900].map(w => `<button type="button" class="tpl-chip ${+t.nameWeight===w?'active':''}" data-action="set-field" data-field="nameWeight" data-value="${w}" data-key="${key}" style="font-weight:${w};">${w}</button>`).join('')}
+          </div>
         </div>
-        <div class="tpl-field"><span class="tpl-field-label">وزن خط الاسم</span>
-          <select class="tpl-expanded-select" data-field="nameWeight" data-key="${key}" data-live="lg">
-            ${[400,500,600,700,800,900].map(w=>`<option value="${w}" ${+t.nameWeight===w?'selected':''}>${w}</option>`).join('')}
-          </select>
-        </div>
-        <div class="tpl-field"><span class="tpl-field-label">حجم سطور الوصف</span>
-          <div class="tpl-range-row"><input type="range" min="8" max="20" value="${t.bioSize}" data-field="bioSize" data-key="${key}" data-live="fast" data-unit="px"><span class="tpl-range-val">${t.bioSize}px</span></div>
+        <div class="tpl-card-grid" style="margin-bottom:0;">
+          <div class="tpl-mini-card">
+            <div class="lbl">${ICONS.ruler} الاسم</div>
+            <div class="tpl-range-row"><input type="range" min="14" max="40" value="${t.nameSize}" data-field="nameSize" data-key="${key}" data-live="fast" data-unit="px"><span class="tpl-range-val">${t.nameSize}</span></div>
+          </div>
+          <div class="tpl-mini-card">
+            <div class="lbl">${ICONS.ruler} الوصف</div>
+            <div class="tpl-range-row"><input type="range" min="8" max="20" value="${t.bioSize}" data-field="bioSize" data-key="${key}" data-live="fast" data-unit="px"><span class="tpl-range-val">${t.bioSize}</span></div>
+          </div>
         </div>
       </div>`;
   }
   if(id === 'buttons'){
     return `
-      <div class="tpl-dash-section">
-        <div class="tpl-field"><span class="tpl-field-label">شكل الحواف</span>
+      <div class="tpl-card-grid cols-1">
+        <div class="tpl-mini-card">
+          <div class="lbl">${ICONS.square} الشكل</div>
           <div class="tpl-seg-row">
             <button type="button" class="tpl-seg-btn ${t.linkRadius==='sharp'?'active':''}" data-action="set-field" data-field="linkRadius" data-value="sharp" data-key="${key}">${ICONS.rectSharp}حاد</button>
             <button type="button" class="tpl-seg-btn ${t.linkRadius==='rounded'?'active':''}" data-action="set-field" data-field="linkRadius" data-value="rounded" data-key="${key}">${ICONS.rectRounded}دائري</button>
             <button type="button" class="tpl-seg-btn ${t.linkRadius==='pill'?'active':''}" data-action="set-field" data-field="linkRadius" data-value="pill" data-key="${key}">${ICONS.pill}كبسولة</button>
           </div>
         </div>
-        <div class="tpl-field"><span class="tpl-field-label">ارتفاع الزر</span>
-          <div class="tpl-range-row"><input type="range" min="16" max="56" value="${t.linkHeight}" data-field="linkHeight" data-key="${key}" data-live="fast" data-unit="px"><span class="tpl-range-val">${t.linkHeight}px</span></div>
+        <div class="tpl-card-grid" style="margin-bottom:10px;">
+          <div class="tpl-mini-card">
+            <div class="lbl">${ICONS.ruler} الارتفاع</div>
+            <div class="tpl-range-row"><input type="range" min="16" max="56" value="${t.linkHeight}" data-field="linkHeight" data-key="${key}" data-live="fast" data-unit="px"><span class="tpl-range-val">${t.linkHeight}</span></div>
+          </div>
+          <div class="tpl-mini-card">
+            <div class="lbl">${ICONS.square} الحدود</div>
+            <div class="tpl-range-row"><input type="range" min="0" max="6" value="${t.linkBorderWidth}" data-field="linkBorderWidth" data-key="${key}" data-live="fast" data-unit="px"><span class="tpl-range-val">${t.linkBorderWidth}</span></div>
+          </div>
         </div>
-        <div class="tpl-field"><span class="tpl-field-label">سُمك الحدود</span>
-          <div class="tpl-range-row"><input type="range" min="0" max="6" value="${t.linkBorderWidth}" data-field="linkBorderWidth" data-key="${key}" data-live="fast" data-unit="px"><span class="tpl-range-val">${t.linkBorderWidth}px</span></div>
-        </div>
-        <label class="tpl-toggle-row"><input type="checkbox" ${t.linkFill?'checked':''} data-field="linkFill" data-key="${key}" data-live="flag"><span>تعبئة الزر بلون خلفية</span></label>
-        <label class="tpl-toggle-row"><input type="checkbox" ${t.linkShadow?'checked':''} data-field="linkShadow" data-key="${key}" data-live="flag"><span>ظل خفيف تحت الزر</span></label>
+        ${switchCard('تعبئة','linkFill',t.linkFill,ICONS.squareSoft)}
+        ${switchCard('ظل','linkShadow',t.linkShadow,ICONS.layer)}
       </div>`;
   }
   if(id === 'spacing'){
     return `
-      <div class="tpl-dash-section">
-        <div class="tpl-field"><span class="tpl-field-label">حجم الأفتار</span>
-          <div class="tpl-range-row"><input type="range" min="40" max="110" value="${t.avatarSize}" data-field="avatarSize" data-key="${key}" data-live="fast" data-unit="px"><span class="tpl-range-val">${t.avatarSize}px</span></div>
-        </div>
-        <div class="tpl-field"><span class="tpl-field-label">شكل الأفتار</span>
+      <div class="tpl-card-grid cols-1">
+        <div class="tpl-mini-card">
+          <div class="lbl">${ICONS.circleDot} الأفتار</div>
           <div class="tpl-seg-row">
             <button type="button" class="tpl-seg-btn ${t.avatarShape==='circle'?'active':''}" data-action="set-field" data-field="avatarShape" data-value="circle" data-key="${key}">${ICONS.circleDot}دائري</button>
             <button type="button" class="tpl-seg-btn ${t.avatarShape==='rounded'?'active':''}" data-action="set-field" data-field="avatarShape" data-value="rounded" data-key="${key}">${ICONS.squareSoft}ناعم</button>
             <button type="button" class="tpl-seg-btn ${t.avatarShape==='square'?'active':''}" data-action="set-field" data-field="avatarShape" data-value="square" data-key="${key}">${ICONS.rectSharp}مربع</button>
           </div>
         </div>
-        <div class="tpl-field"><span class="tpl-field-label">المسافة بين العناصر</span>
-          <div class="tpl-range-row"><input type="range" min="6" max="30" value="${t.gap}" data-field="gap" data-key="${key}" data-live="fast" data-unit="px"><span class="tpl-range-val">${t.gap}px</span></div>
+        <div class="tpl-card-grid" style="margin-bottom:0;">
+          <div class="tpl-mini-card">
+            <div class="lbl">${ICONS.ruler} الحجم</div>
+            <div class="tpl-range-row"><input type="range" min="40" max="110" value="${t.avatarSize}" data-field="avatarSize" data-key="${key}" data-live="fast" data-unit="px"><span class="tpl-range-val">${t.avatarSize}</span></div>
+          </div>
+          <div class="tpl-mini-card">
+            <div class="lbl">${ICONS.grid} التباعد</div>
+            <div class="tpl-range-row"><input type="range" min="6" max="30" value="${t.gap}" data-field="gap" data-key="${key}" data-live="fast" data-unit="px"><span class="tpl-range-val">${t.gap}</span></div>
+          </div>
         </div>
       </div>`;
   }
   if(id === 'elements'){
     return `
-      <div class="tpl-dash-section">
-        <label class="tpl-toggle-row"><input type="checkbox" ${flags.showAvatar?'checked':''} data-field="showAvatar" data-key="${key}" data-live="flag"><span>إظهار الأفتار (صورة المستخدم)</span></label>
-        <label class="tpl-toggle-row"><input type="checkbox" ${flags.showLogo?'checked':''} data-field="showLogo" data-key="${key}" data-live="flag"><span>إظهار الشعار (البراند)</span></label>
-        <label class="tpl-toggle-row"><input type="checkbox" ${flags.showSocials?'checked':''} data-field="showSocials" data-key="${key}" data-live="flag"><span>إظهار حسابات التواصل</span></label>
-        <label class="tpl-toggle-row"><input type="checkbox" ${flags.showLinks?'checked':''} data-field="showLinks" data-key="${key}" data-live="flag"><span>إظهار الروابط</span></label>
+      <div class="tpl-card-grid cols-1">
+        ${switchCard('الأفتار','showAvatar',flags.showAvatar,ICONS.circleDot)}
+        ${switchCard('الشعار','showLogo',flags.showLogo,ICONS.image)}
+        ${switchCard('التواصل','showSocials',flags.showSocials,ICONS.layer)}
+        ${switchCard('الروابط','showLinks',flags.showLinks,ICONS.square)}
       </div>`;
   }
   return '';
@@ -1260,8 +1309,7 @@ function fileInputHtml(action, key){
 
 // ===== + الأفتار =====
 function openAvatarPopover(key){
-  showPopover('الأفتار (صورة المستخدم)', `
-    <p style="font-size:0.8rem;color:var(--text-2);margin-bottom:14px;">هذي صورة توضيحية للمعاينة فقط — كل مستخدم يرفع صورته الشخصية الحقيقية بحسابه.</p>
+  showPopover('الأفتار', `
     ${fileInputHtml('avatar-file', key)}
   `);
 }
@@ -1269,10 +1317,9 @@ function openAvatarPopover(key){
 // ===== + الشعار =====
 function openLogoPopover(key){
   const t = templatesData[key];
-  showPopover('الشعار (Logo)', `
-    <p style="font-size:0.8rem;color:var(--text-2);margin-bottom:14px;">شعار ثابت يظهر بزاوية الصفحة لكل من يستخدم هذا القالب — مختلف عن صورة المستخدم الشخصية.</p>
+  showPopover('الشعار', `
     ${fileInputHtml('logo-file', key)}
-    ${t.logoImg ? `<button type="button" class="btn btn-danger btn-block" data-action="remove-logo" data-key="${key}" style="margin-top:10px;">${ICONS.trash}إزالة الشعار الحالي</button>` : ''}
+    ${t.logoImg ? `<button type="button" class="btn btn-danger btn-block" data-action="remove-logo" data-key="${key}" style="margin-top:10px;">${ICONS.trash}إزالة</button>` : ''}
   `);
 }
 
@@ -1353,8 +1400,6 @@ function openSocialsPopover(key){
     </div>
 
     ${slotHtml(1)}${slotHtml(2)}${slotHtml(3)}${slotHtml(4)}
-
-    <div style="font-size:0.72rem;color:var(--text-3);">اختر التطبيق الحقيقي لكل حساب — تظهر أيقونته الرسمية ولونه تلقائيًا، وتقدر تغيّر الاسم الظاهر أسفل كل أيقونة.</div>
   `);
 }
 
