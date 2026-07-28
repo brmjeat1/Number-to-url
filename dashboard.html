@@ -167,6 +167,27 @@ body.rail-collapsed .container{padding-bottom:24px;}
 .expandable-content{display:none;padding:20px;border-top:1px solid var(--glass-border);background:var(--glass-bg-soft);}
 .expandable-content.open{display:block;}
 
+/* ===== كروت موحّدة لتبويب "تصميم صفحتك" — تسمية كلمة واحدة، بلا شرح مطوّل ===== */
+.dsg-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px;}
+.dsg-grid.cols-1{grid-template-columns:1fr;}
+.dsg-grid:last-child{margin-bottom:0;}
+.dsg-card{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:14px;}
+.dsg-card .dsg-lbl{font-size:0.72rem;font-weight:800;color:var(--muted);margin-bottom:9px;display:flex;align-items:center;gap:6px;}
+.dsg-seg{display:flex;gap:6px;}
+.dsg-seg button{flex:1;padding:10px 4px;border-radius:9px;border:2px solid var(--border);background:#fff;font-weight:700;font-size:0.74rem;cursor:pointer;color:var(--text);display:flex;flex-direction:column;align-items:center;gap:5px;}
+.dsg-seg button.active,.bg-mode-btn.active{border-color:var(--primary-light);background:rgba(0,105,253,.08);color:var(--primary-light);}
+.dsg-switch-card{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:12px 14px;}
+.dsg-switch-card .left{display:flex;align-items:center;gap:10px;font-weight:800;font-size:0.85rem;color:var(--text);}
+.dsg-switch-card .left .ico{width:32px;height:32px;border-radius:9px;background:var(--bg2);color:var(--primary-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.dsg-switch{position:relative;width:44px;height:26px;flex-shrink:0;display:block;}
+.dsg-switch input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;z-index:1;}
+.dsg-switch .track{position:absolute;inset:0;background:var(--border);border-radius:999px;transition:background .15s;}
+.dsg-switch .thumb{position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.35);transition:transform .15s;}
+.dsg-switch input:checked + .track{background:var(--primary-light);}
+.dsg-switch input:checked + .track + .thumb{transform:translateX(-18px);}
+.dsg-file{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border:1.5px dashed var(--border);border-radius:10px;background:var(--bg2);color:var(--primary-light);font-weight:700;font-size:0.78rem;cursor:pointer;position:relative;overflow:hidden;}
+.dsg-file input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+
 /* FORM */
 .form-group{margin-bottom:14px;}
 label{display:block;font-size:0.85rem;font-weight:700;margin-bottom:6px;color:var(--text2);}
@@ -549,59 +570,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 }
 @keyframes loadShimmerText{0%{background-position:150% 0;}100%{background-position:-50% 0;}}
 .load-sub{margin-top:10px;font-size:0.78rem;color:#9aa2c8;font-weight:600;}
-
-/* ===== معرض حسابات التواصل الأفقي (يحل محل القائمة العمودية القديمة) — بطاقات كبيرة كصورة المرجع ===== */
-.soc-gallery-wrap{position:relative;margin-top:4px;display:flex;align-items:center;gap:6px;}
-.soc-gallery{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x proximity;padding:6px 4px 10px;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex:1;}
-.soc-gallery::-webkit-scrollbar{display:none;}
-.soc-card{scroll-snap-align:start;flex-shrink:0;width:106px;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;background:none;border:none;font-family:inherit;padding:2px;}
-.soc-card-icon{width:102px;height:102px;border-radius:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,0.12);transition:transform .15s;position:relative;}
-.soc-card.rect .soc-card-icon{border-radius:22px;}
-.soc-card-icon svg, .soc-card-icon span svg{width:66px !important;height:66px !important;}
-.soc-card:active .soc-card-icon{transform:scale(0.93);}
-.soc-card.is-open .soc-card-icon{outline:3px solid var(--primary);outline-offset:3px;}
-.soc-card-icon.is-hidden{opacity:0.35;}
-.soc-card-hidden-badge{position:absolute;bottom:-2px;left:-2px;background:var(--error,#e33);color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:13px;border:2px solid var(--bg);}
-.soc-card-name{font-size:0.74rem;font-weight:700;color:var(--text2);max-width:94px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.soc-arrow-btn{flex-shrink:0;width:34px;height:34px;border-radius:50%;border:1.5px solid var(--border);background:var(--bg2);color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s;}
-.soc-arrow-btn:active{background:var(--primary);color:#fff;}
-
-/* صفوف الحسابات المضافة فعلياً: أيقونة + اسم + زر تعديل (قلم) — دائماً ظاهرة بلا حاجة لسحب */
-.soc-rows-wrap{display:flex;flex-direction:column;gap:10px;}
-.soc-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1.5px solid var(--border);border-radius:14px;background:var(--bg);}
-.soc-row-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;box-shadow:0 3px 10px rgba(0,0,0,0.10);}
-.soc-row-icon.rect{border-radius:14px;}
-.soc-row-icon svg, .soc-row-icon span svg{width:30px !important;height:30px !important;}
-.soc-row-icon.is-hidden{opacity:0.4;}
-.soc-row-name{flex:1;font-weight:700;font-size:0.88rem;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.soc-row-edit{flex-shrink:0;width:40px;height:40px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;}
-.soc-row-edit:active{background:var(--primary);color:#fff;border-color:var(--primary);}
-
-/* بلاطة نمط اللون (رفع/مخصص/موقع) بأسلوب مربعات الصورة المرجعية */
-.soc-mode-tile{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border:2px solid var(--border);border-radius:12px;background:var(--bg);cursor:pointer;font-family:inherit;font-weight:700;font-size:0.72rem;color:var(--text2);transition:all .15s;}
-.soc-mode-tile.active{border-color:var(--primary);background:var(--bg2);color:var(--primary);}
-.soc-mode-tile-icon{width:36px;height:36px;border-radius:9px;background:var(--bg2);display:flex;align-items:center;justify-content:center;}
-
-/* بلاطة خاصية لون واحدة (خلفية الدائرة/لون الدائرة/الأيقونة/الاسم) */
-.soc-attr-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.soc-attr-tile{display:flex;align-items:center;gap:10px;padding:9px 10px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);cursor:pointer;position:relative;}
-.soc-attr-tile input[type=color]{position:absolute;inset:0;opacity:0;cursor:pointer;}
-.soc-attr-tile.disabled{opacity:0.45;pointer-events:none;position:relative;}
-.soc-attr-tile.disabled::after{content:"";position:absolute;top:4px;right:4px;width:16px;height:16px;border-radius:50%;background:#e33;border:2px solid #fff;}
-.soc-attr-tile.disabled::before{content:"";position:absolute;top:9px;right:9px;width:10px;height:2px;background:#fff;transform:rotate(45deg);z-index:1;}
-.soc-attr-tile-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:2px solid transparent;}
-.soc-attr-ring{background:var(--bg2);border:3px solid var(--border);box-sizing:border-box;}
-.soc-attr-name{font-size:0.72rem;font-weight:700;color:var(--text2);}
-
-/* صندوق معاينة كبير مطابق لحجم أمثلة الصورة المرجعية */
-.soc-live-box{width:100%;min-height:96px;border:2.5px solid #0f1535;border-radius:16px;display:flex;align-items:center;padding:14px 18px;gap:14px;background:#fff;box-sizing:border-box;position:relative;}
-.soc-live-box.shape-circle{flex-direction:column;justify-content:center;gap:8px;text-align:center;}
-.soc-live-box .soc-live-edit-btn{position:absolute;top:8px;left:8px;width:30px;height:30px;border-radius:9px;border:1.5px solid var(--border,#ddd);background:var(--bg2,#f3f4f8);color:var(--text2,#555);display:flex;align-items:center;justify-content:center;cursor:pointer;}
-.soc-live-box .soc-live-edit-btn:active{background:var(--primary,#3d5af1);color:#fff;}
-.soc-live-box .soc-live-name-input{font-weight:700;font-size:1rem;border:1.5px dashed var(--primary,#3d5af1);border-radius:8px;padding:4px 8px;background:#fff;font-family:inherit;max-width:60%;}
-.soc-live-box .soc-live-icon{width:56px;height:56px;flex-shrink:0;border-radius:14px;display:flex;align-items:center;justify-content:center;}
-.soc-live-box .soc-live-icon svg{width:32px;height:32px;}
-.soc-live-box .soc-live-name{font-weight:700;font-size:1rem;}
 </style>
 </head>
 <body>
@@ -927,10 +895,19 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
   <!-- PAGE: SOCIALS / CONTACT -->
   <div class="page" id="page-socials">
     <div class="expandable">
-      <div class="expandable-header open" style="cursor:default;">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
         <div class="expandable-title"><div class="expandable-icon">ح</div><span>حسابات التواصل<span class="title-sub">Social Accounts</span></span></div>
+        <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content open">
+        <div style="margin-bottom:16px;">
+          <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">دائماً هنا · Always here</div>
+          <div id="alwaysVisibleGrid" style="display:flex;flex-wrap:wrap;gap:7px;"></div>
+          <button onclick="window.openQrCard()" style="margin-top:7px;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--primary);font-weight:700;font-family:inherit;cursor:pointer;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v2h-3v-2zm0 4h3v4h-2v-2h-1v-2zm-5-4h3v3h-2v-1h-1v-2zm0 5h2v2h-2v-2z"></path></svg>
+            QR صفحتك · Your Page QR
+          </button>
+        </div>
         <div style="margin-bottom:16px;">
           <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">ألصق رابط حسابك · Paste your account URL</div>
           <div style="display:flex;gap:8px;">
@@ -947,17 +924,9 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         </div>
 
         <div style="margin-bottom:16px;">
-          <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:10px;letter-spacing:0.3px;">اختر منصة أو وسيلة تواصل · Choose Platform</div>
-          <div class="soc-gallery-wrap">
-            <button type="button" class="soc-arrow-btn right" onclick="socScroll('quickAddGrid',-1)" aria-label="السابق">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
-            </button>
-            <div class="soc-gallery" id="quickAddGrid"></div>
-            <button type="button" class="soc-arrow-btn left" onclick="socScroll('quickAddGrid',1)" aria-label="التالي">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
-            </button>
-          </div>
-          <button id="moreBtn" onclick="toggleMorePlatforms()" style="margin-top:10px;background:none;border:1.5px dashed var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;font-size:0.78rem;color:var(--text2);">المزيد · More</button>
+          <div style="font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:0.3px;">اختر منصة · Choose Platform</div>
+          <div id="quickAddGrid" style="display:flex;flex-wrap:wrap;gap:7px;"></div>
+          <button id="moreBtn" onclick="toggleMorePlatforms()" style="margin-top:8px;background:none;border:1.5px dashed var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;font-size:0.78rem;color:var(--text2);">المزيد · More</button>
         </div>
 
         <div id="socialFormBox" style="display:none;margin-bottom:16px;padding:16px;background:var(--bg2);border-radius:12px;border:1px solid var(--border);">
@@ -979,35 +948,12 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
             <div id="socDetectHint" style="font-size:0.72rem;color:var(--muted);margin-top:4px;min-height:16px;"></div>
           </div>
 
-          <div id="socShapeGroup" style="display:none;margin-bottom:14px;">
-            <label style="margin-bottom:10px;display:block;font-size:0.84rem;font-weight:700;color:var(--text2);">شكل الأيقونة <span style="font-size:0.7rem;font-weight:400;color:var(--muted);">/ Icon Shape — يُطبَّق على كل حساباتك دفعة واحدة</span></label>
-            <div style="display:flex;gap:10px;">
-              <button type="button" onclick="setIconShape('circle'); renderSocLivePreview();" id="newShapeCircle" class="soc-mode-tile">
-                <span class="soc-mode-tile-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></span>
-                <span>دائري</span>
-              </button>
-              <button type="button" onclick="setIconShape('rect'); renderSocLivePreview();" id="newShapeRect" class="soc-mode-tile">
-                <span class="soc-mode-tile-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="10" rx="3"/></svg></span>
-                <span>مستطيل</span>
-              </button>
-            </div>
-          </div>
-
           <div id="socColorModeGroup" style="display:none;margin-bottom:14px;">
-            <label style="margin-bottom:10px;display:block;font-size:0.84rem;font-weight:700;color:var(--text2);">لون الأيقونة <span style="font-size:0.7rem;font-weight:400;color:var(--muted);">/ Icon Style</span></label>
-            <div style="display:flex;gap:10px;">
-              <button type="button" onclick="setSocColorMode('upload')" id="cmUpload" class="soc-mode-tile">
-                <span class="soc-mode-tile-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 8l5-5 5 5M5 21h14"/></svg></span>
-                <span>رفع من الجهاز</span>
-              </button>
-              <button type="button" onclick="setSocColorMode('custom')" id="cmCustom" class="soc-mode-tile">
-                <span class="soc-mode-tile-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></span>
-                <span>ألوان مخصصة</span>
-              </button>
-              <button type="button" onclick="setSocColorMode('site')" id="cmTheme" class="soc-mode-tile">
-                <span class="soc-mode-tile-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9" fill="currentColor" stroke="none"/></svg></span>
-                <span>ألوان الموقع</span>
-              </button>
+            <label style="margin-bottom:8px;display:block;font-size:0.84rem;font-weight:700;color:var(--text2);">لون الأيقونة <span style="font-size:0.7rem;font-weight:400;color:var(--muted);">/ Icon Style</span></label>
+            <div style="display:flex;gap:7px;flex-wrap:wrap;">
+              <button onclick="setSocColorMode('brand')" id="cmBrand" style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">لون التطبيق</button>
+              <button onclick="setSocColorMode('site')" id="cmTheme" style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">لون موقعك</button>
+              <button onclick="setSocColorMode('upload')" id="cmUpload" style="flex:1;min-width:80px;padding:9px 6px;border:2px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Tajawal',sans-serif;font-weight:700;font-size:0.78rem;transition:all .2s;">رفع صورة</button>
             </div>
             <div id="customIconUpload" style="display:none;margin-top:10px;">
               <input type="file" id="socIconFile" accept="image/*" onchange="previewCustomIcon(this)">
@@ -1015,35 +961,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
                 <img id="socIconImg" style="width:52px;height:52px;border-radius:12px;object-fit:cover;border:2px solid var(--border);">
               </div>
             </div>
-            <div id="customColorPanel" style="display:none;margin-top:12px;">
-              <div class="soc-attr-row">
-                <label class="soc-attr-tile">
-                  <span class="soc-attr-tile-icon" style="background:var(--sw);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9" fill="#fff" fill-opacity="0.001"/></svg></span>
-                  <input type="color" id="newCustomBg" value="#3d5af1" oninput="this.closest('.soc-attr-tile').style.setProperty('--sw',this.value); renderSocLivePreview();" style="--sw:#3d5af1;">
-                  <span class="soc-attr-name">خلفية الدائرة</span>
-                </label>
-                <label class="soc-attr-tile">
-                  <span class="soc-attr-tile-icon soc-attr-ring" style="border-color:var(--sw);"></span>
-                  <input type="color" id="newCustomRing" value="#ffffff" oninput="this.closest('.soc-attr-tile').style.setProperty('--sw',this.value); renderSocLivePreview();" style="--sw:#ffffff;">
-                  <span class="soc-attr-name">لون الإطار</span>
-                </label>
-                <label class="soc-attr-tile">
-                  <span class="soc-attr-tile-icon" style="background:var(--bg2);color:var(--sw);"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></span>
-                  <input type="color" id="newCustomIconColor" value="#ffffff" oninput="this.closest('.soc-attr-tile').style.setProperty('--sw',this.value); renderSocLivePreview();" style="--sw:#ffffff;">
-                  <span class="soc-attr-name">أيقونة التطبيق</span>
-                </label>
-                <label class="soc-attr-tile">
-                  <span class="soc-attr-tile-icon" style="background:var(--bg2);color:var(--sw);font-weight:900;font-size:0.9rem;">A</span>
-                  <input type="color" id="newCustomNameColor" value="#0f1535" oninput="this.closest('.soc-attr-tile').style.setProperty('--sw',this.value); renderSocLivePreview();" style="--sw:#0f1535;">
-                  <span class="soc-attr-name">لون الاسم</span>
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <div id="socLivePreviewWrap" style="display:none;margin-bottom:14px;">
-            <label style="margin-bottom:8px;display:block;font-size:0.84rem;font-weight:700;color:var(--text2);">معاينة مباشرة <span style="font-size:0.7rem;font-weight:400;color:var(--muted);">/ Live Preview</span></label>
-            <div id="socLivePreview"></div>
           </div>
 
           <div style="display:flex;gap:8px;">
@@ -1053,20 +970,17 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         </div>
 
         <div id="socialsRegistry"></div>
-        <div id="socEditPanel"></div>
       </div>
     </div>
 
     <div class="expandable">
-      <div class="expandable-header open" style="cursor:default;">
-        <div class="expandable-title"><div class="expandable-icon">▭</div><span>مظهر الأيقونات و QR<span class="title-sub">Icons &amp; QR Appearance</span></span></div>
+      <div class="expandable-header open" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon">▭</div><span>شكل الأيقونات<span class="title-sub">Icon Shape</span></span></div>
+        <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content open">
-        <div style="font-size:0.76rem;font-weight:700;color:var(--muted);margin-bottom:14px;">يُطبَّق على كل حساباتك ورمز QR دفعة واحدة · Applies to all your accounts and your QR code at once</div>
-
-        <!-- ١) الشكل: دائري أو مستطيل -->
-        <label style="margin-bottom:8px;display:block;font-size:0.84rem;font-weight:700;color:var(--text2);">الشكل <span style="font-size:0.7rem;font-weight:400;color:var(--muted);">/ Shape</span></label>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+        <div style="font-size:0.76rem;font-weight:700;color:var(--muted);margin-bottom:12px;">يُطبَّق على كل حسابات التواصل دفعة واحدة · Applies to all accounts at once</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;" id="iconShapeGrid">
           <button type="button" class="shape-opt" id="shapeOptCircle" onclick="setIconShape('circle')">
             <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-light));margin:0 auto 8px;"></div>
             <div style="font-size:0.8rem;font-weight:700;">دائري <span class="lbl-sub" style="display:block;">Circle</span></div>
@@ -1076,7 +990,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
             <div style="font-size:0.8rem;font-weight:700;">مستطيل <span class="lbl-sub" style="display:block;">Rectangle</span></div>
           </button>
         </div>
-        <div id="rectSubOptions" style="display:none;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+        <div id="rectSubOptions" style="display:none;grid-template-columns:1fr 1fr;gap:10px;">
           <button type="button" class="shape-opt" id="rectStyleRounded" onclick="setRectStyle('rounded')">
             <div style="width:76px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--primary-light));margin:0 auto 8px;position:relative;overflow:hidden;">
               <div style="position:absolute;right:36%;top:0;bottom:0;width:1.5px;background:rgba(255,255,255,0.6);"></div>
@@ -1090,52 +1004,91 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
             <div style="font-size:0.76rem;font-weight:700;">حواف حادة<span class="lbl-sub" style="display:block;">خط مائل · Slanted</span></div>
           </button>
         </div>
+      </div>
+    </div>
 
-        <!-- ٢) الألوان: ٣ أنواع -->
-        <label style="margin:14px 0 8px;display:block;font-size:0.84rem;font-weight:700;color:var(--text2);">الألوان <span style="font-size:0.7rem;font-weight:400;color:var(--muted);">/ Colors — 3 types</span></label>
-        <div style="display:flex;gap:10px;margin-bottom:12px;">
-          <button type="button" onclick="setDefaultColorMode('upload')" id="gmUpload" class="soc-mode-tile">
-            <span class="soc-mode-tile-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 8l5-5 5 5M5 21h14"/></svg></span>
-            <span>رفع من الجهاز</span>
-          </button>
-          <button type="button" onclick="setDefaultColorMode('custom')" id="gmCustom" class="soc-mode-tile">
-            <span class="soc-mode-tile-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></span>
-            <span>ألوان مخصصة</span>
-          </button>
-          <button type="button" onclick="setDefaultColorMode('site')" id="gmSite" class="soc-mode-tile">
-            <span class="soc-mode-tile-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9" fill="currentColor" stroke="none"/></svg></span>
-            <span>ألوان الموقع</span>
-          </button>
+    <div class="expandable">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon">▦</div><span>تخصيص بطاقة QR<span class="title-sub">QR Card Style</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content open">
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <button type="button" id="qrModeBrand" onclick="setQrMode('brand')" style="flex:1;padding:10px;border:2px solid var(--primary);border-radius:9px;background:var(--bg2);color:var(--text);font-weight:700;font-family:inherit;cursor:pointer;font-size:0.82rem;">لون الموقع · Site</button>
+          <button type="button" id="qrModeCustom" onclick="setQrMode('custom')" style="flex:1;padding:10px;border:2px solid var(--border);border-radius:9px;background:transparent;color:var(--text);font-weight:700;font-family:inherit;cursor:pointer;font-size:0.82rem;">🎨 تخصيص · Custom</button>
         </div>
-
-        <!-- ٣) الأيقونة: مجزأة لـ ٤ مربعات -->
-        <label style="margin-bottom:8px;display:block;font-size:0.84rem;font-weight:700;color:var(--text2);">الأيقونة <span style="font-size:0.7rem;font-weight:400;color:var(--muted);">/ Icon parts — 4 pieces</span></label>
-        <div class="soc-attr-row" id="gmAttrRow" style="margin-bottom:14px;">
-          <label class="soc-attr-tile" id="gmAttrRing">
-            <span class="soc-attr-tile-icon soc-attr-ring" style="border-color:var(--gm-ring,#ffffff);"></span>
-            <input type="color" id="gmRing" value="#ffffff" oninput="onGlobalAttrChange('ring',this.value)">
-            <span class="soc-attr-name">لون الإطار</span>
-          </label>
-          <label class="soc-attr-tile" id="gmAttrIcon">
-            <span class="soc-attr-tile-icon" style="background:var(--bg2);color:var(--gm-icon,#ffffff);"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></span>
-            <input type="color" id="gmIcon" value="#ffffff" oninput="onGlobalAttrChange('icon',this.value)">
-            <span class="soc-attr-name">أيقونة التطبيق</span>
-          </label>
-          <label class="soc-attr-tile" id="gmAttrBg">
-            <span class="soc-attr-tile-icon" style="background:var(--gm-bg,#3d5af1);"></span>
-            <input type="color" id="gmBg" value="#3d5af1" oninput="onGlobalAttrChange('bg',this.value)">
-            <span class="soc-attr-name">خلفية الدائرة</span>
-          </label>
-          <label class="soc-attr-tile" id="gmAttrName">
-            <span class="soc-attr-tile-icon" style="background:var(--bg2);color:var(--gm-name,#0f1535);font-weight:900;">A</span>
-            <input type="color" id="gmName" value="#0f1535" oninput="onGlobalAttrChange('name',this.value)">
-            <span class="soc-attr-name">لون الاسم</span>
-          </label>
+        <div id="qrCustomColors" style="display:none;grid-template-columns:1fr;gap:10px;margin-bottom:14px;">
+          <div>
+            <label style="font-size:0.72rem;display:block;margin-bottom:4px;">خلفية البطاقة · Card BG</label>
+            <input type="color" class="color-box-picker" id="qrBgColor" value="#3d5af1" oninput="updateQrPreview()">
+          </div>
+          <div>
+            <label style="font-size:0.72rem;display:block;margin-bottom:4px;">لون الرمز · QR Color</label>
+            <input type="color" class="color-box-picker" id="qrIconColor" value="#1a1d24" oninput="updateQrPreview()">
+          </div>
+          <div>
+            <label style="font-size:0.72rem;display:block;margin-bottom:4px;">لون الإطار · Ring</label>
+            <input type="color" class="color-box-picker" id="qrRingColor" value="#ffffff" oninput="updateQrPreview()">
+          </div>
+          <div>
+            <label style="font-size:0.72rem;display:block;margin-bottom:4px;">لون الحاوية · Container</label>
+            <input type="color" class="color-box-picker" id="qrContainerColor" value="#ffffff" oninput="updateQrPreview()">
+          </div>
         </div>
+        <div style="font-size:0.75rem;font-weight:700;color:var(--muted);margin-bottom:8px;">معاينة مباشرة · Live Preview</div>
+        <div id="qrMiniPreview" style="border-radius:14px;padding:18px;text-align:center;background:linear-gradient(135deg,#3d5af1,#6c8fff);">
+          <div id="qrMiniLogo" style="width:36px;height:36px;border-radius:50%;background:#fff;margin:0 auto 8px;border:2px solid #fff;"></div>
+          <div id="qrMiniBox" style="width:60px;height:60px;background:#fff;border-radius:8px;margin:0 auto;"></div>
+        </div>
+      </div>
+    </div>
 
-        <!-- ٤) معاينة كبيرة مباشرة -->
-        <label style="margin-bottom:8px;display:block;font-size:0.84rem;font-weight:700;color:var(--text2);">معاينة مباشرة <span style="font-size:0.7rem;font-weight:400;color:var(--muted);">/ Live Preview</span></label>
-        <div id="gmLivePreview" style="display:flex;flex-direction:column;gap:10px;"></div>
+    <div class="expandable">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M6.62 10.79a15.15 15.15 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24 11.36 11.36 0 003.56.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z"/></svg></div><span>أرقام التواصل<span class="title-sub">Phone Numbers</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content open">
+        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">تظهر في صفحتك العامة مع إمكانية الاتصال المباشر · Shown on your public page for direct calls</p>
+        <div id="phonesContainer"></div>
+        <button class="btn-add" onclick="addPhoneEntry()" style="background:var(--primary);margin-bottom:12px;">+ إضافة رقم · Add Number</button>
+        <button class="btn-add" onclick="savePhones()">حفظ الأرقام · Save Numbers</button>
+        <button class="btn-delete" onclick="deletePhones()" style="width:100%;margin-top:8px;">حذف كل الأرقام · Remove Numbers</button>
+      </div>
+    </div>
+
+    <div class="expandable">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm6.93 6h-2.95a15.65 15.65 0 00-1.38-3.56A8.03 8.03 0 0118.93 8zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14a7.96 7.96 0 010-4h3.38a16.5 16.5 0 000 4H4.26zm.81 2h2.95c.3 1.26.77 2.46 1.38 3.56A7.99 7.99 0 015.07 16zm2.95-8H5.07a7.99 7.99 0 014.33-3.56C8.8 5.54 8.33 6.74 8.02 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66a14.6 14.6 0 010-4h4.68a14.6 14.6 0 010 4zm.25 5.56c.61-1.1 1.08-2.3 1.38-3.56h2.95a7.99 7.99 0 01-4.33 3.56zM16.36 14a16.5 16.5 0 000-4h3.38a7.96 7.96 0 010 4h-3.38z"/></svg></div><span>الموقع الإلكتروني<span class="title-sub">Website</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content open">
+        <div class="form-group">
+          <label>رابط موقعك أو متجرك <span class="lbl-sub">/ Your website or store URL</span></label>
+          <input type="url" id="websiteInput" placeholder="https://yoursite.com" dir="ltr">
+        </div>
+        <button class="btn-add" onclick="saveWebsite()">حفظ الموقع · Save Website</button>
+        <button class="btn-delete" onclick="deleteWebsite()" style="width:100%;margin-top:8px;">حذف الموقع · Remove Website</button>
+      </div>
+    </div>
+
+    <div class="expandable">
+      <div class="expandable-header open" onclick="toggleExpand(this)">
+        <div class="expandable-title"><div class="expandable-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M12 2a7 7 0 00-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 00-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg></div><span>الموقع الملاحي<span class="title-sub">Map Location</span></span></div>
+        <div class="expandable-toggle">▼</div>
+      </div>
+      <div class="expandable-content open">
+        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">يظهر في صفحتك كـ "خريطة موقعنا" مع رابط مباشر للخريطة · Shows as "Our Location" map link</p>
+        <div class="form-group">
+          <label>اسم الخريطة <span class="lbl-sub">/ Map Title</span></label>
+          <input type="text" id="mapTitleInput" placeholder="مثال: موقع متجرنا" maxlength="30">
+        </div>
+        <div class="form-group">
+          <label>رابط خرائط Google أو Apple Maps <span class="lbl-sub">/ Google or Apple Maps link</span></label>
+          <input type="url" id="mapInput" placeholder="https://maps.google.com/..." dir="ltr">
+        </div>
+        <button class="btn-add" onclick="saveMap()">حفظ الموقع الملاحي · Save Map</button>
+        <button class="btn-delete" onclick="deleteMap()" style="width:100%;margin-top:8px;">حذف الخريطة · Remove Map</button>
       </div>
     </div>
   </div>
@@ -1148,7 +1101,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content open">
-        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:14px;line-height:1.7;">صف مجالك وطابعك المفضّل بجملة أو جملتين، ودع الذكاء الاصطناعي يجهّز لك ألوان وشعار ونبذة متكاملة خلال ثوانٍ.</div>
+        <div style="font-size:0.72rem;color:var(--muted);margin-bottom:12px;">وصف مختصر لمجالك يكفي</div>
         <button type="button" onclick="window.openAiDesignModal()" class="qa-action-btn" style="width:100%;padding:15px;border:none;border-radius:16px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;font-weight:800;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 12px 24px rgba(0,105,253,.30);">
           <span class="qa-btn-ic" style="display:flex;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg></span>
           <span class="qa-btn-txt">توليد التصميم بالذكاء الاصطناعي · Generate</span>
@@ -1162,7 +1115,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       </div>
       <div class="expandable-content">
         <div class="form-group" style="margin-bottom:0;">
-          <div style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;">هذا شكل صفحتك تقريباً بكل قالب — اضغط على أي واحدة لتطبيقها · This is roughly how your page will look with each template</div>
+          <div style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;">اضغط قالبًا لتطبيقه</div>
           <div id="pageMockupCarousel" style="display:flex;gap:12px;overflow-x:auto;padding:4px 4px 10px;-webkit-overflow-scrolling:touch;"></div>
           <button type="button" onclick="openTplPersonalize()" style="width:100%;margin-top:10px;padding:12px;border:2px dashed var(--primary);border-radius:12px;background:var(--bg2);color:var(--primary);font-weight:700;font-family:inherit;cursor:pointer;">+ تخصيص صفحتك (الشعار، الأفتار، الألوان) · Personalize</button>
           <button type="button" id="adminAddTplBtn" onclick="adminAddTemplateInline()" style="display:none;width:100%;margin-top:10px;padding:11px;border:2px dashed var(--primary);border-radius:12px;background:var(--bg2);color:var(--primary);font-weight:700;font-family:inherit;cursor:pointer;">+ إضافة قالب جديد (أدمن) · Add Template (Admin)</button>
@@ -1175,128 +1128,122 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         <div class="expandable-toggle">▼</div>
       </div>
       <div class="expandable-content">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:20px;padding:16px;background:var(--bg2);border-radius:12px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:16px;padding:16px;background:var(--bg2);border-radius:12px;">
           <div id="bannerPreview" style="width:100%;height:100px;border-radius:10px;background:linear-gradient(135deg,#3d5af1,#6c8fff);background-size:cover;background-position:center;"></div>
           <div id="avatarPreview" style="width:70px;height:70px;border-radius:50%;background:var(--bg);border:3px solid var(--primary-light);margin-top:-45px;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--primary);font-size:1.5rem;overflow:hidden;">-</div>
         </div>
-        <div class="form-group">
-          <label>صورة الغلاف <span class="lbl-sub">/ Cover Image</span></label>
-          <input type="file" id="bannerInput" accept="image/*" onchange="selectBanner(this)">
-          <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-top:8px;" onclick="document.getElementById('removeBannerToggle').click()">
-            <span style="font-size:0.78rem;">إزالة الغلاف نهائياً <span class="lbl-sub">/ Remove Cover</span></span>
-            <input type="checkbox" id="removeBannerToggle" onclick="event.stopPropagation();window.onRemoveBanner(this.checked)" style="width:20px;height:20px;accent-color:var(--primary);cursor:pointer;">
-          </label>
-          <div style="font-size:0.72rem;color:var(--muted);margin-top:4px;">مفعّل = يختفي الغلاف نهائياً من صفحتك العامة</div>
-        </div>
-        <div class="form-group">
-          <label>صورة الشعار <span class="lbl-sub">/ Logo Image</span></label>
-          <input type="file" id="avatarInput" accept="image/*" onchange="selectAvatar(this)">
-          <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-top:8px;" onclick="document.getElementById('removeAvatarToggle').click()">
-            <span style="font-size:0.78rem;">إزالة الشعار نهائياً <span class="lbl-sub">/ Remove Logo</span></span>
-            <input type="checkbox" id="removeAvatarToggle" onclick="event.stopPropagation();window.onRemoveAvatar(this.checked)" style="width:20px;height:20px;accent-color:var(--primary);cursor:pointer;">
-          </label>
-          <div style="font-size:0.72rem;color:var(--muted);margin-top:4px;">مفعّل = يختفي الشعار نهائياً من صفحتك العامة</div>
-        </div>
-        <div class="form-group">
-          <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="document.getElementById('avatarShapeToggle').click()">
-            <span>افتار مستطيل خلف الشعار <span class="lbl-sub">/ Rectangular Avatar</span></span>
-            <input type="checkbox" id="avatarShapeToggle" onclick="event.stopPropagation();window.onAvatarShapeToggle(this.checked)" style="width:20px;height:20px;accent-color:var(--primary);cursor:pointer;">
-          </label>
-          <div style="font-size:0.72rem;color:var(--muted);margin-top:4px;">مفعّل = افتار بزوايا مربعة ناعمة بدل الدائري الافتراضي</div>
-        </div>
 
-        <div class="form-group">
-          <label>الألوان <span class="lbl-sub">/ Colors</span></label>
-          <div style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;">اختر مجموعة ألوان جاهزة لتطبيقها فوراً، وتقدر تعدّل عليها بعدها بالحقول تحت · Pick a ready color set, then fine-tune below</div>
-          <div id="templateCarousel" style="display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;"></div>
-        </div>
-
-        <div class="form-group">
-          <label>اللون الأساسي ١ <span class="lbl-sub">/ Primary 1</span></label>
-          <div id="colorPalette" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;"></div>
-          <div style="display:flex;align-items:center;gap:10px;">
-            <input type="color" id="colorPicker" value="#3d5af1" onchange="onColorPick(this.value)" style="width:50px;height:40px;padding:2px;cursor:pointer;">
-            <input type="text" id="colorHexInput" placeholder="#3d5af1" maxlength="7" dir="ltr" onchange="onColorHexInput(this.value)" style="flex:1;font-family:ui-monospace,'SF Mono','Space Mono',monospace;">
+        <div class="dsg-grid">
+          <div class="dsg-card">
+            <div class="dsg-lbl">الغلاف</div>
+            <label class="dsg-file">
+              <input type="file" id="bannerInput" accept="image/*" onchange="selectBanner(this)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+              رفع
+            </label>
+          </div>
+          <div class="dsg-card">
+            <div class="dsg-lbl">الشعار</div>
+            <label class="dsg-file">
+              <input type="file" id="avatarInput" accept="image/*" onchange="selectAvatar(this)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+              رفع
+            </label>
           </div>
         </div>
 
-        <div class="form-group">
-          <label>اللون الأساسي ٢ <span class="lbl-sub">/ Primary 2</span></label>
-          <div id="colorPalette2" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;"></div>
-          <div style="display:flex;align-items:center;gap:10px;">
-            <input type="color" id="colorPicker2" value="#6c8fff" onchange="onColor2Pick(this.value)" style="width:50px;height:40px;padding:2px;cursor:pointer;">
-            <input type="text" id="colorHex2Input" placeholder="#6c8fff" maxlength="7" dir="ltr" onchange="onColor2HexInput(this.value)" style="flex:1;font-family:ui-monospace,'SF Mono','Space Mono',monospace;">
+        <div class="dsg-switch-card" style="margin-bottom:10px;">
+          <div class="left"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-10-8-10-8a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 10 8 10 8a18.5 18.5 0 0 1-2.16 3.19M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg></span>إخفاء الغلاف</div>
+          <label class="dsg-switch"><input type="checkbox" id="removeBannerToggle" onchange="window.onRemoveBanner(this.checked)"><span class="track"></span><span class="thumb"></span></label>
+        </div>
+        <div class="dsg-switch-card" style="margin-bottom:10px;">
+          <div class="left"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-10-8-10-8a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 10 8 10 8a18.5 18.5 0 0 1-2.16 3.19M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg></span>إخفاء الشعار</div>
+          <label class="dsg-switch"><input type="checkbox" id="removeAvatarToggle" onchange="window.onRemoveAvatar(this.checked)"><span class="track"></span><span class="thumb"></span></label>
+        </div>
+        <div class="dsg-switch-card" style="margin-bottom:16px;">
+          <div class="left"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="3"/></svg></span>مستطيل</div>
+          <label class="dsg-switch"><input type="checkbox" id="avatarShapeToggle" onchange="window.onAvatarShapeToggle(this.checked)"><span class="track"></span><span class="thumb"></span></label>
+        </div>
+
+        <div class="dsg-card" style="margin-bottom:16px;">
+          <div class="dsg-lbl">قوالب</div>
+          <div id="templateCarousel" style="display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;"></div>
+        </div>
+
+        <div class="dsg-grid">
+          <div class="dsg-card">
+            <div class="dsg-lbl">أساسي</div>
+            <div id="colorPalette" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"></div>
+            <input type="color" id="colorPicker" value="#3d5af1" onchange="onColorPick(this.value)" style="width:100%;height:38px;border-radius:9px;border:1.5px solid var(--border);cursor:pointer;padding:2px;">
+            <input type="text" id="colorHexInput" placeholder="#3d5af1" maxlength="7" dir="ltr" onchange="onColorHexInput(this.value)" style="margin-top:6px;font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-size:0.76rem;padding:7px 10px;">
+          </div>
+          <div class="dsg-card">
+            <div class="dsg-lbl">ثانوي</div>
+            <div id="colorPalette2" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"></div>
+            <input type="color" id="colorPicker2" value="#6c8fff" onchange="onColor2Pick(this.value)" style="width:100%;height:38px;border-radius:9px;border:1.5px solid var(--border);cursor:pointer;padding:2px;">
+            <input type="text" id="colorHex2Input" placeholder="#6c8fff" maxlength="7" dir="ltr" onchange="onColor2HexInput(this.value)" style="margin-top:6px;font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-size:0.76rem;padding:7px 10px;">
+          </div>
+          <div class="dsg-card">
+            <div class="dsg-lbl">النص</div>
+            <div id="textPalette" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"></div>
+            <input type="color" id="textColorPicker" value="#1a1d24" onchange="onTextColorPick(this.value)" style="width:100%;height:38px;border-radius:9px;border:1.5px solid var(--border);cursor:pointer;padding:2px;">
+            <input type="text" id="textHexInput" placeholder="#1a1d24" maxlength="7" dir="ltr" onchange="onTextHexInput(this.value)" style="margin-top:6px;font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-size:0.76rem;padding:7px 10px;">
+          </div>
+          <div class="dsg-card">
+            <div class="dsg-lbl">الخلفية</div>
+            <div id="bgPalette" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"></div>
+            <input type="color" id="bgColorPicker" value="#ffffff" onchange="onBgColorPick(this.value)" style="width:100%;height:38px;border-radius:9px;border:1.5px solid var(--border);cursor:pointer;padding:2px;">
+            <input type="text" id="bgHexInput" placeholder="#ffffff" maxlength="7" dir="ltr" onchange="onBgHexInput(this.value)" style="margin-top:6px;font-family:ui-monospace,'SF Mono','Space Mono',monospace;font-size:0.76rem;padding:7px 10px;">
           </div>
         </div>
 
-        <div class="form-group" style="margin-top:20px;">
-          <label>لون النص <span class="lbl-sub">/ Text Color</span></label>
-          <div id="textPalette" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;"></div>
-          <div style="display:flex;align-items:center;gap:10px;">
-            <input type="color" id="textColorPicker" value="#1a1d24" onchange="onTextColorPick(this.value)" style="width:50px;height:40px;padding:2px;cursor:pointer;">
-            <input type="text" id="textHexInput" placeholder="#1a1d24" maxlength="7" dir="ltr" onchange="onTextHexInput(this.value)" style="flex:1;font-family:ui-monospace,'SF Mono','Space Mono',monospace;">
-          </div>
-        </div>
-
-        <div class="form-group" style="margin-top:20px;">
-          <label>لون الخلفية <span class="lbl-sub">/ Background Color</span></label>
-          <div id="bgPalette" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;"></div>
-          <div style="display:flex;align-items:center;gap:10px;">
-            <input type="color" id="bgColorPicker" value="#ffffff" onchange="onBgColorPick(this.value)" style="width:50px;height:40px;padding:2px;cursor:pointer;">
-            <input type="text" id="bgHexInput" placeholder="#ffffff" maxlength="7" dir="ltr" onchange="onBgHexInput(this.value)" style="flex:1;font-family:ui-monospace,'SF Mono','Space Mono',monospace;">
-          </div>
-        </div>
-
-        <!-- وضع خلفية الصفحة: لون فقط / خلفية فقط / خلفية + ألوان (طبقة لون شفافة أمام الصورة) -->
-        <div class="form-group" style="margin-top:20px;">
-          <label>خلفية الصفحة <span class="lbl-sub">/ Page Background</span></label>
-          <div style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;">اختر شكل خلفية صفحتك بالكامل — لون صافٍ، صورة، أو صورة مع طبقة لون فوقها · Choose your whole-page background style</div>
-          <div id="bgModeToggle" style="display:flex;gap:6px;margin-bottom:12px;">
-            <button type="button" class="bg-mode-btn" data-bg-mode="color" onclick="window.setBgMode('color')" style="flex:1;padding:9px 4px;border-radius:9px;border:2px solid var(--border);background:var(--surface);font-weight:700;font-size:0.72rem;cursor:pointer;">⬤ لون فقط</button>
-            <button type="button" class="bg-mode-btn" data-bg-mode="image" onclick="window.setBgMode('image')" style="flex:1;padding:9px 4px;border-radius:9px;border:2px solid var(--border);background:var(--surface);font-weight:700;font-size:0.72rem;cursor:pointer;">🖼 خلفية فقط</button>
-            <button type="button" class="bg-mode-btn" data-bg-mode="imageColor" onclick="window.setBgMode('imageColor')" style="flex:1;padding:9px 4px;border-radius:9px;border:2px solid var(--border);background:var(--surface);font-weight:700;font-size:0.72rem;cursor:pointer;">🎨 خلفية + ألوان</button>
+        <!-- وضع خلفية الصفحة: لون فقط / خلفية فقط / خلفية + ألوان -->
+        <div class="dsg-card" style="margin-top:12px;margin-bottom:16px;">
+          <div class="dsg-lbl">الخلفية</div>
+          <div id="bgModeToggle" class="dsg-seg" style="margin-bottom:12px;">
+            <button type="button" class="bg-mode-btn" data-bg-mode="color" onclick="window.setBgMode('color')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/></svg>لون</button>
+            <button type="button" class="bg-mode-btn" data-bg-mode="image" onclick="window.setBgMode('image')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="m21 15-5-5-9 9"/></svg>صورة</button>
+            <button type="button" class="bg-mode-btn" data-bg-mode="imageColor" onclick="window.setBgMode('imageColor')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 3.5 18 8l-9.5 9.5a3.2 3.2 0 0 1-4.5-4.5L13.5 3.5Z"/><circle cx="18.5" cy="17.5" r="2.5"/></svg>مزيج</button>
           </div>
           <div id="bgImageUploadRow" style="display:none;margin-bottom:12px;">
-            <input type="file" id="bgImageInput" accept="image/*" onchange="window.selectBgImage(this)">
+            <label class="dsg-file">
+              <input type="file" id="bgImageInput" accept="image/*" onchange="window.selectBgImage(this)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+              رفع
+            </label>
             <div id="bgImagePreview" style="margin-top:8px;height:90px;border-radius:10px;border:1.5px dashed var(--border);background-size:cover;background-position:center;"></div>
           </div>
-          <div id="bgOverlayOpacityRow" style="display:none;">
-            <label style="font-size:0.78rem;">شفافية طبقة اللون فوق الصورة <span class="lbl-sub">/ Overlay Opacity</span></label>
+          <div id="bgOverlayOpacityRow" style="display:none;margin-bottom:12px;">
             <div style="display:flex;align-items:center;gap:10px;">
               <input type="range" id="bgOverlayOpacitySlider" min="0" max="100" value="55" oninput="window.onBgOverlayOpacityInput(this.value)" style="flex:1;">
-              <span id="bgOverlayOpacityVal" style="font-size:0.78rem;color:var(--muted);min-width:34px;">55%</span>
+              <span id="bgOverlayOpacityVal" style="font-size:0.76rem;color:var(--muted);min-width:32px;">55%</span>
             </div>
           </div>
-          <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-top:10px;" onclick="document.getElementById('removeBgToggle').click()">
-            <span style="font-size:0.78rem;">إزالة الخلفية نهائياً <span class="lbl-sub">/ Remove Background</span></span>
-            <input type="checkbox" id="removeBgToggle" onclick="event.stopPropagation();window.onRemoveBg(this.checked)" style="width:20px;height:20px;accent-color:var(--primary);cursor:pointer;">
-          </label>
-          <div style="font-size:0.72rem;color:var(--muted);margin-top:4px;">مفعّل = تحذف صورة الخلفية وتعود الصفحة للون صافٍ بلا صورة</div>
+          <div class="dsg-switch-card">
+            <div class="left"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-10-8-10-8a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 10 8 10 8a18.5 18.5 0 0 1-2.16 3.19M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg></span>إخفاء</div>
+            <label class="dsg-switch"><input type="checkbox" id="removeBgToggle" onchange="window.onRemoveBg(this.checked)"><span class="track"></span><span class="thumb"></span></label>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label>وضوح الاسم والوصف <span class="lbl-sub">/ Name &amp; Bio Readability</span></label>
-          <div style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;line-height:1.6;">صندوق زجاجي خلف كل منهما لتحسين القراءة فوق خلفية صورة — كل صندوق له شريحته المستقلة</div>
-          <div style="margin-bottom:10px;">
-            <label style="font-size:0.78rem;">شدة صندوق الاسم <span class="lbl-sub">/ Name Box</span></label>
-            <div style="display:flex;align-items:center;gap:10px;">
+        <div class="dsg-grid">
+          <div class="dsg-card">
+            <div class="dsg-lbl">الاسم</div>
+            <div style="display:flex;align-items:center;gap:8px;">
               <input type="range" id="nameBoxOpacitySlider" min="0" max="100" value="0" oninput="window.onNameBoxOpacityInput(this.value)" style="flex:1;">
-              <span id="nameBoxOpacityVal" style="font-size:0.78rem;color:var(--muted);min-width:34px;">0%</span>
+              <span id="nameBoxOpacityVal" style="font-size:0.74rem;color:var(--muted);min-width:28px;">0%</span>
             </div>
           </div>
-          <div>
-            <label style="font-size:0.78rem;">شدة صندوق الوصف <span class="lbl-sub">/ Bio Box</span></label>
-            <div style="display:flex;align-items:center;gap:10px;">
+          <div class="dsg-card">
+            <div class="dsg-lbl">الوصف</div>
+            <div style="display:flex;align-items:center;gap:8px;">
               <input type="range" id="bioBoxOpacitySlider" min="0" max="100" value="0" oninput="window.onBioBoxOpacityInput(this.value)" style="flex:1;">
-              <span id="bioBoxOpacityVal" style="font-size:0.78rem;color:var(--muted);min-width:34px;">0%</span>
+              <span id="bioBoxOpacityVal" style="font-size:0.74rem;color:var(--muted);min-width:28px;">0%</span>
             </div>
           </div>
         </div>
 
-        <!-- معاينة حية لشكل الصفحة بالألوان المختارة -->
-        <div class="form-group">
-          <label>معاينة مباشرة <span class="lbl-sub">/ Live Preview</span></label>
-          <div id="livePreview" style="border-radius:14px;overflow:hidden;border:1px solid var(--border);background:#fff;">
+        <div class="dsg-card" style="margin-top:12px;margin-bottom:14px;padding:0;overflow:hidden;">
+          <div id="livePreview">
             <div id="lpBg" style="padding:18px 16px;transition:background .3s;">
               <div id="lpCard" style="background:#fff;border-radius:12px;padding:16px;text-align:center;">
                 <div id="lpAvatar" style="width:48px;height:48px;border-radius:50%;margin:0 auto 8px;background:#3d5af1;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;">E</div>
@@ -1311,7 +1258,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
             </div>
           </div>
         </div>
-        <button class="btn-add" onclick="saveDesign()" style="background:var(--primary);margin-top:8px;">حفظ التصميم · Save Design</button>
+        <button class="btn-add" onclick="saveDesign()" style="background:var(--primary);">حفظ</button>
       </div>
     </div>
   </div>
@@ -1531,8 +1478,8 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
   // ===== دعم أكثر من حساب: كل حساب يُربط بتطبيق Firebase منفصل بالاسم، فتُحفظ جلسته باستقلالية =====
   // ولا يؤثر هذا على المستخدمين الحاليين إطلاقاً: الحساب الأول يبقى دائماً بالتطبيق الافتراضي [DEFAULT]
-  const ACCOUNTS_KEY = 'elSavedAccounts';
-  const ACTIVE_ACCOUNT_KEY = 'elActiveAccountApp';
+  const ACCOUNTS_KEY = 'electrwni_saved_accounts';
+  const ACTIVE_ACCOUNT_KEY = 'electrwni_active_account';
   function getSavedAccounts(){ try{ return JSON.parse(localStorage.getItem(ACCOUNTS_KEY) || '[]'); }catch(e){ return []; } }
   function setSavedAccounts(list){ try{ localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(list)); }catch(e){} }
   function upsertSavedAccount(acc){
@@ -1604,16 +1551,11 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
   // المنصات المتاحة للإضافة السريعة في قسم التواصل (أيقونات SVG)
   const platforms = [
-    { id: 'qr', name: 'رمز QR', color: '#0f1535', prefix: '', isQr: true },
     { id: 'instagram', name: 'Instagram', color: '#E1306C', prefix: 'https://instagram.com/' },
     { id: 'twitter', name: 'X', color: '#000000', prefix: 'https://x.com/' },
     { id: 'snapchat', name: 'Snapchat', color: '#FFC400', prefix: 'https://snapchat.com/add/' },
     { id: 'tiktok', name: 'TikTok', color: '#000000', prefix: 'https://tiktok.com/@' },
     { id: 'whatsapp', name: 'WhatsApp', color: '#25D366', prefix: 'https://wa.me/' },
-    { id: 'phone', name: 'رقم', color: '#16a34a', prefix: 'tel:' },
-    { id: 'email', name: 'Email', color: '#6b7280', prefix: 'mailto:' },
-    { id: 'map', name: 'خارطة', color: '#ea4335', prefix: '' },
-    { id: 'website', name: 'موقع ويب', color: '#3d5af1', prefix: '' },
     { id: 'telegram', name: 'Telegram', color: '#229ED9', prefix: 'https://t.me/' },
     { id: 'youtube', name: 'YouTube', color: '#FF0000', prefix: 'https://youtube.com/@' },
     { id: 'facebook', name: 'Facebook', color: '#1877F2', prefix: 'https://facebook.com/' },
@@ -1631,7 +1573,11 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     { id: 'github', name: 'GitHub', color: '#181717', prefix: 'https://github.com/' },
     { id: 'reddit', name: 'Reddit', color: '#FF4500', prefix: 'https://reddit.com/user/' },
     { id: 'vimeo', name: 'Vimeo', color: '#1AB7EA', prefix: 'https://vimeo.com/' },
-    { id: 'medium', name: 'Medium', color: '#000000', prefix: 'https://medium.com/@' }
+    { id: 'medium', name: 'Medium', color: '#000000', prefix: 'https://medium.com/@' },
+    { id: 'email', name: 'Email', color: '#6b7280', prefix: 'mailto:' },
+    { id: 'website', name: 'موقع ويب', color: '#3d5af1', prefix: '' },
+    { id: 'phone', name: 'رقم', color: '#16a34a', prefix: 'tel:' },
+    { id: 'map', name: 'خارطة', color: '#ea4335', prefix: '' }
   ];
   let showAllPlatforms = false;
   function detectPlatformFromUrl(url){
@@ -1751,7 +1697,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         try { sessionStorage.removeItem('el_redirect_count'); } catch(e){}
         console.log("تمت استعادة الجلسة بنجاح:", user.uid);
 
-        if (!user.emailVerified && !user.isAnonymous) {
+        if (!user.emailVerified) {
           const createdMs = (user.metadata && user.metadata.creationTime) ? new Date(user.metadata.creationTime).getTime() : Date.now();
           const elapsed = Date.now() - createdMs;
           if (elapsed >= EMAIL_GRACE_MS) {
@@ -1770,9 +1716,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         }
 
         await initDashboard();
-        if (user.isAnonymous) {
-          try { window.showToast('أنت الآن بوضع التجربة · Demo Mode — أنشئ حسابك من الإعدادات لحفظ عملك بشكل دائم'); } catch(e){}
-        }
       } else {
         // حماية من الحلقة: لا نوجّه أكثر من مرة متتالية دون جلسة
         let count = 0;
@@ -1821,11 +1764,11 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       if(topbarBrandEl) topbarBrandEl.textContent = `electrwni.link/${username}`;
       document.getElementById('pfName').value = data.fullName || '';
       document.getElementById('pfBio').value = data.bio || '';
-      if(document.getElementById('websiteInput')) document.getElementById('websiteInput').value = data.website || '';
-      if(document.getElementById('mapInput')) document.getElementById('mapInput').value = data.mapUrl || data.mapLocation || '';
+      document.getElementById('websiteInput').value = data.website || '';
+      document.getElementById('mapInput').value = data.mapUrl || data.mapLocation || '';
       if(document.getElementById('mapTitleInput')) document.getElementById('mapTitleInput').value = data.mapTitle || '';
       
-      if (data.phones && Array.isArray(data.phones) && document.getElementById('phonesContainer')) {
+      if (data.phones && Array.isArray(data.phones)) {
         document.getElementById('phonesContainer').innerHTML = '';
         data.phones.forEach(p => addPhoneFieldHTML(p.label, p.number));
       }
@@ -1897,6 +1840,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     document.getElementById('myFullLink').textContent = `electrwni.link/${username}`;
 
     initQuickAddGrid();
+    initAlwaysVisibleRow();
     initColorPalettes();
     updateLivePreview();
     const lpName=document.getElementById('lpName');
@@ -1904,7 +1848,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     loadIconShapeSettings(userDoc.exists() ? userDoc.data() : {});
     loadLinks(userDoc.exists() ? userDoc.data() : {});
     loadSocials(userDoc.exists() ? userDoc.data() : {});
-    loadGlobalAppearance(userDoc.exists() ? userDoc.data() : {});
+    loadQrStyleSettings(userDoc.exists() ? userDoc.data() : {});
     if(typeof refreshBgModeUI === 'function') refreshBgModeUI();
     renderTemplateCarousel();
     loadTemplatesFromConfig().then(()=>renderTemplateCarousel());
@@ -2095,8 +2039,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       window.showToast("تم تحديث شكل الأيقونات");
     }catch(e){ window.showToast("تعذر الحفظ: " + (e.message||'')); }
     loadSocials(); // أعد رسم المعاينات لتعكس الشكل الجديد فوراً
-    if(typeof syncShapeTiles === 'function') syncShapeTiles();
-    if(typeof renderGmLivePreview === 'function') renderGmLivePreview();
   };
   window.setRectStyle = async function(style){
     currentRectStyle = style;
@@ -2119,73 +2061,63 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     document.getElementById('rectStyleSharp').classList.toggle('active', currentRectStyle==='sharp');
   }
 
-  // ===== مظهر الأيقونات و QR الموحّد: نفس ألوان QR القديمة (qrCustomBg/Ring/IconColor/Container)
-  // تُقاد الآن من هذه اللوحة الواحدة، فتبقى دالة تحميل/تنزيل QR الأصلية تعمل بلا أي تعديل =====
-  window.setDefaultColorMode = async function(mode, skipSave){
-    globalColorMode = mode;
-    document.querySelectorAll('#gmUpload, #gmCustom, #gmSite').forEach(b => b.classList.remove('active'));
-    if(mode==='upload') document.getElementById('gmUpload').classList.add('active');
-    if(mode==='custom') document.getElementById('gmCustom').classList.add('active');
-    if(mode==='site') document.getElementById('gmSite').classList.add('active');
-    // الخصائص الأربعة تُفعَّل فقط بوضع "ألوان مخصصة" (تماماً كالصورة المرجعية: رمادية + إشارة حظر غير القابل للتطبيق)
-    document.querySelectorAll('#gmAttrRow .soc-attr-tile').forEach(t => t.classList.toggle('disabled', mode!=='custom'));
-    if(!skipSave){
-      try{ await setDoc(doc(db, "users", currentUser.uid), { qrStyleMode: mode==='custom'?'custom':'brand', defaultStyleMode: mode }, { merge: true }); }catch(e){}
-    }
-    renderGmLivePreview();
-  };
-
-  window.onGlobalAttrChange = function(part, value){
-    if(part==='ring'){ document.documentElement.style.setProperty('--gm-ring', value); document.getElementById('gmAttrRing').querySelector('.soc-attr-tile-icon').style.borderColor = value; }
-    if(part==='icon'){ document.documentElement.style.setProperty('--gm-icon', value); document.getElementById('gmAttrIcon').querySelector('.soc-attr-tile-icon').style.color = value; }
-    if(part==='bg'){ document.documentElement.style.setProperty('--gm-bg', value); document.getElementById('gmAttrBg').querySelector('.soc-attr-tile-icon').style.background = value; }
-    if(part==='name'){ document.documentElement.style.setProperty('--gm-name', value); document.getElementById('gmAttrName').querySelector('.soc-attr-tile-icon').style.color = value; }
-    renderGmLivePreview();
-    clearTimeout(window.__gmSaveTimer);
-    window.__gmSaveTimer = setTimeout(async () => {
-      try{
-        await setDoc(doc(db, "users", currentUser.uid), {
-          qrCustomBg: document.getElementById('gmBg').value,
-          qrCustomIconColor: document.getElementById('gmIcon').value,
-          qrCustomRing: document.getElementById('gmRing').value,
-          qrCustomContainer: document.getElementById('gmName').value
-        }, { merge: true });
-      }catch(e){}
-    }, 400);
-  };
-
-  // معاينة كبيرة مباشرة: بطاقة تواصل نموذجية + بطاقة QR، تعكسان الشكل والألوان الحاليين فوراً
-  window.renderGmLivePreview = function(){
-    const box = document.getElementById('gmLivePreview');
-    if(!box) return;
-    const bg = document.getElementById('gmBg').value, ring = document.getElementById('gmRing').value,
-          iconColor = document.getElementById('gmIcon').value, nameColor = document.getElementById('gmName').value;
-    const sampleGlyph = `<span style="display:flex;color:${iconColor};">${platSvg('instagram')}</span>`;
-    const qrGlyph = `<span style="display:flex;color:${iconColor};">${platSvg('qr')}</span>`;
-    if(currentIconShape === 'rect'){
-      box.innerHTML = `
-        <div class="soc-live-box"><span class="soc-live-icon" style="background:${bg};border:2px solid ${ring};">${sampleGlyph}</span><span class="soc-live-name" style="color:${nameColor};">Instagram</span></div>
-        <div class="soc-live-box"><span class="soc-live-icon" style="background:${bg};border:2px solid ${ring};">${qrGlyph}</span><span class="soc-live-name" style="color:${nameColor};">رمز QR</span></div>`;
+  // ===== تخصيص بطاقة QR: نفس مبدأ تخصيص أيقونات التواصل (٤ ألوان) =====
+  window.setQrMode = async function(mode, skipSave){
+    const brandBtn = document.getElementById('qrModeBrand');
+    const customBtn = document.getElementById('qrModeCustom');
+    const colorsBox = document.getElementById('qrCustomColors');
+    if(mode==='custom'){
+      customBtn.style.borderColor='var(--primary)'; customBtn.style.background='var(--bg2)';
+      brandBtn.style.borderColor='var(--border)'; brandBtn.style.background='transparent';
+      colorsBox.style.display='grid';
     } else {
-      box.innerHTML = `
-        <div class="soc-live-box shape-circle"><span class="soc-live-icon" style="background:${bg};border:2px solid ${ring};width:72px;height:72px;">${sampleGlyph}</span><span class="soc-live-name" style="color:${nameColor};">Instagram</span></div>
-        <div class="soc-live-box shape-circle"><span class="soc-live-icon" style="background:${bg};border:2px solid ${ring};width:72px;height:72px;">${qrGlyph}</span><span class="soc-live-name" style="color:${nameColor};">رمز QR</span></div>`;
+      brandBtn.style.borderColor='var(--primary)'; brandBtn.style.background='var(--bg2)';
+      customBtn.style.borderColor='var(--border)'; customBtn.style.background='transparent';
+      colorsBox.style.display='none';
+    }
+    if(!skipSave){
+      try{ await setDoc(doc(db, "users", currentUser.uid), { qrStyleMode: mode }, { merge: true }); }catch(e){}
+    }
+    updateQrPreview();
+  };
+  window.updateQrPreview = function(){
+    const mode = document.getElementById('qrModeCustom').style.borderColor === 'var(--primary)' || document.getElementById('qrCustomColors').style.display === 'grid' ? 'custom' : 'brand';
+    const preview = document.getElementById('qrMiniPreview');
+    const logo = document.getElementById('qrMiniLogo');
+    const box = document.getElementById('qrMiniBox');
+    if(mode === 'custom'){
+      const bg = document.getElementById('qrBgColor').value;
+      const iconColor = document.getElementById('qrIconColor').value;
+      const ring = document.getElementById('qrRingColor').value;
+      const container = document.getElementById('qrContainerColor').value;
+      preview.style.background = bg;
+      logo.style.borderColor = ring;
+      box.style.background = container;
+      box.style.boxShadow = `inset 0 0 0 3px ${iconColor}`;
+      // احفظ بهدوء بعد توقف قصير
+      clearTimeout(window.__qrSaveTimer);
+      window.__qrSaveTimer = setTimeout(async () => {
+        try{
+          await setDoc(doc(db, "users", currentUser.uid), {
+            qrCustomBg: bg, qrCustomIconColor: iconColor, qrCustomRing: ring, qrCustomContainer: container
+          }, { merge: true });
+        }catch(e){}
+      }, 400);
+    } else {
+      preview.style.background = 'linear-gradient(135deg,#3d5af1,#6c8fff)';
+      logo.style.borderColor = '#fff';
+      box.style.background = '#fff';
+      box.style.boxShadow = 'none';
     }
   };
-
-  function loadGlobalAppearance(data){
+  function loadQrStyleSettings(data){
     data = data || {};
-    if(data.qrCustomBg) document.getElementById('gmBg').value = data.qrCustomBg;
-    if(data.qrCustomIconColor) document.getElementById('gmIcon').value = data.qrCustomIconColor;
-    if(data.qrCustomRing) document.getElementById('gmRing').value = data.qrCustomRing;
-    if(data.qrCustomContainer) document.getElementById('gmName').value = data.qrCustomContainer;
-    onGlobalAttrChange('ring', document.getElementById('gmRing').value);
-    onGlobalAttrChange('icon', document.getElementById('gmIcon').value);
-    onGlobalAttrChange('bg', document.getElementById('gmBg').value);
-    onGlobalAttrChange('name', document.getElementById('gmName').value);
-    setDefaultColorMode(data.defaultStyleMode || (data.qrStyleMode==='custom' ? 'custom' : 'site'), true);
+    if(data.qrCustomBg) document.getElementById('qrBgColor').value = data.qrCustomBg;
+    if(data.qrCustomIconColor) document.getElementById('qrIconColor').value = data.qrCustomIconColor;
+    if(data.qrCustomRing) document.getElementById('qrRingColor').value = data.qrCustomRing;
+    if(data.qrCustomContainer) document.getElementById('qrContainerColor').value = data.qrCustomContainer;
+    window.setQrMode(data.qrStyleMode === 'custom' ? 'custom' : 'brand', true);
   }
-  let globalColorMode = 'site';
 
   // ===== قوالب جاهزة (نفس منظومة ألوان سمات المقالة، لتناسق الهوية بكل الموقع) =====
   let DESIGN_TEMPLATES = [
@@ -4279,8 +4211,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
 
   // 5. محرك التواصل الاجتماعي والشبكات (Socials Accounts)
   window.selectPlatformTile = function(p){
-    if(p.isQr){ window.openQrCard(); return; }
-    window.newSocDisplayName = null;
     selectedSocialPlatform = p;
     document.getElementById('socialFormBox').style.display = 'block';
     document.getElementById('socUrlLabel').innerHTML = `حساب ${p.name} <span class="lbl-sub">/ ${p.id} account</span>`;
@@ -4301,50 +4231,48 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       socUrlEl.value = p.prefix;
       socUrlEl.placeholder = 'https://instagram.com/username أو @username';
     }
-    document.getElementById('socShapeGroup').style.display = 'block';
     document.getElementById('socColorModeGroup').style.display = 'block';
-    document.getElementById('socLivePreviewWrap').style.display = 'block';
-    syncShapeTiles();
     setSocColorMode('brand');
     detectNow();
-    renderSocLivePreview();
   };
 
-  // بطاقة منصة واحدة بمعرض الاختيار — نمرر الفهرس فقط (أكثر ثباتاً من تمرير JSON كامل بالسمة)
-  function platformCardHtml(p, idx){
-    return `
-      <button type="button" class="soc-card" data-plat-idx="${idx}" onclick="window.selectPlatformTileByIndex(${idx})">
-        <div class="soc-card-icon" style="background:${p.color};">
-          <span style="display:flex;width:26px;height:26px;color:${p.id==='snapchat'?'#000':'#fff'};">${platSvg(p.id)}</span>
-        </div>
-        <div class="soc-card-name">${p.name}</div>
-      </button>`;
-  }
-
-  window.selectPlatformTileByIndex = function(idx){
-    const p = platforms[idx];
-    if(p) window.selectPlatformTile(p);
-  };
-
-  // معرض موحّد: كل منصات التواصل + الإيميل + الهاتف + الخارطة + الموقع، بلا فصل بينها
   function initQuickAddGrid() {
     const grid = document.getElementById('quickAddGrid');
-    const visible = showAllPlatforms ? platforms : platforms.slice(0,10);
-    grid.innerHTML = visible.map((p,i) => platformCardHtml(p,i)).join('');
+    grid.innerHTML = '';
+    const gridPlatforms = platforms.filter(p => !ALWAYS_VISIBLE_IDS.includes(p.id));
+    const visible = showAllPlatforms ? gridPlatforms : gridPlatforms.slice(0,5);
+    visible.forEach(p => {
+      const btn = document.createElement('button');
+      const txtColor = p.id==='snapchat' ? '#000' : '#fff';
+      btn.style.cssText = `padding: 8px 12px; background: ${p.color}; color: ${txtColor}; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; font-family:'Tajawal';`;
+      btn.innerHTML = `<span style="display:flex;width:18px;height:18px;">${platSvg(p.id)}</span> ${p.name}`;
+      btn.onclick = () => window.selectPlatformTile(p);
+      grid.appendChild(btn);
+    });
     const moreBtn = document.getElementById('moreBtn');
     if(moreBtn) moreBtn.innerHTML = showAllPlatforms ? 'أقل · Less' : 'المزيد · More';
+  }
+
+  // صف دائم الظهور (بدون حاجة لضغط "المزيد"): بريد إلكتروني / رقم / خارطة / موقع ويب
+  const ALWAYS_VISIBLE_IDS = ['email','phone','map','website'];
+  function initAlwaysVisibleRow(){
+    const row = document.getElementById('alwaysVisibleGrid');
+    if(!row) return;
+    row.innerHTML = '';
+    ALWAYS_VISIBLE_IDS.forEach(id => {
+      const p = platforms.find(x => x.id === id);
+      if(!p) return;
+      const btn = document.createElement('button');
+      btn.style.cssText = `padding: 8px 12px; background: ${p.color}; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; font-family:'Tajawal';`;
+      btn.innerHTML = `<span style="display:flex;width:18px;height:18px;">${platSvg(id)}</span> ${p.name}`;
+      btn.onclick = () => window.selectPlatformTile(p);
+      row.appendChild(btn);
+    });
   }
 
   window.toggleMorePlatforms = function() {
     showAllPlatforms = !showAllPlatforms;
     initQuickAddGrid();
-  };
-
-  // تحريك أي معرض أفقي بالأسهم (يمين/يسار) بمقدار عرض بطاقتين تقريباً
-  window.socScroll = function(gridId, dir){
-    const el = document.getElementById(gridId);
-    if(!el) return;
-    el.scrollBy({ left: dir * 220, behavior: 'smooth' });
   };
 
   // ألصق URL: التعرف التلقائي على المنصة
@@ -4365,108 +4293,26 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     document.getElementById('socialFormBox').style.display = 'block';
     document.getElementById('socUrlLabel').innerHTML = `حساب ${p.name}`;
     document.getElementById('socUrl').value = val;
-    document.getElementById('socShapeGroup').style.display = 'block';
     document.getElementById('socColorModeGroup').style.display = 'block';
-    document.getElementById('socLivePreviewWrap').style.display = 'block';
-    syncShapeTiles();
     setSocColorMode('brand');
     detectNow();
-    renderSocLivePreview();
     if(!detected){
       window.showToast("⚠️ ما تعرّفنا على منصة معروفة من هذا الرابط — تم حفظه كـ«موقع» عام، تأكد إن الرابط صحيح");
     }
   };
 
   window.closeSocialForm = function() {
-    window.newSocDisplayName = null;
     document.getElementById('socialFormBox').style.display = 'none';
     document.getElementById('socDetectedPreview').style.display = 'none';
-    document.getElementById('socShapeGroup').style.display = 'none';
-    document.getElementById('socLivePreviewWrap').style.display = 'none';
   };
 
   window.setSocColorMode = function(mode) {
     socialColorMode = mode;
-    document.querySelectorAll('#socColorModeGroup .soc-mode-tile').forEach(b => b.classList.remove('active'));
-    if(mode === 'site') document.getElementById('cmTheme').classList.add('active');
-    if(mode === 'custom') document.getElementById('cmCustom').classList.add('active');
-    if(mode === 'upload') document.getElementById('cmUpload').classList.add('active');
+    document.querySelectorAll('#socColorModeGroup button').forEach(b => b.style.borderColor = 'var(--border)');
+    if(mode === 'brand') document.getElementById('cmBrand').style.borderColor = 'var(--primary)';
+    if(mode === 'site') document.getElementById('cmTheme').style.borderColor = 'var(--primary)';
+    if(mode === 'upload') document.getElementById('cmUpload').style.borderColor = 'var(--primary)';
     document.getElementById('customIconUpload').style.display = mode === 'upload' ? 'block' : 'none';
-    document.getElementById('customColorPanel').style.display = mode === 'custom' ? 'block' : 'none';
-    renderSocLivePreview();
-  };
-
-  // يعكس شكل الأيقونة الحالي (دائري/مستطيل) على بلاطتي الاختيار بنموذج الإضافة
-  function syncShapeTiles(){
-    const c = document.getElementById('newShapeCircle'), r = document.getElementById('newShapeRect');
-    if(!c || !r) return;
-    c.classList.toggle('active', currentIconShape === 'circle');
-    r.classList.toggle('active', currentIconShape === 'rect');
-  }
-
-  // معاينة كبيرة مباشرة أثناء إضافة حساب جديد (قبل الحفظ)
-  window.newSocDisplayName = null; // اسم مخصص يكتبه المستخدم بدل اسم المنصة الافتراضي (يُصفَّر عند اختيار منصة جديدة)
-
-  window.renderSocLivePreview = function(){
-    const box = document.getElementById('socLivePreview');
-    if(!box || !selectedSocialPlatform) return;
-    syncShapeTiles();
-    const p = selectedSocialPlatform;
-    const displayName = window.newSocDisplayName !== null ? window.newSocDisplayName : p.name;
-    let bg, ring, iconColor, nameColor;
-    if(socialColorMode === 'custom'){
-      bg = document.getElementById('newCustomBg')?.value || '#3d5af1';
-      ring = document.getElementById('newCustomRing')?.value || '#ffffff';
-      iconColor = document.getElementById('newCustomIconColor')?.value || '#ffffff';
-      nameColor = document.getElementById('newCustomNameColor')?.value || '#0f1535';
-    } else if(socialColorMode === 'site'){
-      bg = p.color; ring='transparent'; iconColor = (p.id==='snapchat'?'#000':'#fff'); nameColor='#0f1535';
-    } else {
-      bg = p.color; ring='transparent'; iconColor = (p.id==='snapchat'?'#000':'#fff'); nameColor='#0f1535';
-    }
-    const glyph = `<span style="display:flex;color:${iconColor};">${platSvg(p.id)}</span>`;
-    const editBtn = `<button type="button" class="soc-live-edit-btn" onclick="startEditSocLiveName('new')" aria-label="تعديل النص"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>`;
-    if(currentIconShape === 'rect'){
-      box.innerHTML = `
-        <div class="soc-live-box">
-          ${editBtn}
-          <span class="soc-live-icon" style="background:${bg};border:2px solid ${ring};">${glyph}</span>
-          <span class="soc-live-name" id="socLiveNameText_new" style="color:${nameColor};">${displayName}</span>
-        </div>`;
-    } else {
-      box.innerHTML = `
-        <div class="soc-live-box shape-circle">
-          ${editBtn}
-          <span class="soc-live-icon" style="background:${bg};border:2px solid ${ring};width:72px;height:72px;">${glyph}</span>
-          <span class="soc-live-name" id="socLiveNameText_new" style="color:${nameColor};">${displayName}</span>
-        </div>`;
-    }
-  };
-
-  // تفعيل تعديل النص المكتوب أسفل/بجانب المعاينة: يحوّل النص الثابت لحقل إدخال فوري
-  window.startEditSocLiveName = function(kind){
-    const nameEl = document.getElementById(kind==='new' ? 'socLiveNameText_new' : ('socEditNameText_'+kind));
-    if(!nameEl) return;
-    const current = nameEl.textContent;
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.value = current;
-    input.className = 'soc-live-name-input';
-    input.style.color = nameEl.style.color;
-    nameEl.replaceWith(input);
-    input.focus();
-    input.select();
-    const commit = () => {
-      const val = input.value.trim() || current;
-      if(kind === 'new'){
-        window.newSocDisplayName = val;
-        renderSocLivePreview();
-      } else {
-        window.commitSocEditName(kind, val);
-      }
-    };
-    input.addEventListener('blur', commit);
-    input.addEventListener('keydown', e => { if(e.key==='Enter'){ input.blur(); } });
   };
 
   let detectTimeout;
@@ -4515,23 +4361,17 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       const data = snap.exists() ? snap.data() : {};
       const socials = Array.isArray(data.socials) ? data.socials : [];
       // كائن نظيف بلا أي undefined (Firestore يرفض undefined)
-      const finalName = (window.newSocDisplayName !== null && window.newSocDisplayName.trim()) ? window.newSocDisplayName.trim() : (selectedSocialPlatform.name || '');
       const entry = {
         id: 'soc_' + Date.now(),
         platformId: selectedSocialPlatform.id || 'website',
-        platformName: finalName,
-        name: finalName,
+        platformName: selectedSocialPlatform.name || '',
+        name: selectedSocialPlatform.name || '',
         brandColor: selectedSocialPlatform.color || '#3d5af1',
         url: url,
         description: '',
         featured: false,
-        hidden: false,
         styleMode: socialColorMode || 'brand',
         icon: (socialColorMode === 'upload' && customSocialIconBase64) ? customSocialIconBase64 : null,
-        customBg: socialColorMode === 'custom' ? (document.getElementById('newCustomBg').value || '#3d5af1') : null,
-        customRing: socialColorMode === 'custom' ? (document.getElementById('newCustomRing').value || '#ffffff') : null,
-        customIconColor: socialColorMode === 'custom' ? (document.getElementById('newCustomIconColor').value || '#ffffff') : null,
-        customNameColor: socialColorMode === 'custom' ? (document.getElementById('newCustomNameColor').value || '#0f1535') : null,
         views: 0
       };
       socials.push(entry);
@@ -4546,29 +4386,6 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     }
   };
 
-  let gallerySocialsCache = [];
-  let gallerySelectedId = null;
-
-  function socIconInnerHtml(soc, mode, iconGlyphColor){
-    return (mode==='upload' && soc.icon)
-      ? `<img src="${soc.icon}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
-      : `<span style="display:flex;width:26px;height:26px;color:${iconGlyphColor};">${platSvg(soc.platformId)||''}</span>`;
-  }
-
-  function socColorsFor(soc){
-    const mode = soc.styleMode || 'brand';
-    let bg, ring, iconColor;
-    if(mode==='custom'){
-      bg = soc.customBg||'#3d5af1'; ring = soc.customRing||'#ffffff'; iconColor = soc.customIconColor||'#ffffff';
-    } else if(mode==='site'){
-      // نفس منطق الصفحة العامة الآن: لون التطبيق الحقيقي الزاهي بدل الباستيل الباهت
-      bg = soc.brandColor||'var(--primary)'; ring='transparent'; iconColor='#ffffff';
-    } else {
-      bg = soc.brandColor||'var(--primary)'; ring='transparent'; iconColor='#ffffff';
-    }
-    return { mode, bg, ring, iconColor };
-  }
-
   async function loadSocials(preloadedData) {
     if (!currentUser) return;
     const registry = document.getElementById('socialsRegistry');
@@ -4582,198 +4399,93 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         if(snap.exists() && Array.isArray(snap.data().socials)) socials = snap.data().socials;
       }
     } catch(e){}
-    gallerySocialsCache = socials;
 
     if(!socials.length) {
-      registry.innerHTML = '<div class="empty">لا توجد شبكات مضافة — أضف أول حساب من الأعلى ↑</div>';
-      document.getElementById('socEditPanel').innerHTML = '';
+      registry.innerHTML = '<div class="empty">لا توجد شبكات مضافة</div>';
       return;
     }
+    socials.forEach(soc => {
+      try {
+      const id = soc.id;
+      const div = document.createElement('div');
+      div.className = 'item';
+      const mode = soc.styleMode || 'brand';
+      const iconBg = mode==='brand' ? (soc.brandColor||'var(--primary)') : (mode==='custom' ? (soc.customBg||'var(--primary)') : 'var(--primary)');
+      const ringColor = mode==='custom' ? (soc.customRing||'transparent') : 'transparent';
+      const iconGlyphColor = mode==='custom' ? (soc.customIconColor||'#ffffff') : '#ffffff';
+      const containerColor = mode==='custom' ? (soc.customContainer||'transparent') : 'transparent';
+      const iconInner = (mode==='upload' && soc.icon)
+        ? `<img src="${soc.icon}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`
+        : `<span style="display:flex;width:18px;height:18px;color:${iconGlyphColor};">${platSvg(soc.platformId)||''}</span>`;
 
-    const rowsHtml = socials.map(soc => {
-      const { mode, bg, ring, iconColor } = socColorsFor(soc);
-      const inner = socIconInnerHtml(soc, mode, iconColor);
-      const isHidden = !!soc.hidden;
-      return `
-        <div class="soc-row">
-          <div class="soc-row-icon ${currentIconShape==='rect'?'rect':''} ${isHidden?'is-hidden':''}" style="background:${bg};border:2px solid ${ring};">
-            ${inner}
-            ${isHidden ? `<span class="soc-card-hidden-badge" title="مخفي">🚫</span>` : ''}
+      // معاينة تحاكي شكل الأيقونة الفعلي بصفحتك العامة (دائري أو مستطيل)
+      const isRect = currentIconShape === 'rect';
+      const previewHtml = isRect
+        ? `<div id="socIconPrev_${id}" style="position:relative;width:88px;height:36px;background:${iconBg};border:2px solid ${ringColor};border-radius:${currentRectStyle==='sharp'?'4px':'10px'};display:flex;align-items:stretch;overflow:hidden;">
+             <div style="width:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;">${iconInner}</div>
+             <div style="position:absolute;top:0;bottom:0;right:36px;width:2px;background:currentColor;opacity:0.35;z-index:2;${currentRectStyle==='sharp'?'transform:skewX(-18deg);':''}"></div>
+             <div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:${iconGlyphColor};position:relative;z-index:1;">يوزر</div>
+           </div>`
+        : `<div id="socIconPrev_${id}" style="width:32px; height:32px; background:${iconBg}; border-radius:6px; display:flex; align-items:center; justify-content:center; border:2px solid ${ringColor};">${iconInner}</div>`;
+
+      div.innerHTML = `
+        <div class="item-header" style="display:flex; align-items:center; gap:10px;">
+          <div id="socIconContainer_${id}" style="padding:4px;border-radius:9px;background:${containerColor};">
+            ${previewHtml}
           </div>
-          <div class="soc-row-name">${soc.platformName||soc.name||''}</div>
-          <button type="button" class="soc-row-edit" onclick="window.toggleSocGallerySelect('${soc.id}')" aria-label="تعديل">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-          </button>
+          <div style="flex:1;"><b>${soc.platformName||soc.name||''}</b><div style="font-size:0.75rem; color:var(--muted); word-break:break-all;">${soc.url}</div></div>
         </div>
-        ${gallerySelectedId === soc.id ? `<div id="socEditPanel_${soc.id}"></div>` : ''}`;
-    }).join('');
-
-    registry.innerHTML = `<div class="soc-rows-wrap">${rowsHtml}</div>`;
-    renderSocEditPanel();
-  }
-
-  // فتح/إغلاق لوحة تعديل حساب واحد (صف واحد مفعّل كل مرة)
-  window.toggleSocGallerySelect = function(id){
-    gallerySelectedId = (gallerySelectedId === id) ? null : id;
-    loadSocials(); // إعادة رسم خفيفة تعكس فتح لوحة التعديل أسفل الصف الصحيح
-  };
-
-  function renderSocEditPanel(){
-    const sharedPanel = document.getElementById('socEditPanel');
-    if(sharedPanel) sharedPanel.innerHTML = ''; // لم يعد يُستخدم؛ اللوحة الآن تظهر أسفل صفها مباشرة
-    if(!gallerySelectedId) return;
-    const panel = document.getElementById('socEditPanel_'+gallerySelectedId);
-    if(!panel) return;
-    const soc = gallerySocialsCache.find(s => s.id === gallerySelectedId);
-    if(!soc) return;
-    const id = soc.id;
-    const mode = soc.styleMode || 'brand';
-    const isHidden = !!soc.hidden;
-
-    panel.innerHTML = `
-      <div style="margin-top:4px;padding:14px;background:var(--bg2);border-radius:14px;border:1.5px solid var(--border);animation:fadeIn .2s;">
-        <div style="display:flex;align-items:center;justify-content:between;gap:8px;margin-bottom:10px;">
-          <b style="flex:1;">${soc.platformName||soc.name||''}</b>
-          <button onclick="window.toggleSocGallerySelect('${id}')" style="background:none;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer;line-height:1;">✕</button>
-        </div>
-        <div style="font-size:0.75rem;color:var(--muted);word-break:break-all;margin-bottom:10px;">${soc.url}</div>
-
-        <div style="display:flex;gap:8px;margin-bottom:10px;">
-          <button type="button" onclick="document.getElementById('editIconFile_${id}').click()" class="soc-mode-tile ${mode==='upload'?'active':''}" style="flex:1;">
-            <span class="soc-mode-tile-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 8l5-5 5 5M5 21h14"/></svg></span>
-            <span>رفع من الجهاز</span>
-          </button>
-          <button type="button" onclick="setEditMode('${id}','custom')" class="soc-mode-tile ${mode==='custom'?'active':''}" style="flex:1;">
-            <span class="soc-mode-tile-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></span>
-            <span>ألوان مخصصة</span>
-          </button>
-          <button type="button" onclick="setEditMode('${id}','site')" class="soc-mode-tile ${mode==='site'?'active':''}" style="flex:1;">
-            <span class="soc-mode-tile-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9" fill="currentColor" stroke="none"/></svg></span>
-            <span>ألوان الموقع</span>
-          </button>
+        <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
+          <button onclick="setEditMode('${id}','brand')" class="editmode-btn" data-id="${id}" data-mode="brand" style="flex:1;min-width:70px;padding:6px;border:2px solid ${mode==='brand'?'var(--primary)':'var(--border)'};border-radius:6px;background:var(--bg);cursor:pointer;font-family:'Tajawal';font-size:0.72rem;font-weight:700;">لون التطبيق</button>
+          <button onclick="setEditMode('${id}','custom')" class="editmode-btn" data-id="${id}" data-mode="custom" style="flex:1;min-width:70px;padding:6px;border:2px solid ${mode==='custom'?'var(--primary)':'var(--border)'};border-radius:6px;background:var(--bg);cursor:pointer;font-family:'Tajawal';font-size:0.72rem;font-weight:700;">🎨 تخصيص</button>
+          <button onclick="document.getElementById('editIconFile_${id}').click()" style="flex:1;min-width:70px;padding:6px;border:2px solid ${mode==='upload'?'var(--primary)':'var(--border)'};border-radius:6px;background:var(--bg);cursor:pointer;font-family:'Tajawal';font-size:0.72rem;font-weight:700;">رفع صورة</button>
           <input type="file" id="editIconFile_${id}" accept="image/*" style="display:none;" onchange="uploadEditIcon('${id}',this)">
-        </div>
-
-        ${mode==='custom' ? `
-        <div style="margin-bottom:10px;padding:12px;background:var(--bg);border-radius:10px;">
-          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);margin-bottom:10px;">🖼 تحكم بالألوان</div>
-          <div class="soc-attr-row">
-            <label class="soc-attr-tile">
-              <span class="soc-attr-tile-icon" style="background:${soc.customBg||'#3d5af1'};"></span>
-              <input type="color" value="${soc.customBg||'#3d5af1'}" oninput="this.previousElementSibling.style.background=this.value; updateCustomSocialColor('${id}','customBg',this.value)">
-              <span class="soc-attr-name">خلفية الدائرة</span>
-            </label>
-            <label class="soc-attr-tile">
-              <span class="soc-attr-tile-icon soc-attr-ring" style="border-color:${soc.customRing||'#ffffff'};"></span>
-              <input type="color" value="${soc.customRing||'#ffffff'}" oninput="this.previousElementSibling.style.borderColor=this.value; updateCustomSocialColor('${id}','customRing',this.value)">
-              <span class="soc-attr-name">لون الإطار</span>
-            </label>
-            <label class="soc-attr-tile">
-              <span class="soc-attr-tile-icon" style="background:var(--bg2);color:${soc.customIconColor||'#ffffff'};"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></span>
-              <input type="color" value="${soc.customIconColor||'#ffffff'}" oninput="this.previousElementSibling.style.color=this.value; updateCustomSocialColor('${id}','customIconColor',this.value)">
-              <span class="soc-attr-name">أيقونة التطبيق</span>
-            </label>
-            <label class="soc-attr-tile">
-              <span class="soc-attr-tile-icon" style="background:var(--bg2);color:${soc.customNameColor||'#0f1535'};font-weight:900;">A</span>
-              <input type="color" value="${soc.customNameColor||'#0f1535'}" oninput="this.previousElementSibling.style.color=this.value; updateCustomSocialColor('${id}','customNameColor',this.value)">
-              <span class="soc-attr-name">لون الاسم</span>
-            </label>
-          </div>
-        </div>` : ''}
-
-        <div style="margin-bottom:12px;">
-          <div style="font-size:0.72rem;font-weight:700;color:var(--muted);margin-bottom:8px;">معاينة مباشرة · Live Preview</div>
-          <div id="socEditLivePreview_${id}"></div>
-        </div>
-
-        <div style="display:flex;gap:8px;">
-          <button onclick="window.toggleSocHidden('${id}')" style="flex:1;padding:9px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-family:'Tajawal';font-weight:700;font-size:0.78rem;color:var(--text2);display:flex;align-items:center;justify-content:center;gap:6px;">
-            ${isHidden
-              ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg> إظهار الحساب'
-              : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-11-8-11-8a18.4 18.4 0 015.06-5.94M9.9 4.24A10.9 10.9 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19M14.12 14.12a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg> إخفاء عن الزوّار'}
-          </button>
           <button class="btn-delete" onclick="deleteSocial('${id}')" style="flex-shrink:0;">حذف</button>
         </div>
-      </div>`;
-
-    // عبّي صندوق المعاينة الكبير بعد إدراج الـ HTML (نفس منطق حفظ الحساب، لكن بلا حفظ)
-    setTimeout(() => {
-      const previewBox = document.getElementById('socEditLivePreview_'+id);
-      if(!previewBox) return;
-      const { bg, ring, iconColor } = socColorsFor(soc);
-      const nameColor = (mode==='custom' && soc.customNameColor) ? soc.customNameColor : '#0f1535';
-      const glyph = `<span style="display:flex;color:${iconColor};">${platSvg(soc.platformId)||''}</span>`;
-      const label = soc.platformName || soc.name || '';
-      const editBtn = `<button type="button" class="soc-live-edit-btn" onclick="startEditSocLiveName('${id}')" aria-label="تعديل النص"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>`;
-      if(currentIconShape === 'rect'){
-        previewBox.innerHTML = `<div class="soc-live-box">${editBtn}<span class="soc-live-icon" style="background:${bg};border:2px solid ${ring};">${glyph}</span><span class="soc-live-name" id="socEditNameText_${id}" style="color:${nameColor};">${label}</span></div>`;
-      } else {
-        previewBox.innerHTML = `<div class="soc-live-box shape-circle">${editBtn}<span class="soc-live-icon" style="background:${bg};border:2px solid ${ring};width:72px;height:72px;">${glyph}</span><span class="soc-live-name" id="socEditNameText_${id}" style="color:${nameColor};">${label}</span></div>`;
+        ${mode==='custom' ? `
+        <div style="margin-top:10px;padding:12px;background:var(--bg2);border-radius:10px;">
+          <div style="font-size:0.75rem;font-weight:700;color:var(--muted);margin-bottom:10px;">🖼 معاينة مباشرة · Live Preview أعلاه</div>
+          <div style="display:grid;grid-template-columns:1fr;gap:10px;">
+            <div>
+              <label style="font-size:0.72rem;display:block;margin-bottom:4px;">لون الخلفية · Background</label>
+              <input type="color" class="color-box-picker" value="${soc.customBg||'#3d5af1'}" oninput="updateCustomSocialColor('${id}','customBg',this.value)">
+            </div>
+            <div>
+              <label style="font-size:0.72rem;display:block;margin-bottom:4px;">لون الأيقونة · Icon</label>
+              <input type="color" class="color-box-picker" value="${soc.customIconColor||'#ffffff'}" oninput="updateCustomSocialColor('${id}','customIconColor',this.value)">
+            </div>
+            <div>
+              <label style="font-size:0.72rem;display:block;margin-bottom:4px;">اللون الدائري · Ring</label>
+              <input type="color" class="color-box-picker" value="${soc.customRing||'#ffffff'}" oninput="updateCustomSocialColor('${id}','customRing',this.value)">
+            </div>
+            <div>
+              <label style="font-size:0.72rem;display:block;margin-bottom:4px;">لون الحاوية · Container</label>
+              <input type="color" class="color-box-picker" value="${soc.customContainer||'#ffffff'}" oninput="updateCustomSocialColor('${id}','customContainer',this.value)">
+            </div>
+          </div>
+        </div>` : ''}`;
+      registry.appendChild(div);
+      } catch(itemErr) {
+        console.error('loadSocials: failed to render one social item, skipping it:', soc, itemErr);
       }
-    }, 0);
+    });
   }
 
-  // إخفاء/إظهار حساب فردي عن زوار الصفحة العامة بدون حذفه
-  // حفظ الاسم الجديد لحساب موجود بعد تعديله عبر القلم بالمعاينة المباشرة
-  window.commitSocEditName = async function(id, newName){
-    const item = gallerySocialsCache.find(s => s.id === id);
-    if(item){ item.platformName = newName; item.name = newName; }
-    const rowName = document.querySelector(`.soc-row-edit[onclick*="'${id}'"]`)?.closest('.soc-row')?.querySelector('.soc-row-name');
-    if(rowName) rowName.textContent = newName;
-    try {
-      const userRef = doc(db, "users", currentUser.uid);
-      const snap = await getDoc(userRef);
-      const socials = (snap.exists() && Array.isArray(snap.data().socials)) ? snap.data().socials : [];
-      const idx = socials.findIndex(s => s.id === id);
-      if(idx<0) return;
-      socials[idx].platformName = newName;
-      socials[idx].name = newName;
-      await setDoc(userRef, { socials: socials }, { merge: true });
-      window.showToast('تم تحديث الاسم');
-    } catch(e){ window.showToast('تعذر حفظ الاسم'); }
-  };
-
-  window.toggleSocHidden = async function(id){
-    try {
-      const userRef = doc(db, "users", currentUser.uid);
-      const snap = await getDoc(userRef);
-      const socials = (snap.exists() && Array.isArray(snap.data().socials)) ? snap.data().socials : [];
-      const idx = socials.findIndex(s => s.id === id);
-      if(idx<0) return;
-      socials[idx].hidden = !socials[idx].hidden;
-      await setDoc(userRef, { socials: socials }, { merge: true });
-      window.showToast(socials[idx].hidden ? "تم إخفاء الحساب عن الزوّار" : "الحساب ظاهر الآن للزوّار");
-      loadSocials();
-    } catch(e){ window.showToast("تعذر التحديث: "+(e.message||'')); }
-  };
-
-  // تحديث لحظي لألوان التخصيص الأربعة (خلفية/دائرة/أيقونة/اسم) + معاينة فورية على بطاقة المعرض
+  // تحديث لحظي لألوان التخصيص الأربعة + معاينة مباشرة قبل الحفظ بقاعدة البيانات
   let customColorSaveTimer = null;
   window.updateCustomSocialColor = function(id, field, value){
-    // تحديث فوري بالذاكرة المحلية لإعادة رسم البطاقة بدون وميض أو انتظار الحفظ
-    const item = gallerySocialsCache.find(s => s.id === id);
-    if(item) item[field] = value;
-    const cardIcon = document.querySelector(`.soc-row-edit[onclick*="'${id}'"]`)?.closest('.soc-row')?.querySelector('.soc-row-icon');
-    if(cardIcon){
-      if(field==='customBg') cardIcon.style.background = value;
-      if(field==='customRing') cardIcon.style.borderColor = value;
+    // تحديث المعاينة فوراً بدون انتظار الحفظ
+    const iconEl = document.getElementById('socIconPrev_'+id);
+    const containerEl = document.getElementById('socIconContainer_'+id);
+    if(iconEl){
+      if(field==='customBg') iconEl.style.background = value;
+      if(field==='customRing') iconEl.style.borderColor = value;
       if(field==='customIconColor'){
-        const span = cardIcon.querySelector('span');
+        const span = iconEl.querySelector('span');
         if(span) span.style.color = value;
       }
     }
-
-    const previewBox = document.getElementById('socEditLivePreview_'+id);
-    if(previewBox){
-      const icon = previewBox.querySelector('.soc-live-icon');
-      const nameEl = previewBox.querySelector('.soc-live-name');
-      if(icon){
-        if(field==='customBg') icon.style.background = value;
-        if(field==='customRing') icon.style.borderColor = value;
-        if(field==='customIconColor'){ const sp = icon.querySelector('span'); if(sp) sp.style.color = value; }
-      }
-      if(field==='customNameColor' && nameEl) nameEl.style.color = value;
-    }
+    if(containerEl && field==='customContainer') containerEl.style.background = value;
 
     // احفظ بقاعدة البيانات بعد توقف قصير عن التغيير (تفادي كتابة متكررة أثناء السحب على منتقي اللون)
     clearTimeout(customColorSaveTimer);
@@ -4805,7 +4517,7 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
         if(!socials[idx].customBg) socials[idx].customBg = socials[idx].brandColor || '#3d5af1';
         if(!socials[idx].customIconColor) socials[idx].customIconColor = '#ffffff';
         if(!socials[idx].customRing) socials[idx].customRing = '#ffffff';
-        if(!socials[idx].customNameColor) socials[idx].customNameColor = '#0f1535';
+        if(!socials[idx].customContainer) socials[idx].customContainer = '#ffffff';
       }
       await setDoc(userRef, { socials: socials }, { merge: true });
       window.showToast("تم تحديث شكل الأيقونة");
@@ -5241,17 +4953,21 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
       const url = await uploadImageToStorage(base64, path);
       if (type === 'avatar') {
         croppedAvatarBase64 = url;
-        // احفظ فوراً بقاعدة البيانات — لا تعتمد على ضغطة "حفظ التصميم" لاحقاً، لضمان عدم فقد الصورة أبداً
-        await setDoc(doc(db, "users", currentUser.uid), { avatar: url }, { merge: true });
+        // رفع صورة جديدة يعني ظهورها دائمًا — نلغي أي إخفاء سابق (من قالب أو تعطيل يدوي) كان سيمحوها عند الحفظ
         avatarHidden = false;
-        const rAv = document.getElementById('removeAvatarToggle'); if(rAv) rAv.checked = false;
+        const rAv = document.getElementById('removeAvatarToggle');
+        if(rAv) rAv.checked = false;
+        const avPrev = document.getElementById('avatarPreview');
+        if(avPrev){ avPrev.style.opacity=''; avPrev.style.filter=''; }
       } else {
         croppedBannerBase64 = url;
-        await setDoc(doc(db, "users", currentUser.uid), { bannerImage: url }, { merge: true });
         bannerHidden = false;
-        const rBn = document.getElementById('removeBannerToggle'); if(rBn) rBn.checked = false;
+        const rBn = document.getElementById('removeBannerToggle');
+        if(rBn) rBn.checked = false;
+        const bnPrev = document.getElementById('bannerPreview');
+        if(bnPrev){ bnPrev.style.opacity=''; bnPrev.style.filter=''; }
       }
-      window.showToast("✅ تم حفظ الصورة نهائياً على صفحتك");
+      window.showToast("تم رفع الصورة، يرجى حفظ التصميم");
     }catch(e){
       window.showToast("تعذر رفع الصورة: " + (e.message||''));
     }
@@ -5268,21 +4984,13 @@ input[type="color"].color-box-picker::-webkit-color-swatch{border:none;border-ra
     } else if(p){ p.style.opacity=''; p.style.filter=''; }
   };
   window.onRemoveBanner = function(checked){
-    // تأكيد صارم قبل أي حذف فعلي: لو ألغى المستخدم نرجّع المفتاح لوضعه القديم ولا ننفّذ شيء إطلاقاً
-    if(checked){
-      const confirmed = confirm("سيتم حذف صورة الغلاف نهائياً. لون الخلفية المختار سيبقى كما هو بلا أي تغيير. هل أنت متأكد؟");
-      if(!confirmed){
-        document.getElementById('removeBannerToggle').checked = false;
-        return; // إلغاء تام — بلا حذف وبلا أي أثر
-      }
-    }
     bannerHidden = checked;
     const p = document.getElementById('bannerPreview');
     if(checked){
       croppedBannerBase64 = null;
       if(p){ p.style.opacity = '.2'; p.style.filter = 'grayscale(1)'; }
       deleteObject(storageRef(storage, `banners/${currentUser.uid}.jpg`)).catch(()=>{});
-      window.showToast("تم حذف الغلاف — لون الخلفية باقٍ كما هو");
+      window.showToast("سيختفي الغلاف من صفحتك عند الحفظ");
     } else if(p){ p.style.opacity=''; p.style.filter=''; }
   };
   window.onRemoveBg = function(checked){
