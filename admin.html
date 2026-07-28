@@ -302,6 +302,9 @@ svg{display:block;}
 .tpl-dash-zone{position:relative;border:2px dashed rgba(255,255,255,.85);border-radius:16px;}
 .tpl-dash-zone.on-light{border-color:rgba(15,21,53,.22);}
 .tpl-dash-ring{position:absolute;border:2px dashed rgba(255,255,255,.85);border-radius:50%;pointer-events:none;}
+.plat-pick-btn{flex-shrink:0;width:40px;height:40px;border-radius:12px;border:1.5px solid var(--border-strong);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-2);transition:transform .1s;}
+.plat-pick-btn:active{transform:scale(.92);}
+.plat-pick-btn.active{box-shadow:0 4px 10px -3px rgba(0,0,0,.35);}
 
 /* ===== نافذة منبثقة سياقية ===== */
 #tplPopoverOverlay{display:none;position:fixed;inset:0;z-index:6500;background:rgba(16,20,50,.5);align-items:center;justify-content:center;padding:16px;overflow-y:auto;backdrop-filter:blur(2px);}
@@ -597,8 +600,25 @@ const ICONS = {
   squareSoft:'<svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="4"/></svg>',
   upload:'<svg class="icon-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>',
   loader:'<svg class="icon-sm spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3a9 9 0 1 0 9 9"/></svg>',
-  close:'<svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>'
+  close:'<svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>',
+  pencil:'<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
+  hash:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9h14M5 15h14M10 3 8 21M16 3l-2 18"/></svg>'
 };
+
+/* ===== مكتبة أيقونات التطبيقات الحقيقية بألوانها الرسمية — نفس الأيقونات المستخدمة بلوحة تحكم المستخدمين ===== */
+const PLATFORM_ICONS = {
+  instagram:{name:'Instagram',color:'#E1306C',svg:'<svg viewBox="0 0 24 24" width="100%" height="100%" fill="currentColor"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.15 3.23-1.66 4.77-4.92 4.92-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85C2.38 3.92 3.9 2.38 7.15 2.23 8.42 2.17 8.8 2.16 12 2.16zm0-2.16C8.74 0 8.33.01 7.05.07 2.7.27.27 2.69.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.2 4.36 2.62 6.78 6.98 6.98C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c4.35-.2 6.78-2.62 6.98-6.98.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.2-4.35-2.62-6.78-6.98-6.98C15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 100 12.32 6.16 6.16 0 000-12.32zM12 16a4 4 0 110-8 4 4 0 010 8zm6.41-10.85a1.44 1.44 0 100 2.88 1.44 1.44 0 000-2.88z"/></svg>'},
+  twitter:{name:'X',color:'#000000',svg:'<svg viewBox="0 0 24 24" width="100%" height="100%" fill="currentColor"><path d="M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.41l-5.8-7.58-6.64 7.58H.46l8.6-9.83L0 1.15h7.59l5.24 6.93 6.07-6.93zm-1.29 19.5h2.04L6.49 3.24H4.3L17.61 20.65z"/></svg>'},
+  tiktok:{name:'TikTok',color:'#111111',svg:'<svg viewBox="0 0 24 24" width="100%" height="100%" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 3.5-4.53V9.4a6.33 6.33 0 0 0-5.94 10.5A6.33 6.33 0 0 0 15.7 15.7V8.66a8.18 8.18 0 0 0 4.83 1.55V6.69h-.94z"/></svg>'},
+  snapchat:{name:'Snapchat',color:'#FFC400',svg:'<svg viewBox="0 0 24 24" width="100%" height="100%" fill="currentColor"><path d="M12.013 1.5c2.317.01 4.288 1.62 4.886 3.756.146.523.13 1.31.116 2.005-.005.193.003.31.024.388.046.012.144.027.32.01.27-.052.62-.198.92-.39.16-.1.35-.16.56-.16.5 0 .9.4.9.9 0 .39-.25.73-.66.88-.32.11-.86.29-1 .61-.07.16-.04.37.08.62.01.02 1.02 2.4 3.28 2.77.27.04.47.28.45.55-.18.42-.93.73-2.28.95-.05.08-.1.32-.14.5-.06.18-.2.27-.4.27-.13 0-.3-.03-.52-.07-.3-.06-.7-.13-1.2-.13-.3 0-.6.02-.9.07-.6.1-1.1.46-1.67.86-.8.57-1.7 1.2-3.13 1.2h-.13c-1.43 0-2.33-.63-3.13-1.2-.57-.4-1.07-.76-1.67-.86-.3-.05-.6-.07-.9-.07-.5 0-.9.07-1.2.13-.22.04-.4.07-.52.07-.26 0-.37-.16-.42-.28-.04-.18-.09-.42-.14-.5-1.35-.22-2.1-.53-2.28-.95-.02-.27.18-.51.45-.55 2.26-.37 3.27-2.75 3.28-2.77.12-.25.15-.46.08-.62-.14-.32-.68-.5-1-.61-.5-.2-.7-.55-.66-.92.04-.48.43-.84.9-.84.2 0 .37.05.52.13.32.2.68.35.96.4.18.03.28.01.33-.01.02-.08.03-.2.02-.4-.014-.696-.03-1.484.116-2.008C7.7 3.12 9.687 1.5 12.013 1.5z"/></svg>'},
+  whatsapp:{name:'WhatsApp',color:'#25D366',svg:'<svg viewBox="0 0 24 24" width="100%" height="100%" fill="currentColor"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.75-1.65-2.05-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.5-.17-.01-.37-.01-.57-.01-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.22 1.36.19 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35z"/><path d="M12 0C5.4 0 0 5.4 0 12c0 2.1.55 4.14 1.6 5.94L0 24l6.24-1.63A11.94 11.94 0 0 0 12 24c6.6 0 12-5.4 12-12S18.6 0 12 0zm0 21.8a9.8 9.8 0 0 1-4.99-1.36l-.36-.21-3.7.97.99-3.6-.24-.37A9.8 9.8 0 1 1 21.8 12 9.82 9.82 0 0 1 12 21.8z"/></svg>'},
+  telegram:{name:'Telegram',color:'#229ED9',svg:'<svg viewBox="0 0 24 24" width="100%" height="100%" fill="currentColor"><path d="M22.05 2.6 2.4 10.36c-1.34.55-1.33 1.32-.24 1.65l5.02 1.57 1.94 5.93c.24.66.42.92.86.92.36 0 .53-.16.75-.39l1.8-1.75 3.9 2.88c.72.4 1.24.19 1.42-.66l2.57-12.1c.26-1.1-.4-1.6-1.17-1.28z"/></svg>'},
+  youtube:{name:'YouTube',color:'#FF0000',svg:'<svg viewBox="0 0 24 24" width="100%" height="100%" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.4 3.6 12 3.6 12 3.6s-7.4 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c2 .5 9.4.5 9.4.5s7.4 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.6V8.4l6.3 3.6z"/></svg>'},
+  facebook:{name:'Facebook',color:'#1877F2',svg:'<svg viewBox="0 0 24 24" width="100%" height="100%" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.5-3.89 3.78-3.89 1.1 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12z"/></svg>'},
+  linkedin:{name:'LinkedIn',color:'#0A66C2',svg:'<svg viewBox="0 0 24 24" width="100%" height="100%" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zm1.78 13.02H3.56V9h3.56v11.45zM22.22 0H1.77C.8 0 0 .78 0 1.73v20.53C0 23.22.8 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .78 23.2 0 22.22 0z"/></svg>'},
+  website:{name:'موقع',color:'#1732B2',svg:'<svg viewBox="0 0 24 24" width="100%" height="100%" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10Z"/></svg>'}
+};
+const PLATFORM_ORDER = ['instagram','twitter','tiktok','snapchat','whatsapp','telegram','youtube','facebook','linkedin','website'];
 
 let auth = null, db = null, storage = null, firebaseReady = false;
 try{
@@ -623,11 +643,11 @@ const TPL_DESIGN_DEFAULTS = {
   fontFamily:'Tajawal', nameSize:21, nameWeight:800, bioSize:12,
   avatarSize:64, avatarShape:'circle', gap:14,
   linkRadius:'rounded', linkHeight:22, linkBorderWidth:2, linkShadow:false, linkFill:false, linkText:'#0f1535',
-  socialSize:38, socialBorderWidth:0, socialBorderColor:'#ffffff', socialShowLabel:false, socialTextBold:false, socialTextColor:'#0f1535', socialTextSize:11,
-  socialLabel1:'حساب 1', socialLabel2:'حساب 2', socialLabel3:'حساب 3', socialLabel4:'حساب 4',
-  bgMode:'color', bgOverlayOpacity:0.55,
-  rectColor1:'#3d5af1', rectColor2:'#6c8fff', rectColor3:'#0f1535', rectColor4:'#9aa2c8',
-  circleColor1:'#3d5af1', circleColor2:'#6c8fff', circleColor3:'#0f1535', circleColor4:'#9aa2c8'
+  // حسابات التواصل: تطبيقات حقيقية بألوانها الرسمية — طريقة العرض مربع (أيقونة فقط) أو مستطيل (أيقونة + اسم)
+  socialsDisplay:'square',
+  socialPlatform1:'instagram', socialPlatform2:'tiktok', socialPlatform3:'snapchat', socialPlatform4:'whatsapp',
+  socialLabel1:'Instagram', socialLabel2:'TikTok', socialLabel3:'Snapchat', socialLabel4:'WhatsApp',
+  bgMode:'color', bgOverlayOpacity:0.55
 };
 const DEFAULT_TEMPLATES = {
   default: { name:'الافتراضي', p1:'#1732B2', p2:'#0069FD', text:'#0f1535', bg:'#ffffff', ...TPL_DESIGN_DEFAULTS },
@@ -883,30 +903,34 @@ function closeTplExpanded(){
   renderTemplatesEditor();
 }
 
-function buildSocialItem(t, isRect, rectStyle, color, label){
-  const border = t.socialBorderWidth > 0 ? `border:${t.socialBorderWidth}px solid ${t.socialBorderColor};` : '';
-  const boxStyle = isRect
-    ? `width:100%;height:${Math.max(28,t.socialSize*0.45)}px;border-radius:${rectStyle==='sharp'?'4px':'10px'};background:${color};${border}`
-    : `width:${t.socialSize}px;height:${t.socialSize}px;border-radius:50%;background:${color};${border};flex-shrink:0;`;
-  const labelHtml = t.socialShowLabel
-    ? `<div style="font-size:${t.socialTextSize}px;font-weight:${t.socialTextBold?800:400};color:${t.socialTextColor};margin-top:5px;text-align:center;">${escapeHtml(label)}</div>`
-    : '';
-  return isRect
-    ? `<div style="width:100%;"><div style="${boxStyle}"></div>${labelHtml}</div>`
-    : `<div style="display:flex;flex-direction:column;align-items:center;"><div style="${boxStyle}"></div>${labelHtml}</div>`;
+function buildSocialItem(platformId, label, isRect){
+  const p = PLATFORM_ICONS[platformId] || PLATFORM_ICONS.website;
+  if(isRect){
+    return `
+      <div style="display:flex;align-items:center;width:100%;border:1.5px solid ${p.color};border-radius:12px;overflow:hidden;background:#fff;">
+        <div style="width:42px;height:42px;background:${p.color};color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <span style="width:20px;height:20px;display:block;">${p.svg}</span>
+        </div>
+        <div style="flex:1;padding:0 12px;font-size:13px;font-weight:800;color:${p.color};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right;">${escapeHtml(label || p.name)}</div>
+      </div>`;
+  }
+  return `
+    <div style="width:44px;height:44px;border-radius:50%;background:${p.color};color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 10px -4px rgba(0,0,0,.3);">
+      <span style="width:20px;height:20px;display:block;">${p.svg}</span>
+    </div>`;
 }
-function buildSocialsPreview(t, isRect, rectStyle){
-  const colors = isRect
-    ? [t.rectColor1, t.rectColor2, t.rectColor3, t.rectColor4]
-    : [t.circleColor1, t.circleColor2, t.circleColor3, t.circleColor4];
-  const labels = [
-    t.socialLabel1 || 'حساب 1', t.socialLabel2 || 'حساب 2',
-    t.socialLabel3 || 'حساب 3', t.socialLabel4 || 'حساب 4'
+function buildSocialsPreview(t){
+  const isRect = (t.socialsDisplay || 'square') === 'rect';
+  const slots = [
+    [t.socialPlatform1 || 'instagram', t.socialLabel1],
+    [t.socialPlatform2 || 'tiktok', t.socialLabel2],
+    [t.socialPlatform3 || 'snapchat', t.socialLabel3],
+    [t.socialPlatform4 || 'whatsapp', t.socialLabel4],
   ];
-  const items = colors.map((c,i) => buildSocialItem(t, isRect, rectStyle, c, labels[i]));
+  const items = slots.map(([pid,label]) => buildSocialItem(pid, label, isRect));
   return isRect
-    ? `<div style="display:flex;flex-direction:column;gap:8px;width:100%;margin:14px 0;">${items.join('')}</div>`
-    : `<div style="display:flex;gap:14px;margin:14px 0;">${items.join('')}</div>`;
+    ? `<div style="display:flex;flex-direction:column;gap:8px;width:100%;">${items.join('')}</div>`
+    : `<div style="display:flex;gap:12px;justify-content:center;">${items.join('')}</div>`;
 }
 function hexToRgba(hex, alpha){
   let h = (hex || '#000000').replace('#','');
@@ -919,8 +943,6 @@ function hexToRgba(hex, alpha){
 
 function buildMockupHtml(key){
   const t = templatesData[key];
-  const isRect = t.iconShape === 'rect';
-  const rectStyle = t.rectStyle || 'rounded';
   const showAvatar = t.showAvatar !== false;
   const showLogo = t.showLogo !== false;
   const showSocials = t.showSocials !== false;
@@ -939,18 +961,18 @@ function buildMockupHtml(key){
   const linkRadiusPx = t.linkRadius==='sharp' ? '4px' : t.linkRadius==='pill' ? '999px' : '10px';
   const linkFillStyle = t.linkFill ? `background:${t.p1};color:${t.linkText};` : `background:transparent;color:${t.linkText};`;
   const linkShadowStyle = t.linkShadow ? `box-shadow:0 6px 14px -4px rgba(0,0,0,.35);` : '';
-  const socialsHtml = buildSocialsPreview(t, isRect, rectStyle);
+  const socialsHtml = buildSocialsPreview(t);
   const plusIco = '<svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>';
   const ringRadius = t.avatarShape==='circle' ? '50%' : t.avatarShape==='rounded' ? '28%' : '16px';
 
-  // نقطة "الخلفية" — شارة + محاطة بحلقة منقطة (بدل شارة عائمة وحدها)
+  // نقطة "الخلفية" — شارة + محاطة بحلقة منقطة
   const bgZone = `
     <div style="position:absolute;top:8px;left:8px;width:34px;height:34px;">
       <div class="tpl-dash-ring" style="inset:-8px;"></div>
       <button type="button" class="tpl-plus-badge" style="position:static;" data-action="open-bg-popover" data-key="${key}" title="الخلفية">${plusIco}</button>
     </div>`;
 
-  // نقطة "الشعار" — صندوق منقّط يحيط بمعاينة الشعار، والشارة + مستقرة تمامًا على الخط المتقطع أعلاه
+  // نقطة "الشعار" — صندوق منقّط يحيط بمعاينة الشعار، والشارة + مستقرة على الخط المتقطع أعلاه
   const logoZone = showLogo ? `
     <div class="tpl-dash-zone" style="position:absolute;top:8px;right:8px;width:40px;height:40px;border-radius:12px;">
       <div style="position:absolute;inset:3px;border-radius:9px;overflow:hidden;${t.logoImg ? `background-image:url(${t.logoImg});background-size:cover;background-position:center;` : `background:rgba(255,255,255,.5);`}"></div>
@@ -965,11 +987,16 @@ function buildMockupHtml(key){
       <button type="button" class="tpl-plus-badge" style="bottom:-16px;left:50%;transform:translateX(-50%);" data-action="open-avatar-popover" data-key="${key}" title="الأفتار">${plusIco}</button>
     </div>` : '';
 
-  // نقطة "التواصل" — صندوق منقّط كامل يحيط بمجموعة الأيقونات (تمامًا كالمرجع)، والشارة + على حافته العلوية
-  const socialsZone = `
-    <div class="tpl-dash-zone" style="width:100%;margin-top:22px;padding:${showSocials ? '18px 10px 10px' : '10px'};">
-      <button type="button" class="tpl-plus-badge" style="top:-17px;left:50%;transform:translateX(-50%);" data-action="open-socials-popover" data-key="${key}" title="التواصل">${plusIco}</button>
-      ${showSocials ? socialsHtml : `<div style="height:8px;"></div>`}
+  // حقل الأرقام — عنصر توضيحي ثابت يظهر فوق تطبيقات التواصل مباشرة
+  const numbersField = `
+    <div style="width:100%;display:flex;align-items:center;gap:8px;padding:10px 14px;border:1.5px dashed ${t.text};opacity:.55;border-radius:${linkRadiusPx};margin-top:16px;margin-bottom:12px;color:${t.text};">
+      <span style="width:16px;height:16px;flex-shrink:0;">${ICONS.hash}</span><span style="font-size:12px;font-weight:800;">حقل الأرقام</span>
+    </div>`;
+
+  // تطبيقات التواصل — بلا أي "+"، الصندوق كله قابل للضغط لفتح شاشة الاختيار الجديدة، وبأسفل القالب دائمًا
+  const socialsBlock = `
+    <div style="width:100%;cursor:pointer;" data-action="open-socials-popover" data-key="${key}" title="تعديل تطبيقات التواصل">
+      ${showSocials ? socialsHtml : `<div style="height:6px;"></div>`}
     </div>`;
 
   return `
@@ -982,12 +1009,13 @@ function buildMockupHtml(key){
       <div style="height:${t.bioSize*0.35}px;width:70%;border-radius:3px;opacity:.35;background:${t.text};margin-bottom:6px;"></div>
       <div style="height:${t.bioSize*0.35}px;width:45%;border-radius:3px;opacity:.35;background:${t.text};margin-bottom:${t.gap}px;"></div>
 
-      ${socialsZone}
-
       ${showLinks ? `
-        <div style="width:100%;height:${t.linkHeight}px;border-radius:${linkRadiusPx};border:${t.linkBorderWidth}px solid ${t.p1};${linkFillStyle}${linkShadowStyle}margin-bottom:${Math.max(6,t.gap*0.55)}px;margin-top:16px;"></div>
+        <div style="width:100%;height:${t.linkHeight}px;border-radius:${linkRadiusPx};border:${t.linkBorderWidth}px solid ${t.p1};${linkFillStyle}${linkShadowStyle}margin-bottom:${Math.max(6,t.gap*0.55)}px;"></div>
         <div style="width:100%;height:${t.linkHeight}px;border-radius:${linkRadiusPx};border:${t.linkBorderWidth}px solid ${t.p1};${linkFillStyle}${linkShadowStyle}"></div>
       ` : ''}
+
+      ${numbersField}
+      ${socialsBlock}
     </div>
   `;
 }
@@ -1268,69 +1296,45 @@ function openBgPopover(key){
 // ===== + التواصل =====
 function openSocialsPopover(key){
   const t = templatesData[key];
-  const shape = t.iconShape === 'rect' ? (t.rectStyle==='sharp' ? 'sharp' : 'rounded') : 'icons';
-  showPopover('حسابات التواصل', `
+  const display = t.socialsDisplay || 'square';
+
+  const platformPickerHtml = (slot) => {
+    const current = t['socialPlatform'+slot] || '';
+    return `
+      <div style="display:flex;gap:8px;overflow-x:auto;padding:2px 2px 4px;">
+        ${PLATFORM_ORDER.map(pid => {
+          const p = PLATFORM_ICONS[pid];
+          const active = current === pid;
+          return `<button type="button" class="plat-pick-btn ${active?'active':''}" data-action="pick-platform" data-slot="${slot}" data-platform="${pid}" data-key="${key}" title="${p.name}" style="${active ? `border-color:${p.color};background:${p.color};color:#fff;` : ''}">
+            <span style="width:18px;height:18px;display:block;">${p.svg}</span>
+          </button>`;
+        }).join('')}
+      </div>`;
+  };
+
+  const slotHtml = (slot) => `
+    <div class="tpl-dash-section" style="margin-bottom:12px;">
+      <div class="tpl-dash-label">${ICONS.layer} التطبيق ${slot}</div>
+      ${platformPickerHtml(slot)}
+      <div class="tpl-field" style="margin-top:12px;margin-bottom:0;position:relative;">
+        <span class="tpl-field-label">الاسم الظاهر</span>
+        <input type="text" class="tpl-expanded-input" style="padding-left:38px;" placeholder="اسم الحساب" value="${escapeHtml(t['socialLabel'+slot]||'')}" data-field="socialLabel${slot}" data-key="${key}" data-live="lg">
+        <span style="position:absolute;bottom:10px;left:12px;color:var(--text-3);">${ICONS.pencil}</span>
+      </div>
+    </div>`;
+
+  showPopover('تطبيقات التواصل', `
     <div class="tpl-dash-section">
-      <div class="tpl-dash-label">الشكل</div>
+      <div class="tpl-dash-label">${ICONS.square} طريقة العرض</div>
       <div class="tpl-seg-row">
-        <button type="button" class="tpl-seg-btn ${shape==='icons'?'active':''}" data-action="social-shape" data-shape="icons" data-key="${key}">${ICONS.circleDot}أيقونات</button>
-        <button type="button" class="tpl-seg-btn ${shape==='rounded'?'active':''}" data-action="social-shape" data-shape="rounded" data-key="${key}">${ICONS.rectRounded}دائري</button>
-        <button type="button" class="tpl-seg-btn ${shape==='sharp'?'active':''}" data-action="social-shape" data-shape="sharp" data-key="${key}">${ICONS.rectSharp}حاد</button>
+        <button type="button" class="tpl-seg-btn ${display==='square'?'active':''}" data-action="set-socials-display" data-value="square" data-key="${key}">${ICONS.squareSoft}مربع</button>
+        <button type="button" class="tpl-seg-btn ${display==='rect'?'active':''}" data-action="set-socials-display" data-value="rect" data-key="${key}">${ICONS.rectRounded}مستطيل</button>
       </div>
     </div>
 
-    <div class="tpl-dash-section">
-      <div class="tpl-dash-label">حجم الأيقونة/المربع</div>
-      <div class="tpl-range-row"><input type="range" min="24" max="72" value="${t.socialSize}" data-field="socialSize" data-key="${key}" data-live="fast" data-unit="px"><span class="tpl-range-val">${t.socialSize}px</span></div>
-    </div>
+    ${slotHtml(1)}${slotHtml(2)}${slotHtml(3)}${slotHtml(4)}
 
-    <div class="tpl-dash-section">
-      <div class="tpl-dash-label">الحدود</div>
-      <div class="tpl-field"><span class="tpl-field-label">سُمك الحدود</span>
-        <div class="tpl-range-row"><input type="range" min="0" max="6" value="${t.socialBorderWidth}" data-field="socialBorderWidth" data-key="${key}" data-live="fast" data-unit="px"><span class="tpl-range-val">${t.socialBorderWidth}px</span></div>
-      </div>
-      <div class="tpl-color-mini-row"><span>لون الحدود</span><input type="color" value="${t.socialBorderColor}" data-field="socialBorderColor" data-key="${key}" data-live="lg"></div>
-    </div>
-
-    <div class="tpl-dash-section">
-      <div class="tpl-dash-label">تسمية الحساب (النص)</div>
-      <label class="tpl-toggle-row"><input type="checkbox" ${t.socialShowLabel?'checked':''} data-field="socialShowLabel" data-key="${key}" data-live="flag"><span>إظهار اسم الحساب تحت الأيقونة</span></label>
-      <div class="tpl-field" style="margin-top:12px;"><span class="tpl-field-label">اسم الحساب الأول</span>
-        <input type="text" class="tpl-expanded-input" value="${escapeHtml(t.socialLabel1)}" data-field="socialLabel1" data-key="${key}" data-live="lg">
-      </div>
-      <div class="tpl-field"><span class="tpl-field-label">اسم الحساب الثاني</span>
-        <input type="text" class="tpl-expanded-input" value="${escapeHtml(t.socialLabel2)}" data-field="socialLabel2" data-key="${key}" data-live="lg">
-      </div>
-      <div class="tpl-field"><span class="tpl-field-label">اسم الحساب الثالث</span>
-        <input type="text" class="tpl-expanded-input" value="${escapeHtml(t.socialLabel3)}" data-field="socialLabel3" data-key="${key}" data-live="lg">
-      </div>
-      <div class="tpl-field"><span class="tpl-field-label">اسم الحساب الرابع</span>
-        <input type="text" class="tpl-expanded-input" value="${escapeHtml(t.socialLabel4)}" data-field="socialLabel4" data-key="${key}" data-live="lg">
-      </div>
-      <div class="tpl-field"><span class="tpl-field-label">حجم خط الاسم</span>
-        <div class="tpl-range-row"><input type="range" min="8" max="18" value="${t.socialTextSize}" data-field="socialTextSize" data-key="${key}" data-live="fast" data-unit="px"><span class="tpl-range-val">${t.socialTextSize}px</span></div>
-      </div>
-      <div class="tpl-color-mini-row"><span>لون النص</span><input type="color" value="${t.socialTextColor}" data-field="socialTextColor" data-key="${key}" data-live="lg"></div>
-      <label class="tpl-toggle-row"><input type="checkbox" ${t.socialTextBold?'checked':''} data-field="socialTextBold" data-key="${key}" data-live="flag"><span>خط عريض Bold</span></label>
-    </div>
-
-    <div class="tpl-dash-section">
-      <div class="tpl-dash-label">${ICONS.rectRounded} ألوان الأيقونات المستطيلة (٤ ألوان)</div>
-      <div class="tpl-color-mini-row"><span>اللون الأول</span><input type="color" value="${t.rectColor1}" data-field="rectColor1" data-key="${key}" data-live="fast"></div>
-      <div class="tpl-color-mini-row"><span>اللون الثاني</span><input type="color" value="${t.rectColor2}" data-field="rectColor2" data-key="${key}" data-live="fast"></div>
-      <div class="tpl-color-mini-row"><span>اللون الثالث</span><input type="color" value="${t.rectColor3}" data-field="rectColor3" data-key="${key}" data-live="fast"></div>
-      <div class="tpl-color-mini-row"><span>اللون الرابع</span><input type="color" value="${t.rectColor4}" data-field="rectColor4" data-key="${key}" data-live="fast"></div>
-    </div>
-
-    <div class="tpl-dash-section">
-      <div class="tpl-dash-label">${ICONS.circleDot} ألوان الأيقونات الدائرية (٤ ألوان)</div>
-      <div class="tpl-color-mini-row"><span>اللون الأول</span><input type="color" value="${t.circleColor1}" data-field="circleColor1" data-key="${key}" data-live="fast"></div>
-      <div class="tpl-color-mini-row"><span>اللون الثاني</span><input type="color" value="${t.circleColor2}" data-field="circleColor2" data-key="${key}" data-live="fast"></div>
-      <div class="tpl-color-mini-row"><span>اللون الثالث</span><input type="color" value="${t.circleColor3}" data-field="circleColor3" data-key="${key}" data-live="fast"></div>
-      <div class="tpl-color-mini-row"><span>اللون الرابع</span><input type="color" value="${t.circleColor4}" data-field="circleColor4" data-key="${key}" data-live="fast"></div>
-    </div>
-
-    <div style="font-size:0.72rem;color:var(--text-3);">هذا تصميم افتراضي للعرض — يظهر لكل مستخدم بحساباته الفعلية وأسمائها الحقيقية. لوحة المستطيلة ولوحة الدائرية مستقلتان عن بعض.</div>
+    <div style="font-size:0.72rem;color:var(--text-3);">اختر التطبيق الحقيقي لكل حساب — تظهر أيقونته الرسمية ولونه تلقائيًا، وتقدر تغيّر الاسم الظاهر أسفل كل أيقونة.</div>
   `);
 }
 
@@ -1410,12 +1414,16 @@ document.addEventListener('click', function(e){
     openBgPopover(key);
     return;
   }
-  if(action === 'social-shape'){
-    const shape = el.dataset.shape;
-    if(shape === 'icons'){ setField(key,'iconShape','circle'); }
-    else { setField(key,'iconShape','rect'); setField(key,'rectStyle',shape); }
-    openSocialsPopover(key);
+  if(action === 'pick-platform'){
+    setField(key, 'socialPlatform'+el.dataset.slot, el.dataset.platform);
     refreshMockupOnly(key);
+    openSocialsPopover(key);
+    return;
+  }
+  if(action === 'set-socials-display'){
+    setField(key, 'socialsDisplay', el.dataset.value);
+    refreshMockupOnly(key);
+    openSocialsPopover(key);
     return;
   }
 });
