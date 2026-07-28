@@ -4,6 +4,12 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <title>لوحة الإدارة — electrwni.link</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://www.gstatic.com">
+<link rel="preconnect" href="https://firestore.googleapis.com">
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com">
+<link rel="dns-prefetch" href="https://www.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 /* =====================================================================
@@ -319,7 +325,7 @@ svg{display:block;}
 .file-input-wrap input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
 .file-input-wrap svg{color:var(--neon);margin:0 auto 6px;}
 .file-input-wrap span{font-size:0.78rem;font-weight:700;color:var(--text-2);}
-.upload-status{font-size:0.72rem;color:var(--neon);font-weight:700;margin-top:8px;display:none;align-items:center;gap:6px;}
+.upload-status{font-size:0.72rem;color:var(--neon);font-weight:700;margin-top:8px;margin-bottom:12px;display:none;align-items:center;gap:6px;}
 .upload-status.show{display:flex;}
 .spin{animation:spin 0.8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
@@ -1214,16 +1220,30 @@ async function handleTplImageUpload(file, key, field, maxDim, quality, statusHos
   fileToBase64(file, async (dataUrl) => {
     setField(key, field, dataUrl); // معاينة فورية محلية
     renderTplExpanded();
-    if(statusHost) statusHost.innerHTML = `<div class="upload-status show">${ICONS.loader}جاري رفع الصورة...</div>`;
+    // شارة تقدّم غير هدّامة — تُضاف أعلى النافذة دون محو بقية الحقول (كانت innerHTML= تمسح النافذة كلها)
+    let banner = null;
+    if(statusHost){
+      banner = document.createElement('div');
+      banner.className = 'upload-status show';
+      banner.innerHTML = `${ICONS.loader}جاري رفع الصورة...`;
+      statusHost.prepend(banner);
+    }
     try{
       const path = `templates/${key}/${field}_${Date.now()}.jpg`;
       const ref = storage.ref(path);
       await ref.putString(dataUrl, 'data_url');
       const url = await ref.getDownloadURL();
       setField(key, field, url);
-      await saveTemplatesConfig();
+      // تحديث مُستهدف لهذا الحقل فقط بقاعدة البيانات — بدل إعادة كتابة مستند القوالب بالكامل
+      // (السبب الحقيقي لبطء الرفع: saveTemplatesConfig كانت ترسل كل القوالب الأخرى معه في كل مرة،
+      // بما فيها أي صور base64 قديمة متبقية من قبل تفعيل الرفع الخارجي — قد تكون عدة ميغابايت)
+      if(firebaseReady){
+        await db.collection('siteConfig').doc('templates').set({ [key]: { [field]: url } }, { merge: true });
+      }
+      if(banner) banner.remove();
       closeTplPopover();
     }catch(err){
+      if(banner) banner.remove();
       alert('تعذر رفع الصورة: ' + (err.message||''));
     }
   }, maxDim, quality);
@@ -1444,15 +1464,15 @@ document.addEventListener('change', function(e){
   const el = e.target;
 
   if(el.dataset.action === 'avatar-file' && el.files && el.files[0]){
-    handleTplImageUpload(el.files[0], el.dataset.key, 'avatarImg', 480, 0.82, el.closest('.popover-sheet'));
+    handleTplImageUpload(el.files[0], el.dataset.key, 'avatarImg', 480, 0.82, el.closest('.popover-sheet')?.querySelector('#tplPopoverBody'));
     return;
   }
   if(el.dataset.action === 'logo-file' && el.files && el.files[0]){
-    handleTplImageUpload(el.files[0], el.dataset.key, 'logoImg', 480, 0.82, el.closest('.popover-sheet'));
+    handleTplImageUpload(el.files[0], el.dataset.key, 'logoImg', 480, 0.82, el.closest('.popover-sheet')?.querySelector('#tplPopoverBody'));
     return;
   }
   if(el.dataset.action === 'bg-file' && el.files && el.files[0]){
-    handleTplImageUpload(el.files[0], el.dataset.key, 'bgImage', 1080, 0.75, el.closest('.popover-sheet'));
+    handleTplImageUpload(el.files[0], el.dataset.key, 'bgImage', 1080, 0.75, el.closest('.popover-sheet')?.querySelector('#tplPopoverBody'));
     return;
   }
 
