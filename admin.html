@@ -597,7 +597,6 @@ svg{display:block;}
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
 <script>
 window.addEventListener('error', function(e){
   const b = document.getElementById('errBanner');
@@ -646,14 +645,13 @@ const PLATFORM_ICONS = {
 };
 const PLATFORM_ORDER = ['instagram','twitter','tiktok','snapchat','whatsapp','telegram','youtube','facebook','linkedin','website'];
 
-let auth = null, db = null, storage = null, firebaseReady = false;
+let auth = null, db = null, firebaseReady = false;
 try{
   const cfg={apiKey:"AIzaSyAXGBAN7h493PqS8wNcQQ6N62SoSYz6wSg",authDomain:"electrwni-link.firebaseapp.com",projectId:"electrwni-link",storageBucket:"electrwni-link.firebasestorage.app",messagingSenderId:"712490301263",appId:"1:712490301263:web:2084210da3f687285ab73a"};
   if(typeof firebase === 'undefined') throw new Error('تعذر تحميل مكتبة Firebase (تحقق من الاتصال بالإنترنت أو حاجب الإعلانات)');
   if(!firebase.apps.length) firebase.initializeApp(cfg);
   auth = firebase.auth();
   db = firebase.firestore();
-  storage = firebase.storage();
   firebaseReady = true;
 }catch(e){
   console.error('Firebase init failed:', e);
@@ -1267,33 +1265,25 @@ function fileToBase64(file, cb, maxDim = 480, quality = 0.82){
 // يرفع صورة القالب لـ Firebase Storage بدل حشرها base64 داخل مستند القوالب — يمنع تجاوز حد Firestore (1MB) عند تعدد القوالب
 async function handleTplImageUpload(file, key, field, maxDim, quality, statusHost){
   fileToBase64(file, async (dataUrl) => {
-    setField(key, field, dataUrl); // معاينة فورية محلية
+    setField(key, field, dataUrl);
     renderTplExpanded();
-    // شارة تقدّم غير هدّامة — تُضاف أعلى النافذة دون محو بقية الحقول (كانت innerHTML= تمسح النافذة كلها)
     let banner = null;
     if(statusHost){
       banner = document.createElement('div');
       banner.className = 'upload-status show';
-      banner.innerHTML = `${ICONS.loader}جاري رفع الصورة...`;
+      banner.innerHTML = `${ICONS.loader}جاري الحفظ...`;
       statusHost.prepend(banner);
     }
     try{
-      const path = `templates/${key}/${field}_${Date.now()}.jpg`;
-      const ref = storage.ref(path);
-      await ref.putString(dataUrl, 'data_url');
-      const url = await ref.getDownloadURL();
-      setField(key, field, url);
       // تحديث مُستهدف لهذا الحقل فقط بقاعدة البيانات — بدل إعادة كتابة مستند القوالب بالكامل
-      // (السبب الحقيقي لبطء الرفع: saveTemplatesConfig كانت ترسل كل القوالب الأخرى معه في كل مرة،
-      // بما فيها أي صور base64 قديمة متبقية من قبل تفعيل الرفع الخارجي — قد تكون عدة ميغابايت)
       if(firebaseReady){
-        await db.collection('siteConfig').doc('templates').set({ [key]: { [field]: url } }, { merge: true });
+        await db.collection('siteConfig').doc('templates').set({ [key]: { [field]: dataUrl } }, { merge: true });
       }
       if(banner) banner.remove();
       closeTplPopover();
     }catch(err){
       if(banner) banner.remove();
-      alert('تعذر رفع الصورة: ' + (err.message||''));
+      alert('تعذر الحفظ: ' + (err.message||''));
     }
   }, maxDim, quality);
 }
@@ -1425,28 +1415,10 @@ let isSaving = false;
 const IMAGE_FIELDS = ['avatarImg','logoImg','bgImage'];
 // يفحص كل القوالب بحثًا عن صور base64 قديمة (من قبل تفعيل الرفع الخارجي) ويرفعها فورًا لمساحة التخزين
 // — هذا هو السبب الحقيقي لتعذر الحفظ سابقًا: الصور القديمة كانت متكدّسة داخل مستند القوالب نفسه وتتجاوز حد Firestore (~1MB)
+// لا يوجد Storage متاح (يتطلب خطة Blaze المدفوعة) — الصور تُخزَّن base64 مباشرة بالمستند من البداية،
+// فهذه الدالة الآن تكتفي بإرجاع 0 دومًا (لا شيء لترحيله) والاعتماد على فحص الحجم أدناه فقط
 async function migrateLegacyBase64Images(){
-  const jobs = [];
-  Object.keys(templatesData).forEach(key => {
-    IMAGE_FIELDS.forEach(field => {
-      const val = templatesData[key][field];
-      if(typeof val === 'string' && val.startsWith('data:image')){
-        jobs.push((async () => {
-          try{
-            const path = `templates/${key}/${field}_${Date.now()}.jpg`;
-            const ref = storage.ref(path);
-            await ref.putString(val, 'data_url');
-            const url = await ref.getDownloadURL();
-            templatesData[key][field] = url;
-          }catch(err){
-            console.error('تعذر ترحيل صورة قديمة:', key, field, err);
-          }
-        })());
-      }
-    });
-  });
-  if(jobs.length) await Promise.all(jobs);
-  return jobs.length;
+  return 0;
 }
 
 async function saveTemplatesConfig(){
@@ -1457,15 +1429,9 @@ async function saveTemplatesConfig(){
   isSaving = true;
   btns.forEach(b => { b.dataset.origHtml = b.innerHTML; b.disabled = true; if(b.dataset.action==='save-all') b.innerHTML = ICONS.loader + ' جاري الحفظ...'; });
   try{
-    const migratedCount = await migrateLegacyBase64Images();
-    if(migratedCount){
-      renderTemplatesEditor();
-      if(currentExpandedTpl) renderTplExpanded();
-    }
-
     const approxSize = new Blob([JSON.stringify(templatesData)]).size;
     if(approxSize > 900000){
-      alert('⚠ حجم بيانات القوالب كبير جدًا (' + Math.round(approxSize/1024) + ' كيلوبايت) وقد يفشل الحفظ حتى بعد ترحيل الصور. راجع القوالب وقلّل عدد الصور المرفوعة.');
+      alert('⚠ حجم بيانات القوالب كبير جدًا (' + Math.round(approxSize/1024) + ' كيلوبايت) وقد يفشل الحفظ. احذف بعض صور القوالب الأقدم أو قلّل عددها — التخزين الحالي بلا Storage خارجي (يتطلب خطة مدفوعة) فالصور تُحفظ داخل نفس المستند.');
     }
 
     await db.collection('siteConfig').doc('templates').set(templatesData);
@@ -1542,15 +1508,15 @@ document.addEventListener('change', function(e){
   const el = e.target;
 
   if(el.dataset.action === 'avatar-file' && el.files && el.files[0]){
-    handleTplImageUpload(el.files[0], el.dataset.key, 'avatarImg', 480, 0.82, el.closest('.popover-sheet')?.querySelector('#tplPopoverBody'));
+    handleTplImageUpload(el.files[0], el.dataset.key, 'avatarImg', 160, 0.75, el.closest('.popover-sheet')?.querySelector('#tplPopoverBody'));
     return;
   }
   if(el.dataset.action === 'logo-file' && el.files && el.files[0]){
-    handleTplImageUpload(el.files[0], el.dataset.key, 'logoImg', 480, 0.82, el.closest('.popover-sheet')?.querySelector('#tplPopoverBody'));
+    handleTplImageUpload(el.files[0], el.dataset.key, 'logoImg', 140, 0.75, el.closest('.popover-sheet')?.querySelector('#tplPopoverBody'));
     return;
   }
   if(el.dataset.action === 'bg-file' && el.files && el.files[0]){
-    handleTplImageUpload(el.files[0], el.dataset.key, 'bgImage', 1080, 0.75, el.closest('.popover-sheet')?.querySelector('#tplPopoverBody'));
+    handleTplImageUpload(el.files[0], el.dataset.key, 'bgImage', 640, 0.6, el.closest('.popover-sheet')?.querySelector('#tplPopoverBody'));
     return;
   }
 
