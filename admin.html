@@ -817,14 +817,20 @@ async function loadTemplates(){
   }
   try{
     const snap = await db.collection('siteConfig').doc('templates').get();
-    templatesData = snap.exists ? snap.data() : {};
+    if(snap.exists){
+      // المستند موجود مسبقًا — نحترم محتواه كما هو، ولا نُعيد أي قالب حُذف عمدًا
+      templatesData = snap.data();
+    } else {
+      // أول مرة إطلاقًا: لا يوجد مستند بعد — نبذر القوالب الافتراضية ونحفظها فورًا
+      templatesData = {};
+      Object.keys(DEFAULT_TEMPLATES).forEach(k => { templatesData[k] = {...DEFAULT_TEMPLATES[k]}; });
+      await db.collection('siteConfig').doc('templates').set(templatesData);
+    }
   }catch(e){
     console.error('loadTemplates failed:', e);
     templatesData = {};
   }
-  Object.keys(DEFAULT_TEMPLATES).forEach(k => {
-    if(!templatesData[k]) templatesData[k] = {...DEFAULT_TEMPLATES[k]};
-  });
+  // كمّل أي حقول خط/أزرار/مسافات ناقصة بالقوالب الموجودة فعلاً (توافق مع بيانات قديمة) — بدون إضافة قوالب جديدة
   Object.keys(templatesData).forEach(k => { templatesData[k] = withDesignDefaults(templatesData[k]); });
   renderTemplatesEditor();
 }
