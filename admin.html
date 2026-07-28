@@ -104,8 +104,9 @@ svg{display:block;}
 .ghost-btn:hover{background:var(--surface-2);}
 
 /* ===== الهيكل الرئيسي: شريط جانبي + محتوى ===== */
-.shell{max-width:1180px;margin:0 auto;display:none;}
-.shell.show{display:flex;align-items:flex-start;}
+.shell{display:none;}
+.shell.show{display:block;}
+.shell-row{max-width:1180px;margin:0 auto;display:flex;align-items:flex-start;}
 .side-nav{
   flex:0 0 232px;position:sticky;top:62px;align-self:flex-start;
   padding:22px 14px;height:calc(100vh - 62px);overflow-y:auto;
@@ -297,6 +298,11 @@ svg{display:block;}
 }
 .tpl-plus-badge:active{transform:scale(.92);}
 
+/* ===== صناديق منقّطة تحيط بكل نقطة تحكم "+" — مثل مرجع Instabio: الزر يستقر بالضبط على الخط المتقطع ===== */
+.tpl-dash-zone{position:relative;border:2px dashed rgba(255,255,255,.85);border-radius:16px;}
+.tpl-dash-zone.on-light{border-color:rgba(15,21,53,.22);}
+.tpl-dash-ring{position:absolute;border:2px dashed rgba(255,255,255,.85);border-radius:50%;pointer-events:none;}
+
 /* ===== نافذة منبثقة سياقية ===== */
 #tplPopoverOverlay{display:none;position:fixed;inset:0;z-index:6500;background:rgba(16,20,50,.5);align-items:center;justify-content:center;padding:16px;overflow-y:auto;backdrop-filter:blur(2px);}
 .popover-sheet{background:#fff;border-radius:var(--r-lg);padding:22px;width:100%;max-width:420px;max-height:82vh;overflow-y:auto;margin:auto;box-shadow:var(--shadow-3);}
@@ -393,7 +399,17 @@ svg{display:block;}
 </div>
 
 <div class="shell" id="mainContainer">
-  <!-- الشريط الجانبي (يتحول لشريط أفقي على الجوال) -->
+  <!-- شريط تبويبات أفقي للجوال فقط — عنصر مستقل بعرض كامل، خارج صف الفليكس تمامًا -->
+  <div class="mobile-tabs">
+    <button class="mtab active" data-tab="overview" onclick="showAdminTab('overview',this)">نظرة عامة</button>
+    <button class="mtab" data-tab="users" onclick="showAdminTab('users',this)">المستخدمون</button>
+    <button class="mtab" data-tab="feedback" onclick="showAdminTab('feedback',this)">الملاحظات <span class="nbadge" id="feedbackBadgeMobile"></span></button>
+    <button class="mtab" data-tab="templates" onclick="showAdminTab('templates',this)">القوالب</button>
+    <button class="mtab" data-tab="subs" onclick="showAdminTab('subs',this)">الاشتراكات</button>
+  </div>
+
+  <div class="shell-row">
+  <!-- الشريط الجانبي (يظهر فقط بعرض سطح المكتب) -->
   <nav class="side-nav">
     <button class="nav-item active" data-tab="overview" onclick="showAdminTab('overview',this)">
       <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>
@@ -424,15 +440,6 @@ svg{display:block;}
       </button>
     </div>
   </nav>
-
-  <!-- شريط تبويبات أفقي للجوال فقط -->
-  <div class="mobile-tabs">
-    <button class="mtab active" data-tab="overview" onclick="showAdminTab('overview',this)">نظرة عامة</button>
-    <button class="mtab" data-tab="users" onclick="showAdminTab('users',this)">المستخدمون</button>
-    <button class="mtab" data-tab="feedback" onclick="showAdminTab('feedback',this)">الملاحظات <span class="nbadge" id="feedbackBadgeMobile"></span></button>
-    <button class="mtab" data-tab="templates" onclick="showAdminTab('templates',this)">القوالب</button>
-    <button class="mtab" data-tab="subs" onclick="showAdminTab('subs',this)">الاشتراكات</button>
-  </div>
 
   <main class="main">
     <!-- نظرة عامة -->
@@ -528,6 +535,7 @@ svg{display:block;}
       </div>
     </div>
   </main>
+  </div><!-- /.shell-row -->
 
   <!-- المحرر الموسّع لقالب واحد -->
   <div id="tplExpandedOverlay">
@@ -933,32 +941,51 @@ function buildMockupHtml(key){
   const linkShadowStyle = t.linkShadow ? `box-shadow:0 6px 14px -4px rgba(0,0,0,.35);` : '';
   const socialsHtml = buildSocialsPreview(t, isRect, rectStyle);
   const plusIco = '<svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>';
+  const ringRadius = t.avatarShape==='circle' ? '50%' : t.avatarShape==='rounded' ? '28%' : '16px';
+
+  // نقطة "الخلفية" — شارة + محاطة بحلقة منقطة (بدل شارة عائمة وحدها)
+  const bgZone = `
+    <div style="position:absolute;top:8px;left:8px;width:34px;height:34px;">
+      <div class="tpl-dash-ring" style="inset:-8px;"></div>
+      <button type="button" class="tpl-plus-badge" style="position:static;" data-action="open-bg-popover" data-key="${key}" title="الخلفية">${plusIco}</button>
+    </div>`;
+
+  // نقطة "الشعار" — صندوق منقّط يحيط بمعاينة الشعار، والشارة + مستقرة تمامًا على الخط المتقطع أعلاه
+  const logoZone = showLogo ? `
+    <div class="tpl-dash-zone" style="position:absolute;top:8px;right:8px;width:40px;height:40px;border-radius:12px;">
+      <div style="position:absolute;inset:3px;border-radius:9px;overflow:hidden;${t.logoImg ? `background-image:url(${t.logoImg});background-size:cover;background-position:center;` : `background:rgba(255,255,255,.5);`}"></div>
+      <button type="button" class="tpl-plus-badge" style="top:-17px;left:50%;transform:translateX(-50%);" data-action="open-logo-popover" data-key="${key}" title="الشعار">${plusIco}</button>
+    </div>` : `<button type="button" class="tpl-plus-badge" style="top:8px;right:8px;" data-action="open-logo-popover" data-key="${key}" title="الشعار">${plusIco}</button>`;
+
+  // نقطة "الأفتار" — حلقة منقّطة تحيط بالصورة، والشارة + على حافتها السفلية
+  const avatarZone = showAvatar ? `
+    <div style="position:relative;display:inline-block;margin-bottom:${t.gap+16}px;">
+      <div class="tpl-dash-ring" style="inset:-8px;border-radius:${ringRadius};"></div>
+      <div style="width:${t.avatarSize}px;height:${t.avatarSize}px;border-radius:${avatarRadius};${t.avatarImg ? `background-image:url(${t.avatarImg});background-size:cover;background-position:center;` : `background:linear-gradient(135deg,${t.p1},${t.p2});`}"></div>
+      <button type="button" class="tpl-plus-badge" style="bottom:-16px;left:50%;transform:translateX(-50%);" data-action="open-avatar-popover" data-key="${key}" title="الأفتار">${plusIco}</button>
+    </div>` : '';
+
+  // نقطة "التواصل" — صندوق منقّط كامل يحيط بمجموعة الأيقونات (تمامًا كالمرجع)، والشارة + على حافته العلوية
+  const socialsZone = `
+    <div class="tpl-dash-zone" style="width:100%;margin-top:22px;padding:${showSocials ? '18px 10px 10px' : '10px'};">
+      <button type="button" class="tpl-plus-badge" style="top:-17px;left:50%;transform:translateX(-50%);" data-action="open-socials-popover" data-key="${key}" title="التواصل">${plusIco}</button>
+      ${showSocials ? socialsHtml : `<div style="height:8px;"></div>`}
+    </div>`;
 
   return `
     <div class="tpl-mockup-lg" id="tplMockupLg" style="${bgStyle}position:relative;font-family:'${t.fontFamily}',sans-serif;padding-top:${28+t.gap}px;">
-      <button type="button" class="tpl-plus-badge" style="top:8px;left:8px;" data-action="open-bg-popover" data-key="${key}" title="الخلفية">${plusIco}</button>
-      <button type="button" class="tpl-plus-badge" style="top:8px;right:8px;" data-action="open-logo-popover" data-key="${key}" title="الشعار">${plusIco}</button>
-      ${showLogo ? `
-        <div style="position:absolute;top:8px;right:44px;width:30px;height:30px;border-radius:8px;overflow:hidden;${t.logoImg ? `background-image:url(${t.logoImg});background-size:cover;background-position:center;` : `background:rgba(255,255,255,.55);border:1.5px dashed #b9c0d9;`}"></div>
-      ` : ''}
+      ${bgZone}
+      ${logoZone}
 
-      ${showAvatar ? `
-        <div style="position:relative;display:inline-block;margin-bottom:${t.gap}px;">
-          <div style="width:${t.avatarSize}px;height:${t.avatarSize}px;border-radius:${avatarRadius};${t.avatarImg ? `background-image:url(${t.avatarImg});background-size:cover;background-position:center;` : `background:linear-gradient(135deg,${t.p1},${t.p2});`}"></div>
-          <button type="button" class="tpl-plus-badge" style="bottom:-8px;left:50%;transform:translateX(-50%);" data-action="open-avatar-popover" data-key="${key}" title="الأفتار">${plusIco}</button>
-        </div>
-      ` : ''}
+      ${avatarZone}
       <div style="color:${t.text};font-size:${t.nameSize}px;font-weight:${t.nameWeight};margin-bottom:${Math.max(6,t.gap*0.4)}px;">${escapeHtml(t.sampleName || 'اسمك هنا')}</div>
       <div style="height:${t.bioSize*0.35}px;width:70%;border-radius:3px;opacity:.35;background:${t.text};margin-bottom:6px;"></div>
       <div style="height:${t.bioSize*0.35}px;width:45%;border-radius:3px;opacity:.35;background:${t.text};margin-bottom:${t.gap}px;"></div>
 
-      <div style="position:relative;width:100%;">
-        <button type="button" class="tpl-plus-badge" style="top:-6px;left:8px;" data-action="open-socials-popover" data-key="${key}" title="التواصل">${plusIco}</button>
-        ${showSocials ? socialsHtml : `<div style="height:14px;"></div>`}
-      </div>
+      ${socialsZone}
 
       ${showLinks ? `
-        <div style="width:100%;height:${t.linkHeight}px;border-radius:${linkRadiusPx};border:${t.linkBorderWidth}px solid ${t.p1};${linkFillStyle}${linkShadowStyle}margin-bottom:${Math.max(6,t.gap*0.55)}px;"></div>
+        <div style="width:100%;height:${t.linkHeight}px;border-radius:${linkRadiusPx};border:${t.linkBorderWidth}px solid ${t.p1};${linkFillStyle}${linkShadowStyle}margin-bottom:${Math.max(6,t.gap*0.55)}px;margin-top:16px;"></div>
         <div style="width:100%;height:${t.linkHeight}px;border-radius:${linkRadiusPx};border:${t.linkBorderWidth}px solid ${t.p1};${linkFillStyle}${linkShadowStyle}"></div>
       ` : ''}
     </div>
